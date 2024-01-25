@@ -32,9 +32,9 @@ The following requirement list was the foundation for the design of the framewor
     simulation. These are "driven" in dynamic tests.
   - OpenSCENARIO (XOSC): Scenario definition, includes route definition (one file per route with
     extension .xosc)
-- **Checker:** A software module or routine that checks exactly one rule or creates statistical
-information from the route model. This can be a static or a dynamic test. For a list of possible
-tests, see parent page.
+- **Check/Checker:** A software module or routine that checks exactly one rule
+  or creates statistical information from the route model. This can be a static
+  or a dynamic test. For a list of possible tests, see parent page.
 - **Checker Bundle:** A program or framework that includes one or more checkers. CheckerBundles
   allow checks to be better structured and divided into logical groups. A CheckerBundle also
   contains the paths to OpenSCENARIO and OpenDRIVE. This makes it possible to implement a module
@@ -45,9 +45,10 @@ tests, see parent page.
     - developed in one distinct development environment/programming language
   - allow for files only be read/prepared once via parser.
   - can be started via external scripting/automation.
-- **Report or Result File** CheckerBundles write their reports in an .xqar file. See Base Library
+- **Report or Result File:** CheckerBundles write their reports in an .xqar file. See Base Library
   and File Formats for details and examples.
 - **Report Module:** Output / Transmission / Visualization Results
+- **Checker Library:** Collection of Checker Bundles and/or Report Modules for one domain.
 
 - **QC4OpenX** Framework, that:
   - feeds the route model to the individual Checker Bundles

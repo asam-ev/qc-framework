@@ -13,7 +13,8 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 - [Using the Framework](Using_the_Checker_Framework.md)
 - Delivered Standard CheckerBundles
   - [SchemaChecker](SchemaChecker.md)
-- [Writing User Defined CheckerBundles or ReportModules](User_defined_modules.md)
+- [Checker Libraries containing checks from one domain](Checker_Library.md)
+- [Writing User Defined Checker Bundles or Report Modules](User_defined_modules.md)
 - [File Formats Reference](File_formats.md)
 - [C++ Base Library for Writing Own Modules](Base_Library.md)
 - [Viewer Interface for Remote Controlling a 3D Viewer from the GUI](Viewer_Interface.md)
