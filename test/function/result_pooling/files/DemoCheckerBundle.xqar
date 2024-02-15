@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!--
+Copyright 2023 CARIAD SE.
+
+This Source Code Form is subject to the terms of the Mozilla
+Public License, v. 2.0. If a copy of the MPL was not distributed
+with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+-->
+<CheckerResults version="1.0.0">
+
+  <CheckerBundle build_date="" description="" name="DemoCheckerBundle" summary="Found 1 issue" version="">
+    <Checker checkerId="exampleChecker" description="This is a description" summary="">
+      <Issue description="This is an information from the demo usecase" issueId="0" level="3"/>
+    </Checker>
+  </CheckerBundle>
+
+</CheckerResults>

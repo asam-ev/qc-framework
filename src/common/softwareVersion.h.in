@@ -1,0 +1,24 @@
+/*
+ * Copyright 2023 CARIAD SE.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla
+ * Public License, v. 2.0. If a copy of the MPL was not distributed
+ * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+#ifndef _SOFTWARE_VERSION_H__
+#define _SOFTWARE_VERSION_H__
+
+// Softwareversion. 
+// Diese Version wird aus dem Buildsystem (CMake) automatisch erzeugt.
+static const char* const BUILD_VERSION = "@QC4OPENX_VERSION@";
+
+// Softwarerevision. 
+// Diese Version wird aus dem Buildsystem (CMake) automatisch erzeugt.
+static const char* const BUILD_REVISION = "@SCM_REVISION@";
+
+// Software build time. 
+// Diese Version wird aus dem Buildsystem (CMake) automatisch erzeugt.
+static const char* const BUILD_DATE = "@BUILD_DATE@";
+
+#endif

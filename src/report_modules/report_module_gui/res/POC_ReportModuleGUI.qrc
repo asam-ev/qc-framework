@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="/">
+    <file>icons/marked.png</file>
+    <file>icons/marked_visible.png</file>
+    <file>icons/visible.png</file>
+    <file>icons/issue.png</file>
+    <file>icons/params.png</file>
+    <file>icons/no_params.png</file>
+    <file>icons/red.png</file>
+    <file>icons/green.png</file>
+    <file>icons/yellow.png</file>
+  </qresource>
+</RCC>

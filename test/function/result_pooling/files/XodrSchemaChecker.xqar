@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<CheckerResults version="1.0.0">
+
+  <CheckerBundle build_date="" description="Checks validity of the xml schema of a given xodr file." name="XodrSchemaChecker" summary="Found 0 issues" version="">
+    <Param name="XodrFile" value="../stimuli/xodr_examples/three_connected_roads_with_steps.xodr"/>
+    <Param name="strResultFile" value="XodrSchemaChecker.xqar"/>
+    <Checker checkerId="xsdSchemaChecker" description="Checks the validity of the xml schema of an OpenDRIVE. Found OpenDRIVE version: 1.4. Used schema file OpenDRIVE_1.4H.xsd for validation." summary="Found 0 issues"/>
+  </CheckerBundle>
+
+</CheckerResults>

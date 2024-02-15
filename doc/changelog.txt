@@ -1,0 +1,13 @@
+QC4OpenX QChecker for OpenX - Change Log File
+=============================================
+
+This file tracks the changes made within the QC4OpenX project.
+
+v1.0.0 First open source compliant version
+==========================================
+- ConfigGUI executable for checker configuration
+- ReportGUI executable for diplaying report results
+- TextReport executable for generating a text report
+- SchemaCheckerBundle for XML schema validating for OpenDRIVE and OpenSCENARIO
+- Runtime for performing checker runs and merging the results
+- C++ base library for development of user-defined modules

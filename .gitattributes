@@ -1,0 +1,25 @@
+# Copyright 2023 CARIAD SE.
+#
+# This Source Code Form is subject to the terms of the Mozilla
+# Public License, v. 2.0. If a copy of the MPL was not distributed
+# with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+* text=auto
+* whitespace=space-before-tab,tab-in-indent,trailing-space
+
+# These files are text and should be normalized (Convert crlf => lf)
+*.c text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.xodr text eol=lf
+*.xosc text eol=lf
+*.xqar text eol=lf
+
+# These files are binary and should be left untouched
+*.ico binary
+*.jpeg binary
+*.jpg binary
+*.png binary
+*.svg binary

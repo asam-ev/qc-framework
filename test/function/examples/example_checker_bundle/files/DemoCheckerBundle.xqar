@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<CheckerResults version="1.0.0">
+
+  <CheckerBundle build_date="" description="" name="DemoCheckerBundle" summary="Found 1 issue" version="">
+    <Checker checkerId="exampleChecker" description="This is a description" summary="">
+      <Issue description="This is an information from the demo usecase" issueId="0" level="3"/>
+    </Checker>
+  </CheckerBundle>
+
+</CheckerResults>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2023 CARIAD SE.
+ 
+This Source Code Form is subject to the terms of the Mozilla
+Public License, v. 2.0. If a copy of the MPL was not distributed
+with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="CheckerType">
+	<xs:sequence>
+	  <xs:element name="Param" type="ParamType" minOccurs="0" maxOccurs="unbounded" />
+	</xs:sequence>
+	<xs:attribute name="checkerId" type="xs:string" />
+	<xs:attribute name="maxLevel" type="xs:string" />
+	<xs:attribute name="minLevel" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="ParamType">
+	<xs:attribute name="name" type="xs:string" />
+	<xs:attribute name="value" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="ReportModuleType">
+    <xs:sequence>
+	  <xs:element name="Param" type="ParamType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+	<xs:attribute name="application" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="CheckerBundleType">
+    <xs:sequence>
+	  <xs:choice minOccurs="1" maxOccurs="unbounded">
+	    <xs:element name="Param" type="ParamType" minOccurs="0" maxOccurs="unbounded" />
+	    <xs:element name="Checker" type="CheckerType" minOccurs="0" maxOccurs="unbounded" />
+	  </xs:choice>
+    </xs:sequence>
+	<xs:attribute name="application" type="xs:string" />
+  </xs:complexType>
+
+  <xs:element name="Config">
+    <xs:complexType>
+      <xs:sequence>
+	    <xs:choice minOccurs="1" maxOccurs="unbounded">
+	      <xs:element name="Param" type="ParamType" minOccurs="0" maxOccurs="unbounded" />
+		  <xs:element name="CheckerBundle" type="CheckerBundleType" minOccurs="0" maxOccurs="unbounded" />
+		  <xs:element name="ReportModule" type="ReportModuleType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
