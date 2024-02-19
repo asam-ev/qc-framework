@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<CheckerResults version="1.0.0">
+
+  <CheckerBundle build_date="" description="Checks the consistency and structure of the file and virtual track." name="RoadVerifier" summary="2 issues found, 1 elevationChecker issue found, 1 lateralProfileChecker issue found, No planViewChecker issues found, No laneSectionChecker issues found, No laneOffsetChecker issues found" version="">
+    <Param name="XodrFile" value="../stimuli/xodr_examples/three_connected_roads_with_steps.xodr"/>
+    <Param name="f64C0Threshold" value="0.010000"/>
+    <Param name="f64C1Threshold" value="1.000000"/>
+    <Param name="f64C2Threshold" value="10.000000"/>
+    <Param name="f64HdgThreshold" value="1.000000"/>
+    <Param name="strResultFile" value="RoadVerifier.xqar"/>
+    <Checker checkerId="elevationChecker" description="Verify transition of elevations on road boundaries" summary="1 issue found">
+      <Issue description="R:2  -  R:3 || delta of both road elevations in transition point is -0.200000" issueId="1" level="2">
+        <RoadLocation description="First road" roadId="2" s="20.000000" t="0.000000"/>
+        <RoadLocation description="Second road (Successor)" roadId="3" s="0.000000" t="0.000000"/>
+        <XMLLocation description="First road" xpath="/OpenDRIVE/road[@id='2']/elevationProfile"/>
+        <XMLLocation description="Second road (Successor)" xpath="/OpenDRIVE/road[@id='3']/elevationProfile"/>
+      </Issue>
+    </Checker>
+    <Checker checkerId="planViewChecker" description="" summary="No issues found"/>
+    <Checker checkerId="lateralProfileChecker" description="Verify transition of lateral profile on road boundaries" summary="1 issue found">
+      <Issue description="R:1 - R:2 || delta of both road superelevations in transition point is 0.110000" issueId="0" level="2">
+        <RoadLocation description="Road" roadId="2" s="0.000000" t="0.000000"/>
+        <XMLLocation description="Road" xpath="/OpenDRIVE/road[@id='2']"/>
+      </Issue>
+    </Checker>
+    <Checker checkerId="laneSectionChecker" description="Verify transition of lanes on road boundaries." summary="No issues found"/>
+    <Checker checkerId="laneOffsetChecker" description="Verify transition of lane offsets in road" summary="No issues found"/>
+  </CheckerBundle>
+
+</CheckerResults>

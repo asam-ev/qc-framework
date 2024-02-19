@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!--
+Copyright 2023 CARIAD SE.
+ 
+This Source Code Form is subject to the terms of the Mozilla
+Public License, v. 2.0. If a copy of the MPL was not distributed
+with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+-->
+
+<Config>
+
+  <Param name="XoscFile" value=""/>
+
+  <CheckerBundle application="XoscSchemaChecker">
+    <Param name="strResultFile" value="XoscSchemaChecker.xqar"/>
+    <Checker checkerId="xoscVersionChecker" maxLevel="1" minLevel="3"/>
+    <Checker checkerId="xoscSchemaChecker" maxLevel="1" minLevel="3"/>
+  </CheckerBundle>
+
+  <ReportModule application="TextReport">
+    <Param name="strInputFile" value="Result.xqar"/>
+    <Param name="strReportFile" value="Report.txt"/>
+  </ReportModule>
+
+  <ReportModule application="ReportGUI">
+    <Param name="strInputFile" value="Result.xqar"/>
+  </ReportModule>
+
+</Config>

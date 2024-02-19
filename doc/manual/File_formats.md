@@ -19,7 +19,7 @@ finish execution.
 
 ```xml
 <Config>
-<Param name="XodrFile" value=e"myTrack.xodr">
+<Param name="XodrFile" value="myTrack.xodr">
 <CheckerBundle application="SemanticChecker">
     <Param name="GlobalAngleTolerance" value="0.1"/>
     <Checker checkerId="elevationChecker" minLevel="1" maxLevel="3">

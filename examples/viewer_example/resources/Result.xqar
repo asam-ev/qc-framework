@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!--
+Copyright 2023 CARIAD SE.
+ 
+This Source Code Form is subject to the terms of the Mozilla
+Public License, v. 2.0. If a copy of the MPL was not distributed
+with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+-->
+<CheckerResults>
+
+  <CheckerBundle build_date="2020-10-13 11:46:34" description="Checks that the geometry described by the xodr is adequate for simulation." name="XodrGeometryChecker" summary="Found 1 issue" version="">
+    <Param name="XodrFile" value="three_connected_roads_with_steps.xodr"/>
+    <Param name="f64ElevationThreshold" value="0.010000"/>
+    <Param name="f64HdgThreshold" value="0.017000"/>
+    <Param name="strResultFile" value="XodrGeometryChecker.xqar"/>
+    <Checker checkerId="elevationChecker" description="elevation difference between lanes exceedes threshold." summary="Found 1 issue">
+      <Issue description="R:2 - R:3 || delta of both road elevations in transition point is -0.200000" issueId="0" level="1">
+        <Locations description="First Road">
+          <XMLLocation description="First Road" xpath="/OpenDRIVE/road[@id='2']/elevationProfile"/>
+          <RoadLocation description="First Road" roadId="2" s="20.000000" t="0.000000"/>
+          <FileLocation column="0" description="First Road" fileType="1" row="59"/>
+        </Locations>
+        <Locations description="Second Road">
+          <XMLLocation description="Second Road" xpath="/OpenDRIVE/road[@id='3']/elevationProfile"/>
+          <RoadLocation description="Second Road" roadId="3" s="0.000000" t="0.000000"/>
+          <FileLocation column="0" description="Second Road" fileType="1" row="101"/>
+        </Locations>
+      </Issue>
+    </Checker>
+    <Checker checkerId="headingChecker" description="heading difference between lanes exceedes threshold." summary=""/>
+  </CheckerBundle>
+
+  <CheckerBundle build_date="2020-10-13 11:46:34" description="Checks validity and consistency of the xml data of a given xodr file." name="XodrIntegrityChecker" summary="Found 0 issues" version="">
+    <Param name="XodrFile" value="three_connected_roads_with_steps.xodr"/>
+    <Param name="strResultFile" value="XodrIntegrityChecker.xqar"/>
+    <Checker checkerId="InvalidXodrFile" description="OpenDRIVE Parser error. Abort." summary=""/>
+    <Checker checkerId="IsSpecStrValidForProj4" description="specification string isn't compatible with PROJ4." summary=""/>
+    <Checker checkerId="HasSpecStrCData" description="specification string has no CData section." summary=""/>
+    <Checker checkerId="HasRoadIdField" description="road has no id" summary=""/>
+    <Checker checkerId="IsRoadIdUnique" description="repeated road id" summary=""/>
+    <Checker checkerId="IsRoadIdValidUInt32" description="road id isn't a valid UInt32" summary=""/>
+    <Checker checkerId="HasSignalIdField" description="signal has no id" summary=""/>
+    <Checker checkerId="IsSignalIdUnique" description="repeated signal id" summary=""/>
+    <Checker checkerId="IsSignalIdValidUInt32" description="signal id isn't a valid UInt32" summary=""/>
+    <Checker checkerId="HasObjectIdField" description="object has no id" summary=""/>
+    <Checker checkerId="IsObjectIdUnique" description="repeated object id" summary=""/>
+    <Checker checkerId="" description="" summary=""/>
+    <Checker checkerId="IsObjectIdValidUInt32" description="object id isn't a valid UInt32" summary=""/>
+    <Checker checkerId="IsObjectBridgeIdUnique" description="repeated bridge id" summary=""/>
+    <Checker checkerId="IsObjectBridgeIdValidUInt32" description="bridge id isn't a valid UInt32" summary=""/>
+    <Checker checkerId="IsObjectTunnelIdUnique" description="repeated tunnel id" summary=""/>
+    <Checker checkerId="IsObjectTunnelIdValidUInt32" description="tunnel id isn't a valid UInt32" summary=""/>
+    <Checker checkerId="IsObjectObjectRefIdUnique" description="repeated object reference id" summary=""/>
+    <Checker checkerId="IsObjectObjectRefIdValidUInt32" description="object reference id isn't a valid UInt32" summary=""/>
+    <Checker checkerId="HasLaneId" description="left lane has no id, road-id: " summary=""/>
+    <Checker checkerId="AreLaneIdsInDescendingOrder" description="left lane id isn't in descending order" summary=""/>
+    <Checker checkerId="HasLaneIdGap" description="left lanes id has gap" summary=""/>
+    <Checker checkerId="IsLeftLaneIdPositive" description="left lane id isn't positive value" summary=""/>
+    <Checker checkerId="IsLaneIdValidInt8" description="left lane id isn't valid int8 type." summary=""/>
+    <Checker checkerId="HasLaneId" description="center lane has no id, road-id: " summary=""/>
+    <Checker checkerId="AreLaneIdsInDescendingOrder" description="center lane id isn't in descending order" summary=""/>
+    <Checker checkerId="HasLaneIdGap" description="center lanes id has gap" summary=""/>
+    <Checker checkerId="IsCenterLaneIdZero" description="center lane id isn't zero" summary=""/>
+    <Checker checkerId="IsLaneIdValidInt8" description="center lane id isn't valid int8 type." summary=""/>
+    <Checker checkerId="HasLaneId" description="right lane has no id, road-id: " summary=""/>
+    <Checker checkerId="AreLaneIdsInDescendingOrder" description="right lane id isn't in descending order" summary=""/>
+    <Checker checkerId="HasLaneIdGap" description="right lanes id has gap" summary=""/>
+    <Checker checkerId="IsRightLaneIdNegative" description="right lane id isn't negative value" summary=""/>
+    <Checker checkerId="IsLaneIdValidInt8" description="right lane id isn't valid int8 type." summary=""/>
+    <Checker checkerId="HasJunctionIdField" description="junction has no id." summary=""/>
+    <Checker checkerId="IsJunctionIdUnique" description="junction id isn't unique." summary=""/>
+    <Checker checkerId="IsJunctionIdValidUInt32" description="junction id isn't valid UInt32 value." summary=""/>
+    <Checker checkerId="ValidateRoadPredecessor" description="road predecessor not found" summary=""/>
+    <Checker checkerId="ValidateRoadSuccessor" description="road successor not found" summary=""/>
+    <Checker checkerId="ValidateLanePredecessor" description="lane predecessor not found" summary=""/>
+    <Checker checkerId="ValidateLaneSuccessor" description="lane successor not found" summary=""/>
+    <Checker checkerId="ValidateLanePredecessor" description="lane predecessor not found" summary=""/>
+    <Checker checkerId="ValidateLaneSuccessor" description="lane successor not found" summary=""/>
+    <Checker checkerId="ValidateLanePredecessor" description="lane predecessor not found" summary=""/>
+    <Checker checkerId="ValidateLaneSuccessor" description="lane successor not found" summary=""/>
+    <Checker checkerId="ValidateLanePredecessor" description="junction lane_from invalid" summary=""/>
+    <Checker checkerId="ValidateLaneSuccessor" description="junction lane_to invalid" summary=""/>
+  </CheckerBundle>
+
+  <CheckerBundle build_date="2020-10-13 11:46:34" description="Checks validity of the xml schema of a given xodr file." name="XodrSchemaChecker" summary="Found 0 issues" version="">
+    <Param name="XodrFile" value="three_connected_roads_with_steps.xodr"/>
+    <Param name="strResultFile" value="XodrSchemaChecker.xqar"/>
+    <Checker checkerId="xsdSchemaChecker" description="Checks the validity of the xml schema of an OpenDRIVE. Found OpenDRIVE version: 1.4. Used schema file OpenDRIVE_1.4H.xsd for validation." summary="Found 0 issues"/>
+  </CheckerBundle>
+
+  <CheckerBundle build_date="2020-10-13 11:46:34" description="Statistic check of a XODR" name="XodrStatisticChecker" summary="Extracted 66 different data entries in 14 checkers from file" version="">
+    <Param name="XodrFile" value="three_connected_roads_with_steps.xodr"/>
+    <Checker checkerId="roadCounter" description="Counts the number of roads in the xodr file" summary="Found 1 issue">
+      <Issue description="number of roads = 3" issueId="1" level="3"/>
+    </Checker>
+    <Checker checkerId="junctionCounter" description="Counts the number of junctions in the xodr file" summary="Found 1 issue">
+      <Issue description="number of junctions = 0" issueId="2" level="3"/>
+    </Checker>
+    <Checker checkerId="signalCounter" description="Counts the number of signals in the xodr file" summary="Found 1 issue">
+      <Issue description="number of signals = 0" issueId="3" level="3"/>
+    </Checker>
+    <Checker checkerId="geometryInformation" description="Counts the different types of geometry the roads were build on" summary="Found 5 issues">
+      <Issue description="arcCount = 1 (overall length = 20)" issueId="4" level="3"/>
+      <Issue description="lineCount = 2 (overall length = 50)" issueId="5" level="3"/>
+      <Issue description="paramPoly3Count = 0 (overall length = 0)" issueId="6" level="3"/>
+      <Issue description="poly3Count = 0 (overall length = 0)" issueId="7" level="3"/>
+      <Issue description="spiralCount = 0 (overall length = 0)" issueId="8" level="3"/>
+    </Checker>
+    <Checker checkerId="objectInformation" description="Information about the type of objects in a scene" summary="Found 7 issues">
+      <Issue description="bridgeCount = 0" issueId="9" level="3"/>
+      <Issue description="objectCount = 0" issueId="10" level="3"/>
+      <Issue description="objectReferenceCount = 0" issueId="11" level="3"/>
+      <Issue description="outlineObjectCount = 0" issueId="12" level="3"/>
+      <Issue description="parkingSpaceCount = 0" issueId="13" level="3"/>
+      <Issue description="repeatObjectCount = 0" issueId="14" level="3"/>
+      <Issue description="tunnelCount = 0" issueId="15" level="3"/>
+    </Checker>
+    <Checker checkerId="arcSpiralRelation" description="Information about the relation between arc segments and spiral seqments. Optimum is near 0,5." summary="Found 1 issue">
+      <Issue description="relationArcSpiral = 0.000000" issueId="16" level="3"/>
+    </Checker>
+    <Checker checkerId="geometryLengthInformation" description="Information about the min, max and average segment length iof each type" summary="Found 20 issues">
+      <Issue description="arcAvgLength = 20.000000" issueId="17" level="3"/>
+      <Issue description="arcLength = [0,1) = 0(0.00%); [1,10) = 0(0.00%); [10,inf) = 1(100.00%); " issueId="18" level="3"/>
+      <Issue description="arcMaxLength = 20.000000" issueId="19" level="3"/>
+      <Issue description="arcMinLength = 20.000000" issueId="20" level="3"/>
+      <Issue description="lineAvgLength = 25.000000" issueId="21" level="3"/>
+      <Issue description="lineLength = [0,1) = 0(0.00%); [1,10) = 0(0.00%); [10,inf) = 2(100.00%); " issueId="22" level="3"/>
+      <Issue description="lineMaxLength = 30.000000" issueId="23" level="3"/>
+      <Issue description="lineMinLength = 20.000000" issueId="24" level="3"/>
+      <Issue description="paramPoly3AvgLength = 0.000000" issueId="25" level="3"/>
+      <Issue description="paramPoly3Length = no entries." issueId="26" level="3"/>
+      <Issue description="paramPoly3MaxLength = 0.000000" issueId="27" level="3"/>
+      <Issue description="paramPoly3MinLength = 0.000000" issueId="28" level="3"/>
+      <Issue description="poly3AvgLength = 0.000000" issueId="29" level="3"/>
+      <Issue description="poly3Length = no entries." issueId="30" level="3"/>
+      <Issue description="poly3MaxLength = 0.000000" issueId="31" level="3"/>
+      <Issue description="poly3MinLength = 0.000000" issueId="32" level="3"/>
+      <Issue description="spiralAvgLength = 0.000000" issueId="33" level="3"/>
+      <Issue description="spiralLength = no entries." issueId="34" level="3"/>
+      <Issue description="spiralMaxLength = 0.000000" issueId="35" level="3"/>
+      <Issue description="spiralMinLength = 0.000000" issueId="36" level="3"/>
+    </Checker>
+    <Checker checkerId="roadTypeInformation" description="Information about the different road types of a scene" summary="Found 1 issue">
+      <Issue description="roadTypeCount = 0" issueId="37" level="3"/>
+    </Checker>
+    <Checker checkerId="laneInformation" description="Information about the amount of lanes in a scene" summary="Found 1 issue">
+      <Issue description="fourLanes = 3" issueId="38" level="3"/>
+    </Checker>
+    <Checker checkerId="laneTypeInformation" description="Information about the type of lanes in a scene" summary="Found 3 issues">
+      <Issue description="border = 6" issueId="39" level="3"/>
+      <Issue description="driving = 9" issueId="40" level="3"/>
+      <Issue description="laneTypeCount = 2" issueId="41" level="3"/>
+    </Checker>
+    <Checker checkerId="worldInformation" description="Information about the properties of the world in a scene" summary="Found 11 issues">
+      <Issue description="areaKm = 0.002850" issueId="42" level="3"/>
+      <Issue description="fileSizeInMB = 0.003922" issueId="43" level="3"/>
+      <Issue description="xMax = 57.257994" issueId="44" level="3"/>
+      <Issue description="xMin = -10.000000" issueId="45" level="3"/>
+      <Issue description="xRange = 67.257994" issueId="46" level="3"/>
+      <Issue description="yMax = 22.367937" issueId="47" level="3"/>
+      <Issue description="yMin = -20.000000" issueId="48" level="3"/>
+      <Issue description="yRange = 42.367937" issueId="49" level="3"/>
+      <Issue description="zMax = 2.195566" issueId="50" level="3"/>
+      <Issue description="zMin = -2.995566" issueId="51" level="3"/>
+      <Issue description="zRange = 5.191132" issueId="52" level="3"/>
+      <Issue description="No georeference available" issueId="53" level="2"/>
+    </Checker>
+    <Checker checkerId="objectInformation" description="Information about the type of objects in a scene" summary="Found 6 issues">
+      <Issue description="bridgeCount = 0" issueId="54" level="3"/>
+      <Issue description="objectCount = 0" issueId="55" level="3"/>
+      <Issue description="outlineObjectCount = 0" issueId="56" level="3"/>
+      <Issue description="parkingSpaceCount = 0" issueId="57" level="3"/>
+      <Issue description="repeatObjectCount = 0" issueId="58" level="3"/>
+      <Issue description="tunnelCount = 0" issueId="59" level="3"/>
+    </Checker>
+    <Checker checkerId="lateralRoadInformation" description="Information about the lateral profile of all roads" summary="Found 4 issues">
+      <Issue description="crossfallDensity = 0.000000" issueId="60" level="3"/>
+      <Issue description="crossfallSegmentCount = 0" issueId="61" level="3"/>
+      <Issue description="superElevationDensity = 0.333333" issueId="62" level="3"/>
+      <Issue description="superElevationSegmentCount = 1" issueId="63" level="3"/>
+    </Checker>
+    <Checker checkerId="roadmarkInformation" description="Information about the types of road marks of all roads" summary="Found 3 issues">
+      <Issue description="broken = 3" issueId="64" level="3"/>
+      <Issue description="roadMarkTypeCount = 2" issueId="65" level="3"/>
+      <Issue description="solid = 6" issueId="66" level="3"/>
+    </Checker>
+  </CheckerBundle>
+
+</CheckerResults>
