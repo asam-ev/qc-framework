@@ -1,0 +1,24 @@
+name: Filename Check
+
+on: [push]
+
+jobs:
+  check-filenames:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: .    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check for capital letters in filenames in 'doc/manual'
+      run: |
+        echo "Hello"
+        all_files=$(find doc/manual -type f)
+        echo $all_files
+        files_with_caps=$("find doc/manual -type f | grep -E '[A-Z]'")
+        echo $files_with_caps
+#        if [ ! -z "$files_with_caps" ]; then
+#          echo "Files with capital letters:"
+#          echo "$files_with_caps"
+#        fi
