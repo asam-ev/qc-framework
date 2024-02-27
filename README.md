@@ -6,7 +6,7 @@ Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 -->
 
-# ![Logo Image](doc/manual/images/QC4OpenX_Logo.drawio.png)
+# ![Logo Image](doc/manual/images/qc4openx_logo.drawio.png)
 
 QC4OpenX is a framework designed for quality assessment of the ASAM OpenX standards
 [OpenDRIVE](https://www.asam.net/standards/detail/opendrive) and
@@ -60,7 +60,7 @@ The following features are provided with QC4OpenX:
 - C++ base library to read/write the configuration and result file format
 - Examples
 
-An architecture overview and documentation is provided in the [documentation](doc/manual/README.md)
+An architecture overview and documentation is provided in the [documentation](doc/manual/readme.md)
 and a detailed changelog can be found [here](doc/changelog.txt).
 
 # Getting Started
@@ -73,7 +73,7 @@ machine. [Examples](examples) are provided in this repository.
 
 A C++ base library is provided, so users can provide their own user defined modules. Since checker
 bundles are executables, it is also possible to write checker bundles in any other programming
-language. Check out the [documentation](doc/manual/README.md) for details on how to extend the
+language. Check out the [documentation](doc/manual/readme.md) for details on how to extend the
 framework and write your own checks. Contributions to the project in the form of code or feedback
 are encouraged, please keep in mind the [contribution guidelines](CONTRIBUTING.md).
 
@@ -81,4 +81,4 @@ are encouraged, please keep in mind the [contribution guidelines](CONTRIBUTING.m
 
 The QC4OpenX is delivered under the [MPL - Mozilla Public License - Version 2.0](LICENSE). A
 detailed overview of the licenses used in all libraries is provided  in the
-[appendix](licenses/README.md).
+[appendix](licenses/readme.md).

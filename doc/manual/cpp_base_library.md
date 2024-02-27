@@ -20,7 +20,7 @@ exemplary CheckerBundle can be found in folder `examples/src`.
 Configurations contain all necessary input parameters and parameterization for a CheckerBundle.
 Configurations can be created by the user and stored persistently as an XML file. A CheckerBundle
 should accept as single parameter an XML file containing the corresponding configuration (see [User
-defined modules](User_defined_modules.md)). The configuration XML file follows the schema file
+defined modules](writing_user_defined_modules.md)). The configuration XML file follows the schema file
 `doc/schema/config_format.xsd`.
 
 To comfortably read out configurations, corresponding classes have been defined in the Base library.

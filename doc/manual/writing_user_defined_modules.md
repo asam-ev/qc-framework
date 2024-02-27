@@ -18,13 +18,13 @@ short help how to use it.
 - You should provide an executable
 - Your own module should adhere to the following rules.
 - The executable needs execution rights and its location should be the bin folder (see [File
-  Formats](File_formats.md) for configuration details)
+  Formats](file_formats.md) for configuration details)
 
-**Note:** The [Base Library](Base_Library.md) helps to read and write the file formats.
+**Note:** The [Base Library](cpp_base_library.md) helps to read and write the file formats.
 
 ### Run One Single CheckerBundle Based on a Configuration
 
-As mentioned in the [Base Library](Base_Library.md) section your CheckerBundle should accept a xml
+As mentioned in the [Base Library](cpp_base_library.md) section your CheckerBundle should accept a xml
 file containing its configuration parameters. All **modules which follow this convention are a part
 of the framework** and **can be executed from the runtime**.
 
@@ -59,7 +59,7 @@ This approach is used when testing only one CheckerBundle.
 - Your module shall take a module configuration, based on the configuration format.
 - Your module shall provide a default configuration by the parameter {{--defaultConfig}}
 - The executable needs execution rights and its location should be the bin folder (see [File
-  Formats](File_formats.md) for configuration details)
+  Formats](file_formats.md) for configuration details)
 
 ### Determine Configurations for ReportModules
 

@@ -28,7 +28,7 @@ use case, you will find the following pre defined configurations:
 
 You can open a configuration, by simply dropping the XML on the executable.
 
-![Config GUI](images/Config_GUI.png)
+![Config GUI](images/config_gui.png)
 
 From there the CheckerBundle and ReportModuls can be selected and their parameter can be set.
 Special parameters are the global parameters
@@ -66,7 +66,7 @@ first time.
 If you want to create a configuration from scratch use the menu **File →New**.
 
 Own CheckerBundles and the ReportModules have to follow the specification in
-[CheckerBundle/ReportModule Meta Model](User_defined_modules.md). If they use this mechanisms then
+[CheckerBundle/ReportModule Meta Model](writing_user_defined_modules.md). If they use this mechanisms then
 the framework is able to include their output in the toolchain.
 
 ### Export Log Files
@@ -76,14 +76,14 @@ store the output in one file.
 
 ## Available Checker Bundles
 
-- [SchemaChecker](SchemaChecker.md)
+- [SchemaChecker](schema_checker.md)
 
 ## Reporting
 
 The reporting of issues can be done in a text file, in a GUI and/or graphically in the 3D model of
 the road network. The foundation for this is a file in the XML base Checker Result Format (XQAR)
 containing all issues. The file format specification can be found on the page [File
-formats](File_formats.md).
+formats](file_formats.md).
 
 The QC4OpenX framework contains the following report modules:
 
@@ -98,13 +98,13 @@ in one CheckerBundle. The window on the bottom left contains all the information
 issue. The source code on the right side moves to the location in the file, if the issue contains a
 valid FileLocation.
 
-![Reporting GUI](images/Reporting_GUI.png)
+![Reporting GUI](images/reporting_gui.png)
 
 Additionally it is possible to link issues that correspond to a 3D error with a viewer application.
 A 3D error is an error in the 3D model of the road network - it gets marked with a little icon in
 the left part of the ReportGUI window. This viewer is not part of the Open Source distributution of
 the QC4OpenX framework, but we provide a binding mechanism which let's you provide your own
-implementation. Please refer to [the documentation](Viewer_Interface.md) for details.
+implementation. Please refer to [the documentation](viewer_interface.md) for details.
 
 ## Add Self Implemented CheckerBundles and ReportModules
 
@@ -113,10 +113,10 @@ with the graphical user interface. There are some templates which are provided w
 version. You are free to choose another executable, just specify the name without the file
 extension.
 
-![Add CheckerBundle](images/AddCheckerBundle.png)
+![Add CheckerBundle](images/add_checker_bundle.png)
 
 Requirements for your own CheckerBundle can be found in the [User defined
-modules](User_defined_modules.md) documentation.
+modules](writing_user_defined_modules.md) documentation.
 
 ## Automation and Deployment
 
