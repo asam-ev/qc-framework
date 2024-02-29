@@ -109,11 +109,13 @@ implementation. Please refer to [the documentation](viewer_interface.md) for det
 ## Add Self Implemented CheckerBundles and ReportModules
 
 You can add your own CheckerBundles and ReportModules to the configuration. Just add the executables
-with the graphical user interface. There are some templates which are provided with the current
-version. You are free to choose another executable, just specify the name without the file
-extension.
+with the graphical user interface.
 
 ![Add CheckerBundle](images/add_checker_bundle.png)
+
+This will call the executable, which generates a file in the defined Result
+Format (XQAR) without any issues. The Config GUI extracts the included Checkers
+and their parameters from there.
 
 Requirements for your own CheckerBundle can be found in the [User defined
 modules](writing_user_defined_modules.md) documentation.
