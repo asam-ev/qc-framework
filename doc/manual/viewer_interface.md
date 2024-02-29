@@ -11,7 +11,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 ## Link with the Interface
 
 As described in the section "Using the ReportGUI" of [Using the Checker
-Framework](Using_the_Checker_Framework.md), it is possible to show issues in a 3D Viewer, if they
+Framework](using_the_framework.md), it is possible to show issues in a 3D Viewer, if they
 have a valid position link. In general QC4OpenX doesn't provide a 3D Viewer but a C-interface to
 connect your own 3D Viewer to the ReportGUI. The ReportGUI loads viewer plugins in the form of
 shared libraries from the folder `bin/plugin`. A plugin needs to implement the interface

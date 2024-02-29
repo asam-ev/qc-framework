@@ -43,7 +43,7 @@ Notes for the paths:
 ## Result File (`*.xqar`)
 
 The results of a checker are stored persistently as XML in the form of a result file (*.xqar). The
-[Base library](Base_Library.md) can be used to write a report. A report consists of problems (called
+[Base library](cpp_base_library.md) can be used to write a report. A report consists of problems (called
 issues) which contain syntactic or semantic flaws.
 
 - An issue consists of the following parts:

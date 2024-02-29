@@ -37,7 +37,7 @@ If a Checker Library needs to define and document own rules, then the following
 template can be used.
 
 **Rule ID:** _Unique identifier according the [Rule UID
-Schema](Rule_Uid_Schema.md)_
+Schema](rule_uid_schema.md)_
 
 **Description:** _Clear textual description of the rule._
 

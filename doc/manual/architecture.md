@@ -59,7 +59,7 @@ The following requirement list was the foundation for the design of the framewor
 
 ## Workflow QC4OpenX
 
-![Architecture_Workflow](images/Workflow.png)
+![Architecture_Workflow](images/workflow.png)
 
 ## Properties / Requirements
 
