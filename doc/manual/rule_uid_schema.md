@@ -10,18 +10,18 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 The document describes the composition of the unique identifier (UID) to be associated with quality checker rules.
 
-The document describes composition of rule UIDs, declares some of the concepts to be used for ASAM rules, and provides an example for an UID for rule of the ASAM OpenDRIVE standard.
+The document describes composition of rule UIDs, declares some of the concepts to be used for ASAM rules, and provides an example for an UID for a rule of the ASAM OpenDRIVE standard.
 
 ## Rule UID Concepts
 
-The UID is a string which encapsulate a sequence of **concepts** that allow to identify immediately a rule across the different domain. The concept are ordered and separated via the separation character **`:`**.
+The UID is a string which encapsulate a sequence of **concepts** that allow to identify immediately a rule across the different domains. The concept are ordered and separated via the separation character **`:`**.
 
 The concepts for the rule UID are:
 
  * **Emanating Entity**: a domain name for the entity (organization or company) that declares the rule UID
  * **Reference Standard**: a short string that represents the standard or the domain to which the rule is applied
- * **Definition Settings**: the semantic version of the standard or the domain to which the rule appears or is applied **for the first time**
- * **Rule Full Name**: the full name of the rule, as comma separated, snake lower case string. The full name of a rule is composed by the **rule set**, a categorization for the rule, and the rule **name**, a unique string inside the categorization. The rule set can be nested (meaning that can be defined as an arbitrary sequence of comma separated names, while the name is the snake case string after the last comma of the full name)
+ * **Definition Settings**: the version of the standard or the domain to which the rule appears or is applied **for the first time**
+ * **Rule Full Name**: the full name of the rule, as dot separated, snake lower case string. The full name of a rule is composed by the **rule set**, a categorization for the rule, and the rule **name**, a unique string inside the categorization. The rule set can be nested (meaning that can be defined as an arbitrary sequence of dot separated names, while the name is the snake case string after the last dot of the full name)
  * Optional **Version**: a counter value representing the current version of the rule content. If content of the rule changes without changing the underlying logic for validation, this counter increases. If the change in the rule forces a modification in the validation logic, the change shall be treated as a new rule.
 
 To provide a visual description for a rule UID:
@@ -53,7 +53,7 @@ $
 
  * Emanating Entity: `asam.net`
  * Reference Standards:
-   * Framework: `asam.net:qc`
+   * Quality Checker Framework: `asam.net:qc`
    * OpenDRIVE: `asam.net:xodr`
      * v1.4.0: `asam.net:xodr:1.4.0`
      * v1.5.0: `asam.net:xodr:1.5.0` 
@@ -69,7 +69,7 @@ $
    * OpenSCENARIO DSL: `asam.net:osc`
      * v2.0.0: `asam.net:osc:2.0.0`
 
-Rule full names are defined in domain-specific Quality Checker subgroups. Third party emanating entities should use  reference standard and reference version concepts defined by ASAM. 
+Rule full names are defined in domain-specific Quality Checker subgroups. Third party emanating entities should use reference standard and reference version concepts defined by ASAM. 
 
 ## Example
 
@@ -136,4 +136,4 @@ Which can be explained as follows:
  * the string for rule sets and names are separated by dot `.`, and it is the rightmost dot of the full string
  * splitting each element of the string by `.`, the first character for the ruleset elements or the name must be an ascii character in the range `a-z`. The subsequent character may be any character in the range `a-z`, `0-9` or the character `_`. This is applied on both rulesets and names
  * ruleset may be empty (not defined), but if defined the minimum length of an element of the ruleset is 1 character in range `a-z`
- * the name is always the last element of the comma separated string. The minimal name is 1 character long, in range `a-z`
+ * the name is always the last element of the dot separated string. The minimal name is 1 character long, in range `a-z`
