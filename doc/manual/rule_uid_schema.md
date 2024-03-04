@@ -25,9 +25,9 @@ The concepts for the rule UID are:
 
  * **Emanating Entity**: a domain name for the entity (organization or company)
    that declares the rule UID
- * **Reference Standard**: a short string that represents the standard or the
+ * **Standard**: a short string that represents the standard or the
    domain to which the rule is applied
- * **Definition Settings**: the version of the standard or the domain to which
+ * **Definition Setting**: the version of the standard or the domain to which
    the rule appears or is applied **for the first time**
  * **Rule Full Name**: the full name of the rule, as dot separated, snake lower
    case string. The full name of a rule is composed by the **rule set**, a
@@ -45,9 +45,9 @@ To provide a visual description for a rule UID:
 
 ```
 # Without version
-<emanating-entity>:<reference-standard>:x.y.z:rule_set.for_rules.rule_name
+<emanating-entity>:<standard>:x.y.z:rule_set.for_rules.rule_name
 # With Version
-<emanating-entity>:<reference-standard>:x.y.z:rule_set.for_rules.rule_name:2
+<emanating-entity>:<standard>:x.y.z:rule_set.for_rules.rule_name:2
 ```
 
 > Third party rule UID creators (i.e., emanating entities different than ASAM)
@@ -73,7 +73,7 @@ $
 ### ASAM Concepts
 
  * Emanating Entity: `asam.net`
- * Reference Standards:
+ * Standards:
    * Quality Checker Framework: `asam.net:qc`
    * OpenDRIVE: `asam.net:xodr`
      * v1.4.0: `asam.net:xodr:1.4.0`
@@ -91,7 +91,7 @@ $
      * v2.0.0: `asam.net:osc:2.0.0`
 
 Rule full names are defined in domain-specific Quality Checker subgroups. Third
-party emanating entities should use reference standard and reference version
+party emanating entities should use the standard and definition setting
 concepts defined by ASAM. 
 
 ## Example
@@ -110,7 +110,7 @@ rule may change in the future**.
 we can identify the following concepts:
 
  * **emanating entity**: ASAM `asam.net`
- * **reference standard**: OpenDRIVE `xodr`
+ * **standard**: OpenDRIVE `xodr`
  * **definition settings**: the rule firstly appeared in `1.6.0`, the first
    revision to introduce the subsections rules
  * **Full name**:
@@ -141,7 +141,7 @@ asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists
 
 Regarding the validation for the schema, **only the the emanating concept and
 the name are required**. Third party entities are not required to declare
-reference standard, definition settings, rule-set and version. Still, separation
+standard, definition settings, rule-set, and version. Still, separation
 characters cannot be omitted. ASAM rules shall always define all concepts; rule
 version is still optional.
 
