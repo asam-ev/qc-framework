@@ -159,7 +159,7 @@ stated explicitly in query string.
 
 Example: query all the OpenDRIVE geometrical rules that are in version 1.6 and
 1.7 of the standard: `asam.net:xodr:1.[67].0:*geometry.*` matches
-`asam.not:xodr:1.6.0:road.planview.geometry.ref_line_exists:1` but does not
+`asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists:1` but does not
 match `asam.net:xodr:1.8.0:road.planview.geometry.ref_line_exists:1`
 
 ## Remarks on Rule Full names
