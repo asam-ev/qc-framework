@@ -34,8 +34,8 @@ The following requirement list was the foundation for the design of the framewor
     extension .xosc)
 - **Rule:** A textual description/definition about the input file
   characteristics.
-- **Check/Checker:** A software module that addresses to check one or multiple
-  rules or creates statistical information from the input file model. This can
+- **Check/Checker:** A software module that tests rules compliance
+  or creates statistical information about the input file. This can
   be a static or a dynamic test. For a list of possible tests, see parent page.
 - **Checker Bundle:** A program or framework that includes one or more checkers. CheckerBundles
   allow checks to be better structured and divided into logical groups. A CheckerBundle also
