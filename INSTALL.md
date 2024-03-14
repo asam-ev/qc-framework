@@ -23,7 +23,7 @@ QC4OpenX runs on Linux and Windows.
 - **Optional:** GoogleTest (only if tests are enabled)
 
 Links to download the sources and the tested versions can be found in the
-[license information appendix](licenses/README.md).
+[license information appendix](licenses/readme.md).
 
 ## 3rd Party Data File Dependencies
 
