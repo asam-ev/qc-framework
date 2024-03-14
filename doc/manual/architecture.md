@@ -32,9 +32,11 @@ The following requirement list was the foundation for the design of the framewor
     simulation. These are "driven" in dynamic tests.
   - OpenSCENARIO (XOSC): Scenario definition, includes route definition (one file per route with
     extension .xosc)
-- **Check/Checker:** A software module or routine that checks exactly one rule
-  or creates statistical information from the route model. This can be a static
-  or a dynamic test. For a list of possible tests, see parent page.
+- **Rule:** A textual description/definition about the input file
+  characteristics.
+- **Check/Checker:** A software module that tests rules compliance
+  or creates statistical information about the input file. This can
+  be a static or a dynamic test. For a list of possible tests, see parent page.
 - **Checker Bundle:** A program or framework that includes one or more checkers. CheckerBundles
   allow checks to be better structured and divided into logical groups. A CheckerBundle also
   contains the paths to OpenSCENARIO and OpenDRIVE. This makes it possible to implement a module
@@ -50,12 +52,76 @@ The following requirement list was the foundation for the design of the framewor
 - **Report Module:** Output / Transmission / Visualization Results
 - **Checker Library:** Collection of Checker Bundles and/or Report Modules for one domain.
 
-- **QC4OpenX** Framework, that:
-  - feeds the route model to the individual Checker Bundles
+- **Quality Checker Framework**, that:
+  - feeds the input file to the individual Checker Bundles
   - selects and configures the checker
   - summarizes the results (Result Pooling)
   - calls the report modules so that the user can view or further process the results
   - provides standard checkers and standard report modules
+
+### Relations between Terms / Definitions
+
+```mermaid
+flowchart LR
+    framework[fa:fa-laptop-code Quality Checker Framework]
+    checker_library_1["fa:fa-folder-open Checker Library A Directory"]
+    checker_library_2["fa:fa-folder-open Checker Library B Directory"]
+
+    checker_bundle_1_1[fa:fa-cubes Checker Bundle A1.exe]
+    checker_bundle_1_2[fa:fa-cubes Checker Bundle A2.exe]
+    checker_bundle_1_3[fa:fa-cubes Checker Bundle A3.exe]
+    checker_bundle_2_1[fa:fa-cubes Checker Bundle B1.exe]
+    checker_bundle_2_2[fa:fa-cubes Checker Bundle B2.exe]
+    report_module_2_1[fa:fa-cubes Optional specific Report Module B3.exe]
+
+    check_1_1_1[fa:fa-cube Check A1.1]
+    check_1_1_2[fa:fa-cube Check A1.2]
+    check_1_2_1[fa:fa-cube Check A2.1]
+    check_1_3_1[fa:fa-cube Check A3.1]
+    check_1_3_2[fa:fa-cube Check A3.2]
+    check_1_3_3[fa:fa-cube Check A3.3]
+    check_2_1_1[fa:fa-cube Check B1.1]
+    check_2_1_2[fa:fa-cube Check B1.2]
+    check_2_2_1[fa:fa-cube Check B2.1]
+
+    rule_uid_1(fa:fa-scale-balanced Rule 1 from standard)
+    rule_uid_2(fa:fa-scale-balanced Rule 2 from standard)
+    rule_uid_3(fa:fa-scale-balanced Rule 3 from standard)
+    rule_uid_4(fa:fa-scale-balanced Rule 4 from standard)
+    rule_uid_5(fa:fa-scale-balanced Rule 5 from standard)
+    rule_uid_6(fa:fa-scale-balanced Rule 6 from checker library)
+    rule_uid_7(fa:fa-scale-balanced Rule 7 from checker library)
+    rule_uid_8(fa:fa-scale-balanced Rule 8 from standard)
+    rule_uid_9(fa:fa-scale-balanced Rule 9 from standard)
+    rule_uid_10(fa:fa-scale-balanced Rule 10 from standard)
+    rule_uid_11(fa:fa-scale-balanced Rule 11 from standard)
+    rule_uid_12(fa:fa-scale-balanced Rule 12 from standard)
+
+    framework --executes modules from--> checker_library_1
+    framework --executes modules from--> checker_library_2
+    
+    checker_library_1 --contains --> checker_bundle_1_1
+    checker_library_1 --contains --> checker_bundle_1_2
+    checker_library_1 --contains --> checker_bundle_1_3
+
+    checker_library_2 --contains--> checker_bundle_2_1
+    checker_library_2 --contains--> checker_bundle_2_2
+    checker_library_2 --contains--> report_module_2_1
+    
+    checker_bundle_1_1 --has --> check_1_1_1 --check --> rule_uid_1
+    check_1_1_1 --check --> rule_uid_2
+    checker_bundle_1_1 --has --> check_1_1_2 --check --> rule_uid_3
+    checker_bundle_1_2 --has --> check_1_2_1 --check --> rule_uid_4
+    checker_bundle_1_3 --has --> check_1_3_1 --check --> rule_uid_5
+    checker_bundle_1_3 --has --> check_1_3_2 --check --> rule_uid_6
+    checker_bundle_1_3 --has --> check_1_3_3 --check --> rule_uid_7
+    check_1_3_3 --check --> rule_uid_8
+    check_1_3_3 --check --> rule_uid_9
+
+    checker_bundle_2_1 --has --> check_2_1_1 --check --> rule_uid_10
+    checker_bundle_2_1 --has --> check_2_1_2 --check --> rule_uid_11
+    checker_bundle_2_2 --has --> check_2_2_1 --check --> rule_uid_12
+```
 
 ## Workflow QC4OpenX
 
