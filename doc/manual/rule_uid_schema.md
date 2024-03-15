@@ -35,19 +35,11 @@ The concepts for the rule UID are:
    the categorization. The rule set can be nested (meaning that can be defined
    as an arbitrary sequence of dot separated names, while the name is the snake
    case string after the last dot of the full name)
- * Optional **Version**: a counter value representing the current version of the
-   rule content. If content of the rule changes without changing the underlying
-   logic for validation, this counter increases. If the change in the rule
-   forces a modification in the validation logic, the change shall be treated as
-   a new rule.
 
 To provide a visual description for a rule UID:
 
 ```
-# Without version
 <emanating-entity>:<standard>:x.y.z:rule_set.for_rules.rule_name
-# With Version
-<emanating-entity>:<standard>:x.y.z:rule_set.for_rules.rule_name:2
 ```
 
 > Third party rule UID creators (i.e., emanating entities different than ASAM)
@@ -66,7 +58,6 @@ matching.
  (?P<STANDARD>([a-z]+))?:
  (?P<STD_VERSION>([0-9]+(\.[0-9]+)+))?:
  (?P<RULESET>(([a-z][\w_]*)\.)*)(?P<NAME>[a-z][\w_]*)
- (:(?P<RULE_VERSION>(\d+)))?
 $
 ```
 
@@ -117,50 +108,36 @@ we can identify the following concepts:
     * **rule-set**: Road Planar Geometry definitions `road.planview.geometry`
     * **name**: summarizes the content of the rule, e.g. `ref_line_exists`. It
       is always the last group in dot-notation strings.
- * **version**: can be set to `1` 
 
 The complete UID would be something like:
 
 ```
-asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists:1
--------- ---- ----- ---------------------- --------------- -
- |        |    |     |                      |              |
- entitity | version  |                    name        rule-version
-       standard    rule-set
-```
-
-or without including the rule version:
-
-```
 asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists
 -------- ---- ----- ---------------------- ---------------
- |        |    |     |                      |           
- entitity | version  |                    name        
+ |        |    |     |                      |             
+ entitity | version  |                    name
        standard    rule-set
 ```
 
 Regarding the validation for the schema, **only the the emanating concept and
 the name are required**. Third party entities are not required to declare
-standard, definition settings, rule-set, and version. Still, separation
-characters cannot be omitted. ASAM rules shall always define all concepts; rule
-version is still optional.
+standard, definition settings, and rule-set. Still, separation
+characters cannot be omitted. ASAM rules shall always define all concepts.
 
 > Example: if `example.com` entity defines it's own rules, it may be something
-> like: `example.com:::custom_rule` or `example.com:qc::custom_rule:2` and the
+> like: `example.com:::custom_rule` or `example.com:qc::custom_rule` and the
 > UID should be considered valid. **However, entity should use ASAM standard and
 > definition setting concepts in its custom rules.**
 
 ## Query rules UID
 
 The proposed formalism allow to perform query on rules (or set of rules) using
-UNIX style wildcards notation (i.e., python `fnmatch` module). A query engine
-implementation shall return the most recent rule version available, when not
-stated explicitly in query string.
+UNIX style wildcards notation (i.e., python `fnmatch` module).
 
 Example: query all the OpenDRIVE geometrical rules that are in version 1.6 and
 1.7 of the standard: `asam.net:xodr:1.[67].0:*geometry.*` matches
-`asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists:1` but does not
-match `asam.net:xodr:1.8.0:road.planview.geometry.ref_line_exists:1`
+`asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists` but does not
+match `asam.net:xodr:1.8.0:road.planview.geometry.ref_line_exists`
 
 ## Remarks on Rule Full names
 
