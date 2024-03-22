@@ -46,6 +46,12 @@ standard (e.g., respecting the rule is mandatory or a recommendation)_
 
 **Version range:** _Information for which versions of the standard this rule applies._
 
+**Rule Version:** _a counter value representing the current version of the
+rule content. If content of the rule changes without changing the underlying
+logic for validation, this counter increases. If the change in the rule
+forces a modification in the validation logic, the change shall be treated as
+a new rule._
+
 ## Checks
 
 ### Check Characteristics

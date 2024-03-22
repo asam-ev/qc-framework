@@ -119,7 +119,7 @@ asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists
        standard    rule-set
 ```
 
-Regarding the validation for the schema, **only the the emanating concept and
+Regarding the validation for the schema, **only the the emanating entity and
 the name are required**. Third party entities are not required to declare
 standard, definition settings, and rule-set. Still, separation
 characters cannot be omitted. ASAM rules shall always define all concepts.
@@ -134,7 +134,7 @@ characters cannot be omitted. ASAM rules shall always define all concepts.
 The proposed formalism allow to perform query on rules (or set of rules) using
 UNIX style wildcards notation (i.e., python `fnmatch` module).
 
-Example: query all the OpenDRIVE geometrical rules that are in version 1.6 and
+Example: query all the OpenDRIVE geometrical rules that were created in version 1.6 or
 1.7 of the standard: `asam.net:xodr:1.[67].0:*geometry.*` matches
 `asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists` but does not
 match `asam.net:xodr:1.8.0:road.planview.geometry.ref_line_exists`
