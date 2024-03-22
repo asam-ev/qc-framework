@@ -115,7 +115,7 @@ The complete UID would be something like:
 asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists
 -------- ---- ----- ---------------------- ---------------
  |        |    |     |                      |             
- entitity | version  |                    name
+ entity   | version  |                    name
        standard    rule-set
 ```
 
