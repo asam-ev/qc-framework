@@ -58,7 +58,7 @@ standard (e.g., respecting the rule is mandatory or a recommendation)_
 
 ### Check Documentation Template
 
-**Check ID:** _The ID shall be unique within the Checker Library and
+**Name:** _The name shall be a unique ID within the Checker Library and
 self-explanatory as possible._
 
 **Version:** _The check itself has also a version number for identifying
@@ -85,3 +85,52 @@ traceability). The metadata produced by a check shall be included and
 described in its documentation, (e.g., if a check logs in metadata version and
 configuration of a simulator, the checker documentation shall describe the
 content of aforementioned metadata fields)._
+
+## Manifest File
+
+Each Checker Library needs to provide a manifest file with configuration
+information for the framework. The format of this file is aligned with the one
+for the [Result File (`*.xqar`)](file_formats.md#result-file-xqar) and follows
+the same specification. The only difference is that it may contain additional
+Report Modules, which are delivered as part of the Checker Library.
+
+### Example
+
+```xml
+<CheckerResults version="1.0.0">
+    <CheckerBundle name="CheckerBundle1" description="Description of the Checker Bundle">
+        <Executable program="/usr/bin/python3"> <!-- apply to Linux only! Probably just "python"? -->
+            <Arg>my_fancy_script.py</Arg> <!-- Mandatory arguments, followed by the configuration.xml or input file-->
+            <Arg>--fancy-param=True</Arg>
+        </Executable>
+        <Param name="InputFile" value="myTrack.xodr"/> <!-- Global standard parameter for each module! -->
+        <Param name="CheckerBundleParameter" value="0.1"/>
+        <Checker checkerId="XsdChecker" description="Checks the schema validity">
+            <AddressedRule uid="asam.net:qc:1.0.0:xsd_schema_validity">
+            <MetaData name="XmlParser" value="Xerces-C++ 1.2.3"> <!-- Or part of CheckerBunde? Or both possible like parameter? -->
+        </Checker>
+        <Checker checkerId="RefLineChecker" description="Checks the reference line integrity">
+            <AddressedRule uid="asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists">
+            <AddressedRule uid="example.com:::custom_rule">
+            <Param name="CheckerParameter" value="123"/> 
+        </Checker>
+    </CheckerBundle>
+    <ReportModule name="ReportModule" description="Description of the Report Module">
+        <Executable program="text_report"/> <!-- standard executable without additional arguments, except the configuration.xml or result file -->
+        <Param name="InputFile" value="myTrack.xodr"/> <!-- Global standard parameter for each module! -->
+    </ReportModule>    
+</CheckerResults>
+```
+
+### Open Questions
+
+- How does the framework find this Manifest file and the appropriate Checker
+  Bundles and Report Modules?
+- Is a `<ReportModule/>` from the technical point-of-view the same as a
+  `<CheckerBundle/>` just without Checkers? Use the same element?
+  --> rename to `<Module/>`?
+- Path of executable?
+  - (bin?) directory of Checker Library
+  - can be found in $PATH
+  - global path ;-?
+- (...)
