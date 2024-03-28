@@ -78,8 +78,10 @@ $
      * v1.1.0: `asam.net:xosc:1.1.0`
      * v1.1.1: `asam.net:xosc:1.1.1`
      * v1.2.0: `asam.net:xosc:1.2.0` 
+     * v1.3.0: `asam.net:xosc:1.3.0`
    * OpenSCENARIO DSL: `asam.net:osc`
      * v2.0.0: `asam.net:osc:2.0.0`
+     * v2.1.0: `asam.net:osc:2.1.0`
 
 Rule full names are defined in domain-specific Quality Checker subgroups. Third
 party emanating entities should use the standard and definition setting
@@ -121,23 +123,28 @@ asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists
 
 Regarding the validation for the schema, **only the the emanating entity and
 the name are required**. Third party entities are not required to declare
-standard, definition settings, and rule-set. Still, separation
-characters cannot be omitted. ASAM rules shall always define all concepts.
+standard, definition settings, and rule-set. Separation characters for omitted
+parts cannot be omitted.
 
-> Example: if `example.com` entity defines it's own rules, it may be something
+ASAM rules shall always define all concepts. For third parties it is highly
+recommended to define all concepts, if this is reasonably possible.
+
+> Example: If `example.com` entity defines its own rules, it may be something
 > like: `example.com:::custom_rule` or `example.com:qc::custom_rule` and the
-> UID should be considered valid. **However, entity should use ASAM standard and
-> definition setting concepts in its custom rules.**
+> UID is considered valid. However, if the rule for example is related to ASAM
+> OpenDRIVE starting from version 1.6.0 forward, then is recommended that
+> the entity use a UID like `example.com:xodr:1.6.0:custom_rule`, or where rule
+> sets make sense, like `example.com:xodr:1.6.0:custom_ruleset.custom_rule`.
 
 ## Query rules UID
 
 The proposed formalism allow to perform query on rules (or set of rules) using
 UNIX style wildcards notation (i.e., python `fnmatch` module).
 
-Example: query all the OpenDRIVE geometrical rules that were created in version 1.6 or
-1.7 of the standard: `asam.net:xodr:1.[67].0:*geometry.*` matches
+Example: Query all the OpenDRIVE geometrical rules that were created in version 1.6.0 
+1.6.1, or 1.7.0 of the standard: `asam.net:xodr:1.[67].[01]:*geometry.*` matches
 `asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists` but does not
-match `asam.net:xodr:1.8.0:road.planview.geometry.ref_line_exists`
+match `asam.net:xodr:1.8.0:road.planview.geometry.ref_line_exists`.
 
 ## Remarks on Rule Full names
 
