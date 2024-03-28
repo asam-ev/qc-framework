@@ -10,12 +10,14 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 ## High-level Requirements
 
-The following requirement list was the foundation for the design of the framework:
+The following requirement list was the foundation for the design of the
+framework:
 
-- Possibility to include a common ASAM rule set, which validates the rules from the specification
-  document
+- Possibility to include a common ASAM rule set, which validates the rules from
+  the specification document
 - Write own rule sets, implemented in any programming language
-- Extract meta information (e.g. if the file contain specific objects and the location of them)
+- Extract meta information (e.g. if the file contain specific objects and the
+  location of them)
 - Configuration sets and parametrization of rules
 - Possibility to include results based on the analysis of simulation runs
 - Human and machine readable results
@@ -24,40 +26,35 @@ The following requirement list was the foundation for the design of the framewor
 
 ## Terms / Definitions
 
-- **Route Model:** Static part of a possible concrete scenario ("Track under Test").
-  - OpenDRIVE (XODR): Logical route description, exactly **one** file with extension .xodr
-  - OpenSceneGraph Binary (OSGB): 3D model for usage in sensor frameworks (e. g. Visualization or
-    raw data generation), exactly **one** file with extension .osgb or .ive (binary OSGB format)
-  - Region-of-Interest (ROI): One or more routes in the route model that will be driven later in the
-    simulation. These are "driven" in dynamic tests.
-  - OpenSCENARIO (XOSC): Scenario definition, includes route definition (one file per route with
-    extension .xosc)
+- **Input File:** The file which should be checked by the Quality Checker Framework
 - **Rule:** A textual description/definition about the input file
   characteristics.
-- **Check/Checker:** A software module that tests rules compliance
-  or creates statistical information about the input file. This can
-  be a static or a dynamic test. For a list of possible tests, see parent page.
-- **Checker Bundle:** A program or framework that includes one or more checkers. CheckerBundles
-  allow checks to be better structured and divided into logical groups. A CheckerBundle also
-  contains the paths to OpenSCENARIO and OpenDRIVE. This makes it possible to implement a module
-  that checks both formats. In short they:
-  - are a summary of several checkers
+- **Check/Checker:** A software module that tests rules compliance or creates
+  statistical information about the input file. This can be a static or a
+  dynamic test
+- **Checker Bundle:** An executable or script that includes one or more
+  Checkers. Checker Bundles allow checks to be better structured and divided
+  into logical groups. In short they:
+  - are a summary of several Checkers
     - with similar functions
     - from one supplier
     - developed in one distinct development environment/programming language
-  - allow for files only be read/prepared once via parser.
-  - can be started via external scripting/automation.
-- **Report or Result File:** CheckerBundles write their reports in an .xqar file. See Base Library
-  and File Formats for details and examples.
+  - allow for files only be read/prepared once via parser
+  - can be started via external scripting/automation
+- **Result File:** Checker Bundles write their results in a XML based `*.xqar`
+  file. See [File Formats Reference](file_formats.md#result-file-xqar) for
+  details and examples
 - **Report Module:** Output / Transmission / Visualization Results
-- **Checker Library:** Collection of Checker Bundles and/or Report Modules for one domain.
+- **Checker Library:** Collection of Checker Bundles and/or Report Modules for
+  one domain
 
 - **Quality Checker Framework**, that:
   - feeds the input file to the individual Checker Bundles
   - selects and configures the checker
   - summarizes the results (Result Pooling)
-  - calls the report modules so that the user can view or further process the results
-  - provides standard checkers and standard report modules
+  - calls the report modules so that the user can view or further process the
+    results
+  - provides standard Checkers and standard report modules
 
 ### Relations between Terms / Definitions
 
@@ -67,12 +64,12 @@ flowchart LR
     checker_library_1["fa:fa-folder-open Checker Library A Directory"]
     checker_library_2["fa:fa-folder-open Checker Library B Directory"]
 
-    checker_bundle_1_1[fa:fa-cubes Checker Bundle A1.exe]
-    checker_bundle_1_2[fa:fa-cubes Checker Bundle A2.exe]
-    checker_bundle_1_3[fa:fa-cubes Checker Bundle A3.exe]
-    checker_bundle_2_1[fa:fa-cubes Checker Bundle B1.exe]
-    checker_bundle_2_2[fa:fa-cubes Checker Bundle B2.exe]
-    report_module_2_1[fa:fa-cubes Optional specific Report Module B3.exe]
+    checker_bundle_1_1[fa:fa-cubes Checker Bundle A1.exe/py]
+    checker_bundle_1_2[fa:fa-cubes Checker Bundle A2.exe/py]
+    checker_bundle_1_3[fa:fa-cubes Checker Bundle A3.exe/py]
+    checker_bundle_2_1[fa:fa-cubes Checker Bundle B1.exe/py]
+    checker_bundle_2_2[fa:fa-cubes Checker Bundle B2.exe/py]
+    report_module_2_1[fa:fa-cubes Optional specific Report Module B3.exe/py]
 
     check_1_1_1[fa:fa-cube Check A1.1]
     check_1_1_2[fa:fa-cube Check A1.2]
@@ -123,48 +120,47 @@ flowchart LR
     checker_bundle_2_2 --has --> check_2_2_1 --check --> rule_uid_12
 ```
 
-## Workflow QC4OpenX
+## Workflow ASAM Quality Checker Framework
 
-![Architecture_Workflow](images/workflow.png)
+![Architecture_Workflow](images/workflow.drawio.png)
 
 ## Properties / Requirements
 
-- QC4OpenX
+- ASAM Quality Checker Framework
   - Runs on Windows & Linux, Local & Server
   - Configuration via XML file
     - Selection of Checker Bundles
-    - Selection of individual checkers in the bundles and their optional parameters → also defines
-      the order in the overall report
-    - Configuration which checkers output what level (Info/Issue) → leads to overall result "red" or
-      "yellow"
-    - Selection of report modules
+    - Selection of individual Checkers in the bundles and their optional
+      parameters → also defines the order in the overall report
+    - Configuration which Checkers output what level (Info/Issue) → leads to
+      overall result "red" or "yellow"
+    - Selection of Report Modules
 - Checker
-  - Properties
-    - Optionally tunable (e.g. Limit values or chosen width for ROIs)
-    - Id (short text)
-    - Description (Detailed description)
+  - See [Checks](checker_library.md#checks) in the chapter about Checker
+    Libraries
 - Checker Bundle
-  - Runs if necessary only on certain platforms, because a third party product is not available for
-    all platforms
-  - Must be able to print out to the command line which checkers are included
+  - Runs probably only on certain platforms, because a third party product
+    is not available for all platforms
+  - Must be able to print out to the command line which Checkers are included
 - Result Pooling
   - Summarizes all results (overview and detailed view possible)
-  - Gives each incident a unique Id → assignment results in different report modules
-  - If necessary sorts and lists all information first and appends warnings and errors. Within these
-    results, information is sorted by a central configuration. There is also the possibility for
-    summarizing and filtering.
+  - Gives each incident a unique Id → assignment results in different report
+    modules
+  - If necessary sorts and lists all information first and appends warnings and
+    errors. Within these results, information is sorted by a central
+    configuration. There is also the possibility for summarizing and filtering.
 - Report Module
-  - Runs maybe only on certain platforms (e.g. Web server or local graphical application)
+  - Runs maybe only on certain platforms (e.g. Web server or local graphical
+    application)
 
 ## Parameterization and Sequence Control
 
-A CheckerBundle can be parameterized. A distinction must be made between
+A Checker Bundle and the included Checkers can be parameterized. A distinction
+must be made between
 
 - Globale Parameter
-  - XodrFile --> OpenDRIVE file to be checked as database
-  - XoscFile --> OpenSCENARIO file to be checked as database
-- Parameter for the whole CheckerBundle --> "CheckerBundle Parameter"
-  - Parameter that is locally relevant for this one Checker Bundle
-  - If a graphical data base is checked, the .osgb/.ive file may also be used.
+  - InputFile --> File to be validated by the Checker Bundles
+- Parameter for the whole Checker Bundle --> "Checker Bundle Parameter"
+  - Parameter that is relevant for one Checker Bundle
+  - Can be used by different Checkers in this Checker Bundle
 - Parameter for single Checkers --> "Checker Parameter"
-  - Parameters that are locally relevant for one specific checker

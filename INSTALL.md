@@ -6,13 +6,14 @@ Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 -->
 
-# How-to Build and Install QC4OpenX
+# How-to Build and Install
 
-QC4OpenX runs on Linux and Windows.
+The ASAM Quality Checker Framework runs on Linux and Windows.
 
 ## Toolchain
 
-- GCC 7.5 or newer compiler under Linux or Visual Studio 16 2019 or newer compiler under Windows
+- GCC 7.5 or newer compiler under Linux or Visual Studio 16 2019 or newer
+  compiler under Windows
 - CMake 3.16 or newer (get it here: <https://cmake.org/download>)
 
 ## 3rd Party Dependencies
@@ -47,28 +48,31 @@ Links to download the sources and the tested versions can be found in the
   - 1.0.0
   - 1.1.0
   
-The XSD files are required for the basic test of validating the formal correctness of a OpenDRIVE or
-OpenSCENARIO file. All ASAM files are free of charge and require only a valid email address to
-enable the download.
+The XSD files are required for the basic test of validating the formal
+correctness of a OpenDRIVE or OpenSCENARIO file. All ASAM files are free of
+charge and require only a valid email address to enable the download.
 
 ## Preparation
 
-Before we can proceed to build and install QC4OpenX, we need to setup all 3rd party dependencies.
-Download, build and install the above listed.
+Before we can proceed to build and install the software, we need to setup all
+3rd party dependencies. Download, build and install the above listed.
 
-After the download of at least one ASAM OpenDRIVE and one ASAM OpenSCENARIO specification the XSD
-files from the archives need to be placed in some arbitrary folders. Older versions have only a
-single XSD file, whereas newer versions have multiple files. Nevertheless, extract all XSD files
-into an empty folder. After a successful installation of QC4OpenX this folder can be deleted.
+After the download of at least one ASAM OpenDRIVE and one ASAM OpenSCENARIO
+specification the XSD files from the archives need to be placed in some
+arbitrary folders. Older versions have only a single XSD file, whereas newer
+versions have multiple files. Nevertheless, extract all XSD files into an empty
+folder. After a successful installation of the ASAM Quality Checker Framework
+this folder can be deleted.
 
-## Build QC4OpenX
+## Build
 
 - Use CMakeLists.txt within the main directory as source directory
 - Do not forget to set `CMAKE_INSTALL_PREFIX`
-- Do not forget to set `CMAKE_BUILD_TYPE` if using CMake generator `Unix Makefiles`
+- Do not forget to set `CMAKE_BUILD_TYPE` if using CMake generator `Unix
+  Makefiles`
 
-For Windows Visual Studio 16 2019 an example CMake call to build the QC4OpenX looks like this (call
-from the repository root):
+For Windows Visual Studio 16 2019 an example CMake call to build the framework
+looks like this (call from the repository root):
 
 ```bash
 $ mkdir ../build
@@ -90,12 +94,12 @@ With the following CMake values:
 
 - _\<prefix\>_: The prefix CMake installs the package to
 - _\<GTest_ROOT\>_: The root dir of the pre-built GoogleTest package
-- _\<asam_opendrive_xsd_dir\>_: The directory containing the schema (*.xsd) files for OpenDRIVE
-  downloaded from the ASAM website (multiple versions of the schema files in this directory are
-  supported).
-- _\<asam_openscenario_xsd_dir\>_: The directory containing the schema (*.xsd) files for
-  OpenSCENARIO downloaded from the ASAM website (multiple versions of the schema files in this
-  directory are supported).
+- _\<asam_opendrive_xsd_dir\>_: The directory containing the schema (*.xsd)
+  files for OpenDRIVE downloaded from the ASAM website (multiple versions of
+  the schema files in this directory are supported).
+- _\<asam_openscenario_xsd_dir\>_: The directory containing the schema (*.xsd)
+  files for OpenSCENARIO downloaded from the ASAM website (multiple versions of
+  the schema files in this directory are supported).
 - _\<xerces_c_root\>_: The root dir of the pre-built Xerces-C++ package
 - _\<dev_essential_ROOT\>_: The root dir of the pre-built dev_essential package
 - _\<Qt5_ROOT\>_: The root dir of the pre-built qt5 package
