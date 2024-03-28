@@ -44,13 +44,14 @@ Schema](rule_uid_schema.md)_
 **Severity:** _Indicates the rule's importance level as asserted by the
 standard (e.g., respecting the rule is mandatory or a recommendation)_
 
-**Version range:** _Information for which versions of the standard this rule applies._
+**Version range:** _Information for which versions of the standard this rule
+applies._
 
-**Rule Version:** _a counter value representing the current version of the
-rule content. If content of the rule changes without changing the underlying
-logic for validation, this counter increases. If the change in the rule
-forces a modification in the validation logic, the change shall be treated as
-a new rule._
+**Rule Version:** _a counter value representing the current version of the rule
+content. If content of the rule changes without changing the underlying logic
+for validation, this counter increases. If the change in the rule forces a
+modification in the validation logic, the change shall be treated as a new
+rule._
 
 ## Checks
 
@@ -81,11 +82,11 @@ standard and/or to rule definitions from the Checker Library, if no appropriate
 rules are explicitly written in the standard._
 
 **Metadata:** _A check may log arbitrary metadata during execution (e.g., for
-traceability). The metadata produced by a check shall be included and
-described in its documentation, (e.g., if a check logs in metadata version and
+traceability). The metadata produced by a check shall be included and described
+in its documentation, (e.g., if a check logs in metadata version and
 configuration of a simulator, the checker documentation shall describe the
 content of aforementioned metadata fields)._
 
-All information are part of the Result File (`*.xqar`). So, the documentation of
-the Checker Library containing the list of implemented checks and their details
-can be generated automatically after implementation of the Checkers.
+All information are part of the Result File (`*.xqar`). So, the documentation
+of the Checker Library containing the list of implemented checks and their
+details can be generated automatically after implementation of the Checkers.

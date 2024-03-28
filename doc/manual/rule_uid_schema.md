@@ -6,7 +6,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 # Rule UID Schema
 
-## Introduction
+## Introduction
 
 The document describes the composition of the unique identifier (UID) to be
 associated with quality checker rules.
@@ -15,7 +15,7 @@ The document describes composition of rule UIDs, declares some of the concepts
 to be used for ASAM rules, and provides an example for an UID for a rule of the
 ASAM OpenDRIVE standard.
 
-## Rule UID Concepts
+## Rule UID Concepts
 
 The UID is a string which encapsulate a sequence of **concepts** that allow to
 identify immediately a rule across the different domains. The concept are
@@ -23,36 +23,36 @@ ordered and separated via the separation character **`:`**.
 
 The concepts for the rule UID are:
 
- * **Emanating Entity**: a domain name for the entity (organization or company)
-   that declares the rule UID
- * **Standard**: a short string that represents the standard or the
-   domain to which the rule is applied
- * **Definition Setting**: the version of the standard or the domain to which
-   the rule appears or is applied **for the first time**
- * **Rule Full Name**: the full name of the rule, as dot separated, snake lower
-   case string. The full name of a rule is composed by the **rule set**, a
-   categorization for the rule, and the rule **name**, a unique string inside
-   the categorization. The rule set can be nested (meaning that can be defined
-   as an arbitrary sequence of dot separated names, while the name is the snake
-   case string after the last dot of the full name)
+* **Emanating Entity**: a domain name for the entity (organization or company)
+  that declares the rule UID
+* **Standard**: a short string that represents the standard or the domain to
+  which the rule is applied
+* **Definition Setting**: the version of the standard or the domain to which
+  the rule appears or is applied **for the first time**
+* **Rule Full Name**: the full name of the rule, as dot separated, snake lower
+  case string. The full name of a rule is composed by the **rule set**, a
+  categorization for the rule, and the rule **name**, a unique string inside
+  the categorization. The rule set can be nested (meaning that can be defined
+  as an arbitrary sequence of dot separated names, while the name is the snake
+  case string after the last dot of the full name)
 
 To provide a visual description for a rule UID:
 
-```
+```text
 <emanating-entity>:<standard>:x.y.z:rule_set.for_rules.rule_name
 ```
 
 > Third party rule UID creators (i.e., emanating entities different than ASAM)
 > should still fill all the concepts above. If that is not possible, concepts
 > shall be left blank, but separation `:` is still required (i.e.,
-> `example.com:::rulename`is valid) 
+> `example.com:::rulename`is valid)
 
 UID are designed to be queried, e.g., implementations may use UNIX pattern
 matching.
 
 ### Full Pattern
 
-```
+```text
 ^
  (?P<ENTITY>(\w+(\.\w+)+)):
  (?P<STANDARD>([a-z]+))?:
@@ -63,29 +63,29 @@ $
 
 ### ASAM Concepts
 
- * Emanating Entity: `asam.net`
- * Standards:
-   * Quality Checker Framework: `asam.net:qc`
-   * OpenDRIVE: `asam.net:xodr`
-     * v1.4.0: `asam.net:xodr:1.4.0`
-     * v1.5.0: `asam.net:xodr:1.5.0` 
-     * v1.6.0: `asam.net:xodr:1.6.0`
-     * v1.6.1: `asam.net:xodr:1.6.1`
-     * v1.7.0: `asam.net:xodr:1.7.0`
-     * v1.8.0: `asam.net:xodr:1.8.0`
-   * OpenSCENARIO XML: `asam.net:xosc`
-     * v1.0.0: `asam.net:xosc:1.0.0` 
-     * v1.1.0: `asam.net:xosc:1.1.0`
-     * v1.1.1: `asam.net:xosc:1.1.1`
-     * v1.2.0: `asam.net:xosc:1.2.0` 
-     * v1.3.0: `asam.net:xosc:1.3.0`
-   * OpenSCENARIO DSL: `asam.net:osc`
-     * v2.0.0: `asam.net:osc:2.0.0`
-     * v2.1.0: `asam.net:osc:2.1.0`
+* Emanating Entity: `asam.net`
+* Standards:
+  * Quality Checker Framework: `asam.net:qc`
+  * OpenDRIVE: `asam.net:xodr`
+    * v1.4.0: `asam.net:xodr:1.4.0`
+    * v1.5.0: `asam.net:xodr:1.5.0`
+    * v1.6.0: `asam.net:xodr:1.6.0`
+    * v1.6.1: `asam.net:xodr:1.6.1`
+    * v1.7.0: `asam.net:xodr:1.7.0`
+    * v1.8.0: `asam.net:xodr:1.8.0`
+  * OpenSCENARIO XML: `asam.net:xosc`
+    * v1.0.0: `asam.net:xosc:1.0.0`
+    * v1.1.0: `asam.net:xosc:1.1.0`
+    * v1.1.1: `asam.net:xosc:1.1.1`
+    * v1.2.0: `asam.net:xosc:1.2.0`
+    * v1.3.0: `asam.net:xosc:1.3.0`
+  * OpenSCENARIO DSL: `asam.net:osc`
+    * v2.0.0: `asam.net:osc:2.0.0`
+    * v2.1.0: `asam.net:osc:2.1.0`
 
 Rule full names are defined in domain-specific Quality Checker subgroups. Third
 party emanating entities should use the standard and definition setting
-concepts defined by ASAM. 
+concepts defined by ASAM.
 
 ## Example
 
@@ -97,23 +97,23 @@ rule may change in the future**.
 
 > [ASAM OpenDRIVE Standard 1.6.0, Chapter 7.2 - Road Reference
 > Line](https://releases.asam.net/OpenDRIVE/1.6.0/ASAM_OpenDRIVE_BS_V1-6-0.html#_road_reference_line),
-> subsection Rule, first point: 
+> subsection Rule, first point:
 > > **Each road shall have a reference line**
 
 we can identify the following concepts:
 
- * **emanating entity**: ASAM `asam.net`
- * **standard**: OpenDRIVE `xodr`
- * **definition settings**: the rule firstly appeared in `1.6.0`, the first
-   revision to introduce the subsections rules
- * **Full name**:
-    * **rule-set**: Road Planar Geometry definitions `road.planview.geometry`
-    * **name**: summarizes the content of the rule, e.g. `ref_line_exists`. It
-      is always the last group in dot-notation strings.
+* **emanating entity**: ASAM `asam.net`
+* **standard**: OpenDRIVE `xodr`
+* **definition settings**: the rule firstly appeared in `1.6.0`, the first
+  revision to introduce the subsections rules
+* **Full name**:
+  * **rule-set**: Road Planar Geometry definitions `road.planview.geometry`
+  * **name**: summarizes the content of the rule, e.g. `ref_line_exists`. It is
+     always the last group in dot-notation strings.
 
 The complete UID would be something like:
 
-```
+```text
 asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists
 -------- ---- ----- ---------------------- ---------------
  |        |    |     |                      |             
@@ -141,7 +141,7 @@ recommended to define all concepts, if this is reasonably possible.
 The proposed formalism allow to perform query on rules (or set of rules) using
 UNIX style wildcards notation (i.e., python `fnmatch` module).
 
-Example: Query all the OpenDRIVE geometrical rules that were created in version 1.6.0 
+Example: Query all the OpenDRIVE geometrical rules that were created in version 1.6.0
 1.6.1, or 1.7.0 of the standard: `asam.net:xodr:1.[67].[01]:*geometry.*` matches
 `asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists` but does not
 match `asam.net:xodr:1.8.0:road.planview.geometry.ref_line_exists`.
@@ -150,24 +150,24 @@ match `asam.net:xodr:1.8.0:road.planview.geometry.ref_line_exists`.
 
 There are different alternatives to define a rule full name. Those alternatives
 are domain specific and this document does not restrict the strategies applied
-to define them. 
+to define them.
 
 The format of the full name uses a well defined notation, compatible with the
 following pattern:
 
-```
+```text
 (?P<RULESET>(([a-z][\w_]*)\.)*)(?P<NAME>[a-z][\w_]*)
 ```
 
 Which can be explained as follows:
 
- * the string for rule sets and names are separated by dot `.`, and it is the
-   rightmost dot of the full string
- * splitting each element of the string by `.`, the first character for the
-   ruleset elements or the name must be an ascii character in the range `a-z`.
-   The subsequent character may be any character in the range `a-z`, `0-9` or
-   the character `_`. This is applied on both rulesets and names
- * ruleset may be empty (not defined), but if defined the minimum length of an
-   element of the ruleset is 1 character in range `a-z`
- * the name is always the last element of the dot separated string. The minimal
-   name is 1 character long, in range `a-z`
+* the string for rule sets and names are separated by dot `.`, and it is the
+  rightmost dot of the full string
+* splitting each element of the string by `.`, the first character for the
+  ruleset elements or the name must be an ascii character in the range `a-z`.
+  The subsequent character may be any character in the range `a-z`, `0-9` or
+  the character `_`. This is applied on both rulesets and names
+* ruleset may be empty (not defined), but if defined the minimum length of an
+  element of the ruleset is 1 character in range `a-z`
+* the name is always the last element of the dot separated string. The minimal
+  name is 1 character long, in range `a-z`
