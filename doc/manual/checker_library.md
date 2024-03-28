@@ -76,18 +76,16 @@ changes in the results, which are based on implementation changes._
 well-defined standard, there should be no parameter necessary. It's often the
 case that some are needed._
 
-**Addressed Rules:** _Link to the standard and/or to rule definitions from the
-Checker Library, if no appropriate rules are explicitly written in the
-standard._
-
-**Version range:** _Information how this check is implemented for which
-versions._
-
-**Approval Information:** _Who has approved and when was this check approved.
-This may be empty if the check is not approved yet._
+**Addressed Rules:** _Link (see [Rule UID Schema](rule_uid_schema.md)) to the
+standard and/or to rule definitions from the Checker Library, if no appropriate
+rules are explicitly written in the standard._
 
 **Metadata:** _A check may log arbitrary metadata during execution (e.g., for
 traceability). The metadata produced by a check shall be included and
 described in its documentation, (e.g., if a check logs in metadata version and
 configuration of a simulator, the checker documentation shall describe the
 content of aforementioned metadata fields)._
+
+All information are part of the Result File (`*.xqar`). So, the documentation of
+the Checker Library containing the list of implemented checks and their details
+can be generated automatically after implementation of the Checkers.
