@@ -28,5 +28,5 @@ The following schemas are supported for OpenDRIVE:
 
 The schema files are located under `bin/xsd`.
 
-The bundle consists of two separate executables: `bin/XodrSchemaChecker(.exe)` and
-`bin/XoscSchemaChecker(.exe)`
+The bundle consists of two separate executables: `bin/XodrSchemaChecker(.exe)`
+and `bin/XoscSchemaChecker(.exe)`

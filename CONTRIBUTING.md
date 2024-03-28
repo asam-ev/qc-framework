@@ -101,10 +101,14 @@ Thank you for contributing, any contributions in terms of requirements,
 feedback, issues or code are appreciated. Please consider the following
 guidelines for orientation when contributing to this project.
 
-[cpp core guidelines]: https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
-[google python style guide]: https://github.com/google/styleguide/blob/gh-pages/pyguide.md
-[clean code]: https://medium.com/mindorks/how-to-write-clean-code-lessons-learnt-from-the-clean-code-robert-c-martin-9ffc7aef870c
-[meaningful variable names]: https://medium.com/coding-skills/clean-code-101-meaningful-names-and-functions-bf450456d90c
+[cpp core guidelines]:
+    https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
+[google python style guide]:
+    https://github.com/google/styleguide/blob/gh-pages/pyguide.md
+[clean code]:
+    https://medium.com/mindorks/how-to-write-clean-code-lessons-learnt-from-the-clean-code-robert-c-martin-9ffc7aef870c
+[meaningful variable names]:
+    https://medium.com/coding-skills/clean-code-101-meaningful-names-and-functions-bf450456d90c
 
 * Follow the C++ Core Guidelines [cpp core guidelines]
 * Try to follow PEP guidelines and [google python style guide]
