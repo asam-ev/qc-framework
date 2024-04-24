@@ -52,7 +52,7 @@ matching.
 
 ### Full Pattern
 
-```text
+```pcre
 ^
  (?P<ENTITY>(\w+(\.\w+)+)):
  (?P<STANDARD>([a-z]+))?:
@@ -155,7 +155,7 @@ to define them.
 The format of the full name uses a well defined notation, compatible with the
 following pattern:
 
-```text
+```pcre
 (?P<RULESET>(([a-z][\w_]*)\.)*)(?P<NAME>[a-z][\w_]*)
 ```
 
