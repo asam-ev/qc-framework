@@ -10,12 +10,13 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 ## Configuration File (`*.xml`)
 
-The runtime configuration settings are stored in a configuration file. This file defines which
-CheckerBundles and what checkers are used, how they are parameterized and whether the issues are
-warnings or errors. If a CheckerBundle outputs errors that are not configured in this file, the
-result pooling removes them later on. This way only the relevant results are included in the overall
-result. Furthermore, it can be configured which ReportModules are started after all CheckerBundles
-finish execution.
+The runtime configuration settings are stored in a configuration file. This
+file defines which CheckerBundles and what checkers are used, how they are
+parameterized and whether the issues are warnings or errors. If a CheckerBundle
+outputs errors that are not configured in this file, the result pooling removes
+them later on. This way only the relevant results are included in the overall
+result. Furthermore, it can be configured which ReportModules are started after
+all CheckerBundles finish execution.
 
 ```xml
 <Config>
@@ -30,46 +31,52 @@ finish execution.
 </Config>
 ```
 
-The runtime parses this file, then executes the configured CheckerBundles, and hands them the
-configuration file. The parameter "application" to the XML tags `<CheckerBundle/>` and
-`<ReportModule/>` specifies the name of the executable to be used.
+The runtime parses this file, then executes the configured CheckerBundles, and
+hands them the configuration file. The parameter "application" to the XML tags
+`<CheckerBundle/>` and `<ReportModule/>` specifies the name of the executable
+to be used.
 
 Notes for the paths:
 
-- "application" should contain the path of your executable relative to the path of the ConfigGUI
-  binary - it is recommended to place all executables in the `./bin` directory.
+- "application" should contain the path of your executable relative to the path
+  of the ConfigGUI binary - it is recommended to place all executables in the
+  `./bin` directory.
 - Results will be stored in the directory from which the call is made.
 
 ## Result File (`*.xqar`)
 
-The results of a checker are stored persistently as XML in the form of a result file (*.xqar). The
-[Base library](cpp_base_library.md) can be used to write a report. A report consists of problems (called
-issues) which contain syntactic or semantic flaws.
+The results of a checker are stored persistently as XML in the form of a result
+file (*.xqar). The [Base library](cpp_base_library.md) can be used to write a
+report. A report consists of problems (called issues) which contain syntactic
+or semantic flaws.
 
 - An issue consists of the following parts:
   - Identifier: Unique number for an issue
   - Level: Indicates whether it is an information, a warning, or an error.
   - Description: Description in the form of a text
-  - Optional description of where the problem lies, if applicable several grouped locations inside a
-    **Locations** tag:
-    - **FileLocation** _(typically generated automatically by the ResultPooling)_
+  - Optional description of where the problem lies, if applicable several
+    grouped locations inside a **Locations** tag:
+    - **FileLocation** _(typically generated automatically by the
+      ResultPooling)_
       - A reference to a file with row and column
-      - Example: `<FileLocation column="0" fileType="1" row="223124"/>`, with `fileType="1"` for
-        XODR, `fileType="2"` for XOSC
+      - Example: `<FileLocation column="0" fileType="1" row="223124"/>`, with
+        `fileType="1"` for XODR, `fileType="2"` for XOSC
     - **XmlLocation**
       - Addressing in a XML file with help of a XPath expression
       - Example: `<XMLLocation xpath="/OpenDRIVE/road[@id=&quot;1&quot;]"/>`
     - **RoadLocation**
-      - Position in road coordinates, the angles are calculated based on the road orientation
+      - Position in road coordinates, the angles are calculated based on the
+        road orientation
       - Example: `<RoadLocation roadId="502066" s="0.5" t="0.0"/>`
     - **InertialLocation**
       - Position in inertial coordinates
-      - Example: `<InertialLocation h="0.0" p="0.0" r="0.3" x="120.998703" y="0.0" z="-0.29552"/>`
-  - Optional external files (e. g. Images of generated graphs such as speed over distance).
-    Currently not supported.
+      - Example: `<InertialLocation h="0.0" p="0.0" r="0.3" x="120.998703"
+        y="0.0" z="-0.29552"/>`
+  - Optional external files (e. g. Images of generated graphs such as speed
+    over distance). Currently not supported.
 
-The following example shows the results obtained by running two CheckerBundles, one called
-SyntaxChecker and one SemanticChecker.
+The following example shows the results obtained by running two CheckerBundles,
+one called SyntaxChecker and one SemanticChecker.
 
 ```xml
 <CheckerResults version="1.0.0">
@@ -99,8 +106,8 @@ SyntaxChecker and one SemanticChecker.
 </CheckerResults>
 ```
 
-Regarding parametrization here an example of the section of the .xqar file where the default
-parameters are shown:
+Regarding parametrization here an example of the section of the .xqar file
+where the default parameters are shown:
 
 ```xml
 <CheckerResults version="1.0.0">
