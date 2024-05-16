@@ -10,8 +10,8 @@ project(${REPORT_MODULE_TEXT_PROJECT})
 add_executable(${REPORT_MODULE_TEXT_PROJECT}
     src/stdafx.h
     src/stdafx.cpp
-    src/reportFormatText.h
-    src/reportFormatText.cpp
+    src/report_format_text.h
+    src/report_format_text.cpp
 )
 
 target_link_libraries(${REPORT_MODULE_TEXT_PROJECT} PRIVATE qc4openx-common)

@@ -8,7 +8,7 @@
 #include "stdafx.h"
 #include "runtime.h"
 
-#include "ui/cRuntimeWindow.h"
+#include "ui/c_runtime_window.h"
 
 XERCES_CPP_NAMESPACE_USE
 
