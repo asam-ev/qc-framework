@@ -18,47 +18,48 @@
 #define VIEWER EXPORT_VIEWER
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/**
-* Is called if the viewer application should be startet from main menu
-**/
-VIEWER bool StartViewer();
+    /**
+     * Is called if the viewer application should be startet from main menu
+     **/
+    VIEWER bool StartViewer();
 
-/**
-* Does the initialization with xosc file of an viewer
-* \param xoscPath Path to an xosc file
-**/
-VIEWER bool Initialize(const char* xoscPath, const char* xodrPath);
+    /**
+     * Does the initialization with xosc file of an viewer
+     * \param xoscPath Path to an xosc file
+     **/
+    VIEWER bool Initialize(const char *xoscPath, const char *xodrPath);
 
-/**
-* Is called if an issues has to be added.
-* \param issueToAdd The item which should be added. Pointer to a cIssue class.
-**/
-VIEWER bool AddIssue(void * issueToAdd);
+    /**
+     * Is called if an issues has to be added.
+     * \param issueToAdd The item which should be added. Pointer to a cIssue class.
+     **/
+    VIEWER bool AddIssue(void *issueToAdd);
 
-/**
-* Is called if an issues has to be showed.
-* \param itemToShow The item which should be showed. Pointer to a cIssue class.
-* \param locationToShow The location where to show the issue. Pointer to a cLocationsContainer class
-**/
-VIEWER bool ShowIssue(void * itemToShow, void* locationToShow);
+    /**
+     * Is called if an issues has to be showed.
+     * \param itemToShow The item which should be showed. Pointer to a cIssue class.
+     * \param locationToShow The location where to show the issue. Pointer to a cLocationsContainer class
+     **/
+    VIEWER bool ShowIssue(void *itemToShow, void *locationToShow);
 
-/**
-* Returns the name of the viewer.
-**/
-VIEWER const char* GetName();
+    /**
+     * Returns the name of the viewer.
+     **/
+    VIEWER const char *GetName();
 
-/**
-* Is called if the viewer application should be closed
-**/
-VIEWER bool CloseViewer();
+    /**
+     * Is called if the viewer application should be closed
+     **/
+    VIEWER bool CloseViewer();
 
-/**
-* Returns the last error message stored by the viewer.
-**/
-VIEWER const char* GetLastErrorMessage();
+    /**
+     * Returns the last error message stored by the viewer.
+     **/
+    VIEWER const char *GetLastErrorMessage();
 
 #ifdef __cplusplus
 }

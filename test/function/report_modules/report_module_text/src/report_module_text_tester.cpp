@@ -14,9 +14,9 @@
 
 class cTesterReportModuleText : public ::testing::Test
 {
-    public:
-        std::string strTestFilesDir = std::string(QC4OPENX_DBQA_REPORT_MODULE_TEXT_TEST_REF_DIR);
-        std::string strWorkingDir = std::string(QC4OPENX_DBQA_REPORT_MODULE_TEXT_TEST_WORK_DIR);
+  public:
+    std::string strTestFilesDir = std::string(QC4OPENX_DBQA_REPORT_MODULE_TEXT_TEST_REF_DIR);
+    std::string strWorkingDir = std::string(QC4OPENX_DBQA_REPORT_MODULE_TEXT_TEST_WORK_DIR);
 };
 
 TEST_F(cTesterReportModuleText, CmdBasic)

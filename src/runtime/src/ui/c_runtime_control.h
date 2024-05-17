@@ -8,32 +8,32 @@
 #ifndef CRUNTIME_CONTROL_H
 #define CRUNTIME_CONTROL_H
 
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
 #include <QtGui/QBitmap>
 #include <QtGui/QMouseEvent>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 
 class cRuntimeControl : public QWidget
 {
     Q_OBJECT
 
-protected:
-    QLabel* runtimeBtn;
+  protected:
+    QLabel *runtimeBtn;
 
-public:
+  public:
     cRuntimeControl(QWidget *parent = 0);
 
     bool IsRunning() const;
-signals:
+  signals:
     void Abort();
 
     void Run();
 
-public slots:
+  public slots:
     void FinishedExecution();
 
-protected:
-    void mousePressEvent(QMouseEvent* event);
+  protected:
+    void mousePressEvent(QMouseEvent *event);
 
     void UpdateControl();
 

@@ -11,18 +11,18 @@
 #include <dlfcn.h>
 #endif
 
-#include <a_util/filesystem.h>
-#include "report_format_ui.h"
-#include "common/result_format/c_result_container.h"
-#include "common/result_format/c_parameter_container.h"
 #include "common/config_format/c_configuration.h"
 #include "common/config_format/c_configuration_report_module.h"
+#include "common/result_format/c_parameter_container.h"
+#include "common/result_format/c_result_container.h"
+#include "report_format_ui.h"
 #include "ui/c_report_module_window.h"
+#include <a_util/filesystem.h>
 
 XERCES_CPP_NAMESPACE_USE
 
 // Main Programm
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
 #ifdef WIN32
     auto workdir = a_util::filesystem::getWorkingDirectory();
@@ -53,7 +53,8 @@ int main(int argc, char* argv[])
         {
             if (stat(strFilepath.c_str(), &fileStatus) == -1) // ==0 ok; ==-1 error
             {
-                std::cerr << "Could not open file '" << strFilepath << "'!" << std::endl << "Abort generating report!" << std::endl;
+                std::cerr << "Could not open file '" << strFilepath << "'!" << std::endl
+                          << "Abort generating report!" << std::endl;
                 return -1;
             }
 
@@ -72,11 +73,12 @@ int main(int argc, char* argv[])
 
             inputParams.Overwrite(configuration.GetParams());
 
-            cConfigurationReportModule* reportModuleConfig = configuration.GetReportModuleByName(REPORT_MODULE_NAME);
+            cConfigurationReportModule *reportModuleConfig = configuration.GetReportModuleByName(REPORT_MODULE_NAME);
             if (nullptr != reportModuleConfig)
                 inputParams.Overwrite(reportModuleConfig->GetParams());
             else
-                std::cerr << "No configuration for module '" << REPORT_MODULE_NAME << "' found. Start with default params." << std::endl;
+                std::cerr << "No configuration for module '" << REPORT_MODULE_NAME
+                          << "' found. Start with default params." << std::endl;
         }
         else if (StringEndsWith(ToLower(strFilepath), "--defaultconfig"))
         {
@@ -100,7 +102,7 @@ int main(int argc, char* argv[])
     return execCode;
 }
 
-void ShowHelp(const std::string& toolPath)
+void ShowHelp(const std::string &toolPath)
 {
     std::string applicationName = toolPath;
     std::string applicationNameWithoutExt = toolPath;
@@ -110,13 +112,14 @@ void ShowHelp(const std::string& toolPath)
     std::cout << "\n\nUsage of " << applicationNameWithoutExt << ":" << std::endl;
     std::cout << "\nRun the application with xqar file: \n" << applicationName << " result.xqar" << std::endl;
     std::cout << "\nRun the application with dbqa configuration: \n" << applicationName << " config.xml" << std::endl;
-    std::cout << "\nRun the application and write default configuration: \n" << applicationName << " --defaultconfig" << std::endl;
+    std::cout << "\nRun the application and write default configuration: \n"
+              << applicationName << " --defaultconfig" << std::endl;
     std::cout << "\n\n";
 }
 
-int RunReportGUI(const cParameterContainer& inputParams, const QApplication& app)
+int RunReportGUI(const cParameterContainer &inputParams, const QApplication &app)
 {
-    cResultContainer* pResultContainer = new cResultContainer();
+    cResultContainer *pResultContainer = new cResultContainer();
 
     std::string strXMLResultsPath = inputParams.GetParam("strInputFile");
 
@@ -153,7 +156,7 @@ void WriteDefaultConfig()
 {
     cConfiguration defaultConfig;
 
-    cConfigurationReportModule* reportModuleConfig = defaultConfig.AddReportModule(REPORT_MODULE_NAME);
+    cConfigurationReportModule *reportModuleConfig = defaultConfig.AddReportModule(REPORT_MODULE_NAME);
     reportModuleConfig->SetParam("strInputFile", "Result.xqar");
 
     std::stringstream ssConfigFile;

@@ -16,27 +16,27 @@
 class cParameterContainer;
 
 /**
-* Main function for application
-*
-* @param    [in] argc                Number of arguments in shell
-* @param    [in] argv                Pointer to arguments
-*
-* @return   The standard return value
-*/
-int main(int argc, char* argv[]);
+ * Main function for application
+ *
+ * @param    [in] argc                Number of arguments in shell
+ * @param    [in] argv                Pointer to arguments
+ *
+ * @return   The standard return value
+ */
+int main(int argc, char *argv[]);
 
 /**
-* Shows the help for the application
-* @param    [in] applicationName    The name of the application
-*/
-void ShowHelp(const std::string& applicationName);
+ * Shows the help for the application
+ * @param    [in] applicationName    The name of the application
+ */
+void ShowHelp(const std::string &applicationName);
 
 /**
-* Runs the checks
-*/
-void RunChecks(const cParameterContainer& inputParams);
+ * Runs the checks
+ */
+void RunChecks(const cParameterContainer &inputParams);
 
 /*
-* Writes an empty Report
-*/
+ * Writes an empty Report
+ */
 void WriteEmptyReport();

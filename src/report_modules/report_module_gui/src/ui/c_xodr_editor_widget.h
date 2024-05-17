@@ -55,60 +55,60 @@ class cResultContainer;
 class cXODRSyntaxHighlighter;
 
 // Basic Editor Widget
-class cXODREditorWidget : public cXMLCodeEditor {
+class cXODREditorWidget : public cXMLCodeEditor
+{
     Q_OBJECT
 
-private:
-    cXODRSyntaxHighlighter* _highlighter{nullptr};
+  private:
+    cXODRSyntaxHighlighter *_highlighter{nullptr};
     QString _openedFilePath;
 
     const int OFFSET_SHOW_ISSUE = 6;
 
-public:
+  public:
     cXODREditorWidget() = delete;
-    cXODREditorWidget(const cXODREditorWidget&) = delete;
-    cXODREditorWidget(cXODREditorWidget&&) = delete;
-    cXODREditorWidget(QTabWidget* tabWidget, QWidget* parent = nullptr);
+    cXODREditorWidget(const cXODREditorWidget &) = delete;
+    cXODREditorWidget(cXODREditorWidget &&) = delete;
+    cXODREditorWidget(QTabWidget *tabWidget, QWidget *parent = nullptr);
     virtual ~cXODREditorWidget();
 
-protected:
-    void resizeEvent(QResizeEvent* event) override;
+  protected:
+    void resizeEvent(QResizeEvent *event) override;
 
-    bool event(QEvent* event);
+    bool event(QEvent *event);
 
-    void HighlightIssue(const cIssue* const issue,
-                        unsigned int row,
-                        QTextCharFormat fmt,
-                        QTextCursor* cursor);
+    void HighlightIssue(const cIssue *const issue, unsigned int row, QTextCharFormat fmt, QTextCursor *cursor);
 
-public slots:
+  public slots:
     // Loads the content of the editor window
-    void LoadXODR(cResultContainer* const container);
+    void LoadXODR(cResultContainer *const container);
 
     // Shows a specific XODR Position
-    void ShowXODRIssue(const cIssue* const issue, const int row);
+    void ShowXODRIssue(const cIssue *const issue, const int row);
 
-signals:
-    void highlight(cXODREditorWidget* widget);
+  signals:
+    void highlight(cXODREditorWidget *widget);
 };
 
 // Syntax Hightlighter for XODR
-class cXODRSyntaxHighlighter : public QSyntaxHighlighter {
+class cXODRSyntaxHighlighter : public QSyntaxHighlighter
+{
     Q_OBJECT
 
-private:
-    struct HighlightingRule {
+  private:
+    struct HighlightingRule
+    {
         QRegularExpression pattern;
         QTextCharFormat format;
     };
 
     QVector<HighlightingRule> _highlightingRules;
 
-public:
-    cXODRSyntaxHighlighter(QTextDocument* parent = nullptr);
+  public:
+    cXODRSyntaxHighlighter(QTextDocument *parent = nullptr);
 
-protected:
-    void highlightBlock(const QString& text) override;
+  protected:
+    void highlightBlock(const QString &text) override;
 };
 
 #endif

@@ -41,7 +41,7 @@
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_result_container.h"
 
-cXOSCEditorWidget::cXOSCEditorWidget(QTabWidget* tab, QWidget* parent) : cXMLCodeEditor(tab, parent)
+cXOSCEditorWidget::cXOSCEditorWidget(QTabWidget *tab, QWidget *parent) : cXMLCodeEditor(tab, parent)
 {
     _openedFilePath = "";
 
@@ -59,21 +59,26 @@ cXOSCEditorWidget::~cXOSCEditorWidget()
         delete _highlighter;
 }
 
-void cXOSCEditorWidget::ShowXOSCIssue(const cIssue* const issue, const int row)
+void cXOSCEditorWidget::ShowXOSCIssue(const cIssue *const issue, const int row)
 {
     _tabWidget->setCurrentIndex(1);
     int rowToSelect = row;
 
     // If we passed no specific row...
-    if (rowToSelect == -1) {
-        for (const auto& location: issue->GetLocationsContainer()) {
+    if (rowToSelect == -1)
+    {
+        for (const auto &location : issue->GetLocationsContainer())
+        {
             // Iterate all extended items and get the first file location
             // Which references to an OpenSCENARIO
-            for (auto extendedItem: location->GetExtendedInformations()) {
-                if (extendedItem->IsType<cFileLocation*>()) {
-                    cFileLocation* fileLoc = (cFileLocation*)extendedItem;
+            for (auto extendedItem : location->GetExtendedInformations())
+            {
+                if (extendedItem->IsType<cFileLocation *>())
+                {
+                    cFileLocation *fileLoc = (cFileLocation *)extendedItem;
 
-                    if (fileLoc->IsXOSCFileLocation()) {
+                    if (fileLoc->IsXOSCFileLocation())
+                    {
                         rowToSelect = fileLoc->GetRow();
                         break;
                     }
@@ -86,19 +91,21 @@ void cXOSCEditorWidget::ShowXOSCIssue(const cIssue* const issue, const int row)
     verticalScrollBar()->setValue(rowToSelect - OFFSET_SHOW_ISSUE);
 }
 
-void cXOSCEditorWidget::LoadXOSC(cResultContainer* const container)
+void cXOSCEditorWidget::LoadXOSC(cResultContainer *const container)
 {
     _tabWidget->setTabEnabled(1, true);
 
     QString fileToOpen = container->GetXOSCFilePath().c_str();
 
     // If no file was selected, disable tab.
-    if (fileToOpen == "") {
+    if (fileToOpen == "")
+    {
         _tabWidget->setTabEnabled(1, false);
         return;
     }
 
-    if (_openedFilePath != fileToOpen) {
+    if (_openedFilePath != fileToOpen)
+    {
         QFile file(fileToOpen);
         file.open(QIODevice::Text | QIODevice::ReadOnly);
 
@@ -109,11 +116,13 @@ void cXOSCEditorWidget::LoadXOSC(cResultContainer* const container)
         content.reserve(max_file_size);
 
         qint64 file_size = file.size();
-        if (file_size > max_file_size) {
+        if (file_size > max_file_size)
+        {
             content.append("File exceeds limit of " + QString::number(max_file_size_mb) + " MB. " +
                            "Interactive issue reporting not possible.");
         }
-        else {
+        else
+        {
             while (!file.atEnd())
                 content.append(file.readLine());
         }
@@ -137,29 +146,28 @@ void cXOSCEditorWidget::LoadXOSC(cResultContainer* const container)
     QTextCharFormat fmt;
     fmt.setBackground(Qt::yellow);
 
-    std::list<cCheckerBundle*> bundles = container->GetCheckerBundles();
-    for (std::list<cCheckerBundle*>::const_iterator checkerBundleIt = bundles.cbegin();
-         checkerBundleIt != bundles.cend();
-         checkerBundleIt++) {
+    std::list<cCheckerBundle *> bundles = container->GetCheckerBundles();
+    for (std::list<cCheckerBundle *>::const_iterator checkerBundleIt = bundles.cbegin();
+         checkerBundleIt != bundles.cend(); checkerBundleIt++)
+    {
         // If the checkerBundle is referenced to an xosc file
-        if ((*checkerBundleIt)->GetXOSCFilePath() != "") {
-            std::list<cChecker*> checkers = (*checkerBundleIt)->GetCheckers();
-            for (std::list<cChecker*>::const_iterator checkerIt = checkers.cbegin();
-                 checkerIt != checkers.cend();
-                 checkerIt++) {
-                std::list<cIssue*> issues = (*checkerIt)->GetIssues();
-                for (std::list<cIssue*>::const_iterator issueIt = issues.cbegin();
-                     issueIt != issues.cend();
-                     issueIt++) {
-                    for (const auto& location: (*issueIt)->GetLocationsContainer()) {
-                        std::list<cExtendedInformation*> extInfo =
-                            location->GetExtendedInformations();
+        if ((*checkerBundleIt)->GetXOSCFilePath() != "")
+        {
+            std::list<cChecker *> checkers = (*checkerBundleIt)->GetCheckers();
+            for (std::list<cChecker *>::const_iterator checkerIt = checkers.cbegin(); checkerIt != checkers.cend();
+                 checkerIt++)
+            {
+                std::list<cIssue *> issues = (*checkerIt)->GetIssues();
+                for (std::list<cIssue *>::const_iterator issueIt = issues.cbegin(); issueIt != issues.cend(); issueIt++)
+                {
+                    for (const auto &location : (*issueIt)->GetLocationsContainer())
+                    {
+                        std::list<cExtendedInformation *> extInfo = location->GetExtendedInformations();
 
-                        for (std::list<cExtendedInformation*>::const_iterator extIt =
-                                 extInfo.cbegin();
-                             extIt != extInfo.cend();
-                             extIt++) {
-                            cFileLocation* fileLocation = dynamic_cast<cFileLocation*>(*extIt);
+                        for (std::list<cExtendedInformation *>::const_iterator extIt = extInfo.cbegin();
+                             extIt != extInfo.cend(); extIt++)
+                        {
+                            cFileLocation *fileLocation = dynamic_cast<cFileLocation *>(*extIt);
 
                             if (nullptr != fileLocation && fileLocation->IsXOSCFileLocation())
                                 HighlightIssue(*issueIt, fileLocation->GetRow(), fmt, &cursor);
@@ -177,24 +185,19 @@ void cXOSCEditorWidget::LoadXOSC(cResultContainer* const container)
     verticalScrollBar()->setValue(0);
 }
 
-void cXOSCEditorWidget::HighlightIssue(const cIssue* const issue,
-                                       unsigned int row,
-                                       QTextCharFormat fmt,
-                                       QTextCursor* cursor)
+void cXOSCEditorWidget::HighlightIssue(const cIssue *const issue, unsigned int row, QTextCharFormat fmt,
+                                       QTextCursor *cursor)
 {
     // OpenDRIVE and xml tag are not included...
     unsigned textRow = (row > 1) ? row - 1 : row;
     unsigned textColumn = 0;
 
     cursor->movePosition(QTextCursor::Start);
-    cursor->movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, textRow); // go down y-times
-    cursor->movePosition(
-        QTextCursor::Right, QTextCursor::MoveAnchor, textColumn);              // go right x-times
+    cursor->movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, textRow);     // go down y-times
+    cursor->movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, textColumn); // go right x-times
 
-    cursor->movePosition(
-        QTextCursor::Down, QTextCursor::QTextCursor::KeepAnchor, 1);           // go down y-times
-    cursor->movePosition(
-        QTextCursor::Right, QTextCursor::QTextCursor::KeepAnchor, textColumn); // go right x-times
+    cursor->movePosition(QTextCursor::Down, QTextCursor::QTextCursor::KeepAnchor, 1);           // go down y-times
+    cursor->movePosition(QTextCursor::Right, QTextCursor::QTextCursor::KeepAnchor, textColumn); // go right x-times
     cursor->setCharFormat(fmt);
 
     QRect hintRect(0, textRow, 2, 1);
@@ -206,28 +209,30 @@ void cXOSCEditorWidget::HighlightIssue(const cIssue* const issue,
     _issueHints.append(content);
 }
 
-void cXOSCEditorWidget::resizeEvent(QResizeEvent* event)
+void cXOSCEditorWidget::resizeEvent(QResizeEvent *event)
 {
     QPlainTextEdit::resizeEvent(event);
 
     QRect cr = contentsRect();
-    _lineNumberArea->setGeometry(
-        QRect(cr.left() + 2, cr.top(), LineNumberAreaWidth() + 2, cr.height()));
+    _lineNumberArea->setGeometry(QRect(cr.left() + 2, cr.top(), LineNumberAreaWidth() + 2, cr.height()));
 }
 
-bool cXOSCEditorWidget::event(QEvent* event)
+bool cXOSCEditorWidget::event(QEvent *event)
 {
-    if (event->type() == QEvent::ToolTip) {
-        QHelpEvent* helpEvent = static_cast<QHelpEvent*>(event);
+    if (event->type() == QEvent::ToolTip)
+    {
+        QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
         QTextCursor cursor = cursorForPosition(helpEvent->pos());
         bool showHint = false;
 
         QList<QPair<QRect, QString>>::iterator itHint;
-        for (itHint = _issueHints.begin(); itHint != _issueHints.end(); ++itHint) {
+        for (itHint = _issueHints.begin(); itHint != _issueHints.end(); ++itHint)
+        {
             int x = 1;
             int y = cursor.blockNumber();
 
-            if (itHint->first.contains(QPoint(x, y))) {
+            if (itHint->first.contains(QPoint(x, y)))
+            {
                 QToolTip::showText(helpEvent->globalPos(), itHint->second);
                 showHint = true;
             }
@@ -241,7 +246,7 @@ bool cXOSCEditorWidget::event(QEvent* event)
     return QPlainTextEdit::event(event);
 }
 
-cXOSCSyntaxHighlighter::cXOSCSyntaxHighlighter(QTextDocument* parent) : QSyntaxHighlighter(parent)
+cXOSCSyntaxHighlighter::cXOSCSyntaxHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
 {
     //-----------------------------
     // Rule for tag attributes
@@ -287,11 +292,13 @@ cXOSCSyntaxHighlighter::cXOSCSyntaxHighlighter(QTextDocument* parent) : QSyntaxH
     _highlightingRules.append(attValueRule);
 }
 
-void cXOSCSyntaxHighlighter::highlightBlock(const QString& text)
+void cXOSCSyntaxHighlighter::highlightBlock(const QString &text)
 {
-    foreach (const HighlightingRule& rule, _highlightingRules) {
+    foreach (const HighlightingRule &rule, _highlightingRules)
+    {
         QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
-        while (matchIterator.hasNext()) {
+        while (matchIterator.hasNext())
+        {
             QRegularExpressionMatch match = matchIterator.next();
             setFormat(match.capturedStart(), match.capturedLength(), rule.format);
         }

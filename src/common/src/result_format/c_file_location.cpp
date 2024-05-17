@@ -9,19 +9,18 @@
 
 XERCES_CPP_NAMESPACE_USE
 
-const XMLCh* cFileLocation::TAG_NAME = CONST_XMLCH("FileLocation");
-const XMLCh* cFileLocation::ATTR_FILETYPE = CONST_XMLCH("fileType");
-const XMLCh* cFileLocation::ATTR_ROW = CONST_XMLCH("row");
-const XMLCh* cFileLocation::ATTR_COLUMN = CONST_XMLCH("column");
+const XMLCh *cFileLocation::TAG_NAME = CONST_XMLCH("FileLocation");
+const XMLCh *cFileLocation::ATTR_FILETYPE = CONST_XMLCH("fileType");
+const XMLCh *cFileLocation::ATTR_ROW = CONST_XMLCH("row");
+const XMLCh *cFileLocation::ATTR_COLUMN = CONST_XMLCH("column");
 
-
-DOMElement* cFileLocation::WriteXML(DOMDocument* p_resultDocument)
+DOMElement *cFileLocation::WriteXML(DOMDocument *p_resultDocument)
 {
-    DOMElement* p_DataElement = CreateExtendedInformationXMLNode(p_resultDocument);
+    DOMElement *p_DataElement = CreateExtendedInformationXMLNode(p_resultDocument);
 
-    XMLCh* pFileType = XMLString::transcode(std::to_string(m_FileType).c_str());
-    XMLCh* pRow = XMLString::transcode(std::to_string(m_Row).c_str());
-    XMLCh* pColumn = XMLString::transcode(std::to_string(m_Column).c_str());
+    XMLCh *pFileType = XMLString::transcode(std::to_string(m_FileType).c_str());
+    XMLCh *pRow = XMLString::transcode(std::to_string(m_Row).c_str());
+    XMLCh *pColumn = XMLString::transcode(std::to_string(m_Column).c_str());
 
     p_DataElement->setAttribute(ATTR_FILETYPE, pFileType);
     p_DataElement->setAttribute(ATTR_ROW, pRow);
@@ -34,7 +33,7 @@ DOMElement* cFileLocation::WriteXML(DOMDocument* p_resultDocument)
     return p_DataElement;
 }
 
-cFileLocation* cFileLocation::ParseFromXML(DOMNode* , DOMElement* pXMLElement)
+cFileLocation *cFileLocation::ParseFromXML(DOMNode *, DOMElement *pXMLElement)
 {
     std::string strRow = XMLString::transcode(pXMLElement->getAttribute(ATTR_ROW));
     std::string strColumn = XMLString::transcode(pXMLElement->getAttribute(ATTR_COLUMN));
@@ -46,7 +45,8 @@ cFileLocation* cFileLocation::ParseFromXML(DOMNode* , DOMElement* pXMLElement)
     if (pXMLElement->hasAttribute(ATTR_FILETYPE))
         strFileType = XMLString::transcode(pXMLElement->getAttribute(ATTR_FILETYPE));
 
-    cFileLocation* result = new cFileLocation(static_cast<eFileType>(atoi(strFileType.c_str())), atoi(strRow.c_str()), atoi(strColumn.c_str()));
+    cFileLocation *result = new cFileLocation(static_cast<eFileType>(atoi(strFileType.c_str())), atoi(strRow.c_str()),
+                                              atoi(strColumn.c_str()));
 
     return result;
 }

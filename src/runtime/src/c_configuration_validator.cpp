@@ -9,8 +9,7 @@
 
 #include "common/config_format/c_configuration.h"
 
-bool cConfigurationValidator::ValidateConfiguration(cConfiguration* const configuration,
-                                                    std::string& message)
+bool cConfigurationValidator::ValidateConfiguration(cConfiguration *const configuration, std::string &message)
 {
     message = "Unknown failure";
 
@@ -30,8 +29,7 @@ bool cConfigurationValidator::ValidateConfiguration(cConfiguration* const config
     return true;
 }
 
-bool cConfigurationValidator::CheckNecessaryParametersExist(cConfiguration* const configuration,
-                                                            std::string& message)
+bool cConfigurationValidator::CheckNecessaryParametersExist(cConfiguration *const configuration, std::string &message)
 {
     if (!configuration->HasParam(PARAM_XODR_FILE) && !configuration->HasParam(PARAM_XOSC_FILE))
     {
@@ -42,11 +40,10 @@ bool cConfigurationValidator::CheckNecessaryParametersExist(cConfiguration* cons
     return true;
 }
 
-bool cConfigurationValidator::CheckParameterNotEmptyAndCorrectExtension(
-    cConfiguration* const configuration,
-    const std::string& paramName,
-    const std::string& extension,
-    std::string& message)
+bool cConfigurationValidator::CheckParameterNotEmptyAndCorrectExtension(cConfiguration *const configuration,
+                                                                        const std::string &paramName,
+                                                                        const std::string &extension,
+                                                                        std::string &message)
 {
     if (configuration->HasParam(paramName))
     {

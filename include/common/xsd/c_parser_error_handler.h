@@ -19,24 +19,25 @@
 
 class cCheckerBundle;
 
-class cParserErrorHandler : public ErrorHandler {
-private:
-    cCheckerBundle* myCheckerBundle;
-    const char* myFilePath;
+class cParserErrorHandler : public ErrorHandler
+{
+  private:
+    cCheckerBundle *myCheckerBundle;
+    const char *myFilePath;
 
-    void reportParseException(const SAXParseException& ex);
+    void reportParseException(const SAXParseException &ex);
 
-    void reportParseIssue(const SAXParseException& ex, eIssueLevel issueLevel);
+    void reportParseIssue(const SAXParseException &ex, eIssueLevel issueLevel);
 
-public:
+  public:
     cParserErrorHandler() = default;
     virtual ~cParserErrorHandler() = default;
 
-    cParserErrorHandler(cCheckerBundle* myCheckerBundle, const char* filePath);
+    cParserErrorHandler(cCheckerBundle *myCheckerBundle, const char *filePath);
 
-    void warning(const SAXParseException& ex);
-    void error(const SAXParseException& ex);
-    void fatalError(const SAXParseException& ex);
+    void warning(const SAXParseException &ex);
+    void error(const SAXParseException &ex);
+    void fatalError(const SAXParseException &ex);
     void resetErrors();
 };
 

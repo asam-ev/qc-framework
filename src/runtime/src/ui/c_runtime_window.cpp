@@ -7,59 +7,56 @@
  */
 #include "c_runtime_window.h"
 
-#include <QtWidgets/QSplitter>
 #include <QtWidgets/QDesktopWidget>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QMenu>
 #include <QtWidgets/QFileDialog>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QVBoxLayout>
 
 #include "common/result_format/c_result_container.h"
 
+#include "../c_configuration_validator.h"
 #include "c_process_log.h"
 #include "c_process_view.h"
 #include "c_runtime_control.h"
-#include "../c_configuration_validator.h"
 
 const QString cRuntimeWindow::DEFAULT_XODR_CONFIG = "DefaultXodrConfiguration.xml";
 const QString cRuntimeWindow::DEFAULT_XOSC_CONFIG = "DefaultXoscConfiguration.xml";
 
-cRuntimeWindow::cRuntimeWindow(const std::string& strConfigurationFilepath,
-                               const std::string& xodrFile,
-                               const std::string& xoscFile,
-                               const bool bAutostart,
-                               QWidget* parent)
+cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, const std::string &xodrFile,
+                               const std::string &xoscFile, const bool bAutostart, QWidget *parent)
     : QMainWindow(parent)
 {
     _autostart = bAutostart;
 
-    QAction* newAction = new QAction(tr("&New"), this);
+    QAction *newAction = new QAction(tr("&New"), this);
     newAction->setShortcuts(QKeySequence::New);
     newAction->setStatusTip(tr("New configuration"));
     connect(newAction, &QAction::triggered, this, &cRuntimeWindow::NewConfiguration);
 
-    QAction* openAction = new QAction(tr("&Open..."), this);
+    QAction *openAction = new QAction(tr("&Open..."), this);
     openAction->setShortcuts(QKeySequence::Open);
     openAction->setStatusTip(tr("Open configuration"));
     connect(openAction, &QAction::triggered, this, &cRuntimeWindow::OpenConfigurationFile);
 
-    QAction* saveAction = new QAction(tr("&Save..."), this);
+    QAction *saveAction = new QAction(tr("&Save..."), this);
     saveAction->setShortcuts(QKeySequence::Save);
     saveAction->setStatusTip(tr("Save configuration"));
     connect(saveAction, &QAction::triggered, this, &cRuntimeWindow::SaveConfigurationFile);
 
-    QAction* saveAsAction = new QAction(tr("&Save As..."), this);
+    QAction *saveAsAction = new QAction(tr("&Save As..."), this);
     saveAsAction->setStatusTip(tr("Save configuration"));
     connect(saveAsAction, &QAction::triggered, this, &cRuntimeWindow::SaveAsConfigurationFile);
 
-    QAction* clearConsoleAction = new QAction(tr("Clear"), this);
+    QAction *clearConsoleAction = new QAction(tr("Clear"), this);
     clearConsoleAction->setStatusTip(tr("Clear console"));
     connect(clearConsoleAction, &QAction::triggered, this, &cRuntimeWindow::ClearConsole);
 
-    QAction* saveConsoleAction = new QAction(tr("Save"), this);
+    QAction *saveConsoleAction = new QAction(tr("Save"), this);
     saveConsoleAction->setStatusTip(tr("Save console output"));
     connect(saveConsoleAction, &QAction::triggered, this, &cRuntimeWindow::SaveConsole);
 
@@ -73,17 +70,17 @@ cRuntimeWindow::cRuntimeWindow(const std::string& strConfigurationFilepath,
     consoleMenu->addAction(clearConsoleAction);
     consoleMenu->addAction(saveConsoleAction);
 
-    QSplitter* splitter = new QSplitter(Qt::Horizontal);
+    QSplitter *splitter = new QSplitter(Qt::Horizontal);
 
-    QWidget* processWidget = new QWidget(this);
-    QVBoxLayout * processLayout = new QVBoxLayout;
+    QWidget *processWidget = new QWidget(this);
+    QVBoxLayout *processLayout = new QVBoxLayout;
 
-    QWidget* processButtonBar = new QWidget(this);
-    QHBoxLayout* processButtonBarLayout = new QHBoxLayout;
+    QWidget *processButtonBar = new QWidget(this);
+    QHBoxLayout *processButtonBarLayout = new QHBoxLayout;
 
-    QPushButton* addModule = new QPushButton(this);
+    QPushButton *addModule = new QPushButton(this);
     addModule->setText("Add Module");
-    QPushButton* addParameter = new QPushButton(this);
+    QPushButton *addParameter = new QPushButton(this);
     addParameter->setText("Add global Parameter");
 
     processButtonBarLayout->addWidget(addParameter);
@@ -91,7 +88,7 @@ cRuntimeWindow::cRuntimeWindow(const std::string& strConfigurationFilepath,
     processButtonBarLayout->setContentsMargins(2, 2, 2, 2);
     processButtonBar->setLayout(processButtonBarLayout);
 
-    QLabel* processLabel = new QLabel(processWidget);
+    QLabel *processLabel = new QLabel(processWidget);
     processLabel->setText("Runtime Configuration");
     processLabel->setStyleSheet("font-weight: bold;");
     _processView = new cProcessView(this);
@@ -112,9 +109,9 @@ cRuntimeWindow::cRuntimeWindow(const std::string& strConfigurationFilepath,
     processWidget->setLayout(processLayout);
     splitter->addWidget(processWidget);
 
-    QWidget* outputWidget = new QWidget(this);
-    QVBoxLayout * outputLayout = new QVBoxLayout;
-    QLabel* outputLabel = new QLabel(outputWidget);
+    QWidget *outputWidget = new QWidget(this);
+    QVBoxLayout *outputLayout = new QVBoxLayout;
+    QLabel *outputLabel = new QLabel(outputWidget);
     outputLabel->setText("Console Output");
     outputLabel->setStyleSheet("font-weight: bold;");
     _processLog = new cProcessLog(this);
@@ -132,7 +129,8 @@ cRuntimeWindow::cRuntimeWindow(const std::string& strConfigurationFilepath,
     connect(addParameter, SIGNAL(pressed()), _processView, SLOT(AddGlobalParam()));
 
     connect(_processView, SIGNAL(ChangeConfiguration()), this, SLOT(OnChangeConfiguration()));
-    connect(_processView, SIGNAL(ExecuteProcessAndAddConfiguration(QString)), this, SLOT(ExecuteProcessAndAddConfiguration(QString)));
+    connect(_processView, SIGNAL(ExecuteProcessAndAddConfiguration(QString)), this,
+            SLOT(ExecuteProcessAndAddConfiguration(QString)));
 
     connect(runtimeControl, &cRuntimeControl::Run, this, &cRuntimeWindow::Run);
     connect(runtimeControl, &cRuntimeControl::Abort, this, &cRuntimeWindow::Abort);
@@ -155,7 +153,7 @@ cRuntimeWindow::cRuntimeWindow(const std::string& strConfigurationFilepath,
     else
     {
         // Standardkonfiguration laden
-        QString defaultXODRConfigPath  = GetApplicationDir() + "/" + DEFAULT_XODR_CONFIG;
+        QString defaultXODRConfigPath = GetApplicationDir() + "/" + DEFAULT_XODR_CONFIG;
         if (CheckIfFileExists(defaultXODRConfigPath.toStdString()))
         {
             LoadConfiguration(&_currentConfiguration, defaultXODRConfigPath);
@@ -195,15 +193,12 @@ const QString cRuntimeWindow::GetWorkingDir()
 
 void cRuntimeWindow::OpenConfigurationFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(this,
-                                                    tr("Open Configuration"),
-                                                    GetWorkingDir(),
-                                                    tr("configurations (*.xml)"));
+    QString filePath =
+        QFileDialog::getOpenFileName(this, tr("Open Configuration"), GetWorkingDir(), tr("configurations (*.xml)"));
 
     LoadConfiguration(&_currentConfiguration, filePath);
     ShowConfiguration(&_currentConfiguration);
 }
-
 
 bool cRuntimeWindow::SaveConfigurationFile(const bool bAutostart)
 {
@@ -225,10 +220,9 @@ bool cRuntimeWindow::SaveConfigurationFile(const bool bAutostart)
                 QMessageBox::StandardButton reply = QMessageBox::NoButton;
                 if (!bAutostart)
                 {
-                    reply = QMessageBox::question( this,
-                                                   "Overwrite Configuration",
-                                                   "Do you want to overwrite:\n" + fileInfo.fileName(),
-                                                   QMessageBox::Yes | QMessageBox::No);
+                    reply = QMessageBox::question(this, "Overwrite Configuration",
+                                                  "Do you want to overwrite:\n" + fileInfo.fileName(),
+                                                  QMessageBox::Yes | QMessageBox::No);
                 }
 
                 if (bAutostart || reply == QMessageBox::Yes)
@@ -256,10 +250,8 @@ bool cRuntimeWindow::SaveConfigurationFile(const bool bAutostart)
 
 bool cRuntimeWindow::SaveAsConfigurationFile()
 {
-    QString filePath = QFileDialog::getSaveFileName(this,
-                                                    tr("Save Configuration"),
-                                                    GetWorkingDir(),
-                                                    tr("configurations (*.xml)"));
+    QString filePath =
+        QFileDialog::getSaveFileName(this, tr("Save Configuration"), GetWorkingDir(), tr("configurations (*.xml)"));
 
     if (!filePath.isEmpty())
     {
@@ -268,9 +260,10 @@ bool cRuntimeWindow::SaveAsConfigurationFile()
         if (fileInfo.fileName().toLower() == DEFAULT_XODR_CONFIG.toLower() ||
             fileInfo.fileName().toLower() == DEFAULT_XOSC_CONFIG.toLower())
         {
-            QMessageBox::information(this, "Save Configuration",
-                                     "It is not possible to overwrite a default configuration.\nPlease enter a different file name.",
-                                     QMessageBox::Ok);
+            QMessageBox::information(
+                this, "Save Configuration",
+                "It is not possible to overwrite a default configuration.\nPlease enter a different file name.",
+                QMessageBox::Ok);
 
             // Open Dialog
             bool saved = SaveAsConfigurationFile();
@@ -299,7 +292,8 @@ void cRuntimeWindow::SetupWindowTitle()
     if (!_currentConfigurationPath.isEmpty())
     {
         QFileInfo fileInfo(_currentConfigurationPath);
-        QString applicationTitle = QString(" - %1.xml%2").arg(fileInfo.baseName()).arg(_configurationChanged ? "*" : "");
+        QString applicationTitle =
+            QString(" - %1.xml%2").arg(fileInfo.baseName()).arg(_configurationChanged ? "*" : "");
         applicationTitle = QString::fromStdString(config_ui_name) + applicationTitle;
         setWindowTitle(applicationTitle);
     }
@@ -315,7 +309,7 @@ void cRuntimeWindow::UpdateConfiguration()
     _processView->GetConfigurationFromView(&_currentConfiguration);
 }
 
-void cRuntimeWindow::LoadConfiguration(cConfiguration* const configuration, const QString& strConfigurationFilepath)
+void cRuntimeWindow::LoadConfiguration(cConfiguration *const configuration, const QString &strConfigurationFilepath)
 {
     if (!strConfigurationFilepath.isNull())
     {
@@ -324,9 +318,10 @@ void cRuntimeWindow::LoadConfiguration(cConfiguration* const configuration, cons
         if (!cConfiguration::ParseFromXML(configuration, strConfigurationFilepath.toLocal8Bit().data()))
         {
             std::stringstream ssError;
-            ssError << "Couldn't load the configuration '" << strConfigurationFilepath.toLocal8Bit().data() <<"'. It occured a problem while parsing. Abort.";
+            ssError << "Couldn't load the configuration '" << strConfigurationFilepath.toLocal8Bit().data()
+                    << "'. It occured a problem while parsing. Abort.";
 
-            QMessageBox::warning( this, tr("Load Configuration"), ssError.str().c_str(), QMessageBox::Ok);
+            QMessageBox::warning(this, tr("Load Configuration"), ssError.str().c_str(), QMessageBox::Ok);
         }
         else
         {
@@ -335,7 +330,7 @@ void cRuntimeWindow::LoadConfiguration(cConfiguration* const configuration, cons
     }
 }
 
-void cRuntimeWindow::CreateNewConfiguration(cConfiguration* const configuration)
+void cRuntimeWindow::CreateNewConfiguration(cConfiguration *const configuration)
 {
     _currentConfigurationPath = "";
 
@@ -346,7 +341,7 @@ void cRuntimeWindow::CreateNewConfiguration(cConfiguration* const configuration)
     OnChangeConfiguration();
 }
 
-void cRuntimeWindow::ShowConfiguration(cConfiguration* const configurationToBeShown)
+void cRuntimeWindow::ShowConfiguration(cConfiguration *const configurationToBeShown)
 {
     _processLog->clear();
 
@@ -355,14 +350,13 @@ void cRuntimeWindow::ShowConfiguration(cConfiguration* const configurationToBeSh
     SetupWindowTitle();
 }
 
-
 void cRuntimeWindow::NewConfiguration()
 {
     CreateNewConfiguration(&_currentConfiguration);
     ShowConfiguration(&_currentConfiguration);
 }
 
-void cRuntimeWindow::closeEvent(QCloseEvent* /*event*/ )
+void cRuntimeWindow::closeEvent(QCloseEvent * /*event*/)
 {
     _runningThread.Abort();
     _runningThread.wait();
@@ -375,10 +369,7 @@ void cRuntimeWindow::ClearConsole()
 
 void cRuntimeWindow::SaveConsole()
 {
-    QString filePath = QFileDialog::getSaveFileName(this,
-                                    tr("Console Dump"),
-                                    GetWorkingDir(),
-                                    tr("Log (*.log)"));
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Console Dump"), GetWorkingDir(), tr("Log (*.log)"));
 
     if (!filePath.isEmpty())
     {
@@ -410,10 +401,7 @@ void cRuntimeWindow::Run()
 
         if (!_autostart)
         {
-            QMessageBox::warning(this,
-                tr("Error"),
-                tr(ssDetails.str().c_str()),
-                QMessageBox::Ok);
+            QMessageBox::warning(this, tr("Error"), tr(ssDetails.str().c_str()), QMessageBox::Ok);
         }
         else
             std::cerr << ssDetails.str();
@@ -427,10 +415,8 @@ void cRuntimeWindow::Run()
 
     if (!saved)
     {
-        QMessageBox::warning(    this,
-                                tr("Error"),
-                                tr("Skip execution. Please save the configuration first."),
-                                QMessageBox::Ok);
+        QMessageBox::warning(this, tr("Error"), tr("Skip execution. Please save the configuration first."),
+                             QMessageBox::Ok);
 
         emit Finished();
         return;
@@ -456,7 +442,7 @@ bool cRuntimeWindow::IsRunning() const
     return _runningThread.IsRunning();
 }
 
-int cRuntimeWindow::ExecuteProcessAndAddConfiguration(const QString& processPath)
+int cRuntimeWindow::ExecuteProcessAndAddConfiguration(const QString &processPath)
 {
     QProcess process;
     QFileInfo fileInfo(processPath);
@@ -483,7 +469,7 @@ int cRuntimeWindow::ExecuteProcessAndAddConfiguration(const QString& processPath
         return -1;
     }
 
-    process.start(processName, { "--defaultConfig" });
+    process.start(processName, {"--defaultConfig"});
     process.setWorkingDirectory(processDir);
     process.waitForStarted();
 
@@ -530,7 +516,8 @@ int cRuntimeWindow::ExecuteProcessAndAddConfiguration(const QString& processPath
     }
     else
     {
-        emit Log(QString("> Report '%1' or configuration '%2' does not exist. Abort.").arg(reportFile.toLocal8Bit().data(), confgurationFile.toLocal8Bit().data()));
+        emit Log(QString("> Report '%1' or configuration '%2' does not exist. Abort.")
+                     .arg(reportFile.toLocal8Bit().data(), confgurationFile.toLocal8Bit().data()));
         return -1;
     }
 

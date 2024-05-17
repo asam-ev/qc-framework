@@ -8,12 +8,11 @@
 #ifndef _STD_INCLUDE_HEADER_
 #define _STD_INCLUDE_HEADER_
 
-#include <sstream>
 #include <fstream>
-#include <memory>
 #include <iostream>
+#include <memory>
+#include <sstream>
 
 #include "common/util.h"
-
 
 #endif // _STD_INCLUDE_HEADER_
