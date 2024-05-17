@@ -8,21 +8,22 @@
 #ifndef CPARAM_DIALOG_H
 #define CPARAM_DIALOG_H
 
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QVBoxLayout>
 
 class cParamDialog : public QDialog
 {
     Q_OBJECT
 
-public:
-    cParamDialog(const QString& initalParamName, const QString& initalParamValue, const bool paramNameEditable, QWidget* parent);
+  public:
+    cParamDialog(const QString &initalParamName, const QString &initalParamValue, const bool paramNameEditable,
+                 QWidget *parent);
 
     // Returns the name of the param
     QString GetParamName() const;
@@ -30,18 +31,18 @@ public:
     // Returns the value of the param
     QString GetParamValue() const;
 
-protected:
+  protected:
     QString _paramName;
     QString _paramValue;
 
-    QHBoxLayout* _paramWidgetLayout{nullptr};
-    QLabel* _paramLabel{nullptr};
-    QLineEdit* _paramValueEdit{nullptr};
+    QHBoxLayout *_paramWidgetLayout{nullptr};
+    QLabel *_paramLabel{nullptr};
+    QLineEdit *_paramValueEdit{nullptr};
 
-    void InitBasicUIElements(const QString& initalParamName, const QString& initalParamValue);
+    void InitBasicUIElements(const QString &initalParamName, const QString &initalParamValue);
     void AddBasicWidgetsToLayout();
 
-public slots:
+  public slots:
     virtual void SaveAndClose() = 0;
 };
 

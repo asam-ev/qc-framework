@@ -15,17 +15,17 @@ XERCES_CPP_NAMESPACE_USE
 
 class IResult
 {
-public:
-	// Writes the result to an xml
-	virtual DOMElement* WriteXML(XERCES_CPP_NAMESPACE::DOMDocument* p_resultDocument) = 0;
+  public:
+    // Writes the result to an xml
+    virtual DOMElement *WriteXML(XERCES_CPP_NAMESPACE::DOMDocument *p_resultDocument) = 0;
 
-	// True if a new Issue Id should be assigned to the entry
-	virtual bool AssignIssueId() = 0;
+    // True if a new Issue Id should be assigned to the entry
+    virtual bool AssignIssueId() = 0;
 
-	// Sets a new issue id, if AssignIssueId returned true
-	virtual void SetIssueId(unsigned long long newIssueId) = 0;
+    // Sets a new issue id, if AssignIssueId returned true
+    virtual void SetIssueId(unsigned long long newIssueId) = 0;
 
-	virtual ~IResult() = default;
+    virtual ~IResult() = default;
 };
 
 #endif

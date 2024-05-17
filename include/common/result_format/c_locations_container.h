@@ -10,56 +10,56 @@
 #define cLocationsContainer_h__
 
 #include "i_result.h"
-#include <map>
-#include <list>
-#include <string>
 #include <iostream>
+#include <list>
+#include <map>
+#include <string>
 
 #include "../xml/util_xerces.h"
 
 class cExtendedInformation;
 
 /*
-* Definition of issue information grouped as a location node
-*/
+ * Definition of issue information grouped as a location node
+ */
 class cLocationsContainer
 {
     friend class cResultContainer;
 
-public:
-    static const XMLCh* TAG_LOCATIONS;
-    static const XMLCh* ATTR_DESCRIPTION;
+  public:
+    static const XMLCh *TAG_LOCATIONS;
+    static const XMLCh *ATTR_DESCRIPTION;
 
     /*
-    * Creates a new location node
-    */
-    cLocationsContainer(const std::string& description, cExtendedInformation* extendedInformation = nullptr);
+     * Creates a new location node
+     */
+    cLocationsContainer(const std::string &description, cExtendedInformation *extendedInformation = nullptr);
 
     /*
-    * Creates a new location node
-    */
-    cLocationsContainer(const std::string& description, std::list<cExtendedInformation*> listExt);
+     * Creates a new location node
+     */
+    cLocationsContainer(const std::string &description, std::list<cExtendedInformation *> listExt);
 
     // d'tor
     virtual ~cLocationsContainer();
 
     // Adds extendesd information to this issue
-    void AddExtendedInformation(cExtendedInformation* extendedInformation);
+    void AddExtendedInformation(cExtendedInformation *extendedInformation);
 
     // Adds extendesd information to this issue
-    void AddExtendedInformation(std::list<cExtendedInformation*> listExt);
+    void AddExtendedInformation(std::list<cExtendedInformation *> listExt);
 
     // Write the xml for this issue
-    virtual DOMElement* WriteXML(XERCES_CPP_NAMESPACE::DOMDocument* p_resultDocument);
+    virtual DOMElement *WriteXML(XERCES_CPP_NAMESPACE::DOMDocument *p_resultDocument);
 
     // Returns th count of extended Informations
     size_t GetExtendedInformationCount() const;
-    
+
     // Creates an Issue out of an XML Element
-    static cLocationsContainer* ParseFromXML(DOMNode* pXMLNode, DOMElement* pXMLElement);
+    static cLocationsContainer *ParseFromXML(DOMNode *pXMLNode, DOMElement *pXMLElement);
 
     // Sets the description
-    void SetDescription(const std::string& strDescription);
+    void SetDescription(const std::string &strDescription);
 
     // Returns the description
     std::string GetDescription() const;
@@ -68,13 +68,13 @@ public:
     bool HasExtendedInformations() const;
 
     // Returns all extended informations
-    std::list<cExtendedInformation*> GetExtendedInformations() const;
+    std::list<cExtendedInformation *> GetExtendedInformations() const;
 
     // Checks if this hassue has extended informations of a specific type
-    template <typename T>
-    bool HasExtendedInformation() const
+    template <typename T> bool HasExtendedInformation() const
     {
-        for (std::list<cExtendedInformation*>::const_iterator itExtension = m_Extended.cbegin(); itExtension != m_Extended.cend(); itExtension++)
+        for (std::list<cExtendedInformation *>::const_iterator itExtension = m_Extended.cbegin();
+             itExtension != m_Extended.cend(); itExtension++)
         {
             if (T derived = dynamic_cast<T>(*itExtension))
             {
@@ -85,10 +85,10 @@ public:
     }
 
     // Returns extended informations of a specific type
-    template <typename T>
-    T GetExtendedInformation() const
+    template <typename T> T GetExtendedInformation() const
     {
-        for (std::list<cExtendedInformation*>::const_iterator itExtension = m_Extended.cbegin(); itExtension != m_Extended.cend(); itExtension++)
+        for (std::list<cExtendedInformation *>::const_iterator itExtension = m_Extended.cbegin();
+             itExtension != m_Extended.cend(); itExtension++)
         {
             if (T derived = dynamic_cast<T>(*itExtension))
                 return derived;
@@ -97,23 +97,22 @@ public:
     }
 
     // Returns extended informations of a specific type
-    template <typename T>
-    std::size_t GetExtendedInformationCount() const
+    template <typename T> std::size_t GetExtendedInformationCount() const
     {
         std::size_t result = 0;
 
-        for (std::list<cExtendedInformation*>::const_iterator itExtension = m_Extended.cbegin(); itExtension != m_Extended.cend(); itExtension++)
+        for (std::list<cExtendedInformation *>::const_iterator itExtension = m_Extended.cbegin();
+             itExtension != m_Extended.cend(); itExtension++)
         {
             if (T derived = dynamic_cast<T>(*itExtension))
                 result++;
         }
         return result;
     }
-    
-protected:
-    std::string m_Description;
-    std::list<cExtendedInformation*> m_Extended;
-};
 
+  protected:
+    std::string m_Description;
+    std::list<cExtendedInformation *> m_Extended;
+};
 
 #endif

@@ -10,22 +10,22 @@
 
 #include <string.h>
 
-#include "a_util/result.h"
 #include "a_util/filesystem.h"
+#include "a_util/result.h"
 #include "gtest/gtest.h"
 
 #include "qc4openx_errors.h"
 
 /**
-  * This macro prints a formatted message during test execution.
-  *
-  * @param [in] _message      Message string
-  */
-#define GTEST_PRINTF(_message)                                                                     \
-    {                                                                                              \
-        testing::internal::ColoredPrintf(testing::internal::COLOR_GREEN, "[          ] ");         \
-        testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, _message);               \
-        testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, "\n");                   \
+ * This macro prints a formatted message during test execution.
+ *
+ * @param [in] _message      Message string
+ */
+#define GTEST_PRINTF(_message)                                                                                         \
+    {                                                                                                                  \
+        testing::internal::ColoredPrintf(testing::internal::COLOR_GREEN, "[          ] ");                             \
+        testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, _message);                                   \
+        testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, "\n");                                       \
     }
 
 /**
@@ -34,23 +34,20 @@
  * @param [in] expression      The expression which will be excecuted
  * @param [in] msg             Additional information which will be logged
  */
-#define ASSERT_TRUE_EXT(expression, msg)                                                           \
-    if (!(expression))                                                                             \
-    {                                                                                              \
-        GTEST_PRINTF(msg);																		   \
-    }                                                                                              \
+#define ASSERT_TRUE_EXT(expression, msg)                                                                               \
+    if (!(expression))                                                                                                 \
+    {                                                                                                                  \
+        GTEST_PRINTF(msg);                                                                                             \
+    }                                                                                                                  \
     ASSERT_TRUE(expression)
 
-qc4openx::Result ExecuteCommand(std::string& strResultMessage,
-                                std::string strCommand,
+qc4openx::Result ExecuteCommand(std::string &strResultMessage, std::string strCommand,
                                 const std::string strArgument = "");
 
-qc4openx::Result CheckFileExists(std::string& strResultMessage,
-                                 const std::string strFilePath,
+qc4openx::Result CheckFileExists(std::string &strResultMessage, const std::string strFilePath,
                                  const bool bDelete = true);
 
-qc4openx::Result CheckFilesEqual(std::string& strResultMessage,
-                                 const std::string strFilePath1,
+qc4openx::Result CheckFilesEqual(std::string &strResultMessage, const std::string strFilePath1,
                                  const std::string strFilePath2);
 
 #endif

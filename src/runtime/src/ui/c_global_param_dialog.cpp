@@ -12,15 +12,18 @@
 
 #include "common/config_format/c_configuration.h"
 
-cGlobalParamDialog::cGlobalParamDialog(const QString& initalParamName, const QString& initalParamValue, const bool paramNameEditable, cProcessView* parent, const cConfiguration* currentConfig) :
-    cParamDialog(initalParamName, initalParamValue, paramNameEditable, parent)
+cGlobalParamDialog::cGlobalParamDialog(const QString &initalParamName, const QString &initalParamValue,
+                                       const bool paramNameEditable, cProcessView *parent,
+                                       const cConfiguration *currentConfig)
+    : cParamDialog(initalParamName, initalParamValue, paramNameEditable, parent)
 {
     _processView = parent;
     InitUIElements(initalParamName, initalParamValue, paramNameEditable, currentConfig);
     AddWidgetsToLayout(initalParamName);
 }
 
-void cGlobalParamDialog::InitUIElements(const QString& initalParamName, const QString& initalParamValue, const bool paramNameEditable, const cConfiguration* currentConfig)
+void cGlobalParamDialog::InitUIElements(const QString &initalParamName, const QString &initalParamValue,
+                                        const bool paramNameEditable, const cConfiguration *currentConfig)
 {
     InitBasicUIElements(initalParamName, initalParamValue);
 
@@ -44,11 +47,11 @@ void cGlobalParamDialog::InitUIElements(const QString& initalParamName, const QS
     _paramNameComboBox->setEditable(true);
     _paramNameComboBox->setEnabled(paramNameEditable);
 
-    connect(_paramNameComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(SwitchCall(const QString&)));
-    connect(_paramNameComboBox, SIGNAL(editTextChanged(const QString&)), this, SLOT(SwitchCall(const QString&)));
+    connect(_paramNameComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(SwitchCall(const QString &)));
+    connect(_paramNameComboBox, SIGNAL(editTextChanged(const QString &)), this, SLOT(SwitchCall(const QString &)));
 }
 
-void cGlobalParamDialog::AddWidgetsToLayout(const QString& initalParamName)
+void cGlobalParamDialog::AddWidgetsToLayout(const QString &initalParamName)
 {
     _paramWidgetLayout->addWidget(_paramNameComboBox, 2);
     AddBasicWidgetsToLayout();
@@ -56,7 +59,7 @@ void cGlobalParamDialog::AddWidgetsToLayout(const QString& initalParamName)
     SwitchCall(initalParamName);
 }
 
-void cGlobalParamDialog::SwitchCall(const QString& paramName)
+void cGlobalParamDialog::SwitchCall(const QString &paramName)
 {
     RemoveFileOpenButton();
 
@@ -66,7 +69,7 @@ void cGlobalParamDialog::SwitchCall(const QString& paramName)
         AddFileOpenButton(SLOT(OpenXOSCFile()));
 }
 
-void cGlobalParamDialog::AddFileOpenButton(const char* slot)
+void cGlobalParamDialog::AddFileOpenButton(const char *slot)
 {
     _fileOpenButton = new QPushButton(this);
     _fileOpenButton->setText("...");
@@ -96,7 +99,7 @@ void cGlobalParamDialog::SaveAndClose()
         std::string xodrFilePath = "";
 
         // When we could retrieve a path, set it
-        if(GetXodrFilePathFromXosc(xoscFilePath, xodrFilePath))
+        if (GetXodrFilePathFromXosc(xoscFilePath, xodrFilePath))
             _processView->SetGlobalParamXodrFile(xodrFilePath);
     }
     else if (_paramName.toLower() == QString::fromStdString(PARAM_XODR_FILE).toLower())
@@ -109,10 +112,7 @@ void cGlobalParamDialog::SaveAndClose()
 
 void cGlobalParamDialog::OpenXODRFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(this,
-        tr("Open File"),
-        "",
-        tr("OpenDRIVE (*.xodr)"));
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("OpenDRIVE (*.xodr)"));
 
     if (!filePath.isEmpty())
         _paramValueEdit->setText(filePath);
@@ -120,10 +120,7 @@ void cGlobalParamDialog::OpenXODRFile()
 
 void cGlobalParamDialog::OpenXOSCFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(this,
-        tr("Open File"),
-        "",
-        tr("OpenSCENARIO (*.xosc)"));
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("OpenSCENARIO (*.xosc)"));
 
     if (!filePath.isEmpty())
         _paramValueEdit->setText(filePath);

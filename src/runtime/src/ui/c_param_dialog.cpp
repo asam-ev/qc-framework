@@ -7,22 +7,20 @@
  */
 #include "c_param_dialog.h"
 
-cParamDialog::cParamDialog(const QString& /*initalParamName*/,
-                           const QString& /*initalParamValue*/,
-                           const bool /*paramNameEditable*/,
-                           QWidget* parent)
+cParamDialog::cParamDialog(const QString & /*initalParamName*/, const QString & /*initalParamValue*/,
+                           const bool /*paramNameEditable*/, QWidget *parent)
     : QDialog(parent)
 {
 }
 
-void cParamDialog::InitBasicUIElements(const QString& initalParamName, const QString& initalParamValue)
+void cParamDialog::InitBasicUIElements(const QString &initalParamName, const QString &initalParamValue)
 {
     _paramName = initalParamName;
     _paramValue = initalParamValue;
 
-    QVBoxLayout* layout = new QVBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
 
-    QWidget* paramWidget = new QWidget(this);
+    QWidget *paramWidget = new QWidget(this);
     _paramWidgetLayout = new QHBoxLayout;
     _paramWidgetLayout->setContentsMargins(3, 3, 3, 3);
     paramWidget->setLayout(_paramWidgetLayout);
@@ -34,7 +32,7 @@ void cParamDialog::InitBasicUIElements(const QString& initalParamName, const QSt
     _paramValueEdit = new QLineEdit(this);
     _paramValueEdit->setText(initalParamValue);
 
-    QPushButton* okayButton = new QPushButton(this);
+    QPushButton *okayButton = new QPushButton(this);
     okayButton->setText("Set");
     connect(okayButton, SIGNAL(clicked()), this, SLOT(SaveAndClose()));
 

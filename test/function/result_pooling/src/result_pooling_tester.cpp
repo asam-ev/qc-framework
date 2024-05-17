@@ -12,8 +12,9 @@
 
 #define MODULE_NAME "ResultPooling"
 
-class cTesterResultPooling : public ::testing::Test {
-public:
+class cTesterResultPooling : public ::testing::Test
+{
+  public:
     std::string strTestFilesDir = std::string(QC4OPENX_DBQA_RESULT_POOLING_TEST_REF_DIR);
     std::string strWorkingDir = std::string(QC4OPENX_DBQA_RESULT_POOLING_TEST_WORK_DIR);
 };

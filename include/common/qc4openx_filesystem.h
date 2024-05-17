@@ -10,15 +10,15 @@
 #define QC4OPENX_FILESYSTEM_H_
 
 #ifdef __has_include
-    #if __has_include(<filesystem>)
-        #include <filesystem>
-        namespace fs = std::filesystem;
-    #else
-        #include <experimental/filesystem>
-        namespace fs = std::experimental::filesystem;
-    #endif
+#if __has_include(<filesystem>)
+#include <filesystem>
+namespace fs = std::filesystem;
 #else
-    #error __has_include is not defined, but is needed to detect correct filesystem!
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+#endif
+#else
+#error __has_include is not defined, but is needed to detect correct filesystem!
 #endif
 
 #endif

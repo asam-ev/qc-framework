@@ -8,9 +8,9 @@
 #ifndef CRUNTIME_THREAD_H
 #define CRUNTIME_THREAD_H
 
-#include <QtCore/QThread>
-#include <QtCore/QProcess>
 #include <QtCore/QCoreApplication>
+#include <QtCore/QProcess>
+#include <QtCore/QThread>
 
 #include "common/qc4openx_filesystem.h"
 
@@ -22,47 +22,47 @@ class cRuntimeThread : public QThread
 {
     Q_OBJECT
 
-public:
-    void Initialize(cProcessLog* const, cConfiguration* const, const QString&);
+  public:
+    void Initialize(cProcessLog *const, cConfiguration *const, const QString &);
 
     void Abort();
 
     bool IsRunning() const;
 
     /*!
-    * Executes a Process with a given name and params
-    *
-    * \param processName
-    * \param params
-    * \return
-    */
-    int ExecuteProcess(const QString& processName, const QStringList& params);
+     * Executes a Process with a given name and params
+     *
+     * \param processName
+     * \param params
+     * \return
+     */
+    int ExecuteProcess(const QString &processName, const QStringList &params);
 
-signals:
+  signals:
     void Log(QString log);
 
     void Finished();
 
-protected:
+  protected:
     void run();
 
     bool _abortExecution{false};
-    const cConfiguration* _myConfiguration{nullptr};
-    const cProcessLog* _myLog{nullptr};
+    const cConfiguration *_myConfiguration{nullptr};
+    const cProcessLog *_myLog{nullptr};
     QString _myConfigurationPath;
 
     /**
-    * Get application directory
-    *
-    * @return   directory, where the application is installed
-    */
+     * Get application directory
+     *
+     * @return   directory, where the application is installed
+     */
     const QString GetApplicationDir();
 
     /**
-    * Get working directory
-    *
-    * @return   directory, from where the application is started
-    */
+     * Get working directory
+     *
+     * @return   directory, from where the application is started
+     */
     const fs::path GetWorkingDir();
 };
 

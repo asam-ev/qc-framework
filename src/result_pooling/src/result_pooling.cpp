@@ -5,24 +5,24 @@
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-#include "stdafx.h"
 #include "result_pooling.h"
+#include "common/config_format/c_configuration.h"
 #include "common/result_format/c_checker_bundle.h"
+#include "common/result_format/c_file_location.h"
+#include "common/result_format/c_inertial_location.h"
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_parameter_container.h"
-#include "common/result_format/c_file_location.h"
+#include "common/result_format/c_result_container.h"
 #include "common/result_format/c_road_location.h"
 #include "common/result_format/c_xml_location.h"
-#include "common/result_format/c_inertial_location.h"
-#include "common/result_format/c_result_container.h"
-#include "common/config_format/c_configuration.h"
 #include "common/xml/c_x_path_evaluator.h"
+#include "stdafx.h"
 
-cResultContainer * pResultContainer;
+cResultContainer *pResultContainer;
 
 // Main Programm
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     std::string strToolpath = argv[0];
 
@@ -55,7 +55,8 @@ int main(int argc, char* argv[])
             fs::path pFilepath = strFilepath;
             if (pFilepath.is_absolute())
                 resultsDirectory = pFilepath;
-            else {
+            else
+            {
                 if ("/" == strFilepath)
                     resultsDirectory += strFilepath;
                 else
@@ -72,11 +73,11 @@ int main(int argc, char* argv[])
     }
 
     RunResultPooling(inputParams, resultsDirectory);
-    
-return 0;
+
+    return 0;
 }
 
-void ShowHelp(const std::string& toolPath)
+void ShowHelp(const std::string &toolPath)
 {
     std::string applicationName = toolPath;
     std::string applicationNameWithoutExt = toolPath;
@@ -91,7 +92,7 @@ void ShowHelp(const std::string& toolPath)
     std::cout << "\n\n";
 }
 
-void RunResultPooling(const cParameterContainer& inputParams, const fs::path& resultsDirectory)
+void RunResultPooling(const cParameterContainer &inputParams, const fs::path &resultsDirectory)
 {
     std::string strResultFile = inputParams.GetParam("strResultFile");
 
@@ -110,12 +111,10 @@ void RunResultPooling(const cParameterContainer& inputParams, const fs::path& re
         file.remove();
     }
     std::cout << std::endl << std::endl;
-    std::cout << "Collect results from directory: " << std::endl
-              << resultsDirectory << std::endl
-              << std::endl;
+    std::cout << "Collect results from directory: " << std::endl << resultsDirectory << std::endl << std::endl;
 
     std::cout << "Found: " << std::endl;
-    for (auto& pFilePath : fs::directory_iterator(resultsDirectory))
+    for (auto &pFilePath : fs::directory_iterator(resultsDirectory))
     {
         std::string strFilePath = pFilePath.path().string();
         std::string strFileName = strFilePath;
@@ -147,10 +146,9 @@ void RunResultPooling(const cParameterContainer& inputParams, const fs::path& re
 static void AddFileLocationsToIssues()
 {
     // Calculate and set file location for ervery xml location
-    std::list<cCheckerBundle*> checkerBundles = pResultContainer->GetCheckerBundles();
-    for (std::list<cCheckerBundle*>::const_iterator itCheckerBundle = checkerBundles.cbegin();
-         itCheckerBundle != checkerBundles.cend();
-         itCheckerBundle++)
+    std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
+    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = checkerBundles.cbegin();
+         itCheckerBundle != checkerBundles.cend(); itCheckerBundle++)
     {
         cXPathEvaluator xodrXPathEvaluator;
         cXPathEvaluator xoscXPathEvaluator;
@@ -168,21 +166,17 @@ static void AddFileLocationsToIssues()
             successXoscContent = xoscXPathEvaluator.SetXmlContent(QString::fromStdString(xoscFilePath));
 
         // Evaluate XPath for every issue and set calculated file location
-        std::list<cIssue*> issues = (*itCheckerBundle)->GetIssues();
-        for (std::list<cIssue*>::const_iterator itIssue = issues.cbegin(); itIssue != issues.cend();
-             itIssue++)
+        std::list<cIssue *> issues = (*itCheckerBundle)->GetIssues();
+        for (std::list<cIssue *>::const_iterator itIssue = issues.cbegin(); itIssue != issues.cend(); itIssue++)
         {
             for (const auto location : (*itIssue)->GetLocationsContainer())
             {
                 // Check for xml Location
-                std::list<cExtendedInformation*> extInformations =
-                    location->GetExtendedInformations();
-                for (std::list<cExtendedInformation*>::const_iterator extIt =
-                         extInformations.cbegin();
-                     extIt != extInformations.cend();
-                     extIt++)
+                std::list<cExtendedInformation *> extInformations = location->GetExtendedInformations();
+                for (std::list<cExtendedInformation *>::const_iterator extIt = extInformations.cbegin();
+                     extIt != extInformations.cend(); extIt++)
                 {
-                    cXMLLocation* xmlLocation = dynamic_cast<cXMLLocation*>(*extIt);
+                    cXMLLocation *xmlLocation = dynamic_cast<cXMLLocation *>(*extIt);
                     if (nullptr != xmlLocation)
                     {
                         // Calculate and set file location
@@ -211,10 +205,9 @@ static void AddFileLocationsToIssues()
                         }
 
                         if (!successGetRows)
-                            std::cerr
-                                << "Could not calculate file location for current issue (xpath: '"
-                                << xpath << "')." << std::endl
-                                << std::endl;
+                            std::cerr << "Could not calculate file location for current issue (xpath: '" << xpath
+                                      << "')." << std::endl
+                                      << std::endl;
                     }
                 }
             }

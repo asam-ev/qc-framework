@@ -9,12 +9,12 @@
 #include "common/util.h"
 
 #include <xercesc/dom/DOM.hpp>
-#include <xercesc/parsers/XercesDOMParser.hpp>
-#include <xercesc/util/ParseException.hpp>
 #include <xercesc/parsers/AbstractDOMParser.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
 #include <xercesc/sax/SAXException.hpp>
 #include <xercesc/sax/SAXParseException.hpp>
+#include <xercesc/util/ParseException.hpp>
 #include <xercesc/util/XMLString.hpp>
 
 #include "common/result_format/c_issue.h"
@@ -24,30 +24,30 @@
 class cParameterContainer;
 
 /**
-* Main function for application
-*
-* @param    [in] argc                Number of arguments in shell
-* @param    [in] argv                Pointer to arguments
-*
-* @return   The standard return value
-*/
-int main(int argc, char* argv[]);
+ * Main function for application
+ *
+ * @param    [in] argc                Number of arguments in shell
+ * @param    [in] argv                Pointer to arguments
+ *
+ * @return   The standard return value
+ */
+int main(int argc, char *argv[]);
 
 /**
-* Shows the help for the application
-* @param    [in] applicationName    The name of the application
-*/
-void ShowHelp(const std::string& applicationName);
+ * Shows the help for the application
+ * @param    [in] applicationName    The name of the application
+ */
+void ShowHelp(const std::string &applicationName);
 
 /**
-* Runs the text report module
-*/
-void RunTextReport(const cParameterContainer& inputParams);
+ * Runs the text report module
+ */
+void RunTextReport(const cParameterContainer &inputParams);
 
 // Prints Extended Informations into the text report
-void PrintExtendedInformationIntoStream(cIssue* item, std::stringstream* ssStream);
+void PrintExtendedInformationIntoStream(cIssue *item, std::stringstream *ssStream);
 
 /**
-* Writes the default configuration for a report
-*/
+ * Writes the default configuration for a report
+ */
 void WriteDefaultConfig();

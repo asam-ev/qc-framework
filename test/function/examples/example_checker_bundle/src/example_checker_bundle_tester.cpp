@@ -14,9 +14,9 @@
 
 class cTesterExampleCheckerBundle : public ::testing::Test
 {
-    public:
-        std::string strTestFilesDir = std::string(QC4OPENX_DBQA_EXAMPLE_TEST_REF_DIR);
-        std::string strWorkingDir = std::string(QC4OPENX_DBQA_EXAMPLE_TEST_WORK_DIR);
+  public:
+    std::string strTestFilesDir = std::string(QC4OPENX_DBQA_EXAMPLE_TEST_REF_DIR);
+    std::string strWorkingDir = std::string(QC4OPENX_DBQA_EXAMPLE_TEST_WORK_DIR);
 };
 
 TEST_F(cTesterExampleCheckerBundle, CmdBasic)

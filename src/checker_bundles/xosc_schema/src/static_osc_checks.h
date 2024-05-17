@@ -9,14 +9,14 @@
 #ifndef STATICOSCCHECKS_H__
 #define STATICOSCCHECKS_H__
 
-#include "common/qc4openx_filesystem.h"
-#include "common/xsd/c_osc_schema_checker.h"
-#include "common/xsd/c_parser_error_handler.h"
 #include "common/config_format/c_configuration.h"
 #include "common/config_format/c_configuration_checker_bundle.h"
 #include "common/config_format/c_configuration_report_module.h"
-#include "stdafx.h"
+#include "common/qc4openx_filesystem.h"
 #include "common/util.h"
+#include "common/xsd/c_osc_schema_checker.h"
+#include "common/xsd/c_parser_error_handler.h"
+#include "stdafx.h"
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/AbstractDOMParser.hpp>
@@ -42,13 +42,13 @@ class cCheckerBundle;
  *
  * @return   The standard return value
  */
-int main(int argc, char* argv[]);
+int main(int argc, char *argv[]);
 
 /**
  * Shows the help for the application
  * @param    [in] applicationName    The name of the application
  */
-void ShowHelp(const std::string& applicationName);
+void ShowHelp(const std::string &applicationName);
 
 /**
  * Get application directory

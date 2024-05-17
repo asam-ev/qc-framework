@@ -9,11 +9,11 @@
 
 XERCES_CPP_NAMESPACE_USE
 
-DOMElement* cExtendedInformation::CreateExtendedInformationXMLNode(DOMDocument * p_resultDocument)
+DOMElement *cExtendedInformation::CreateExtendedInformationXMLNode(DOMDocument *p_resultDocument)
 {
-    XMLCh* pTagName = XMLString::transcode(m_TagName.c_str());
+    XMLCh *pTagName = XMLString::transcode(m_TagName.c_str());
 
-    DOMElement* p_DataElement = p_resultDocument->createElement(pTagName);
+    DOMElement *p_DataElement = p_resultDocument->createElement(pTagName);
 
     XMLString::release(&pTagName);
 

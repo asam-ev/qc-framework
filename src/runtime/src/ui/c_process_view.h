@@ -8,16 +8,16 @@
 #ifndef CPROCESS_VIEW_H
 #define CPROCESS_VIEW_H
 
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QMenu>
 #include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QTreeWidget>
 
 #include <QtGui/QMouseEvent>
 
-#include <QtCore/QThread>
-#include <QtCore/QProcess>
 #include <QtCore/QCoreApplication>
+#include <QtCore/QProcess>
+#include <QtCore/QThread>
 
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_result_container.h"
@@ -65,7 +65,7 @@ class cProcessView : public QTreeWidget
 {
     Q_OBJECT
 
-protected:
+  protected:
     static const unsigned int ITEM_TYPE_ID = Qt::UserRole + 1;
     static const unsigned int ITEM_DATA_ID = Qt::UserRole + 10;
     static const unsigned int ITEM_PARAM = 0;
@@ -74,58 +74,58 @@ protected:
     static const unsigned int ITEM_REPORT_MODULE = 3;
 
     // Pointer to current configuration which is hold in cRuntimeWindow
-    const cConfiguration* _currentConfiguration{nullptr};
+    const cConfiguration *_currentConfiguration{nullptr};
 
-public:
-    cProcessView(QWidget* parent = nullptr);
+  public:
+    cProcessView(QWidget *parent = nullptr);
 
     /**
-    * Loads a configuration in the processView
-    **/
-    void LoadConfiguration(cConfiguration* const configuration);
+     * Loads a configuration in the processView
+     **/
+    void LoadConfiguration(cConfiguration *const configuration);
 
     /*!
      * Adds a configuration
      *
      * \param configurationToAdd
      */
-    void AddConfiguration(cConfiguration* const configurationToAdd);
+    void AddConfiguration(cConfiguration *const configurationToAdd);
 
-    void GetConfigurationFromView(cConfiguration* newConfiguration);
+    void GetConfigurationFromView(cConfiguration *newConfiguration);
 
-    void SetGlobalParamXodrFile(const std::string& xodrFilePath);
+    void SetGlobalParamXodrFile(const std::string &xodrFilePath);
 
-private:
+  private:
     // Add checker bundle item to invisible root item
-    void AddCheckerBundleItemToRoot(cConfigurationCheckerBundle* const checkerBundle, const bool expand = false);
+    void AddCheckerBundleItemToRoot(cConfigurationCheckerBundle *const checkerBundle, const bool expand = false);
 
     // Add checker item to checker bundle item
-    void AddCheckerItem(QTreeWidgetItem* parentCheckerBundleItem, cConfigurationChecker* const checker);
+    void AddCheckerItem(QTreeWidgetItem *parentCheckerBundleItem, cConfigurationChecker *const checker);
 
     // Add report module item to invisible root item
-    void AddReportModuleItemToRoot(cConfigurationReportModule* const reportModule, const bool expand = false);
+    void AddReportModuleItemToRoot(cConfigurationReportModule *const reportModule, const bool expand = false);
 
     // Add param item to parent item
-    void AddParamItem(QTreeWidgetItem* parentItem, const std::string& name, const std::string& value);
+    void AddParamItem(QTreeWidgetItem *parentItem, const std::string &name, const std::string &value);
 
     // Add param item to invisible root item
-    void AddParamItemToRoot(const std::string& name, const std::string& value, const bool setAsFirstItem = false);
+    void AddParamItemToRoot(const std::string &name, const std::string &value, const bool setAsFirstItem = false);
 
-    void AddParamToItem(QTreeWidgetItem* newItem, const std::string& name, const std::string& value);
+    void AddParamToItem(QTreeWidgetItem *newItem, const std::string &name, const std::string &value);
 
     // Set param data and text
-    void SetParamDataOnItem(QTreeWidgetItem* item, const std::string& name, const std::string& value);
+    void SetParamDataOnItem(QTreeWidgetItem *item, const std::string &name, const std::string &value);
 
     // Evaluates, if the parent item has a param item with the given name as child
     // Returns the found param item or nullptr
-    QTreeWidgetItem* HasParamItem(const QTreeWidgetItem* parentItem, const std::string& name);
+    QTreeWidgetItem *HasParamItem(const QTreeWidgetItem *parentItem, const std::string &name);
 
-    cParamData GetParamDataFromItem(const QTreeWidgetItem* item);
-    cCheckerBundleData GetCheckerBundleDataFromItem(const QTreeWidgetItem* item);
-    cCheckerData GetCheckerDataFromItem(const QTreeWidgetItem* item);
-    cReportModuleData GetReportModuleDataFromItem(const QTreeWidgetItem* item);
+    cParamData GetParamDataFromItem(const QTreeWidgetItem *item);
+    cCheckerBundleData GetCheckerBundleDataFromItem(const QTreeWidgetItem *item);
+    cCheckerData GetCheckerDataFromItem(const QTreeWidgetItem *item);
+    cReportModuleData GetReportModuleDataFromItem(const QTreeWidgetItem *item);
 
-public slots:
+  public slots:
     // Add a local parameter
     void AddLocalParam();
 
@@ -136,7 +136,7 @@ public slots:
     void EditParam();
 
     // Calls the dialog for a special item
-    void EditParam(QTreeWidgetItem* item);
+    void EditParam(QTreeWidgetItem *item);
 
     // Deletes the current selected item
     void DeleteParam();
@@ -151,7 +151,7 @@ public slots:
     void EditChecker();
 
     // Calls the dialog for a special item
-    void EditChecker(QTreeWidgetItem* item);
+    void EditChecker(QTreeWidgetItem *item);
 
     // Deletes the current selected item
     void DeleteChecker();
@@ -159,7 +159,7 @@ public slots:
     // Deletes the current selected item
     void DeleteReportModule();
 
-    void DeleteItem(QTreeWidgetItem* item, bool deleteChilds = true);
+    void DeleteItem(QTreeWidgetItem *item, bool deleteChilds = true);
 
     // Moves an item up
     void MoveUp();
@@ -167,22 +167,22 @@ public slots:
     // Moves an item down
     void MoveDown();
 
-signals:
+  signals:
     void ChangeConfiguration();
 
     int ExecuteProcessAndAddConfiguration(QString processPath);
 
-private:
-    virtual void mouseDoubleClickEvent(QMouseEvent* event);
+  private:
+    virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
-protected:
-    void showContextMenu(const QPoint & pos);
+  protected:
+    void showContextMenu(const QPoint &pos);
 
     /**
-    * Get application directory
-    *
-    * @return   directory, where the application is installed
-    */
+     * Get application directory
+     *
+     * @return   directory, where the application is installed
+     */
     const QString GetApplicationDir();
 };
 

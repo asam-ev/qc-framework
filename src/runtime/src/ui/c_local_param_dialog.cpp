@@ -7,13 +7,16 @@
  */
 #include "c_local_param_dialog.h"
 
-cLocalParamDialog::cLocalParamDialog(const QString& initalParamName, const QString& initalParamValue, const bool paramNameEditable, QWidget* parent) : cParamDialog(initalParamName, initalParamValue, paramNameEditable, parent)
+cLocalParamDialog::cLocalParamDialog(const QString &initalParamName, const QString &initalParamValue,
+                                     const bool paramNameEditable, QWidget *parent)
+    : cParamDialog(initalParamName, initalParamValue, paramNameEditable, parent)
 {
     InitUIElements(initalParamName, initalParamValue, paramNameEditable);
     AddWidgetsToLayout();
 }
 
-void cLocalParamDialog::InitUIElements(const QString& initalParamName, const QString& initalParamValue, const bool paramNameEditable)
+void cLocalParamDialog::InitUIElements(const QString &initalParamName, const QString &initalParamValue,
+                                       const bool paramNameEditable)
 {
     InitBasicUIElements(initalParamName, initalParamValue);
 

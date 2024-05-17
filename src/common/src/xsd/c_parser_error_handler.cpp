@@ -13,54 +13,53 @@
 #include "common/result_format/c_file_location.h"
 #include "common/result_format/c_locations_container.h"
 
-cParserErrorHandler::cParserErrorHandler(cCheckerBundle* checkerBundle, const char* filePath)
-    : ErrorHandler()
+cParserErrorHandler::cParserErrorHandler(cCheckerBundle *checkerBundle, const char *filePath) : ErrorHandler()
 {
     myCheckerBundle = checkerBundle;
     myFilePath = filePath;
 }
 
-void cParserErrorHandler::reportParseException(const SAXParseException& ex)
+void cParserErrorHandler::reportParseException(const SAXParseException &ex)
 {
     reportParseIssue(ex, eIssueLevel::WARNING_LVL);
 }
 
-void cParserErrorHandler::reportParseIssue(const SAXParseException& ex, eIssueLevel issueLevel)
+void cParserErrorHandler::reportParseIssue(const SAXParseException &ex, eIssueLevel issueLevel)
 {
-    if (myCheckerBundle != nullptr) {
+    if (myCheckerBundle != nullptr)
+    {
         std::stringstream errorStr;
         std::string message = XMLString::transcode(ex.getMessage());
 
-        errorStr << "Row:" << ex.getLineNumber() << " Column:" << ex.getColumnNumber()
-                 << " Message: " << message;
+        errorStr << "Row:" << ex.getLineNumber() << " Column:" << ex.getColumnNumber() << " Message: " << message;
 
-        cChecker* pXodrParserChecker = myCheckerBundle->GetCheckerById("xoscSchemaChecker");
+        cChecker *pXodrParserChecker = myCheckerBundle->GetCheckerById("xoscSchemaChecker");
 
-        if (nullptr == pXodrParserChecker) {
-            pXodrParserChecker = myCheckerBundle->CreateChecker(
-                "xoscSchemaChecker", "Checks the xsd validity of an OpenSCENARIO.");
+        if (nullptr == pXodrParserChecker)
+        {
+            pXodrParserChecker =
+                myCheckerBundle->CreateChecker("xoscSchemaChecker", "Checks the xsd validity of an OpenSCENARIO.");
         }
 
-        cLocationsContainer* loc = new cLocationsContainer(
-            message,
-            (cExtendedInformation*)new cFileLocation(
-                eFileType::XOSC, (int)ex.getLineNumber(), (int)ex.getColumnNumber()));
+        cLocationsContainer *loc =
+            new cLocationsContainer(message, (cExtendedInformation *)new cFileLocation(
+                                                 eFileType::XOSC, (int)ex.getLineNumber(), (int)ex.getColumnNumber()));
 
         pXodrParserChecker->AddIssue(new cIssue(errorStr.str(), issueLevel, loc));
     }
 }
 
-void cParserErrorHandler::warning(const SAXParseException& ex)
+void cParserErrorHandler::warning(const SAXParseException &ex)
 {
     reportParseIssue(ex, eIssueLevel::WARNING_LVL);
 }
 
-void cParserErrorHandler::error(const SAXParseException& ex)
+void cParserErrorHandler::error(const SAXParseException &ex)
 {
     reportParseIssue(ex, eIssueLevel::ERROR_LVL);
 }
 
-void cParserErrorHandler::fatalError(const SAXParseException& ex)
+void cParserErrorHandler::fatalError(const SAXParseException &ex)
 {
     reportParseIssue(ex, eIssueLevel::ERROR_LVL);
 }

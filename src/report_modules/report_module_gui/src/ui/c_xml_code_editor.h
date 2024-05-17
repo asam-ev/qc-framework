@@ -44,49 +44,51 @@
 #include <iostream>
 
 // Displays a XML Code snippet
-class cXMLCodeEditor : public QPlainTextEdit {
+class cXMLCodeEditor : public QPlainTextEdit
+{
     Q_OBJECT
 
-public:
+  public:
     // Paints the lins number are
-    void LineNumberAreaPaintEvent(QPaintEvent* event);
+    void LineNumberAreaPaintEvent(QPaintEvent *event);
 
     // Returns the width od the line numer area
     int LineNumberAreaWidth() const;
 
     // Sets the text on the editor window
-    void SetText(const QString& text);
+    void SetText(const QString &text);
 
     // Sets the marker to a new row entry
     void SetMarker(unsigned newRow);
 
-protected:
+  protected:
     cXMLCodeEditor() = delete;
-    cXMLCodeEditor(const cXMLCodeEditor&) = delete;
-    cXMLCodeEditor(cXMLCodeEditor&&) = delete;
-    explicit cXMLCodeEditor(QTabWidget* tab, QWidget* parent);
+    cXMLCodeEditor(const cXMLCodeEditor &) = delete;
+    cXMLCodeEditor(cXMLCodeEditor &&) = delete;
+    explicit cXMLCodeEditor(QTabWidget *tab, QWidget *parent);
     virtual ~cXMLCodeEditor();
 
-public slots:
-    void UpdateLineNumberArea(const QRect& rect, int dy);
+  public slots:
+    void UpdateLineNumberArea(const QRect &rect, int dy);
 
     void UpdateLineNumberAreaWidth(int);
 
-protected:
-    QTabWidget* const _tabWidget{nullptr};
-    QWidget* _lineNumberArea{nullptr};
+  protected:
+    QTabWidget *const _tabWidget{nullptr};
+    QWidget *_lineNumberArea{nullptr};
     QFont _normalFont;
     QFont _boldFont;
-    QFontMetrics* _metrics{nullptr};
+    QFontMetrics *_metrics{nullptr};
 
     QList<QPair<QRect, QString>> _issueHints;
     unsigned _currentMarkerRow{0};
 };
 
 // Diaplays the lines
-class cLineNumberArea : public QWidget {
-public:
-    cLineNumberArea(cXMLCodeEditor* editor) : QWidget(editor), _codeEditor(editor)
+class cLineNumberArea : public QWidget
+{
+  public:
+    cLineNumberArea(cXMLCodeEditor *editor) : QWidget(editor), _codeEditor(editor)
     {
     }
 
@@ -95,14 +97,14 @@ public:
         return QSize(_codeEditor->LineNumberAreaWidth(), 0);
     }
 
-protected:
-    void paintEvent(QPaintEvent* event) override
+  protected:
+    void paintEvent(QPaintEvent *event) override
     {
         _codeEditor->LineNumberAreaPaintEvent(event);
     }
 
-private:
-    cXMLCodeEditor* const _codeEditor{nullptr};
+  private:
+    cXMLCodeEditor *const _codeEditor{nullptr};
 };
 
 #endif

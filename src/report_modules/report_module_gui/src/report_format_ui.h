@@ -14,27 +14,27 @@
 class cParameterContainer;
 
 /**
-* Main function for application
-*
-* @param    [in] argc				Number of arguments in shell
-* @param    [in] argv				Pointer to arguments
-*
-* @return   The standard return value
-*/
-int main(int argc, char* argv[]);
+ * Main function for application
+ *
+ * @param    [in] argc				Number of arguments in shell
+ * @param    [in] argv				Pointer to arguments
+ *
+ * @return   The standard return value
+ */
+int main(int argc, char *argv[]);
 
 /**
-* Shows the help for the application
-* @param    [in] applicationName	The name of the application
-*/
-void ShowHelp(const std::string& applicationName);
+ * Shows the help for the application
+ * @param    [in] applicationName	The name of the application
+ */
+void ShowHelp(const std::string &applicationName);
 
 /**
-* Runs the report gui module
-*/
-int RunReportGUI(const cParameterContainer& inputParams, const QApplication& app);
+ * Runs the report gui module
+ */
+int RunReportGUI(const cParameterContainer &inputParams, const QApplication &app);
 
 /**
-* Writes the default configuration for a report
-*/
+ * Writes the default configuration for a report
+ */
 void WriteDefaultConfig();

@@ -9,14 +9,14 @@
 
 XERCES_CPP_NAMESPACE_USE
 
-const XMLCh* cXMLLocation::TAG_NAME = CONST_XMLCH("XMLLocation");
-const XMLCh* cXMLLocation::ATTR_XPATH = CONST_XMLCH("xpath");
+const XMLCh *cXMLLocation::TAG_NAME = CONST_XMLCH("XMLLocation");
+const XMLCh *cXMLLocation::ATTR_XPATH = CONST_XMLCH("xpath");
 
-DOMElement* cXMLLocation::WriteXML(DOMDocument * p_resultDocument)
+DOMElement *cXMLLocation::WriteXML(DOMDocument *p_resultDocument)
 {
-    DOMElement* p_DataElement = CreateExtendedInformationXMLNode(p_resultDocument);
+    DOMElement *p_DataElement = CreateExtendedInformationXMLNode(p_resultDocument);
 
-    XMLCh* pXPath = XMLString::transcode(m_XPath.c_str());
+    XMLCh *pXPath = XMLString::transcode(m_XPath.c_str());
 
     p_DataElement->setAttribute(ATTR_XPATH, pXPath);
 
@@ -25,11 +25,11 @@ DOMElement* cXMLLocation::WriteXML(DOMDocument * p_resultDocument)
     return p_DataElement;
 }
 
-cXMLLocation* cXMLLocation::ParseFromXML(DOMNode *, DOMElement * pXMLElement)
+cXMLLocation *cXMLLocation::ParseFromXML(DOMNode *, DOMElement *pXMLElement)
 {
     std::string strXPath = XMLString::transcode(pXMLElement->getAttribute(ATTR_XPATH));
 
-    cXMLLocation* result = new cXMLLocation(strXPath);
+    cXMLLocation *result = new cXMLLocation(strXPath);
 
     return result;
 }
@@ -39,27 +39,27 @@ std::string cXMLLocation::GetXPath() const
     return m_XPath;
 }
 
-cXMLLocation* cXMLLocation::CreateXMLLocationByRoadId(const std::string& roadId)
+cXMLLocation *cXMLLocation::CreateXMLLocationByRoadId(const std::string &roadId)
 {
     std::stringstream xPath = CreateXPathByRoadId(roadId);
     return new cXMLLocation(xPath.str());
 }
 
-cXMLLocation* cXMLLocation::CreateXMLLocationByRoadIdWithPlanView(const std::string& roadId)
+cXMLLocation *cXMLLocation::CreateXMLLocationByRoadIdWithPlanView(const std::string &roadId)
 {
     std::stringstream xPath = CreateXPathByRoadId(roadId);
     xPath << "/planView";
     return new cXMLLocation(xPath.str());
 }
 
-cXMLLocation* cXMLLocation::CreateXMLLocationByRoadIdWithElevationProfile(const std::string& roadId)
+cXMLLocation *cXMLLocation::CreateXMLLocationByRoadIdWithElevationProfile(const std::string &roadId)
 {
     std::stringstream xPath = CreateXPathByRoadId(roadId);
     xPath << "/elevationProfile";
     return new cXMLLocation(xPath.str());
 }
 
-std::stringstream cXMLLocation::CreateXPathByRoadId(const std::string& roadId)
+std::stringstream cXMLLocation::CreateXPathByRoadId(const std::string &roadId)
 {
     std::stringstream xPath;
     xPath << "/OpenDRIVE/road[@id='";
