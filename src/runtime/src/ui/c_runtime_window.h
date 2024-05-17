@@ -10,8 +10,8 @@
 
 #include <QtWidgets/QMainWindow>
 
-#include "common/config_format/c_configuration.h"
 #include "c_runtime_thread.h"
+#include "common/config_format/c_configuration.h"
 
 class cProcessView;
 class cProcessLog;
@@ -22,31 +22,32 @@ class cRuntimeWindow : public QMainWindow
 {
     Q_OBJECT
 
-protected:
-    cProcessView*       _processView{nullptr};
-    cProcessLog*        _processLog{nullptr};
+  protected:
+    cProcessView *_processView{nullptr};
+    cProcessLog *_processLog{nullptr};
 
-    cConfiguration      _currentConfiguration;
-    QString             _currentConfigurationPath;
+    cConfiguration _currentConfiguration;
+    QString _currentConfigurationPath;
 
-    cRuntimeThread      _runningThread;
-    bool                _configurationChanged{false};
-    bool                _autostart{true};
+    cRuntimeThread _runningThread;
+    bool _configurationChanged{false};
+    bool _autostart{true};
 
-public:
-    cRuntimeWindow(const std::string& configurationFilePath, const std::string& xodrFile, const std::string& xoscFile, const bool bAutostart, QWidget *parent = 0);
-
-    /*
-    * Loads a configuration from file to datastructure
-    * \param strConfigurationFilepath: File path of the configuration which should be loaded
-    */
-    void LoadConfiguration(cConfiguration* const configuration, const QString& strConfigurationFilepath);
+  public:
+    cRuntimeWindow(const std::string &configurationFilePath, const std::string &xodrFile, const std::string &xoscFile,
+                   const bool bAutostart, QWidget *parent = 0);
 
     /*
-    * Shows a configuration to the user
-    * \param currentConfiguration: Configuration which should be shown
-    */
-    void ShowConfiguration(cConfiguration* const currentConfiguration);
+     * Loads a configuration from file to datastructure
+     * \param strConfigurationFilepath: File path of the configuration which should be loaded
+     */
+    void LoadConfiguration(cConfiguration *const configuration, const QString &strConfigurationFilepath);
+
+    /*
+     * Shows a configuration to the user
+     * \param currentConfiguration: Configuration which should be shown
+     */
+    void ShowConfiguration(cConfiguration *const currentConfiguration);
 
     // Updates the internal configuration
     void UpdateConfiguration();
@@ -54,14 +55,14 @@ public:
     // Returns true if the execution thread is running
     bool IsRunning() const;
 
-public slots:
+  public slots:
     // Runs the process
     void Run();
 
     // Aborts the running process
     void Abort();
 
-private slots:
+  private slots:
     // Open result file
     void OpenConfigurationFile();
 
@@ -89,14 +90,14 @@ private slots:
      * \param processPath
      * \return Positive number if everything is okay
      */
-    int ExecuteProcessAndAddConfiguration(const QString& processPath);
+    int ExecuteProcessAndAddConfiguration(const QString &processPath);
 
-signals:
+  signals:
     void Finished();
 
     void Log(QString log);
 
-private:
+  private:
     // Filename of the default xodr configuration
     static const QString DEFAULT_XODR_CONFIG;
 
@@ -104,17 +105,17 @@ private:
     static const QString DEFAULT_XOSC_CONFIG;
 
     /**
-    * Get application directory
-    *
-    * @return   directory, where the application is installed
-    */
+     * Get application directory
+     *
+     * @return   directory, where the application is installed
+     */
     const QString GetApplicationDir();
 
     /**
-    * Get working directory
-    *
-    * @return   directory, from where the application is started
-    */
+     * Get working directory
+     *
+     * @return   directory, from where the application is started
+     */
     const QString GetWorkingDir();
 
     // Handle application close
@@ -124,7 +125,7 @@ private:
     void SetupWindowTitle();
 
     // Creates an empty configuration
-    void CreateNewConfiguration(cConfiguration* const configuration);
+    void CreateNewConfiguration(cConfiguration *const configuration);
 };
 
 #endif

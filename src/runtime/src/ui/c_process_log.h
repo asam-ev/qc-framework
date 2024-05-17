@@ -40,44 +40,46 @@
 #include <QtGui/QTextBlock>
 #include <QtWidgets/QPlainTextEdit>
 
-class cProcessLog : public QPlainTextEdit {
+class cProcessLog : public QPlainTextEdit
+{
     Q_OBJECT
 
-protected:
-public:
-    cProcessLog(QWidget* parent = 0);
+  protected:
+  public:
+    cProcessLog(QWidget *parent = 0);
     virtual ~cProcessLog();
 
     // Dumps the console output into a file
-    void SaveToFile(const QString& filepath) const;
+    void SaveToFile(const QString &filepath) const;
 
     // Clears the console
     void Clear();
 
     // Paints the lins number are
-    void LineNumberAreaPaintEvent(QPaintEvent* event);
+    void LineNumberAreaPaintEvent(QPaintEvent *event);
 
     // Returns the width od the line numer area
     int LineNumberAreaWidth() const;
 
-public slots:
-    void Log(const QString& log);
+  public slots:
+    void Log(const QString &log);
 
-    void UpdateLineNumberArea(const QRect& rect, int dy);
+    void UpdateLineNumberArea(const QRect &rect, int dy);
 
     void UpdateLineNumberAreaWidth(int);
 
-protected:
-    void resizeEvent(QResizeEvent* event) override;
+  protected:
+    void resizeEvent(QResizeEvent *event) override;
 
-private:
-    QWidget* _lineNumberArea{nullptr};
-    QFontMetrics* _metrics{nullptr};
+  private:
+    QWidget *_lineNumberArea{nullptr};
+    QFontMetrics *_metrics{nullptr};
 };
 
-class cLineNumberArea : public QWidget {
-public:
-    cLineNumberArea(cProcessLog* editor) : QWidget(editor), codeEditor(editor)
+class cLineNumberArea : public QWidget
+{
+  public:
+    cLineNumberArea(cProcessLog *editor) : QWidget(editor), codeEditor(editor)
     {
         // codeEditor = editor;
     }
@@ -87,14 +89,14 @@ public:
         return QSize(codeEditor->LineNumberAreaWidth(), 0);
     }
 
-protected:
-    void paintEvent(QPaintEvent* event) override
+  protected:
+    void paintEvent(QPaintEvent *event) override
     {
         codeEditor->LineNumberAreaPaintEvent(event);
     }
 
-private:
-    cProcessLog* codeEditor;
+  private:
+    cProcessLog *codeEditor;
 };
 
 #endif

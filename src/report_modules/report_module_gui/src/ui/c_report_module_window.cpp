@@ -14,24 +14,25 @@
 #include "c_report_module_window.h"
 #include <a_util/result.h>
 
+#include "c_checker_widget.h"
 #include "c_xodr_editor_widget.h"
 #include "c_xosc_editor_widget.h"
-#include "c_checker_widget.h"
 
 #include "common/result_format/c_checker_bundle.h"
-#include "common/result_format/c_result_container.h"
 #include "common/result_format/c_locations_container.h"
+#include "common/result_format/c_result_container.h"
 
-#include <QtWidgets/QSplitter>
-#include <QtWidgets/QDesktopWidget>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QDesktopWidget>
+#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QSplitter>
 
-cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, const std::string& reportModuleName, QWidget*)
+cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, const std::string &reportModuleName,
+                                         QWidget *)
 {
     _results = resultContainer;
     _reportModuleName = QString::fromStdString(reportModuleName);
@@ -111,11 +112,12 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
             msgBox.setWindowTitle(this->_reportModuleName + " Error");
             msgBox.setStandardButtons(QMessageBox::Ok);
 
-            //Load the DLL
+            // Load the DLL
 #ifdef WIN32
             auto viewer_dll = LoadLibrary(viewer_list.at(i).absoluteFilePath().toStdString().c_str());
 #else
-            auto viewer_dll = dlopen(viewer_list.at(i).absoluteFilePath().toStdString().c_str(), RTLD_NOW | RTLD_GLOBAL);
+            auto viewer_dll =
+                dlopen(viewer_list.at(i).absoluteFilePath().toStdString().c_str(), RTLD_NOW | RTLD_GLOBAL);
 #endif
 
             if (!viewer_dll)
@@ -125,7 +127,8 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 #else
                 QString error = dlerror();
 #endif
-                QString text = QString("Could not load viewer (%1). Error (%2). Abort.").arg(viewer_list.at(i).baseName(), error);
+                QString text =
+                    QString("Could not load viewer (%1). Error (%2). Abort.").arg(viewer_list.at(i).baseName(), error);
                 msgBox.setText(text);
                 msgBox.exec();
                 break;
@@ -140,7 +143,8 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
             if (!viewerEntries[i]->StartViewer_f)
             {
-                QString text = QString("Could not locate the function StartViewer (%1). Abort.").arg(viewer_list.at(i).baseName());
+                QString text =
+                    QString("Could not locate the function StartViewer (%1). Abort.").arg(viewer_list.at(i).baseName());
                 msgBox.setText(text);
                 msgBox.exec();
                 break;
@@ -155,7 +159,8 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
             if (!viewerEntries[i]->Initialize_f)
             {
-                QString text = QString("Could not locate the function Initialize (%1). Abort.").arg(viewer_list.at(i).baseName());
+                QString text =
+                    QString("Could not locate the function Initialize (%1). Abort.").arg(viewer_list.at(i).baseName());
                 msgBox.setText(text);
                 msgBox.exec();
                 break;
@@ -170,7 +175,8 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
             if (!viewerEntries[i]->AddIssue_f)
             {
-                QString text = QString("Could not locate the function AddIssue (%1). Abort.").arg(viewer_list.at(i).baseName());
+                QString text =
+                    QString("Could not locate the function AddIssue (%1). Abort.").arg(viewer_list.at(i).baseName());
                 msgBox.setText(text);
                 msgBox.exec();
                 break;
@@ -185,7 +191,8 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
             if (!viewerEntries[i]->ShowIssue_f)
             {
-                QString text = QString("Could not locate the function ShowIssue (%1). Abort.").arg(viewer_list.at(i).baseName());
+                QString text =
+                    QString("Could not locate the function ShowIssue (%1). Abort.").arg(viewer_list.at(i).baseName());
                 msgBox.setText(text);
                 msgBox.exec();
                 break;
@@ -200,7 +207,8 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
             if (!viewerEntries[i]->GetName_f)
             {
-                QString text = QString("Could not locate the function GetName (%1). Abort.").arg(viewer_list.at(i).baseName());
+                QString text =
+                    QString("Could not locate the function GetName (%1). Abort.").arg(viewer_list.at(i).baseName());
                 msgBox.setText(text);
                 msgBox.exec();
                 break;
@@ -215,7 +223,8 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
             if (!viewerEntries[i]->CloseViewer_f)
             {
-                QString text = QString("Could not locate the function CloseViewer (%1). Abort.").arg(viewer_list.at(i).baseName());
+                QString text =
+                    QString("Could not locate the function CloseViewer (%1). Abort.").arg(viewer_list.at(i).baseName());
                 msgBox.setText(text);
                 msgBox.exec();
                 break;
@@ -223,14 +232,16 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
             // resolve function address GetLastErrorMessage here
 #ifdef WIN32
-            viewerEntries[i]->GetLastErrorMessage_f = (GetLastErrorMessage_ptr)GetProcAddress(viewer_dll, "GetLastErrorMessage");
+            viewerEntries[i]->GetLastErrorMessage_f =
+                (GetLastErrorMessage_ptr)GetProcAddress(viewer_dll, "GetLastErrorMessage");
 #else
             viewerEntries[i]->GetLastErrorMessage_f = (GetLastErrorMessage_ptr)dlsym(viewer_dll, "GetLastErrorMessage");
 #endif
 
             if (!viewerEntries[i]->GetLastErrorMessage_f)
             {
-                QString text = QString("Could not locate the function GetLastErrorMessage (%1). Abort.").arg(viewer_list.at(i).baseName());
+                QString text = QString("Could not locate the function GetLastErrorMessage (%1). Abort.")
+                                   .arg(viewer_list.at(i).baseName());
                 msgBox.setText(text);
                 msgBox.exec();
                 break;
@@ -241,9 +252,7 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
             QAction *openViewer = new QAction(fileMenuViewerEntry, this);
             openViewer->setStatusTip(fileMenuViewerEntry);
-            connect(openViewer, &QAction::triggered, this, [=]() {
-                this->StartViewer(viewerEntries[i].get());
-            });
+            connect(openViewer, &QAction::triggered, this, [=]() { this->StartViewer(viewerEntries[i].get()); });
             viewerEntries[i]->associatedAction = openViewer;
 
             _subMenu->addAction(openViewer);
@@ -263,8 +272,7 @@ void cReportModuleWindow::LoadResultContainer(cResultContainer *const container)
     QMap<QString, QString> fileReplacementMap;
     std::list<cCheckerBundle *> bundles = container->GetCheckerBundles();
 
-    for (std::list<cCheckerBundle*>::const_iterator itBundle = bundles.cbegin();
-         itBundle != bundles.cend();
+    for (std::list<cCheckerBundle *>::const_iterator itBundle = bundles.cbegin(); itBundle != bundles.cend();
          itBundle++)
     {
         ValidateInputFile(*itBundle, &fileReplacementMap, "XodrFile", "OpenDRIVE", "OpenDRIVE (*.xodr)");
@@ -275,9 +283,7 @@ void cReportModuleWindow::LoadResultContainer(cResultContainer *const container)
     std::string xodrFilePath = container->GetXODRFilePath();
 
     // Check if we have an OpenSCENARIO and no OpenDRIVE given
-    if (container->GetCheckerBundleCount() > 0 &&
-        xoscFilePath.length() > 0 &&
-        xodrFilePath.length() == 0)
+    if (container->GetCheckerBundleCount() > 0 && xoscFilePath.length() > 0 && xodrFilePath.length() == 0)
     {
         // Retrive OpenDRIVE file from scenario and add it to the first bundle
         if (GetXodrFilePathFromXosc(xoscFilePath, xodrFilePath))
@@ -291,11 +297,9 @@ void cReportModuleWindow::LoadResultContainer(cResultContainer *const container)
         _checkerWidget->LoadResultContainer(container);
 }
 
-void cReportModuleWindow::ValidateInputFile(cCheckerBundle* const bundle,
-                                            QMap<QString, QString>* fileReplacementMap,
-                                            const std::string& parameter,
-                                            const std::string& fileName,
-                                            const std::string& filter) const
+void cReportModuleWindow::ValidateInputFile(cCheckerBundle *const bundle, QMap<QString, QString> *fileReplacementMap,
+                                            const std::string &parameter, const std::string &fileName,
+                                            const std::string &filter) const
 {
     std::string filePath = bundle->GetParam(parameter);
 
@@ -309,9 +313,7 @@ void cReportModuleWindow::ValidateInputFile(cCheckerBundle* const bundle,
 
         QMessageBox msgBox;
         std::stringstream ssDesc;
-        ssDesc << bundle->GetBundleName() << ": File could not be opened:\n"
-            << filePath << std::endl
-            << std::endl;
+        ssDesc << bundle->GetBundleName() << ": File could not be opened:\n" << filePath << std::endl << std::endl;
         ssDesc << "Do you like to choose a corresponding file?";
 
         msgBox.setWindowTitle(_reportModuleName + " Error");
@@ -322,10 +324,7 @@ void cReportModuleWindow::ValidateInputFile(cCheckerBundle* const bundle,
 
         if (messageBoxReturn == QMessageBox::Yes)
         {
-            QString xodrFilePath = QFileDialog::getOpenFileName(nullptr,
-                fileName.c_str(),
-                "",
-                filter.c_str());
+            QString xodrFilePath = QFileDialog::getOpenFileName(nullptr, fileName.c_str(), "", filter.c_str());
 
             if (!xodrFilePath.isEmpty())
             {
@@ -338,22 +337,19 @@ void cReportModuleWindow::ValidateInputFile(cCheckerBundle* const bundle,
 
 void cReportModuleWindow::OpenResultFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(this,
-        tr("Open File"),
-        "",
-        "XODR checker results (*.xqar)");
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", "XODR checker results (*.xqar)");
     if (!filePath.isNull())
     {
-        //clear old results
+        // clear old results
         _results->Clear();
-        //load new one
+        // load new one
         _results->AddResultsFromXML(filePath.toUtf8().constData());
 
         LoadResultContainer(_results);
     }
 }
 
-void cReportModuleWindow::StartViewer(Viewer* viewer)
+void cReportModuleWindow::StartViewer(Viewer *viewer)
 {
     if (_viewerActive != nullptr)
     {
@@ -361,7 +357,8 @@ void cReportModuleWindow::StartViewer(Viewer* viewer)
         if (!_viewerActive->CloseViewer_f())
         {
             std::string error(_viewerActive->GetLastErrorMessage_f());
-            std::cout << "Closing the viewer " << _viewerActive->GetName_f() << " failed, error: " << error << std::endl;
+            std::cout << "Closing the viewer " << _viewerActive->GetName_f() << " failed, error: " << error
+                      << std::endl;
         }
 
         _viewerActive = nullptr;
@@ -372,9 +369,7 @@ void cReportModuleWindow::StartViewer(Viewer* viewer)
     msgBox.setStandardButtons(QMessageBox::Ok);
 
     // Start viewer when we have an OpenDRIVE or an OpenSCENARIO
-    if (_results != nullptr &&
-        (_results->HasXODRFileName() ||
-            _results->HasXOSCFilePath()))
+    if (_results != nullptr && (_results->HasXODRFileName() || _results->HasXOSCFilePath()))
     {
         setCursor(Qt::WaitCursor);
         QApplication::processEvents();
@@ -404,7 +399,7 @@ void cReportModuleWindow::StartViewer(Viewer* viewer)
 
         // Add issues to viewer
         auto issues = _results->GetIssues(_results->GetCheckers(NULL));
-        for (const auto& issue : issues)
+        for (const auto &issue : issues)
         {
             result = viewer->AddIssue_f(issue);
 
@@ -429,24 +424,26 @@ void cReportModuleWindow::StartViewer(Viewer* viewer)
     }
 }
 
-void cReportModuleWindow::ShowIssueInViewer(const cIssue* const issue, const cLocationsContainer* locationToShow)
+void cReportModuleWindow::ShowIssueInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow)
 {
     QMessageBox msgBox;
     msgBox.setWindowTitle(this->_reportModuleName + " Error");
     msgBox.setStandardButtons(QMessageBox::Ok);
 
-    if (_viewerActive != nullptr) {
+    if (_viewerActive != nullptr)
+    {
         bool result = _viewerActive->ShowIssue_f(issue, locationToShow);
         if (!result)
         {
-            QString errormsg = QString("Show issue failed, abort. Error msg: ") + _viewerActive->GetLastErrorMessage_f();
+            QString errormsg =
+                QString("Show issue failed, abort. Error msg: ") + _viewerActive->GetLastErrorMessage_f();
             msgBox.setText(errormsg);
             msgBox.exec();
         }
     }
 }
 
-void cReportModuleWindow::closeEvent(QCloseEvent*)
+void cReportModuleWindow::closeEvent(QCloseEvent *)
 {
     for (uint32_t i = 0; i < viewerEntries.size(); i++)
     {

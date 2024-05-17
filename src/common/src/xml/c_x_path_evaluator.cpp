@@ -58,7 +58,7 @@ void cXPathEvaluator::SetAnnotatedRowsOnChildElements(QDomElement domElement)
     }
 }
 
-bool cXPathEvaluator::ReadDOMFromFile(const QString xmlFilePath, QDomDocument& domDocument)
+bool cXPathEvaluator::ReadDOMFromFile(const QString xmlFilePath, QDomDocument &domDocument)
 {
     QFile xmlFile;
     xmlFile.setFileName(xmlFilePath);
@@ -80,7 +80,8 @@ bool cXPathEvaluator::ReadDOMFromFile(const QString xmlFilePath, QDomDocument& d
 
     if (!domDocument.setContent(&xmlFile))
     {
-        std::cerr << "Could not set content of file '" << xmlFilePath.toLocal8Bit().data() << "' to DOM document." << std::endl;
+        std::cerr << "Could not set content of file '" << xmlFilePath.toLocal8Bit().data() << "' to DOM document."
+                  << std::endl;
         xmlFile.close();
         return false;
     }
@@ -89,7 +90,7 @@ bool cXPathEvaluator::ReadDOMFromFile(const QString xmlFilePath, QDomDocument& d
     return true;
 }
 
-bool cXPathEvaluator::GetAffectedRowsOfXPath(const QString xpath, QVector<int>& rows)
+bool cXPathEvaluator::GetAffectedRowsOfXPath(const QString xpath, QVector<int> &rows)
 {
     QString xmlResult;
     bool success = GetXmlResultOfXPath(xpath, xmlResult);
@@ -103,7 +104,7 @@ bool cXPathEvaluator::GetAffectedRowsOfXPath(const QString xpath, QVector<int>& 
     return (rows.size() > 0);
 }
 
-bool cXPathEvaluator::GetXmlResultOfXPath(const QString xpath, QString& xmlResult)
+bool cXPathEvaluator::GetXmlResultOfXPath(const QString xpath, QString &xmlResult)
 {
     query.setQuery(xpath);
     if (!query.isValid())
@@ -116,15 +117,15 @@ bool cXPathEvaluator::GetXmlResultOfXPath(const QString xpath, QString& xmlResul
     if (!success)
         return false;
 
-    if (xmlResult.isNull() || xmlResult.isEmpty() || xmlResult.size()<2)
+    if (xmlResult.isNull() || xmlResult.isEmpty() || xmlResult.size() < 2)
     {
         std::cerr << "Query for xpath '" << xpath.toLocal8Bit().data() << "' found no result." << std::endl;
         return false;
     }
-return true;
+    return true;
 }
 
-bool cXPathEvaluator::GetAnnotatedRowsOfRootElements(const QString xml, QVector<int>& rows)
+bool cXPathEvaluator::GetAnnotatedRowsOfRootElements(const QString xml, QVector<int> &rows)
 {
     // If the xml string contains more than one root node, it is not valid.
     // Therefore we add a default root around the given xml string
@@ -155,6 +156,3 @@ bool cXPathEvaluator::GetAnnotatedRowsOfRootElements(const QString xml, QVector<
 
     return true;
 }
-
-
-

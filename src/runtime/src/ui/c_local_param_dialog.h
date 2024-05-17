@@ -14,18 +14,18 @@ class cLocalParamDialog : public cParamDialog
 {
     Q_OBJECT
 
-public:
-    cLocalParamDialog(const QString& initalParamName, const QString& initalParamValue, const bool paramNameEditable, QWidget* parent);
+  public:
+    cLocalParamDialog(const QString &initalParamName, const QString &initalParamValue, const bool paramNameEditable,
+                      QWidget *parent);
 
-protected:
-    QLineEdit* _paramNameEdit{nullptr};
+  protected:
+    QLineEdit *_paramNameEdit{nullptr};
 
-    void InitUIElements(const QString& initalParamName, const QString& initalParamValue, const bool paramNameEditable);
+    void InitUIElements(const QString &initalParamName, const QString &initalParamValue, const bool paramNameEditable);
     void AddWidgetsToLayout();
 
-public slots:
+  public slots:
     void SaveAndClose();
 };
 
 #endif
-

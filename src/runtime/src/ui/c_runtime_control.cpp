@@ -9,7 +9,7 @@
 
 cRuntimeControl::cRuntimeControl(QWidget *parent) : QWidget(parent)
 {
-    QHBoxLayout* runtimeLayout = new QHBoxLayout;
+    QHBoxLayout *runtimeLayout = new QHBoxLayout;
     runtimeBtn = new QLabel(this);
 
     runtimeLayout->addWidget(runtimeBtn, 100, Qt::AlignCenter);
@@ -20,7 +20,7 @@ cRuntimeControl::cRuntimeControl(QWidget *parent) : QWidget(parent)
     UpdateControl();
 }
 
-void cRuntimeControl::mousePressEvent(QMouseEvent* event)
+void cRuntimeControl::mousePressEvent(QMouseEvent *event)
 {
     if (isRunning)
     {

@@ -8,23 +8,23 @@
 
 #include "c_parser_error_handler.h"
 
-#include "common/result_format/c_result_container.h"
-#include "common/result_format/c_checker_bundle.h"
 #include "common/result_format/c_checker.h"
-#include "common/result_format/c_locations_container.h"
+#include "common/result_format/c_checker_bundle.h"
 #include "common/result_format/c_file_location.h"
+#include "common/result_format/c_locations_container.h"
+#include "common/result_format/c_result_container.h"
 
-cParserErrorHandler::cParserErrorHandler(cCheckerBundle* checkerBundle, const char* filePath)
+cParserErrorHandler::cParserErrorHandler(cCheckerBundle *checkerBundle, const char *filePath)
     : ErrorHandler(), myCheckerBundle(checkerBundle), myFilePath(filePath)
 {
 }
 
-void cParserErrorHandler::reportParseException(const SAXParseException& ex)
+void cParserErrorHandler::reportParseException(const SAXParseException &ex)
 {
     reportParseIssue(ex, eIssueLevel::WARNING_LVL);
 }
 
-void cParserErrorHandler::reportParseIssue(const SAXParseException& ex, eIssueLevel issueLevel)
+void cParserErrorHandler::reportParseIssue(const SAXParseException &ex, eIssueLevel issueLevel)
 {
     if (myCheckerBundle != nullptr)
     {
@@ -33,11 +33,12 @@ void cParserErrorHandler::reportParseIssue(const SAXParseException& ex, eIssueLe
 
         errorStr << "Row:" << ex.getLineNumber() << " Column:" << ex.getColumnNumber() << " Message: " << message;
 
-        cChecker* pXodrParserChecker = myCheckerBundle->GetCheckerById("xsdSchemaChecker");
+        cChecker *pXodrParserChecker = myCheckerBundle->GetCheckerById("xsdSchemaChecker");
 
         if (nullptr == pXodrParserChecker)
         {
-            pXodrParserChecker = myCheckerBundle->CreateChecker("xsdSchemaChecker", "Checks the xsd validity of an xodr.");
+            pXodrParserChecker =
+                myCheckerBundle->CreateChecker("xsdSchemaChecker", "Checks the xsd validity of an xodr.");
         }
 
         // The message "identity constraint key for element 'OpenDRIVE' not found" cannot be located. So we count them
@@ -48,25 +49,24 @@ void cParserErrorHandler::reportParseIssue(const SAXParseException& ex, eIssueLe
         }
 
         pXodrParserChecker->AddIssue(
-            new cIssue(errorStr.str(), 
-            issueLevel,
-            new cLocationsContainer(
-                message,
-                (cExtendedInformation*) new cFileLocation(eFileType::XODR, (int)ex.getLineNumber(), (int)ex.getColumnNumber()))));
+            new cIssue(errorStr.str(), issueLevel,
+                       new cLocationsContainer(
+                           message, (cExtendedInformation *)new cFileLocation(eFileType::XODR, (int)ex.getLineNumber(),
+                                                                              (int)ex.getColumnNumber()))));
     }
 }
 
-void cParserErrorHandler::warning(const SAXParseException& ex)
+void cParserErrorHandler::warning(const SAXParseException &ex)
 {
     reportParseIssue(ex, eIssueLevel::WARNING_LVL);
 }
 
-void cParserErrorHandler::error(const SAXParseException& ex)
+void cParserErrorHandler::error(const SAXParseException &ex)
 {
     reportParseIssue(ex, eIssueLevel::ERROR_LVL);
 }
 
-void cParserErrorHandler::fatalError(const SAXParseException& ex)
+void cParserErrorHandler::fatalError(const SAXParseException &ex)
 {
     reportParseIssue(ex, eIssueLevel::ERROR_LVL);
 }
@@ -79,4 +79,3 @@ unsigned int cParserErrorHandler::GetNumberOfIdentityConstraintKeyError() const
 {
     return m_NumOfIdentityConstraintKeyErrors;
 }
-

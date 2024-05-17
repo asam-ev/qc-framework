@@ -8,14 +8,14 @@
 #include "c_checker_dialog.h"
 #include <cassert>
 
-cCheckerDialog::cCheckerDialog(eIssueLevel minLevel, eIssueLevel maxLevel, QWidget* parent) : QDialog(parent)
+cCheckerDialog::cCheckerDialog(eIssueLevel minLevel, eIssueLevel maxLevel, QWidget *parent) : QDialog(parent)
 {
-    QVBoxLayout * layout = new QVBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
 
-    QWidget* paramWidget = new QWidget(this);
-    QVBoxLayout * paramWidgetLayout = new QVBoxLayout;
+    QWidget *paramWidget = new QWidget(this);
+    QVBoxLayout *paramWidgetLayout = new QVBoxLayout;
 
-    QLabel* minLevelLabel = new QLabel(paramWidget);
+    QLabel *minLevelLabel = new QLabel(paramWidget);
     minLevelLabel->setText("Minimal warn level of issues");
 
     _minLevelEdit = new QComboBox(this);
@@ -31,7 +31,7 @@ cCheckerDialog::cCheckerDialog(eIssueLevel minLevel, eIssueLevel maxLevel, QWidg
         _minLevelEdit->setCurrentIndex(index);
     }
 
-    QLabel* maxLevelLabel = new QLabel(paramWidget);
+    QLabel *maxLevelLabel = new QLabel(paramWidget);
     maxLevelLabel->setText("Maximal warn level of issues");
 
     _maxLevelEdit = new QComboBox(this);
@@ -54,7 +54,7 @@ cCheckerDialog::cCheckerDialog(eIssueLevel minLevel, eIssueLevel maxLevel, QWidg
     paramWidgetLayout->addWidget(_maxLevelEdit, 0);
     paramWidget->setLayout(paramWidgetLayout);
 
-    QPushButton* okay = new QPushButton(this);
+    QPushButton *okay = new QPushButton(this);
     okay->setText("Set");
 
     connect(okay, SIGNAL(clicked()), this, SLOT(SaveAndClose()));
@@ -86,5 +86,5 @@ eIssueLevel cCheckerDialog::GetMinLevel() const
 eIssueLevel cCheckerDialog::GetMaxLevel() const
 {
     assert(_maxLevelEdit != nullptr);
-    return  static_cast<eIssueLevel>(_maxLevelEdit->currentData().toInt());
+    return static_cast<eIssueLevel>(_maxLevelEdit->currentData().toInt());
 }

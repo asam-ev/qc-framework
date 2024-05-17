@@ -14,9 +14,9 @@
 
 class cTesterRuntime : public ::testing::Test
 {
-    public:
-        std::string strTestFilesDir = std::string(QC4OPENX_DBQA_RUNTIME_TEST_REF_DIR);
-        std::string strWorkingDir = std::string(QC4OPENX_DBQA_RUNTIME_TEST_WORK_DIR);
+  public:
+    std::string strTestFilesDir = std::string(QC4OPENX_DBQA_RUNTIME_TEST_REF_DIR);
+    std::string strWorkingDir = std::string(QC4OPENX_DBQA_RUNTIME_TEST_WORK_DIR);
 };
 
 TEST_F(cTesterRuntime, CmdHelp)
@@ -42,7 +42,8 @@ TEST_F(cTesterRuntime, CmdConfigAutostart)
     std::string strConfigFilePath = strTestFilesDir + "/" + "DemoCheckerBundle_config.xml";
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -autostart");
+    qc4openx::Result nRes =
+        ExecuteCommand(strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -autostart");
     ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
 
     // DemoCheckerBundle not found in bin (is in examples) --> no DemoCheckerBundle.xqar --> Result.xqar with no entries
@@ -60,7 +61,8 @@ TEST_F(cTesterRuntime, CmdConfigXodrAutostart)
     std::string strXodrSchemaCheckerResultFilePath = strWorkingDir + "/" + "XodrSchemaChecker.xqar";
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -xodr " + strXodrFilePath + " -autostart");
+    qc4openx::Result nRes = ExecuteCommand(
+        strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -xodr " + strXodrFilePath + " -autostart");
     ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strXodrSchemaCheckerResultFilePath);
@@ -79,7 +81,8 @@ TEST_F(cTesterRuntime, CmdConfigXoscAutostart)
     std::string strXoscSchemaCheckerResultFilePath = strWorkingDir + "/" + "XoscSchemaChecker.xqar";
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -xosc " + strXoscFilePath + " -autostart");
+    qc4openx::Result nRes = ExecuteCommand(
+        strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -xosc " + strXoscFilePath + " -autostart");
     ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strXoscSchemaCheckerResultFilePath);

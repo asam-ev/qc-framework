@@ -37,7 +37,7 @@
 #include <cassert>
 #include <cmath>
 
-cProcessLog::cProcessLog(QWidget* parent) : QPlainTextEdit(parent)
+cProcessLog::cProcessLog(QWidget *parent) : QPlainTextEdit(parent)
 {
     QFont font;
     font.setFamily("Courier");
@@ -68,7 +68,7 @@ cProcessLog::~cProcessLog()
         delete _metrics;
 }
 
-void cProcessLog::SaveToFile(const QString& filepath) const
+void cProcessLog::SaveToFile(const QString &filepath) const
 {
     QFile file(filepath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -85,12 +85,12 @@ void cProcessLog::Clear()
     clear();
 }
 
-void cProcessLog::Log(const QString& log)
+void cProcessLog::Log(const QString &log)
 {
     appendPlainText(log);
 }
 
-void cProcessLog::LineNumberAreaPaintEvent(QPaintEvent* event)
+void cProcessLog::LineNumberAreaPaintEvent(QPaintEvent *event)
 {
     assert(_metrics != nullptr);
     assert(_lineNumberArea != nullptr);
@@ -104,11 +104,10 @@ void cProcessLog::LineNumberAreaPaintEvent(QPaintEvent* event)
     painter.setPen(Qt::black);
     QTextBlock block = firstVisibleBlock();
     int lineno = 1 + block.blockNumber();
-    for (; block.isValid() && block.isVisible(); block = block.next(), ++lineno) {
-        auto ypos =
-            static_cast<int>(blockBoundingGeometry(block).translated(contentOffset()).top());
-        painter.drawText(
-            0, ypos, _lineNumberArea->width(), height, Qt::AlignRight, QString::number(lineno));
+    for (; block.isValid() && block.isVisible(); block = block.next(), ++lineno)
+    {
+        auto ypos = static_cast<int>(blockBoundingGeometry(block).translated(contentOffset()).top());
+        painter.drawText(0, ypos, _lineNumberArea->width(), height, Qt::AlignRight, QString::number(lineno));
     }
 }
 
@@ -120,13 +119,14 @@ int cProcessLog::LineNumberAreaWidth() const
     return qMax(3, space);
 }
 
-void cProcessLog::UpdateLineNumberArea(const QRect& rect, int dy)
+void cProcessLog::UpdateLineNumberArea(const QRect &rect, int dy)
 {
     assert(_lineNumberArea != nullptr);
 
     if (dy)
         _lineNumberArea->scroll(0, dy);
-    else {
+    else
+    {
         _lineNumberArea->update(0, rect.y(), _lineNumberArea->width(), rect.height());
     }
 
@@ -139,13 +139,12 @@ void cProcessLog::UpdateLineNumberAreaWidth(int /* newBlockCount */)
     setViewportMargins(LineNumberAreaWidth() + 10, 0, 10, 0);
 }
 
-void cProcessLog::resizeEvent(QResizeEvent* event)
+void cProcessLog::resizeEvent(QResizeEvent *event)
 {
     assert(_lineNumberArea != nullptr);
 
     QPlainTextEdit::resizeEvent(event);
 
     QRect cr = contentsRect();
-    _lineNumberArea->setGeometry(
-        QRect(cr.left() + 2, cr.top(), LineNumberAreaWidth() + 2, cr.height()));
+    _lineNumberArea->setGeometry(QRect(cr.left() + 2, cr.top(), LineNumberAreaWidth() + 2, cr.height()));
 }
