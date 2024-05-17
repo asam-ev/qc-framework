@@ -10,10 +10,10 @@ project(${CHECKER_BUNDLE_XODR_SCHEMA})
 add_executable(${CHECKER_BUNDLE_XODR_SCHEMA}
     src/stdafx.h
     src/stdafx.cpp
-    src/staticODRChecks.h
-    src/staticODRChecks.cpp
-    src/xsd/cParserErrorHandler.h
-    src/xsd/cParserErrorHandler.cpp
+    src/static_odr_checks.h
+    src/static_odr_checks.cpp
+    src/xsd/c_parser_error_handler.h
+    src/xsd/c_parser_error_handler.cpp
 )
 
 target_link_libraries(${CHECKER_BUNDLE_XODR_SCHEMA} PRIVATE qc4openx-common)

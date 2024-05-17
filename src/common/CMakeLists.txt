@@ -14,24 +14,24 @@ find_package(Threads)
 
 add_library(qc4openx-common STATIC
     src/util.cpp
-    src/result_format/cResultContainer.cpp
-    src/result_format/cIssue.cpp
-    src/result_format/cCheckerBundle.cpp
-    src/result_format/cChecker.cpp
-    src/result_format/cExtendedInformation.cpp
-    src/result_format/cFileLocation.cpp
-    src/result_format/cInertialLocation.cpp
-    src/result_format/cRoadLocation.cpp
-    src/result_format/cXMLLocation.cpp
-    src/result_format/cParameterContainer.cpp
-    src/result_format/cLocationsContainer.cpp
-    src/config_format/cConfiguration.cpp
-    src/config_format/cConfigurationChecker.cpp
-    src/config_format/cConfigurationCheckerBundle.cpp
-    src/config_format/cConfigurationReportModule.cpp
-	src/xsd/cOSCSchemaChecker.cpp
-	src/xsd/cParserErrorHandler.cpp
-    src/xml/cXPathEvaluator.cpp
+    src/result_format/c_result_container.cpp
+    src/result_format/c_issue.cpp
+    src/result_format/c_checker_bundle.cpp
+    src/result_format/c_checker.cpp
+    src/result_format/c_extended_information.cpp
+    src/result_format/c_file_location.cpp
+    src/result_format/c_inertial_location.cpp
+    src/result_format/c_road_location.cpp
+    src/result_format/c_xml_location.cpp
+    src/result_format/c_parameter_container.cpp
+    src/result_format/c_locations_container.cpp
+    src/config_format/c_configuration.cpp
+    src/config_format/c_configuration_checker.cpp
+    src/config_format/c_configuration_checker_bundle.cpp
+    src/config_format/c_configuration_report_module.cpp
+	src/xsd/c_osc_schema_checker.cpp
+	src/xsd/c_parser_error_handler.cpp
+    src/xml/c_x_path_evaluator.cpp
 )
 
 target_include_directories(qc4openx-common PUBLIC ${PROJECT_SOURCE_DIR}/include

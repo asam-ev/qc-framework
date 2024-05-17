@@ -11,13 +11,13 @@ set(CMAKE_AUTOMOC ON)
 qt5_add_resources(Resources res/POC_ReportModuleGUI.qrc)
 
 add_executable(${REPORT_MODULE_GUI_PROJECT}
-    src/reportFormatUI.cpp
-    src/ui/cCheckerWidget.cpp
-    src/ui/cReportModuleWindow.cpp
-    src/ui/cXMLCodeEditor.cpp
-    src/ui/cXODREditorWidget.cpp
-    src/ui/cXOSCEditorWidget.cpp
-    src/qrc/POC_ReportModuleGUI_QRC.cpp
+    src/report_format_ui.cpp
+    src/ui/c_checker_widget.cpp
+    src/ui/c_report_module_window.cpp
+    src/ui/c_xml_code_editor.cpp
+    src/ui/c_xodr_editor_widget.cpp
+    src/ui/c_xosc_editor_widget.cpp
+    src/qrc/poc__report_module_gui__qrc.cpp
 )
 
 target_link_libraries(${REPORT_MODULE_GUI_PROJECT} PRIVATE
