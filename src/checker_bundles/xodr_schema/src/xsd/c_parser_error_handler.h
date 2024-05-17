@@ -5,8 +5,8 @@
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-#ifndef c_parser_error_handler_h__
-#define c_parser_error_handler_h__
+#ifndef cParserErrorHandler_h__
+#define cParserErrorHandler_h__
 
 #include "common/util.h"
 
@@ -20,24 +20,24 @@ class cCheckerBundle;
 
 class cParserErrorHandler : public ErrorHandler
 {
-  private:
-    cCheckerBundle *myCheckerBundle{nullptr};
-    const char *myFilePath{nullptr};
+private:
+    cCheckerBundle * myCheckerBundle{nullptr};
+    const char* myFilePath{nullptr};
 
-    void reportParseException(const SAXParseException &ex);
+    void reportParseException(const SAXParseException& ex);
 
-    void reportParseIssue(const SAXParseException &ex, eIssueLevel issueLevel);
+    void reportParseIssue(const SAXParseException& ex, eIssueLevel issueLevel);
 
     unsigned int m_NumOfIdentityConstraintKeyErrors{0};
 
-  public:
+public:
     cParserErrorHandler() = delete;
     ~cParserErrorHandler() = default;
-    explicit cParserErrorHandler(cCheckerBundle *, const char *);
+    explicit cParserErrorHandler(cCheckerBundle*, const char*);
 
-    void warning(const SAXParseException &ex);
-    void error(const SAXParseException &ex);
-    void fatalError(const SAXParseException &ex);
+    void warning(const SAXParseException& ex);
+    void error(const SAXParseException& ex);
+    void fatalError(const SAXParseException& ex);
     void resetErrors();
     unsigned int GetNumberOfIdentityConstraintKeyError() const;
 };

@@ -6,8 +6,8 @@
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef c_parser_error_handler_h__
-#define c_parser_error_handler_h__
+#ifndef cParserErrorHandler_h__
+#define cParserErrorHandler_h__
 
 #include "common/util.h"
 
@@ -19,25 +19,24 @@
 
 class cCheckerBundle;
 
-class cParserErrorHandler : public ErrorHandler
-{
-  private:
-    cCheckerBundle *myCheckerBundle;
-    const char *myFilePath;
+class cParserErrorHandler : public ErrorHandler {
+private:
+    cCheckerBundle* myCheckerBundle;
+    const char* myFilePath;
 
-    void reportParseException(const SAXParseException &ex);
+    void reportParseException(const SAXParseException& ex);
 
-    void reportParseIssue(const SAXParseException &ex, eIssueLevel issueLevel);
+    void reportParseIssue(const SAXParseException& ex, eIssueLevel issueLevel);
 
-  public:
+public:
     cParserErrorHandler() = default;
     virtual ~cParserErrorHandler() = default;
 
-    cParserErrorHandler(cCheckerBundle *myCheckerBundle, const char *filePath);
+    cParserErrorHandler(cCheckerBundle* myCheckerBundle, const char* filePath);
 
-    void warning(const SAXParseException &ex);
-    void error(const SAXParseException &ex);
-    void fatalError(const SAXParseException &ex);
+    void warning(const SAXParseException& ex);
+    void error(const SAXParseException& ex);
+    void fatalError(const SAXParseException& ex);
     void resetErrors();
 };
 

@@ -6,67 +6,65 @@
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef c_configuration_report_module_h__
-#define c_configuration_report_module_h__
+#ifndef cConfigurationReportModule_h__
+#define cConfigurationReportModule_h__
 
 #include "../result_format/c_parameter_container.h"
 #include "../util.h"
 #include "../xml/util_xerces.h"
 
-// Represents the parameters for a ReportModule in the config xml file used to parametrize the
+// Represents the parameters for a ReportModule in the config xml file used to parametrize the 
 // framework
 class cConfigurationReportModule
 {
-  public:
-    // application attribute in the xml
-    static const XMLCh *ATTR_APPLICATION;
+public:
+	// application attribute in the xml
+	static const XMLCh* ATTR_APPLICATION;
 
-    // name of the xml node for the report module
-    static const XMLCh *TAG_REPORT_MODULE;
+	// name of the xml node for the report module
+	static const XMLCh* TAG_REPORT_MODULE;
 
-    cConfigurationReportModule();
-    cConfigurationReportModule(const std::string &applicationName);
+	cConfigurationReportModule();
+	cConfigurationReportModule(const std::string& applicationName);
 
-    // parses the parameters in the xml file
-    static cConfigurationReportModule *ParseConfigurationReportModule(
-        XERCES_CPP_NAMESPACE::DOMNode *const pXMLNode, XERCES_CPP_NAMESPACE::DOMElement *const pXMLElement);
+	// parses the parameters in the xml file
+	static cConfigurationReportModule* ParseConfigurationReportModule(XERCES_CPP_NAMESPACE::DOMNode * const pXMLNode, XERCES_CPP_NAMESPACE::DOMElement* const pXMLElement);
 
-    // writes the stored configuration to an xml file
-    XERCES_CPP_NAMESPACE::DOMElement *WriteXML(XERCES_CPP_NAMESPACE::DOMDocument *pResultDocument,
-                                               XERCES_CPP_NAMESPACE::DOMElement *p_parentElement) const;
-
-    // deletes the object
-    void Clear();
+	// writes the stored configuration to an xml file
+    XERCES_CPP_NAMESPACE::DOMElement* WriteXML(XERCES_CPP_NAMESPACE::DOMDocument* pResultDocument, XERCES_CPP_NAMESPACE::DOMElement* p_parentElement) const;
+	
+	// deletes the object
+	void Clear();
 
     // d'tor
-    virtual ~cConfigurationReportModule();
+	virtual ~cConfigurationReportModule();
 
-    // Sets the name of the report module
-    void SetReportModuleApplication(const std::string &applicationName);
+	// Sets the name of the report module
+	void SetReportModuleApplication(const std::string& applicationName);
 
-    // Returns the name of the report module
+	// Returns the name of the report module
     std::string GetReportModuleApplication() const;
 
-    // returns the parameters
-    cParameterContainer GetParams() const;
+	// returns the parameters
+	cParameterContainer GetParams() const;
 
-    // True if parameter is available
-    bool HasParam(const std::string &name) const;
+	// True if parameter is available
+	bool HasParam(const std::string& name) const;
 
-    // Returns a param with a given name
-    std::string GetParam(const std::string &name) const;
+	// Returns a param with a given name
+    std::string GetParam(const std::string& name) const;
 
-    // Sets a param with a given name and value
-    void SetParam(const std::string &name, const std::string &value);
+	// Sets a param with a given name and value
+	void SetParam(const std::string& name, const std::string& value);
 
-    // Overwrite parameters
-    void OverwriteParams(const cParameterContainer &params);
-
-  protected:
+	// Overwrite parameters
+	void OverwriteParams(const cParameterContainer& params);
+protected:
     std::string strApplication;
 
-    cParameterContainer m_params;
+	cParameterContainer m_params;
 
-    void ProcessDomNode(XERCES_CPP_NAMESPACE::DOMNode *nodeToProcess, cConfigurationReportModule *currentCheckerBundle);
+	void ProcessDomNode(XERCES_CPP_NAMESPACE::DOMNode* nodeToProcess, cConfigurationReportModule* currentCheckerBundle);
+
 };
 #endif

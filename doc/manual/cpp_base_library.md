@@ -43,7 +43,7 @@ another. Parameterization are nothing more than mappings from a keyword to a
 value and therefore allow easy overwriting and reuse.
 
 ```c++
-c_configuration_checker_bundle* checkerBundleConfig = configuration.GetCheckerBundleByName("myChecker");
+cConfigurationCheckerBundle* checkerBundleConfig = configuration.GetCheckerBundleByName("myChecker");
 if (nullptr != checkerBundleConfig)
 {
    inputParams.Overwrite(checkerBundleConfig->GetParams());

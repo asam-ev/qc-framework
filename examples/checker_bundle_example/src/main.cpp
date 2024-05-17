@@ -17,7 +17,7 @@
 #include "common/config_format/c_configuration_checker_bundle.h"
 
 // Main Programm
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     std::string strToolpath = argv[0];
 
@@ -70,12 +70,11 @@ int main(int argc, char *argv[])
         inputParams.Overwrite(configuration.GetParams());
 
         // We search for parameters applied to our configuration.
-        c_configuration_checker_bundle *checkerBundleConfig = configuration.GetCheckerBundleByName(CHECKER_BUNDLE_NAME);
+        cConfigurationCheckerBundle* checkerBundleConfig = configuration.GetCheckerBundleByName(CHECKER_BUNDLE_NAME);
         if (nullptr != checkerBundleConfig)
             inputParams.Overwrite(checkerBundleConfig->GetParams());
         else
-            std::cerr << "No configuration for module '" << CHECKER_BUNDLE_NAME << "' found. Start with default params."
-                      << std::endl;
+            std::cerr << "No configuration for module '" << CHECKER_BUNDLE_NAME << "' found. Start with default params." << std::endl;
     }
     else if (StringEndsWith(ToLower(strFilepath), "--defaultconfig"))
     {
@@ -97,7 +96,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void ShowHelp(const std::string &toolPath)
+void ShowHelp(const std::string& toolPath)
 {
     std::string applicationName = toolPath;
     std::string applicationNameWithoutExt = toolPath;
@@ -107,27 +106,27 @@ void ShowHelp(const std::string &toolPath)
     std::cout << "\n\nUsage of " << applicationNameWithoutExt << ":" << std::endl;
     std::cout << "\nRun the application with xodr file: \n" << applicationName << " sample.xodr" << std::endl;
     std::cout << "\nRun the application with dbqa configuration: \n" << applicationName << " config.xml" << std::endl;
-    std::cout << "\nRun the application and write empty report as default configuration: \n"
-              << applicationName << " --defaultconfig" << std::endl;
+    std::cout << "\nRun the application and write empty report as default configuration: \n" << applicationName << " --defaultconfig" << std::endl;
     std::cout << "\n\n";
 }
 
-void RunChecks(const cParameterContainer &inputParams)
+void RunChecks(const cParameterContainer& inputParams)
 {
     // Now we define a result container which contains our results.
     cResultContainer pResultContainer;
 
     // Lets go on with the checker bundle. A bundle contains 0 or more checks.
-    cCheckerBundle *pExampleCheckerBundle = new cCheckerBundle(CHECKER_BUNDLE_NAME);
+    cCheckerBundle* pExampleCheckerBundle = new cCheckerBundle(CHECKER_BUNDLE_NAME);
 
     // Add the checkerBundle to our results. You can do it later as well.
     pResultContainer.AddCheckerBundle(pExampleCheckerBundle);
 
     // Create a checker with a factory in the checker bundle
-    cChecker *pExampeChecker = pExampleCheckerBundle->CreateChecker("exampleChecker", "This is a description");
+    cChecker* pExampeChecker = pExampleCheckerBundle->CreateChecker("exampleChecker", "This is a description");
 
     // Lets add now an issue
-    pExampeChecker->AddIssue(new cIssue("This is an information from the demo usecase", INFO_LVL));
+    pExampeChecker->AddIssue(new cIssue("This is an information from the demo usecase",
+        INFO_LVL));
 
     // Lets add a summary for the checker bundle
     unsigned int issueCount = pExampleCheckerBundle->GetIssueCount();
@@ -147,7 +146,7 @@ void RunChecks(const cParameterContainer &inputParams)
 void WriteEmptyReport()
 {
     cResultContainer emptyReport;
-    cCheckerBundle *pCheckerBundle = new cCheckerBundle(CHECKER_BUNDLE_NAME);
+    cCheckerBundle* pCheckerBundle = new cCheckerBundle(CHECKER_BUNDLE_NAME);
 
     emptyReport.AddCheckerBundle(pCheckerBundle);
 

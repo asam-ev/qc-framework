@@ -16,7 +16,7 @@ Viewer, if they have a valid position link. In general ASAM Quality Checker
 Framework doesn't provide a 3D Viewer but a C-interface to connect your own 3D
 Viewer to the ReportGUI. The ReportGUI loads viewer plugins in the form of
 shared libraries from the folder `bin/plugin`. A plugin needs to implement the
-interface `include/viewer/i_connector.h` and provide it via common C-API
+interface `include/viewer/iConnector.h` and provide it via common C-API
 `__declspec(dllexport)` mechanism. The ReportGUI will load the library during
 startup and use your viewer to show issues graphically.
 

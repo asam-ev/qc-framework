@@ -9,32 +9,32 @@
 
 XERCES_CPP_NAMESPACE_USE
 
-const XMLCh* c_configuration_checker::ATTR_CHECKER_ID = CONST_XMLCH("checkerId");
-const XMLCh* c_configuration_checker::ATTR_CHECKER_MIN_LEVEL = CONST_XMLCH("minLevel");
-const XMLCh* c_configuration_checker::ATTR_CHECKER_MAX_LEVEL = CONST_XMLCH("maxLevel");
-const XMLCh* c_configuration_checker::TAG_CHECKER = CONST_XMLCH("Checker");
+const XMLCh* cConfigurationChecker::ATTR_CHECKER_ID = CONST_XMLCH("checkerId");
+const XMLCh* cConfigurationChecker::ATTR_CHECKER_MIN_LEVEL = CONST_XMLCH("minLevel");
+const XMLCh* cConfigurationChecker::ATTR_CHECKER_MAX_LEVEL = CONST_XMLCH("maxLevel");
+const XMLCh* cConfigurationChecker::TAG_CHECKER = CONST_XMLCH("Checker");
 
-c_configuration_checker::c_configuration_checker()
+cConfigurationChecker::cConfigurationChecker()
 {
     m_checkerID = "";
     m_minLevel = INFO_LVL;
     m_maxLevel = ERROR_LVL;
 }
 
-c_configuration_checker::c_configuration_checker(const std::string& checkerId, eIssueLevel minLevel, eIssueLevel maxLevel) : c_configuration_checker()
+cConfigurationChecker::cConfigurationChecker(const std::string& checkerId, eIssueLevel minLevel, eIssueLevel maxLevel) : cConfigurationChecker()
 {
     m_checkerID = checkerId;
     m_minLevel = minLevel;
     m_maxLevel = maxLevel;
 }
 
-c_configuration_checker* c_configuration_checker::ParseConfigurationChecker(DOMNode * pXMLNode, DOMElement* pXMLElement)
+cConfigurationChecker* cConfigurationChecker::ParseConfigurationChecker(DOMNode * pXMLNode, DOMElement* pXMLElement)
 {
     std::string strCheckerId = XMLString::transcode(pXMLElement->getAttribute(ATTR_CHECKER_ID));
     std::string sMinLevel = XMLString::transcode(pXMLElement->getAttribute(ATTR_CHECKER_MIN_LEVEL));
     std::string sMaxLevel = XMLString::transcode(pXMLElement->getAttribute(ATTR_CHECKER_MAX_LEVEL));
 
-    c_configuration_checker* parsedChecker = new c_configuration_checker();
+    cConfigurationChecker* parsedChecker = new cConfigurationChecker();
     parsedChecker->m_checkerID = strCheckerId;
     parsedChecker->m_maxLevel = ERROR_LVL;
     parsedChecker->m_minLevel = INFO_LVL;
@@ -72,7 +72,7 @@ c_configuration_checker* c_configuration_checker::ParseConfigurationChecker(DOMN
     return parsedChecker;
 }
 
-DOMElement * c_configuration_checker::WriteXML(DOMDocument* pResultDocument, DOMElement* p_parentElement) const
+DOMElement * cConfigurationChecker::WriteXML(DOMDocument* pResultDocument, DOMElement* p_parentElement) const
 {
     DOMElement* pDataElement = CreateXMLNode(pResultDocument);
 
@@ -84,17 +84,17 @@ DOMElement * c_configuration_checker::WriteXML(DOMDocument* pResultDocument, DOM
     return pDataElement;
 }
 
-DOMElement* c_configuration_checker::CreateXMLNode(DOMDocument* pResultDocument) const
+DOMElement* cConfigurationChecker::CreateXMLNode(DOMDocument* pResultDocument) const
 {
-    DOMElement* p_DataElement = pResultDocument->createElement(c_configuration_checker::TAG_CHECKER);
+    DOMElement* p_DataElement = pResultDocument->createElement(cConfigurationChecker::TAG_CHECKER);
 
     XMLCh* pCheckerID = XMLString::transcode(this->m_checkerID.c_str());
     XMLCh* pCheckerMinLevel = XMLString::transcode(ToString(this->m_minLevel).c_str());
     XMLCh* pCheckerMaxLevel = XMLString::transcode(ToString(this->m_maxLevel).c_str());
 
-    p_DataElement->setAttribute(c_configuration_checker::ATTR_CHECKER_ID , pCheckerID);
-    p_DataElement->setAttribute(c_configuration_checker::ATTR_CHECKER_MAX_LEVEL, pCheckerMaxLevel);
-    p_DataElement->setAttribute(c_configuration_checker::ATTR_CHECKER_MIN_LEVEL, pCheckerMinLevel);
+    p_DataElement->setAttribute(cConfigurationChecker::ATTR_CHECKER_ID , pCheckerID);
+    p_DataElement->setAttribute(cConfigurationChecker::ATTR_CHECKER_MAX_LEVEL, pCheckerMaxLevel);
+    p_DataElement->setAttribute(cConfigurationChecker::ATTR_CHECKER_MIN_LEVEL, pCheckerMinLevel);
 
     XMLString::release(&pCheckerID);
     XMLString::release(&pCheckerMinLevel);
@@ -103,71 +103,71 @@ DOMElement* c_configuration_checker::CreateXMLNode(DOMDocument* pResultDocument)
     return p_DataElement;
 }
 
-void c_configuration_checker::Clear()
+void cConfigurationChecker::Clear()
 {
     m_params.ClearParams();
 }
 
 
-c_configuration_checker::~c_configuration_checker()
+cConfigurationChecker::~cConfigurationChecker()
 {
     Clear();
 }
 
-cParameterContainer c_configuration_checker::GetParams() const
+cParameterContainer cConfigurationChecker::GetParams() const
 {
     return m_params;
 }
 
-std::string c_configuration_checker::GetCheckerId() const
+std::string cConfigurationChecker::GetCheckerId() const
 {
     return m_checkerID;
 }
 
-void c_configuration_checker::SetCheckerId(const std::string& in)
+void cConfigurationChecker::SetCheckerId(const std::string& in)
 {
     m_checkerID = in;
 }
 
-eIssueLevel c_configuration_checker::GetMinLevel() const
+eIssueLevel cConfigurationChecker::GetMinLevel() const
 {
     return m_minLevel;
 }
 
 // Sets the minial level for issue reporting
-void c_configuration_checker::SetMinLevel(eIssueLevel newLevel)
+void cConfigurationChecker::SetMinLevel(eIssueLevel newLevel)
 {
     m_minLevel = newLevel;
 }
 
 // Returns the minial level for issue reporting
-eIssueLevel c_configuration_checker::GetMaxLevel() const
+eIssueLevel cConfigurationChecker::GetMaxLevel() const
 {
     return m_maxLevel;
 }
 
 // Sets the minial level for issue reporting
-void c_configuration_checker::SetMaxLevel(eIssueLevel newLevel)
+void cConfigurationChecker::SetMaxLevel(eIssueLevel newLevel)
 {
     m_maxLevel = newLevel;
 }
 
-void c_configuration_checker::SetParam(const std::string& name, const std::string& value)
+void cConfigurationChecker::SetParam(const std::string& name, const std::string& value)
 {
     return m_params.SetParam(name, value);
 }
 
-bool c_configuration_checker::HasParam(const std::string& name) const
+bool cConfigurationChecker::HasParam(const std::string& name) const
 {
     return m_params.HasParam(name);
 }
 
-std::string c_configuration_checker::GetParam(const std::string& name) const
+std::string cConfigurationChecker::GetParam(const std::string& name) const
 {
     return m_params.GetParam(name);
 }
 
-void c_configuration_checker::OverwriteParams(const cParameterContainer& params)
+void cConfigurationChecker::OverwriteParams(const cParameterContainer& params)
 {
     m_params.Overwrite(params);
 }

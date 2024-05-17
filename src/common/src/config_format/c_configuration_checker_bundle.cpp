@@ -11,23 +11,20 @@
 
 XERCES_CPP_NAMESPACE_USE
 
-const XMLCh *c_configuration_checker_bundle::ATTR_APPLICATION = CONST_XMLCH("application");
-const XMLCh *c_configuration_checker_bundle::TAG_CHECKERBUNDLE = CONST_XMLCH("CheckerBundle");
+const XMLCh* cConfigurationCheckerBundle::ATTR_APPLICATION = CONST_XMLCH("application");
+const XMLCh* cConfigurationCheckerBundle::TAG_CHECKERBUNDLE = CONST_XMLCH("CheckerBundle");
 
-c_configuration_checker_bundle::c_configuration_checker_bundle()
-{
-}
+cConfigurationCheckerBundle::cConfigurationCheckerBundle()
+{}
 
-c_configuration_checker_bundle::c_configuration_checker_bundle(const std::string &applicationName)
-    : c_configuration_checker_bundle()
+cConfigurationCheckerBundle::cConfigurationCheckerBundle(const std::string& applicationName) : cConfigurationCheckerBundle()
 {
     strApplication = applicationName;
 }
 
-c_configuration_checker_bundle *c_configuration_checker_bundle::ParseConfigurationCheckerBundle(DOMNode *pXMLNode,
-                                                                                                DOMElement *pXMLElement)
+cConfigurationCheckerBundle* cConfigurationCheckerBundle::ParseConfigurationCheckerBundle(DOMNode * pXMLNode, DOMElement* pXMLElement)
 {
-    c_configuration_checker_bundle *parsedCheckerBundle = new c_configuration_checker_bundle();
+    cConfigurationCheckerBundle* parsedCheckerBundle = new cConfigurationCheckerBundle();
 
     std::string strApp = XMLString::transcode(pXMLElement->getAttribute(ATTR_APPLICATION));
 
@@ -35,12 +32,12 @@ c_configuration_checker_bundle *c_configuration_checker_bundle::ParseConfigurati
 
     if (pXMLNode->getNodeType() == DOMNode::ELEMENT_NODE)
     {
-        DOMNodeList *pCheckerChildList = pXMLNode->getChildNodes();
-        const XMLSize_t checkerNodeCount = pCheckerChildList->getLength();
+        DOMNodeList* pCheckerChildList = pXMLNode->getChildNodes();
+        const  XMLSize_t checkerNodeCount = pCheckerChildList->getLength();
 
         for (XMLSize_t j = 0; j < checkerNodeCount; ++j)
         {
-            DOMNode *currentCheckerNode = pCheckerChildList->item(j);
+            DOMNode* currentCheckerNode = pCheckerChildList->item(j);
             if (currentCheckerNode->getNodeType() == DOMNode::ELEMENT_NODE)
                 parsedCheckerBundle->ProcessDomNode(currentCheckerNode, parsedCheckerBundle);
         }
@@ -49,16 +46,14 @@ c_configuration_checker_bundle *c_configuration_checker_bundle::ParseConfigurati
     return parsedCheckerBundle;
 }
 
-void c_configuration_checker_bundle::ProcessDomNode(DOMNode *nodeToProcess,
-                                                    c_configuration_checker_bundle *currentCheckerBundle)
+void cConfigurationCheckerBundle::ProcessDomNode(DOMNode* nodeToProcess, cConfigurationCheckerBundle* currentCheckerBundle)
 {
-    DOMElement *currentIssueElement = dynamic_cast<DOMElement *>(nodeToProcess);
-    const char *currentTagName = XMLString::transcode(currentIssueElement->getTagName());
+    DOMElement* currentIssueElement = dynamic_cast<DOMElement*>(nodeToProcess);
+    const char* currentTagName = XMLString::transcode(currentIssueElement->getTagName());
 
-    if (Equals(currentTagName, XMLString::transcode(c_configuration_checker::TAG_CHECKER)))
+    if (Equals(currentTagName, XMLString::transcode(cConfigurationChecker::TAG_CHECKER)))
     {
-        c_configuration_checker *cChecker =
-            c_configuration_checker::ParseConfigurationChecker(nodeToProcess, currentIssueElement);
+        cConfigurationChecker* cChecker = cConfigurationChecker::ParseConfigurationChecker(nodeToProcess, currentIssueElement);
         if (nullptr != cChecker)
             currentCheckerBundle->m_Checkers.push_back(cChecker);
     }
@@ -68,14 +63,15 @@ void c_configuration_checker_bundle::ProcessDomNode(DOMNode *nodeToProcess,
     }
 }
 
-DOMElement *c_configuration_checker_bundle::WriteXML(DOMDocument *pResultDocument, DOMElement *p_parentElement) const
+DOMElement* cConfigurationCheckerBundle::WriteXML(DOMDocument* pResultDocument, DOMElement* p_parentElement) const
 {
-    DOMElement *p_dataElement = CreateXMLNode(pResultDocument);
+    DOMElement* p_dataElement = CreateXMLNode(pResultDocument);
 
     // Add parameters
     m_params.WriteXML(pResultDocument, p_dataElement);
 
-    for (std::vector<c_configuration_checker *>::const_iterator it = m_Checkers.begin(); it != m_Checkers.end(); ++it)
+    for (std::vector<cConfigurationChecker*>::const_iterator it = m_Checkers.begin();
+        it != m_Checkers.end(); ++it)
     {
         (*it)->WriteXML(pResultDocument, p_dataElement);
     }
@@ -85,27 +81,28 @@ DOMElement *c_configuration_checker_bundle::WriteXML(DOMDocument *pResultDocumen
     return p_dataElement;
 }
 
-DOMElement *c_configuration_checker_bundle::CreateXMLNode(DOMDocument *pResultDocument) const
+DOMElement* cConfigurationCheckerBundle::CreateXMLNode(DOMDocument* pResultDocument) const
 {
-    DOMElement *p_DataElement = pResultDocument->createElement(c_configuration_checker_bundle::TAG_CHECKERBUNDLE);
+    DOMElement* p_DataElement = pResultDocument->createElement(cConfigurationCheckerBundle::TAG_CHECKERBUNDLE);
 
-    XMLCh *pApplication = XMLString::transcode(this->strApplication.c_str());
+    XMLCh* pApplication = XMLString::transcode(this->strApplication.c_str());
 
-    p_DataElement->setAttribute(c_configuration_checker_bundle::ATTR_APPLICATION, pApplication);
+    p_DataElement->setAttribute(cConfigurationCheckerBundle::ATTR_APPLICATION, pApplication);
 
     XMLString::release(&pApplication);
 
     return p_DataElement;
 }
 
-std::vector<c_configuration_checker *> c_configuration_checker_bundle::GetConfigurationCheckers() const
+std::vector<cConfigurationChecker*> cConfigurationCheckerBundle::GetConfigurationCheckers() const
 {
     return m_Checkers;
 }
 
-void c_configuration_checker_bundle::Clear()
+void cConfigurationCheckerBundle::Clear()
 {
-    for (std::vector<c_configuration_checker *>::iterator it = m_Checkers.begin(); it != m_Checkers.end(); it++)
+    for (std::vector<cConfigurationChecker*>::iterator it = m_Checkers.begin();
+        it != m_Checkers.end(); it++)
     {
         (*it)->Clear();
         delete (*it);
@@ -115,39 +112,39 @@ void c_configuration_checker_bundle::Clear()
     m_params.ClearParams();
 }
 
-c_configuration_checker_bundle::~c_configuration_checker_bundle()
+cConfigurationCheckerBundle::~cConfigurationCheckerBundle()
 {
     Clear();
 }
 
-void c_configuration_checker_bundle::SetCheckerBundleApplication(std::string applicationName)
+void cConfigurationCheckerBundle::SetCheckerBundleApplication(std::string applicationName)
 {
     strApplication = applicationName;
 }
 
-std::string c_configuration_checker_bundle::GetCheckerBundleApplication() const
+std::string cConfigurationCheckerBundle::GetCheckerBundleApplication() const
 {
     return strApplication;
 }
 
 // Returns the checkers
-std::vector<c_configuration_checker *> c_configuration_checker_bundle::GetCheckers() const
+std::vector<cConfigurationChecker*> cConfigurationCheckerBundle::GetCheckers() const
 {
     return m_Checkers;
 }
 
-c_configuration_checker *c_configuration_checker_bundle::AddChecker(const std::string &checkerId, eIssueLevel minLevel,
-                                                                    eIssueLevel maxLevel)
+cConfigurationChecker* cConfigurationCheckerBundle::AddChecker(const std::string& checkerId, eIssueLevel minLevel, eIssueLevel maxLevel)
 {
-    c_configuration_checker *result = new c_configuration_checker(checkerId, minLevel, maxLevel);
+    cConfigurationChecker* result = new cConfigurationChecker(checkerId, minLevel, maxLevel);
     m_Checkers.push_back(result);
 
     return result;
 }
 
-c_configuration_checker *c_configuration_checker_bundle::GetCheckerById(const std::string &checkerID) const
+
+cConfigurationChecker* cConfigurationCheckerBundle::GetCheckerById(const std::string& checkerID) const
 {
-    std::vector<c_configuration_checker *>::const_iterator it = m_Checkers.cbegin();
+    std::vector<cConfigurationChecker*>::const_iterator it = m_Checkers.cbegin();
 
     for (; it != m_Checkers.cend(); it++)
     {
@@ -160,9 +157,9 @@ c_configuration_checker *c_configuration_checker_bundle::GetCheckerById(const st
     return nullptr;
 }
 
-bool c_configuration_checker_bundle::HasCheckerWithId(const std::string &checkerID) const
+bool cConfigurationCheckerBundle::HasCheckerWithId(const std::string& checkerID) const
 {
-    std::vector<c_configuration_checker *>::const_iterator it = m_Checkers.cbegin();
+    std::vector<cConfigurationChecker*>::const_iterator it = m_Checkers.cbegin();
 
     for (; it != m_Checkers.cend(); it++)
     {
@@ -175,27 +172,28 @@ bool c_configuration_checker_bundle::HasCheckerWithId(const std::string &checker
     return false;
 }
 
-cParameterContainer c_configuration_checker_bundle::GetParams() const
+cParameterContainer cConfigurationCheckerBundle::GetParams() const
 {
     return m_params;
 }
 
-void c_configuration_checker_bundle::SetParam(const std::string &name, const std::string &value)
+void cConfigurationCheckerBundle::SetParam(const std::string& name, const std::string& value)
 {
     return m_params.SetParam(name, value);
 }
 
-bool c_configuration_checker_bundle::HasParam(const std::string &name) const
+
+bool cConfigurationCheckerBundle::HasParam(const std::string& name) const
 {
     return m_params.HasParam(name);
 }
 
-std::string c_configuration_checker_bundle::GetParam(const std::string &name) const
+std::string cConfigurationCheckerBundle::GetParam(const std::string& name) const
 {
     return m_params.GetParam(name);
 }
 
-void c_configuration_checker_bundle::OverwriteParams(const cParameterContainer &params)
+void cConfigurationCheckerBundle::OverwriteParams(const cParameterContainer& params)
 {
     m_params.Overwrite(params);
 }

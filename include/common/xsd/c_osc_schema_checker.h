@@ -6,8 +6,8 @@
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef c_osc_schema_checker_h__
-#define c_osc_schema_checker_h__
+#ifndef cOSCSchemaChecker_h__
+#define cOSCSchemaChecker_h__
 
 #include "c_parser_error_handler.h"
 #include "common/qc4openx_filesystem.h"
@@ -23,22 +23,22 @@
 #include <map>
 #include <sstream>
 
-class OSCSchemaChecker
-{
-  private:
-    cResultContainer *pResultContainer;
-    cCheckerBundle *pXSDCheckerBundle;
+class OSCSchemaChecker {
+private:
+    cResultContainer* pResultContainer;
+    cCheckerBundle* pXSDCheckerBundle;
     std::string checkerBundleName;
     cParameterContainer inputParams;
     std::string xoscFilePath;
     std::map<std::string, std::list<fs::path>> versionToXsdFile;
     std::list<std::string> unsupportedVersions;
 
-  public:
+public:
     OSCSchemaChecker()
     {
     }
-    OSCSchemaChecker(const std::string &name, cParameterContainer params,
+    OSCSchemaChecker(const std::string& name,
+                     cParameterContainer params,
                      std::map<std::string, std::list<fs::path>> versionMap)
         : checkerBundleName(name), inputParams(params), versionToXsdFile(versionMap)
     {
@@ -49,8 +49,8 @@ class OSCSchemaChecker
     }
     void Init();
     bool RunChecks();
-    bool ValidateXSD(const std::list<fs::path> &lSchemaFiles);
-    bool ExtractXOSCVersion(unsigned *i_uRevMajor, unsigned *i_uRevMinor);
+    bool ValidateXSD(const std::list<fs::path>& lSchemaFiles);
+    bool ExtractXOSCVersion(unsigned* i_uRevMajor, unsigned* i_uRevMinor);
     void WriteEmptyReport();
 };
 

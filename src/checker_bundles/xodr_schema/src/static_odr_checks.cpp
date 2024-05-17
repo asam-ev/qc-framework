@@ -5,14 +5,14 @@
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
+#include "stdafx.h"
 #include "static_odr_checks.h"
 #include "common/result_format/c_checker.h"
 #include "common/result_format/c_checker_bundle.h"
-#include "common/result_format/c_file_location.h"
-#include "common/result_format/c_locations_container.h"
-#include "common/result_format/c_parameter_container.h"
 #include "common/result_format/c_result_container.h"
-#include "stdafx.h"
+#include "common/result_format/c_locations_container.h"
+#include "common/result_format/c_file_location.h"
+#include "common/result_format/c_parameter_container.h"
 
 #include "common/config_format/c_configuration.h"
 #include "common/config_format/c_configuration_checker.h"
@@ -21,13 +21,13 @@
 
 XERCES_CPP_NAMESPACE_USE
 
-cResultContainer *pResultContainer;
-cCheckerBundle *pXSDCheckerBundle;
+cResultContainer* pResultContainer;
+cCheckerBundle* pXSDCheckerBundle;
 
 XERCES_CPP_NAMESPACE_USE
 
 // Main Programm
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     std::string strToolpath = argv[0];
 
@@ -72,12 +72,11 @@ int main(int argc, char *argv[])
 
         inputParams.Overwrite(configuration.GetParams());
 
-        c_configuration_checker_bundle *checkerBundleConfig = configuration.GetCheckerBundleByName(CHECKER_BUNDLE_NAME);
+        cConfigurationCheckerBundle* checkerBundleConfig = configuration.GetCheckerBundleByName(CHECKER_BUNDLE_NAME);
         if (nullptr != checkerBundleConfig)
             inputParams.Overwrite(checkerBundleConfig->GetParams());
         else
-            std::cerr << "No configuration for module '" << CHECKER_BUNDLE_NAME << "' found. Start with default params."
-                      << std::endl;
+            std::cerr << "No configuration for module '" << CHECKER_BUNDLE_NAME << "' found. Start with default params." << std::endl;
 
         // We do no OpenSCENARIO validation
         inputParams.DeleteParam("XoscFile");
@@ -102,7 +101,7 @@ int main(int argc, char *argv[])
     exit(bXODRValid ? 0 : 1);
 }
 
-void ShowHelp(const std::string &toolPath)
+void ShowHelp(const std::string& toolPath)
 {
     std::string applicationName = toolPath;
     std::string applicationNameWithoutExt = toolPath;
@@ -112,13 +111,12 @@ void ShowHelp(const std::string &toolPath)
     std::cout << "\n\nUsage of " << applicationNameWithoutExt << ":" << std::endl;
     std::cout << "\nRun the application with xodr file: \n" << applicationName << " sample.xodr" << std::endl;
     std::cout << "\nRun the application with dbqa configuration: \n" << applicationName << " config.xml" << std::endl;
-    std::cout << "\nRun the application and write empty report as default configuration: \n"
-              << applicationName << " --defaultconfig" << std::endl;
+    std::cout << "\nRun the application and write empty report as default configuration: \n" << applicationName << " --defaultconfig" << std::endl;
     std::cout << "\n\n";
 }
 
-bool ValidateXSD(cCheckerBundle *pBundleSummary, const std::string &strSchemaFilePath, const char *strXodrFilePath,
-                 unsigned int &numOfIdentityConstraintKeyErrors)
+bool ValidateXSD(cCheckerBundle* pBundleSummary, const std::string& strSchemaFilePath,
+    const char* strXodrFilePath, unsigned int& numOfIdentityConstraintKeyErrors)
 {
     // Remove xml namespace, if present, because the validation expects files without xml namespace
     bool use_temp_file = true;
@@ -128,16 +126,12 @@ bool ValidateXSD(cCheckerBundle *pBundleSummary, const std::string &strSchemaFil
     std::ifstream input_file_stream(strXodrFilePath);
     std::ofstream temp_file_stream(temp_file);
     std::string line;
-    while (std::getline(input_file_stream, line) && use_temp_file)
-    {
-        if (line.find("<OpenDRIVE") != std::string::npos)
-        {
-            if (line.find("xmlns") != std::string::npos)
-            {
+    while (std::getline(input_file_stream, line) && use_temp_file) {
+        if (line.find("<OpenDRIVE") != std::string::npos) {
+            if (line.find("xmlns") != std::string::npos) {
                 line = "<OpenDRIVE>";
             }
-            else
-            {
+            else {
                 use_temp_file = false;
             }
         }
@@ -152,12 +146,10 @@ bool ValidateXSD(cCheckerBundle *pBundleSummary, const std::string &strSchemaFil
     {
         validationSuccessfull = false;
 
-        cChecker *pXSDParserChecker =
-            pXSDCheckerBundle->CreateChecker("xsdSchemaChecker", "Checks the validity of an OpenDRIVE.");
+        cChecker* pXSDParserChecker = pXSDCheckerBundle->CreateChecker("xsdSchemaChecker", "Checks the validity of an OpenDRIVE.");
 
         std::stringstream ssErrorDesc;
-        ssErrorDesc << "Schema file '" << strSchemaFilePath
-                    << "'could not be loaded. Abort schema verifcation with error.";
+        ssErrorDesc << "Schema file '" << strSchemaFilePath << "'could not be loaded. Abort schema verifcation with error.";
 
         pXSDParserChecker->AddIssue(new cIssue(ssErrorDesc.str(), ERROR_LVL));
         pXSDParserChecker->UpdateSummary();
@@ -174,12 +166,10 @@ bool ValidateXSD(cCheckerBundle *pBundleSummary, const std::string &strSchemaFil
     domParser.setValidationSchemaFullChecking(true);
     domParser.setExternalNoNamespaceSchemaLocation(strSchemaFilePath.c_str());
 
-    if (use_temp_file)
-    {
+    if (use_temp_file) {
         domParser.parse(temp_file.c_str());
     }
-    else
-    {
+    else {
         domParser.parse(strXodrFilePath);
     }
     std::remove(temp_file.c_str());
@@ -191,7 +181,7 @@ bool ValidateXSD(cCheckerBundle *pBundleSummary, const std::string &strSchemaFil
     return validationSuccessfull;
 }
 
-bool RunChecks(const cParameterContainer &inputParams)
+bool RunChecks(const cParameterContainer& inputParams)
 {
     pResultContainer = new cResultContainer();
     // Use this constructor because it sets build date and build version
@@ -207,7 +197,8 @@ bool RunChecks(const cParameterContainer &inputParams)
         {"1.4", GetApplicationDir() + "/xsd/xodr/1.4H/OpenDRIVE_1.4H.xsd"},
         {"1.5", GetApplicationDir() + "/xsd/xodr/1.5M/OpenDRIVE_1.5M.xsd"},
         {"1.6", GetApplicationDir() + "/xsd/xodr/1.6.1/opendrive_16_core.xsd"},
-        {"1.7", GetApplicationDir() + "/xsd/xodr/1.7.0/opendrive_17_core.xsd"}};
+        {"1.7", GetApplicationDir() + "/xsd/xodr/1.7.0/opendrive_17_core.xsd"}
+    };
 
     bool bXODRValid = false;
     std::string xodrFilePath = inputParams.GetParam("XodrFile");
@@ -239,28 +230,26 @@ bool RunChecks(const cParameterContainer &inputParams)
             std::cout << "Validate..." << std::endl;
             unsigned int numOfIdentityConstraintKeyErrors = 0;
             // Validate XML with schema file
-            ValidateXSD(pXSDCheckerBundle, versionToXSDFile.at(strVersionString).string(), xodrFilePath.c_str(),
-                        numOfIdentityConstraintKeyErrors);
+            ValidateXSD(pXSDCheckerBundle, versionToXSDFile.at(strVersionString).string(), xodrFilePath.c_str(), numOfIdentityConstraintKeyErrors);
 
-            cChecker *pXSDParserChecker = pXSDCheckerBundle->GetCheckerById("xsdSchemaChecker");
+            cChecker* pXSDParserChecker = pXSDCheckerBundle->GetCheckerById("xsdSchemaChecker");
 
             if (nullptr == pXSDParserChecker)
-                pXSDParserChecker = pXSDCheckerBundle->CreateChecker(
-                    "xsdSchemaChecker", "Checks the validity of the xml schema of an OpenDRIVE.");
+                pXSDParserChecker = pXSDCheckerBundle->CreateChecker("xsdSchemaChecker", "Checks the validity of the xml schema of an OpenDRIVE.");
 
             std::string s_description = pXSDParserChecker->GetDescription();
             std::stringstream ssDescription;
-            ssDescription << s_description << " Found OpenDRIVE version: " << strVersionString << ". Used schema file "
-                          << strVersionFileName << " for validation.";
+            ssDescription << s_description << " Found OpenDRIVE version: " << strVersionString << ". Used schema file " << strVersionFileName << " for validation.";
             pXSDParserChecker->SetDescription(ssDescription.str());
 
             if (numOfIdentityConstraintKeyErrors)
             {
                 std::stringstream errorStream;
-                errorStream << "Found " << numOfIdentityConstraintKeyErrors
-                            << " issues: identity constraint key for element 'OpenDRIVE' not found, but cannot "
-                               "determine the location in file.";
-                pXSDParserChecker->AddIssue(new cIssue(errorStream.str(), eIssueLevel::ERROR_LVL));
+                errorStream << "Found " << numOfIdentityConstraintKeyErrors <<
+                    " issues: identity constraint key for element 'OpenDRIVE' not found, but cannot determine the location in file.";
+                pXSDParserChecker->AddIssue(
+                    new cIssue(errorStream.str(),
+                        eIssueLevel::ERROR_LVL));
             }
 
             pXSDParserChecker->UpdateSummary();
@@ -272,10 +261,8 @@ bool RunChecks(const cParameterContainer &inputParams)
 
             std::cerr << errMsg.str();
 
-            cChecker *pXSDParserChecker =
-                pXSDCheckerBundle->CreateChecker("xodrVersionChecker", "Checks the validity of an OpenDRIVE.");
-            cLocationsContainer *loc = new cLocationsContainer(
-                "Version isn't supported.", (cExtendedInformation *)new cFileLocation(eFileType::XODR, 3, 5));
+            cChecker* pXSDParserChecker = pXSDCheckerBundle->CreateChecker("xodrVersionChecker", "Checks the validity of an OpenDRIVE.");
+            cLocationsContainer* loc = new cLocationsContainer("Version isn't supported.", (cExtendedInformation*) new cFileLocation(eFileType::XODR, 3, 5));
             pXSDParserChecker->AddIssue(new cIssue(errMsg.str(), ERROR_LVL, loc));
             pXSDParserChecker->UpdateSummary();
             bXODRValid = false;
@@ -290,7 +277,7 @@ bool RunChecks(const cParameterContainer &inputParams)
         exit(1);
     }
 
-    // pXSDCheckerBundle->DoProcessing(AddPrefixForDescriptionIssueProcessor);
+    //pXSDCheckerBundle->DoProcessing(AddPrefixForDescriptionIssueProcessor);
     pXSDCheckerBundle->SetDescription("Checks validity of the xml schema of a given xodr file.");
 
     std::stringstream ssSummaryString;
@@ -313,14 +300,13 @@ bool RunChecks(const cParameterContainer &inputParams)
 }
 
 // Gets the xodr version from the header tag of a given xodr file.
-bool ExtractXODRVersion(cCheckerBundle *ptrCheckerBundle, const char *i_cXodrPath, unsigned *i_uRevMinor,
-                        unsigned *i_uRevMajor)
+bool ExtractXODRVersion(cCheckerBundle* ptrCheckerBundle, const char* i_cXodrPath, unsigned* i_uRevMinor, unsigned* i_uRevMajor)
 {
     bool b_valid = false;
     try
     {
-        XMLCh *i_pRevMinor = XMLString::transcode("revMinor");
-        XMLCh *i_pRevMajor = XMLString::transcode("revMajor");
+        XMLCh* i_pRevMinor = XMLString::transcode("revMinor");
+        XMLCh* i_pRevMajor = XMLString::transcode("revMajor");
 
         XercesDOMParser domParser;
         cParserErrorHandler parserErrorHandler(ptrCheckerBundle, i_cXodrPath);
@@ -329,26 +315,24 @@ bool ExtractXODRVersion(cCheckerBundle *ptrCheckerBundle, const char *i_cXodrPat
 
         domParser.parse(i_cXodrPath);
 
-        DOMDocument *pInputDocument = domParser.getDocument();
+        DOMDocument* pInputDocument = domParser.getDocument();
 
         if (nullptr == pInputDocument)
             return false;
 
-        XMLCh *i_pTagName = XMLString::transcode("header");
-        DOMNodeList *i_lHeaderNodes = pInputDocument->getElementsByTagName(i_pTagName);
+        XMLCh* i_pTagName = XMLString::transcode("header");
+        DOMNodeList * i_lHeaderNodes = pInputDocument->getElementsByTagName(i_pTagName);
 
         if (i_lHeaderNodes->getLength() != 1)
         {
             std::stringstream errMsg;
-            errMsg << "Found " << (i_lHeaderNodes->getLength() == 0 ? "zero" : "multiple")
-                   << " header tags in xml file. This is not supported.";
+            errMsg << "Found " << (i_lHeaderNodes->getLength() == 0 ? "zero" : "multiple") << " header tags in xml file. This is not supported.";
 
-            cChecker *pXSDParserChecker = pXSDCheckerBundle->GetCheckerById("xsdSchemaChecker");
+            cChecker* pXSDParserChecker = pXSDCheckerBundle->GetCheckerById("xsdSchemaChecker");
 
-            if (nullptr == pXSDParserChecker)
+            if(nullptr == pXSDParserChecker)
             {
-                pXSDParserChecker = pXSDCheckerBundle->CreateChecker(
-                    "xsdSchemaChecker", "Checks the validity of the header tag of an OpenDRIVE.");
+                pXSDParserChecker = pXSDCheckerBundle->CreateChecker("xsdSchemaChecker", "Checks the validity of the header tag of an OpenDRIVE.");
             }
 
             pXSDParserChecker->AddIssue(new cIssue(errMsg.str(), ERROR_LVL));
@@ -360,7 +344,7 @@ bool ExtractXODRVersion(cCheckerBundle *ptrCheckerBundle, const char *i_cXodrPat
         }
 
         XMLSize_t i_sIdx = 0;
-        DOMElement *i_nHeaderNode = dynamic_cast<DOMElement *>(i_lHeaderNodes->item(i_sIdx));
+        DOMElement * i_nHeaderNode = dynamic_cast <DOMElement *> (i_lHeaderNodes->item(i_sIdx));
 
         std::string i_sRevMinor = XMLString::transcode(i_nHeaderNode->getAttribute(i_pRevMinor));
         std::string i_sRevMajor = XMLString::transcode(i_nHeaderNode->getAttribute(i_pRevMajor));
@@ -377,8 +361,7 @@ bool ExtractXODRVersion(cCheckerBundle *ptrCheckerBundle, const char *i_cXodrPat
         std::stringstream errMsg;
         errMsg << "Could not retrieve header version from xodr. Abort with error.";
 
-        cChecker *pXSDParserChecker = pXSDCheckerBundle->CreateChecker(
-            "xsdSchemaChecker", "Checks the validity of the header tag of an OpenDRIVE");
+        cChecker* pXSDParserChecker = pXSDCheckerBundle->CreateChecker("xsdSchemaChecker", "Checks the validity of the header tag of an OpenDRIVE");
         pXSDParserChecker->AddIssue(new cIssue(errMsg.str(), ERROR_LVL));
         pXSDParserChecker->UpdateSummary();
     }
@@ -390,7 +373,7 @@ void WriteEmptyReport()
 {
     cResultContainer emptyReport;
     // Use this constructor because it sets build date and build version
-    cCheckerBundle *pCheckerBundle = new cCheckerBundle(CHECKER_BUNDLE_NAME, "", "");
+    cCheckerBundle* pCheckerBundle = new cCheckerBundle(CHECKER_BUNDLE_NAME, "", "");
 
     emptyReport.AddCheckerBundle(pCheckerBundle);
 

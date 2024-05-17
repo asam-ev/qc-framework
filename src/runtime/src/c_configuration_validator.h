@@ -5,8 +5,8 @@
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-#ifndef c_configuration_validator_h__
-#define c_configuration_validator_h__
+#ifndef cConfigurationValidator_h__
+#define cConfigurationValidator_h__
 
 #include <string>
 
@@ -16,18 +16,16 @@ class cConfiguration;
 class cConfigurationValidator
 {
 
-  public:
+public:
     // Checks a Configuration for consistency
-    static bool ValidateConfiguration(cConfiguration *config, std::string &message);
+    static bool ValidateConfiguration(cConfiguration* config, std::string& message);
 
-  protected:
+protected:
     // Check if at least one of the necessary parameters exists
-    static bool CheckNecessaryParametersExist(cConfiguration *const configuration, std::string &message);
+    static bool CheckNecessaryParametersExist(cConfiguration* const configuration, std::string& message);
 
     // Check if parameter is valid (is not empty and has the expected file extension)
-    static bool CheckParameterNotEmptyAndCorrectExtension(cConfiguration *const configuration,
-                                                          const std::string &paramName, const std::string &extension,
-                                                          std::string &message);
+    static bool CheckParameterNotEmptyAndCorrectExtension(cConfiguration* const configuration, const std::string& paramName, const std::string& extension, std::string& message);
 };
 
 #endif

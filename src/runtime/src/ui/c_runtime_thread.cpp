@@ -7,13 +7,12 @@
  */
 #include "c_runtime_thread.h"
 
-#include "c_process_log.h"
 #include "common/config_format/c_configuration.h"
 #include "common/config_format/c_configuration_checker_bundle.h"
 #include "common/config_format/c_configuration_report_module.h"
+#include "c_process_log.h"
 
-void cRuntimeThread::Initialize(cProcessLog *const processLog, cConfiguration *const configuration,
-                                const QString &configurationPath)
+void cRuntimeThread::Initialize(cProcessLog* const processLog, cConfiguration* const configuration, const QString& configurationPath)
 {
     _abortExecution = false;
     _myConfiguration = configuration;
@@ -50,7 +49,7 @@ void cRuntimeThread::run()
     emit Log(QString("---- Cleanup ------------------------------------------------"));
     emit Log(QString("-------------------------------------------------------------"));
 
-    for (auto &pFilePath : fs::directory_iterator(GetWorkingDir()))
+    for (auto& pFilePath : fs::directory_iterator(GetWorkingDir()))
     {
         std::string strFileName = pFilePath.path().string();
         GetFileName(&strFileName, false);
@@ -70,8 +69,8 @@ void cRuntimeThread::run()
     emit Log("");
 
     // Process CheckerBundles
-    std::vector<c_configuration_checker_bundle *> checkerBundle = _myConfiguration->GetCheckerBundles();
-    std::vector<c_configuration_checker_bundle *>::const_iterator bundleIt = checkerBundle.cbegin();
+    std::vector<cConfigurationCheckerBundle*> checkerBundle = _myConfiguration->GetCheckerBundles();
+    std::vector<cConfigurationCheckerBundle*>::const_iterator bundleIt = checkerBundle.cbegin();
 
     QStringList defaultParams;
     defaultParams.append(_myConfigurationPath);
@@ -82,11 +81,12 @@ void cRuntimeThread::run()
     }
 
     // Process ResultPooling
-    ExecuteProcess(GetApplicationDir() + "ResultPooling.exe", {""});
+    ExecuteProcess(GetApplicationDir() + "ResultPooling.exe", { "" });
 
     // Process ReportModules
-    std::vector<cConfigurationReportModule *> reportModules = _myConfiguration->GetReportModules();
-    std::vector<cConfigurationReportModule *>::const_iterator reportModuleIt = reportModules.cbegin();
+    std::vector<cConfigurationReportModule*> reportModules = _myConfiguration->GetReportModules();
+    std::vector<cConfigurationReportModule*>::const_iterator reportModuleIt =
+        reportModules.cbegin();
 
     for (; reportModuleIt != reportModules.cend() && !_abortExecution; reportModuleIt++)
     {
@@ -101,7 +101,7 @@ void cRuntimeThread::run()
     emit Finished();
 }
 
-int cRuntimeThread::ExecuteProcess(const QString &processName, const QStringList &params)
+int cRuntimeThread::ExecuteProcess(const QString& processName, const QStringList& params)
 {
     QProcess process;
 

@@ -6,8 +6,8 @@
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef c_configuration_checker_h__
-#define c_configuration_checker_h__
+#ifndef cConfigurationChecker_h__
+#define cConfigurationChecker_h__
 
 #include "../result_format/c_parameter_container.h"
 #include "../result_format/c_issue.h"
@@ -16,7 +16,7 @@
 
 // Represents the parameters for a single Checker (e.g. elevation checker) in the config xml file 
 // used to parametrize the framework
-class c_configuration_checker
+class cConfigurationChecker
 {
 public:
 	// name of the xml node for the checker
@@ -29,13 +29,13 @@ public:
 	static const XMLCh* ATTR_CHECKER_MIN_LEVEL;
 	static const XMLCh* ATTR_CHECKER_MAX_LEVEL;
 
-	c_configuration_checker();
-	c_configuration_checker(const std::string& checkerId, eIssueLevel minLevel = INFO_LVL, eIssueLevel maxLevel = ERROR_LVL);
+	cConfigurationChecker();
+	cConfigurationChecker(const std::string& checkerId, eIssueLevel minLevel = INFO_LVL, eIssueLevel maxLevel = ERROR_LVL);
 
-	virtual ~c_configuration_checker();
+	virtual ~cConfigurationChecker();
 
 	// parses the parameters in the xml file
-	static c_configuration_checker* ParseConfigurationChecker(DOMNode * const pXMLNode, DOMElement* const pXMLElement);
+	static cConfigurationChecker* ParseConfigurationChecker(DOMNode * const pXMLNode, DOMElement* const pXMLElement);
 	
 	// writes the parsed configuration to a given xml file
 	DOMElement * WriteXML(XERCES_CPP_NAMESPACE::DOMDocument* pResultDocument, DOMElement* p_parentElement) const;

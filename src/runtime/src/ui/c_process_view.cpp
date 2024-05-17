@@ -7,21 +7,21 @@
  */
 #include "c_process_view.h"
 
-#include "common/result_format/c_checker_bundle.h"
-#include "common/result_format/c_parameter_container.h"
 #include "common/result_format/c_result_container.h"
+#include "common/result_format/c_parameter_container.h"
+#include "common/result_format/c_checker_bundle.h"
 
 #include "common/config_format/c_configuration.h"
 #include "common/config_format/c_configuration_checker.h"
 #include "common/config_format/c_configuration_checker_bundle.h"
 #include "common/config_format/c_configuration_report_module.h"
 
-#include "c_checker_dialog.h"
-#include "c_global_param_dialog.h"
-#include "c_local_param_dialog.h"
 #include "c_param_dialog.h"
+#include "c_local_param_dialog.h"
+#include "c_global_param_dialog.h"
+#include "c_checker_dialog.h"
 
-cProcessView::cProcessView(QWidget *parent) : QTreeWidget(parent)
+cProcessView::cProcessView(QWidget* parent) : QTreeWidget(parent)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -35,7 +35,7 @@ const QString cProcessView::GetApplicationDir()
     return QCoreApplication::applicationDirPath() + "/";
 }
 
-void cProcessView::LoadConfiguration(cConfiguration *const configuration)
+void cProcessView::LoadConfiguration(cConfiguration* const configuration)
 {
     _currentConfiguration = configuration;
     clear();
@@ -44,24 +44,30 @@ void cProcessView::LoadConfiguration(cConfiguration *const configuration)
     std::vector<std::string> paramNames = configParams.GetParams();
 
     // Add Configuration Params
-    for (std::vector<std::string>::const_iterator paramIt = paramNames.cbegin(); paramIt != paramNames.cend();
+    for (std::vector<std::string>::const_iterator paramIt = paramNames.cbegin();
+         paramIt != paramNames.cend();
          paramIt++)
     {
         AddParamItemToRoot(*paramIt, configParams.GetParam(*paramIt));
     }
 
     // Add CheckerBundles
-    std::vector<c_configuration_checker_bundle *> checkerBundle = configuration->GetCheckerBundles();
-    for (std::vector<c_configuration_checker_bundle *>::const_iterator bundleIt = checkerBundle.cbegin();
-         bundleIt != checkerBundle.cend(); bundleIt++)
+    std::vector<cConfigurationCheckerBundle*> checkerBundle = configuration->GetCheckerBundles();
+    for (std::vector<cConfigurationCheckerBundle*>::const_iterator bundleIt =
+             checkerBundle.cbegin();
+         bundleIt != checkerBundle.cend();
+         bundleIt++)
     {
         AddCheckerBundleItemToRoot(*bundleIt);
     }
 
+
     // Add ReportModules
-    std::vector<cConfigurationReportModule *> reportModules = configuration->GetReportModules();
-    for (std::vector<cConfigurationReportModule *>::const_iterator reportModuleIt = reportModules.cbegin();
-         reportModuleIt != reportModules.cend(); reportModuleIt++)
+    std::vector<cConfigurationReportModule*> reportModules = configuration->GetReportModules();
+    for (std::vector<cConfigurationReportModule*>::const_iterator reportModuleIt =
+             reportModules.cbegin();
+         reportModuleIt != reportModules.cend();
+         reportModuleIt++)
     {
         AddReportModuleItemToRoot(*reportModuleIt);
     }
@@ -69,31 +75,37 @@ void cProcessView::LoadConfiguration(cConfiguration *const configuration)
     expandAll();
 }
 
-void cProcessView::AddConfiguration(cConfiguration *const configurationToAdd)
+void cProcessView::AddConfiguration(cConfiguration* const configurationToAdd)
 {
     if (nullptr == configurationToAdd)
         return;
 
     // Add CheckerBundles
-    std::vector<c_configuration_checker_bundle *> checkerBundle = configurationToAdd->GetCheckerBundles();
-    for (std::vector<c_configuration_checker_bundle *>::const_iterator bundleIt = checkerBundle.cbegin();
-         bundleIt != checkerBundle.cend(); bundleIt++)
+    std::vector<cConfigurationCheckerBundle*> checkerBundle =
+        configurationToAdd->GetCheckerBundles();
+    for (std::vector<cConfigurationCheckerBundle*>::const_iterator bundleIt =
+             checkerBundle.cbegin();
+         bundleIt != checkerBundle.cend();
+         bundleIt++)
     {
         AddCheckerBundleItemToRoot(*bundleIt, true);
     }
 
+
     // Add ReportModules
-    std::vector<cConfigurationReportModule *> reportModules = configurationToAdd->GetReportModules();
-    for (std::vector<cConfigurationReportModule *>::const_iterator reportModuleIt = reportModules.cbegin();
-         reportModuleIt != reportModules.cend(); reportModuleIt++)
+    std::vector<cConfigurationReportModule*> reportModules = configurationToAdd->GetReportModules();
+    for (std::vector<cConfigurationReportModule*>::const_iterator reportModuleIt =
+             reportModules.cbegin();
+         reportModuleIt != reportModules.cend();
+         reportModuleIt++)
     {
         AddReportModuleItemToRoot(*reportModuleIt, true);
     }
 }
 
-void cProcessView::showContextMenu(const QPoint &pos)
+void cProcessView::showContextMenu(const QPoint & pos)
 {
-    QTreeWidgetItem *currentItem = itemAt(pos);
+    QTreeWidgetItem* currentItem = itemAt(pos);
     QMenu menu(this);
 
     if (nullptr != currentItem)
@@ -102,79 +114,83 @@ void cProcessView::showContextMenu(const QPoint &pos)
 
         switch (itemType.toInt())
         {
-        case ITEM_PARAM: {
-            QAction *editAction = new QAction("Edit");
-            menu.addAction(editAction);
-            QAction *deleteAction = new QAction("Delete");
-            menu.addAction(deleteAction);
+            case ITEM_PARAM:
+            {
+                QAction* editAction = new QAction("Edit");
+                menu.addAction(editAction);
+                QAction* deleteAction = new QAction("Delete");
+                menu.addAction(deleteAction);
 
-            connect(editAction, SIGNAL(triggered(void)), this, SLOT(EditParam()));
-            connect(deleteAction, SIGNAL(triggered(void)), this, SLOT(DeleteParam()));
-            break;
-        }
-        case ITEM_CHECKER_BUNDLE: {
-            QAction *addParameterAction = new QAction("Add Parameter");
-            menu.addAction(addParameterAction);
-            menu.addSeparator();
-            QAction *deleteAction = new QAction("Delete");
-            menu.addAction(deleteAction);
+                connect(editAction, SIGNAL(triggered(void)), this, SLOT(EditParam()));
+                connect(deleteAction, SIGNAL(triggered(void)), this, SLOT(DeleteParam()));
+                break;
+            }
+            case ITEM_CHECKER_BUNDLE:
+            {
+                QAction* addParameterAction = new QAction("Add Parameter");
+                menu.addAction(addParameterAction);
+                menu.addSeparator();
+                QAction* deleteAction = new QAction("Delete");
+                menu.addAction(deleteAction);
 
-            menu.addSeparator();
-            QAction *moveUpAction = new QAction("Move Up");
-            menu.addAction(moveUpAction);
-            QAction *moveDownAction = new QAction("Move Down");
-            menu.addAction(moveDownAction);
+                menu.addSeparator();
+                QAction* moveUpAction = new QAction("Move Up");
+                menu.addAction(moveUpAction);
+                QAction* moveDownAction = new QAction("Move Down");
+                menu.addAction(moveDownAction);
 
-            connect(addParameterAction, SIGNAL(triggered(void)), this, SLOT(AddLocalParam()));
-            connect(deleteAction, SIGNAL(triggered(void)), this, SLOT(DeleteCheckerBundle()));
-            connect(moveUpAction, SIGNAL(triggered(void)), this, SLOT(MoveUp()));
-            connect(moveDownAction, SIGNAL(triggered(void)), this, SLOT(MoveDown()));
+                connect(addParameterAction, SIGNAL(triggered(void)), this, SLOT(AddLocalParam()));
+                connect(deleteAction, SIGNAL(triggered(void)), this, SLOT(DeleteCheckerBundle()));
+                connect(moveUpAction, SIGNAL(triggered(void)), this, SLOT(MoveUp()));
+                connect(moveDownAction, SIGNAL(triggered(void)), this, SLOT(MoveDown()));
 
-            break;
-        }
-        case ITEM_CHECKER: {
-            QAction *addParameterAction = new QAction("Add Parameter");
-            menu.addAction(addParameterAction);
+                break;
+            }
+            case ITEM_CHECKER:
+            {
+                QAction* addParameterAction = new QAction("Add Parameter");
+                menu.addAction(addParameterAction);
 
-            QAction *editAction = new QAction("Edit");
-            menu.addAction(editAction);
-            QAction *deleteAction = new QAction("Delete");
-            menu.addAction(deleteAction);
+                QAction* editAction = new QAction("Edit");
+                menu.addAction(editAction);
+                QAction* deleteAction = new QAction("Delete");
+                menu.addAction(deleteAction);
 
-            connect(addParameterAction, SIGNAL(triggered(void)), this, SLOT(AddLocalParam()));
-            connect(editAction, SIGNAL(triggered(void)), this, SLOT(EditChecker()));
-            connect(deleteAction, SIGNAL(triggered(void)), this, SLOT(DeleteChecker()));
+                connect(addParameterAction, SIGNAL(triggered(void)), this, SLOT(AddLocalParam()));
+                connect(editAction, SIGNAL(triggered(void)), this, SLOT(EditChecker()));
+                connect(deleteAction, SIGNAL(triggered(void)), this, SLOT(DeleteChecker()));
 
-            break;
-        }
-        case ITEM_REPORT_MODULE: {
-            QAction *addParameterAction = new QAction("Add Parameter");
-            menu.addAction(addParameterAction);
+                break;
+            }
+            case ITEM_REPORT_MODULE:
+            {
+                QAction* addParameterAction = new QAction("Add Parameter");
+                menu.addAction(addParameterAction);
 
-            menu.addSeparator();
-            QAction *editAction = new QAction("Edit");
-            menu.addAction(editAction);
-            QAction *deleteAction = new QAction("Delete");
-            menu.addAction(deleteAction);
+                menu.addSeparator();
+                QAction* editAction = new QAction("Edit");
+                menu.addAction(editAction);
+                QAction* deleteAction = new QAction("Delete");
+                menu.addAction(deleteAction);
 
-            menu.addSeparator();
-            QAction *moveUpAction = new QAction("Move Up");
-            menu.addAction(moveUpAction);
-            QAction *moveDownAction = new QAction("Move Down");
-            menu.addAction(moveDownAction);
+                menu.addSeparator();
+                QAction* moveUpAction = new QAction("Move Up");
+                menu.addAction(moveUpAction);
+                QAction* moveDownAction = new QAction("Move Down");
+                menu.addAction(moveDownAction);
 
-            connect(addParameterAction, SIGNAL(triggered(void)), this, SLOT(AddLocalParam()));
-            connect(deleteAction, SIGNAL(triggered(void)), this, SLOT(DeleteReportModule()));
-            connect(moveUpAction, SIGNAL(triggered(void)), this, SLOT(MoveUp()));
-            connect(moveDownAction, SIGNAL(triggered(void)), this, SLOT(MoveDown()));
+                connect(addParameterAction, SIGNAL(triggered(void)), this, SLOT(AddLocalParam()));
+                connect(deleteAction, SIGNAL(triggered(void)), this, SLOT(DeleteReportModule()));
+                connect(moveUpAction, SIGNAL(triggered(void)), this, SLOT(MoveUp()));
+                connect(moveDownAction, SIGNAL(triggered(void)), this, SLOT(MoveDown()));
 
-            break;
-        }
+                break;
+            }
         }
     }
     else
     {
-        QAction *addModuleAction = new QAction("Add Module");
+        QAction* addModuleAction = new QAction("Add Module");
         menu.addAction(addModuleAction);
 
         connect(addModuleAction, SIGNAL(triggered(void)), this, SLOT(AddModule()));
@@ -183,9 +199,9 @@ void cProcessView::showContextMenu(const QPoint &pos)
     menu.exec(mapToGlobal(pos));
 };
 
-void cProcessView::mouseDoubleClickEvent(QMouseEvent *event)
+void cProcessView::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    QTreeWidgetItem *clickedItem = itemAt(event->pos());
+    QTreeWidgetItem* clickedItem = itemAt(event->pos());
 
     if (nullptr != clickedItem)
     {
@@ -198,41 +214,43 @@ void cProcessView::mouseDoubleClickEvent(QMouseEvent *event)
     }
 }
 
-cParamData cProcessView::GetParamDataFromItem(const QTreeWidgetItem *item)
+cParamData cProcessView::GetParamDataFromItem(const QTreeWidgetItem* item)
 {
     QVariant data = item->data(0, ITEM_DATA_ID);
     cParamData paramData = data.value<cParamData>();
     return paramData;
 }
 
-cCheckerBundleData cProcessView::GetCheckerBundleDataFromItem(const QTreeWidgetItem *item)
+cCheckerBundleData cProcessView::GetCheckerBundleDataFromItem(const QTreeWidgetItem* item)
 {
     QVariant data = item->data(0, ITEM_DATA_ID);
     cCheckerBundleData checkerBundleData = data.value<cCheckerBundleData>();
     return checkerBundleData;
+
 }
 
-cCheckerData cProcessView::GetCheckerDataFromItem(const QTreeWidgetItem *item)
+cCheckerData cProcessView::GetCheckerDataFromItem(const QTreeWidgetItem* item)
 {
     QVariant data = item->data(0, ITEM_DATA_ID);
     cCheckerData checkerData = data.value<cCheckerData>();
     return checkerData;
+
 }
 
-cReportModuleData cProcessView::GetReportModuleDataFromItem(const QTreeWidgetItem *item)
+cReportModuleData cProcessView::GetReportModuleDataFromItem(const QTreeWidgetItem* item)
 {
     QVariant data = item->data(0, ITEM_DATA_ID);
     cReportModuleData reportModuleData = data.value<cReportModuleData>();
     return reportModuleData;
+
 }
 
-void cProcessView::AddCheckerBundleItemToRoot(c_configuration_checker_bundle *const checkerBundle, const bool expand)
+void cProcessView::AddCheckerBundleItemToRoot(cConfigurationCheckerBundle* const checkerBundle, const bool expand)
 {
-    QTreeWidgetItem *newCheckerBundleItem = new QTreeWidgetItem(invisibleRootItem());
+    QTreeWidgetItem* newCheckerBundleItem = new QTreeWidgetItem(invisibleRootItem());
 
     newCheckerBundleItem->setBackgroundColor(0, QColor(0, 120, 250, 128));
-    newCheckerBundleItem->setText(
-        0, QString("CheckerBundle %1").arg(checkerBundle->GetCheckerBundleApplication().c_str()));
+    newCheckerBundleItem->setText(0, QString("CheckerBundle %1").arg(checkerBundle->GetCheckerBundleApplication().c_str()));
     newCheckerBundleItem->setChildIndicatorPolicy(QTreeWidgetItem::DontShowIndicatorWhenChildless);
     newCheckerBundleItem->setData(0, ITEM_TYPE_ID, ITEM_CHECKER_BUNDLE);
 
@@ -249,16 +267,18 @@ void cProcessView::AddCheckerBundleItemToRoot(c_configuration_checker_bundle *co
     cParameterContainer configParams = checkerBundle->GetParams();
     std::vector<std::string> paramNames = configParams.GetParams();
 
-    for (std::vector<std::string>::const_iterator paramIt = paramNames.cbegin(); paramIt != paramNames.cend();
+    for (std::vector<std::string>::const_iterator paramIt = paramNames.cbegin();
+         paramIt != paramNames.cend();
          paramIt++)
     {
         AddParamItem(newCheckerBundleItem, *paramIt, configParams.GetParam(*paramIt));
     }
 
     // Add Checkers
-    std::vector<c_configuration_checker *> checkers = checkerBundle->GetCheckers();
-    for (std::vector<c_configuration_checker *>::const_iterator checkerIt = checkers.cbegin();
-         checkerIt != checkers.cend(); checkerIt++)
+    std::vector<cConfigurationChecker*> checkers = checkerBundle->GetCheckers();
+    for (std::vector<cConfigurationChecker*>::const_iterator checkerIt = checkers.cbegin();
+         checkerIt != checkers.cend();
+         checkerIt++)
     {
         AddCheckerItem(newCheckerBundleItem, *checkerIt);
     }
@@ -269,15 +289,16 @@ void cProcessView::AddCheckerBundleItemToRoot(c_configuration_checker_bundle *co
     addTopLevelItem(newCheckerBundleItem);
 }
 
-void cProcessView::AddCheckerItem(QTreeWidgetItem *parentCheckerBundleItem, c_configuration_checker *const checker)
+void cProcessView::AddCheckerItem(QTreeWidgetItem* parentCheckerBundleItem, cConfigurationChecker* const checker)
 {
-    QTreeWidgetItem *newCheckerItem = new QTreeWidgetItem(parentCheckerBundleItem);
+    QTreeWidgetItem* newCheckerItem = new QTreeWidgetItem(parentCheckerBundleItem);
 
     newCheckerItem->setBackgroundColor(0, QColor(0, 120, 250, 32));
 
     std::stringstream ssCheckerName;
-    ssCheckerName << checker->GetCheckerId().c_str() << " [" << PrintIssueLevel(checker->GetMinLevel()) << ", "
-                  << PrintIssueLevel(checker->GetMaxLevel()) << "]";
+    ssCheckerName << checker->GetCheckerId().c_str() << " ["
+                    << PrintIssueLevel(checker->GetMinLevel()) << ", "
+                    << PrintIssueLevel(checker->GetMaxLevel()) << "]";
 
     newCheckerItem->setText(0, ssCheckerName.str().c_str());
     newCheckerItem->setChildIndicatorPolicy(QTreeWidgetItem::DontShowIndicatorWhenChildless);
@@ -297,7 +318,8 @@ void cProcessView::AddCheckerItem(QTreeWidgetItem *parentCheckerBundleItem, c_co
     cParameterContainer configParams = checker->GetParams();
     std::vector<std::string> paramNames = configParams.GetParams();
 
-    for (std::vector<std::string>::const_iterator paramIt = paramNames.cbegin(); paramIt != paramNames.cend();
+    for (std::vector<std::string>::const_iterator paramIt = paramNames.cbegin();
+         paramIt != paramNames.cend();
          paramIt++)
     {
         AddParamItem(newCheckerItem, *paramIt, configParams.GetParam(*paramIt));
@@ -306,9 +328,9 @@ void cProcessView::AddCheckerItem(QTreeWidgetItem *parentCheckerBundleItem, c_co
     parentCheckerBundleItem->addChild(newCheckerItem);
 }
 
-void cProcessView::AddReportModuleItemToRoot(cConfigurationReportModule *const reportModule, const bool expand)
+void cProcessView::AddReportModuleItemToRoot(cConfigurationReportModule* const reportModule, const bool expand)
 {
-    QTreeWidgetItem *newReportModuleItem = new QTreeWidgetItem(invisibleRootItem());
+    QTreeWidgetItem* newReportModuleItem = new QTreeWidgetItem(invisibleRootItem());
 
     newReportModuleItem->setBackgroundColor(0, QColor(0, 113, 77, 91));
     newReportModuleItem->setText(0, QString("ReportModule %1").arg(reportModule->GetReportModuleApplication().c_str()));
@@ -327,7 +349,8 @@ void cProcessView::AddReportModuleItemToRoot(cConfigurationReportModule *const r
     // Add Report Params
     cParameterContainer configParams = reportModule->GetParams();
     std::vector<std::string> paramNames = configParams.GetParams();
-    for (std::vector<std::string>::const_iterator paramIt = paramNames.cbegin(); paramIt != paramNames.cend();
+    for (std::vector<std::string>::const_iterator paramIt = paramNames.cbegin();
+         paramIt != paramNames.cend();
          paramIt++)
     {
         AddParamItem(newReportModuleItem, *paramIt, configParams.GetParam(*paramIt));
@@ -339,18 +362,23 @@ void cProcessView::AddReportModuleItemToRoot(cConfigurationReportModule *const r
     addTopLevelItem(newReportModuleItem);
 }
 
-void cProcessView::AddParamItem(QTreeWidgetItem *parentItem, const std::string &name, const std::string &value)
+
+void cProcessView::AddParamItem(QTreeWidgetItem* parentItem,
+                                const std::string& name,
+                                const std::string& value)
 {
-    QTreeWidgetItem *newParamItem = new QTreeWidgetItem(parentItem);
+    QTreeWidgetItem* newParamItem = new QTreeWidgetItem(parentItem);
 
     AddParamToItem(newParamItem, name, value);
 
     parentItem->addChild(newParamItem);
 }
 
-void cProcessView::AddParamItemToRoot(const std::string &name, const std::string &value, const bool setAsFirstItem)
+void cProcessView::AddParamItemToRoot(const std::string& name,
+                                      const std::string& value,
+                                      const bool setAsFirstItem)
 {
-    QTreeWidgetItem *newParamItem = new QTreeWidgetItem(invisibleRootItem());
+    QTreeWidgetItem* newParamItem = new QTreeWidgetItem(invisibleRootItem());
 
     AddParamToItem(newParamItem, name, value);
 
@@ -359,12 +387,14 @@ void cProcessView::AddParamItemToRoot(const std::string &name, const std::string
     if (setAsFirstItem)
     {
         int index = invisibleRootItem()->indexOfChild(newParamItem);
-        QTreeWidgetItem *child = invisibleRootItem()->takeChild(index);
+        QTreeWidgetItem* child = invisibleRootItem()->takeChild(index);
         invisibleRootItem()->insertChild(0, child);
     }
 }
 
-void cProcessView::AddParamToItem(QTreeWidgetItem *newItem, const std::string &name, const std::string &value)
+void cProcessView::AddParamToItem(QTreeWidgetItem* newItem,
+                                  const std::string& name,
+                                  const std::string& value)
 {
     newItem->setChildIndicatorPolicy(QTreeWidgetItem::DontShowIndicatorWhenChildless);
     newItem->setData(0, ITEM_TYPE_ID, ITEM_PARAM);
@@ -372,7 +402,9 @@ void cProcessView::AddParamToItem(QTreeWidgetItem *newItem, const std::string &n
     SetParamDataOnItem(newItem, name, value);
 }
 
-void cProcessView::SetParamDataOnItem(QTreeWidgetItem *item, const std::string &name, const std::string &value)
+void cProcessView::SetParamDataOnItem(QTreeWidgetItem* item,
+                                      const std::string& name,
+                                      const std::string& value)
 {
     cParamData newData;
     newData.paramName = name;
@@ -386,12 +418,13 @@ void cProcessView::SetParamDataOnItem(QTreeWidgetItem *item, const std::string &
     item->setText(0, QString("%1=\"%2\"").arg(name.c_str(), value.c_str()));
 }
 
-QTreeWidgetItem *cProcessView::HasParamItem(const QTreeWidgetItem *parentItem, const std::string &name)
+QTreeWidgetItem* cProcessView::HasParamItem(const QTreeWidgetItem* parentItem,
+                                            const std::string& name)
 {
-    QTreeWidgetItem *foundItem = nullptr;
+    QTreeWidgetItem* foundItem = nullptr;
     for (int i = 0; i < parentItem->childCount(); i++)
     {
-        QTreeWidgetItem *child = parentItem->child(i);
+        QTreeWidgetItem* child = parentItem->child(i);
 
         cParamData paramData = GetParamDataFromItem(child);
         if (paramData.paramName == name)
@@ -408,7 +441,7 @@ void cProcessView::AddLocalParam()
 {
     if (selectedItems().count() > 0)
     {
-        QTreeWidgetItem *selected = selectedItems().first();
+        QTreeWidgetItem* selected = selectedItems().first();
 
         cLocalParamDialog newDlg("newParameter", "", true, this);
 
@@ -417,13 +450,12 @@ void cProcessView::AddLocalParam()
             std::string paramName = newDlg.GetParamName().toLocal8Bit().data();
             std::string paramValue = newDlg.GetParamValue().toLocal8Bit().data();
 
-            QTreeWidgetItem *existingItem = HasParamItem(selected, paramName);
+            QTreeWidgetItem* existingItem = HasParamItem(selected, paramName);
             if (existingItem)
             {
-                QMessageBox::StandardButton reply = QMessageBox::question(
-                    this, "Overwrite Parameter",
-                    "Do you want to overwrite\nthe parameter '" + QString::fromStdString(paramName) + "'\nwith '" +
-                        QString::fromStdString(paramValue) + "'?",
+                QMessageBox::StandardButton reply = QMessageBox::question(this,
+                    "Overwrite Parameter",
+                    "Do you want to overwrite\nthe parameter '" + QString::fromStdString(paramName) + "'\nwith '" + QString::fromStdString(paramValue) + "'?",
                     QMessageBox::Yes | QMessageBox::No);
 
                 if (reply == QMessageBox::Yes)
@@ -453,14 +485,13 @@ void cProcessView::AddGlobalParam()
         std::string paramName = newDlg.GetParamName().toLocal8Bit().data();
         std::string paramValue = newDlg.GetParamValue().toLocal8Bit().data();
 
-        QTreeWidgetItem *existingItem = HasParamItem(invisibleRootItem(), paramName);
+        QTreeWidgetItem* existingItem = HasParamItem(invisibleRootItem(), paramName);
         if (existingItem)
         {
-            QMessageBox::StandardButton reply =
-                QMessageBox::question(this, "Overwrite Parameter",
-                                      "Do you want to overwrite\nthe parameter '" + QString::fromStdString(paramName) +
-                                          "'\nwith '" + QString::fromStdString(paramValue) + "'?",
-                                      QMessageBox::Yes | QMessageBox::No);
+            QMessageBox::StandardButton reply = QMessageBox::question(this,
+                "Overwrite Parameter",
+                "Do you want to overwrite\nthe parameter '" + QString::fromStdString(paramName) + "'\nwith '" + QString::fromStdString(paramValue) + "'?",
+                QMessageBox::Yes | QMessageBox::No);
 
             if (reply == QMessageBox::Yes)
             {
@@ -476,19 +507,19 @@ void cProcessView::AddGlobalParam()
     }
 }
 
-void cProcessView::SetGlobalParamXodrFile(const std::string &xodrFilePath)
+void cProcessView::SetGlobalParamXodrFile(const std::string& xodrFilePath)
 {
     std::string paramName = PARAM_XODR_FILE;
     std::string paramValue = xodrFilePath;
 
-    QTreeWidgetItem *existingItem = HasParamItem(invisibleRootItem(), paramName);
+    QTreeWidgetItem* existingItem = HasParamItem(invisibleRootItem(), paramName);
     if (existingItem)
     {
-        QMessageBox::StandardButton reply =
-            QMessageBox::question(this, "Overwrite Parameter",
-                                  "\nShould be the parameter '" + QString::fromStdString(paramName) +
-                                      "' overwritten with:\n\n" + QString::fromStdString(paramValue),
-                                  QMessageBox::Yes | QMessageBox::No);
+        QMessageBox::StandardButton reply = QMessageBox::question(this,
+            "Overwrite Parameter",
+            "\nShould be the parameter '" + QString::fromStdString(paramName) + "' overwritten with:\n\n" +
+            QString::fromStdString(paramValue),
+            QMessageBox::Yes | QMessageBox::No);
 
         if (reply == QMessageBox::Yes)
         {
@@ -509,37 +540,35 @@ void cProcessView::EditParam()
         EditParam(selectedItems().first());
 }
 
-void cProcessView::EditParam(QTreeWidgetItem *item)
+void cProcessView::EditParam(QTreeWidgetItem* item)
 {
     cParamData paramData = GetParamDataFromItem(item);
 
-    cParamDialog *newDlg;
+    cParamDialog* newDlg;
     if (item->parent() == nullptr)
     {
         cConfiguration currentConfig;
         GetConfigurationFromView(&currentConfig);
-        newDlg = new cGlobalParamDialog(paramData.paramName.c_str(), paramData.paramValue.c_str(), false, this,
-                                        &currentConfig);
+        newDlg = new cGlobalParamDialog(paramData.paramName.c_str(), paramData.paramValue.c_str(), false, this, &currentConfig);
     }
     else
         newDlg = new cLocalParamDialog(paramData.paramName.c_str(), paramData.paramValue.c_str(), false, this);
 
     if (newDlg->exec() == QDialog::Accepted)
     {
-        SetParamDataOnItem(item, newDlg->GetParamName().toLocal8Bit().data(),
-                           newDlg->GetParamValue().toLocal8Bit().data());
+        SetParamDataOnItem(item, newDlg->GetParamName().toLocal8Bit().data(), newDlg->GetParamValue().toLocal8Bit().data());
         emit ChangeConfiguration();
     }
 }
 
-void cProcessView::GetConfigurationFromView(cConfiguration *newConfiguration)
+void cProcessView::GetConfigurationFromView(cConfiguration* newConfiguration)
 {
-    QTreeWidgetItem *rootItem = invisibleRootItem();
+    QTreeWidgetItem* rootItem = invisibleRootItem();
     newConfiguration->Clear();
 
     for (int i = 0; i < rootItem->childCount(); ++i)
     {
-        QTreeWidgetItem *configurationItem = rootItem->child(i);
+        QTreeWidgetItem* configurationItem = rootItem->child(i);
 
         // Params...
         if (configurationItem->data(0, ITEM_TYPE_ID) == ITEM_PARAM)
@@ -551,11 +580,11 @@ void cProcessView::GetConfigurationFromView(cConfiguration *newConfiguration)
         else if (configurationItem->data(0, ITEM_TYPE_ID) == ITEM_CHECKER_BUNDLE)
         {
             cCheckerBundleData bundleData = GetCheckerBundleDataFromItem(configurationItem);
-            c_configuration_checker_bundle *newBundle = newConfiguration->AddCheckerBundle(bundleData.applicationName);
+            cConfigurationCheckerBundle* newBundle = newConfiguration->AddCheckerBundle(bundleData.applicationName);
 
             for (int j = 0; j < configurationItem->childCount(); ++j)
             {
-                QTreeWidgetItem *checkerBundleItem = configurationItem->child(j);
+                QTreeWidgetItem* checkerBundleItem = configurationItem->child(j);
 
                 if (checkerBundleItem->data(0, ITEM_TYPE_ID) == ITEM_PARAM)
                 {
@@ -566,12 +595,11 @@ void cProcessView::GetConfigurationFromView(cConfiguration *newConfiguration)
                 else if (checkerBundleItem->data(0, ITEM_TYPE_ID) == ITEM_CHECKER)
                 {
                     cCheckerData checkerData = GetCheckerDataFromItem(checkerBundleItem);
-                    c_configuration_checker *newChecker =
-                        newBundle->AddChecker(checkerData.checkerId, checkerData.minLevel, checkerData.maxLevel);
+                    cConfigurationChecker* newChecker = newBundle->AddChecker(checkerData.checkerId, checkerData.minLevel, checkerData.maxLevel);
 
                     for (int p = 0; p < checkerBundleItem->childCount(); ++p)
                     {
-                        QTreeWidgetItem *checkerItem = checkerBundleItem->child(p);
+                        QTreeWidgetItem* checkerItem = checkerBundleItem->child(p);
 
                         if (checkerItem->data(0, ITEM_TYPE_ID) == ITEM_PARAM)
                         {
@@ -585,12 +613,12 @@ void cProcessView::GetConfigurationFromView(cConfiguration *newConfiguration)
         else if (configurationItem->data(0, ITEM_TYPE_ID) == ITEM_REPORT_MODULE)
         {
             cReportModuleData moduleData = GetReportModuleDataFromItem(configurationItem);
-            cConfigurationReportModule *newModule = newConfiguration->AddReportModule(moduleData.applicationName);
+            cConfigurationReportModule* newModule = newConfiguration->AddReportModule(moduleData.applicationName);
 
             // Params for reportModules...
             for (int j = 0; j < configurationItem->childCount(); ++j)
             {
-                QTreeWidgetItem *reportModuleItem = configurationItem->child(j);
+                QTreeWidgetItem* reportModuleItem = configurationItem->child(j);
 
                 if (reportModuleItem->data(0, ITEM_TYPE_ID) == ITEM_PARAM)
                 {
@@ -613,7 +641,7 @@ void cProcessView::EditChecker()
     if (selectedItems().count() > 0)
         EditChecker(selectedItems().first());
 }
-void cProcessView::EditChecker(QTreeWidgetItem *item)
+void cProcessView::EditChecker(QTreeWidgetItem* item)
 {
     QVariant data = item->data(0, ITEM_DATA_ID);
 
@@ -627,8 +655,9 @@ void cProcessView::EditChecker(QTreeWidgetItem *item)
         data.setValue(moduleData);
 
         std::stringstream ssIconName;
-        ssIconName << moduleData.checkerId << " [" << PrintIssueLevel(moduleData.minLevel) << ", "
-                   << PrintIssueLevel(moduleData.maxLevel) << "]";
+        ssIconName    << moduleData.checkerId << " ["
+                    << PrintIssueLevel(moduleData.minLevel) << ", "
+                    << PrintIssueLevel(moduleData.maxLevel) << "]";
 
         item->setData(0, ITEM_DATA_ID, data);
         item->setText(0, ssIconName.str().c_str());
@@ -651,8 +680,10 @@ void cProcessView::DeleteReportModule()
 
 void cProcessView::SelectModuleFromFileSystem()
 {
-    QString pathToNewModule = QFileDialog::getOpenFileName(this, tr("Add module to configuration"), GetApplicationDir(),
-                                                           tr("CheckerBundles, ReportModules (*.exe);;All files (*)"));
+    QString pathToNewModule = QFileDialog::getOpenFileName(    this,
+                                                        tr("Add module to configuration"),
+                                                        GetApplicationDir(),
+                                                        tr("CheckerBundles, ReportModules (*.exe);;All files (*)"));
 
     if (pathToNewModule.length() > 0)
     {
@@ -662,18 +693,18 @@ void cProcessView::SelectModuleFromFileSystem()
 
 void cProcessView::MoveUp()
 {
-    QTreeWidgetItem *item = currentItem();
+    QTreeWidgetItem* item = currentItem();
     int row = currentIndex().row();
 
     if (item && row > 0)
     {
-        QTreeWidgetItem *parent = item->parent();
+        QTreeWidgetItem* parent = item->parent();
 
         if (nullptr == parent)
             parent = invisibleRootItem();
 
         int index = parent->indexOfChild(item);
-        QTreeWidgetItem *child = parent->takeChild(index);
+        QTreeWidgetItem* child = parent->takeChild(index);
 
         parent->insertChild((index > 1) ? index - 1 : 1, child);
     }
@@ -683,18 +714,18 @@ void cProcessView::MoveUp()
 
 void cProcessView::MoveDown()
 {
-    QTreeWidgetItem *item = currentItem();
+    QTreeWidgetItem* item = currentItem();
     int row = currentIndex().row();
 
     if (item && row > 0)
     {
-        QTreeWidgetItem *parent = item->parent();
+        QTreeWidgetItem* parent = item->parent();
 
         if (nullptr == parent)
             parent = invisibleRootItem();
 
         int index = parent->indexOfChild(item);
-        QTreeWidgetItem *child = parent->takeChild(index);
+        QTreeWidgetItem* child = parent->takeChild(index);
 
         parent->insertChild((index < topLevelItemCount()) ? index + 1 : index, child);
     }
@@ -708,14 +739,14 @@ void cProcessView::DeleteCheckerBundle()
         DeleteItem(selectedItems().first(), true);
 }
 
-void cProcessView::DeleteItem(QTreeWidgetItem *item, bool deleteChilds)
+void cProcessView::DeleteItem(QTreeWidgetItem* item, bool deleteChilds)
 {
     if (deleteChilds)
     {
         // Delete childs
         for (int i = 0; i < item->childCount(); ++i)
         {
-            QTreeWidgetItem *childItem = item->child(i);
+            QTreeWidgetItem* childItem = item->child(i);
 
             DeleteItem(childItem, deleteChilds);
         }
@@ -725,3 +756,4 @@ void cProcessView::DeleteItem(QTreeWidgetItem *item, bool deleteChilds)
 
     emit ChangeConfiguration();
 }
+
