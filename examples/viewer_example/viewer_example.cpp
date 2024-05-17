@@ -6,9 +6,9 @@
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#include "viewer/iConnector.h"
-#include "common/result_format/cIssue.h"
-#include "common/result_format/cLocationsContainer.h"
+#include "viewer/i_connector.h"
+#include "common/result_format/c_issue.h"
+#include "common/result_format/c_locations_container.h"
 #include <stdio.h>
 #include <cstring>
 

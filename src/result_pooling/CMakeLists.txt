@@ -10,8 +10,8 @@ project(${RESULT_POOLING_PROJECT})
 add_executable(${RESULT_POOLING_PROJECT}
     src/stdafx.h
     src/stdafx.cpp
-    src/resultPooling.h
-    src/resultPooling.cpp
+    src/result_pooling.h
+    src/result_pooling.cpp
 )
 
 target_link_libraries(${RESULT_POOLING_PROJECT} PRIVATE

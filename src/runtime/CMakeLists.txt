@@ -11,21 +11,21 @@ set(CMAKE_AUTOMOC ON)
 qt5_add_resources(Resources res/POC_Runtime.qrc)
 
 add_executable(${RUNTIME_PROJECT}
-    src/cConfigurationValidator.cpp
-    src/cConfigurationValidator.h
+    src/c_configuration_validator.cpp
+    src/c_configuration_validator.h
     src/runtime.cpp
     src/runtime.h
     src/stdafx.cpp
     src/stdafx.h
-    src/ui/cCheckerDialog.cpp
-    src/ui/cParamDialog.cpp
-    src/ui/cLocalParamDialog.cpp
-    src/ui/cGlobalParamDialog.cpp
-    src/ui/cProcessLog.cpp
-    src/ui/cProcessView.cpp
-    src/ui/cRuntimeControl.cpp
-    src/ui/cRuntimeThread.cpp
-    src/ui/cRuntimeWindow.cpp
+    src/ui/c_checker_dialog.cpp
+    src/ui/c_param_dialog.cpp
+    src/ui/c_local_param_dialog.cpp
+    src/ui/c_global_param_dialog.cpp
+    src/ui/c_process_log.cpp
+    src/ui/c_process_view.cpp
+    src/ui/c_runtime_control.cpp
+    src/ui/c_runtime_thread.cpp
+    src/ui/c_runtime_window.cpp
     ${Resources}
 )
 
