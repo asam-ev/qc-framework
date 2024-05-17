@@ -20,24 +20,24 @@ class cCheckerBundle;
 
 class cParserErrorHandler : public ErrorHandler
 {
-private:
-    cCheckerBundle * myCheckerBundle{nullptr};
-    const char* myFilePath{nullptr};
+  private:
+    cCheckerBundle *myCheckerBundle{nullptr};
+    const char *myFilePath{nullptr};
 
-    void reportParseException(const SAXParseException& ex);
+    void reportParseException(const SAXParseException &ex);
 
-    void reportParseIssue(const SAXParseException& ex, eIssueLevel issueLevel);
+    void reportParseIssue(const SAXParseException &ex, eIssueLevel issueLevel);
 
     unsigned int m_NumOfIdentityConstraintKeyErrors{0};
 
-public:
+  public:
     cParserErrorHandler() = delete;
     ~cParserErrorHandler() = default;
-    explicit cParserErrorHandler(cCheckerBundle*, const char*);
+    explicit cParserErrorHandler(cCheckerBundle *, const char *);
 
-    void warning(const SAXParseException& ex);
-    void error(const SAXParseException& ex);
-    void fatalError(const SAXParseException& ex);
+    void warning(const SAXParseException &ex);
+    void error(const SAXParseException &ex);
+    void fatalError(const SAXParseException &ex);
     void resetErrors();
     unsigned int GetNumberOfIdentityConstraintKeyError() const;
 };

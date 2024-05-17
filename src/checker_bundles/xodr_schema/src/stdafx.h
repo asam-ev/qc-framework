@@ -8,11 +8,11 @@
 #ifndef _STD_AFX_
 #define _STD_AFX_
 
-#include <sstream>
 #include <fstream>
-#include <memory>
 #include <iostream>
 #include <list>
 #include <map>
+#include <memory>
+#include <sstream>
 
 #endif // _STD_INCLUDES_HEADER_FEP_XODR_MANIPULATION_

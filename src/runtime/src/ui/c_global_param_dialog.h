@@ -18,27 +18,28 @@ class cGlobalParamDialog : public cParamDialog
 {
     Q_OBJECT
 
-public:
-    cGlobalParamDialog(const QString& initalParamName, const QString& initalParamValue, const bool paramNameEditable, cProcessView* parent, const cConfiguration* currentConfig);
+  public:
+    cGlobalParamDialog(const QString &initalParamName, const QString &initalParamValue, const bool paramNameEditable,
+                       cProcessView *parent, const cConfiguration *currentConfig);
 
-protected:
-    cProcessView* _processView{nullptr};
-    QComboBox* _paramNameComboBox{nullptr};
-    QPushButton* _fileOpenButton{nullptr};
+  protected:
+    cProcessView *_processView{nullptr};
+    QComboBox *_paramNameComboBox{nullptr};
+    QPushButton *_fileOpenButton{nullptr};
 
-    void InitUIElements(const QString& initalParamName, const QString& initalParamValue, const bool paramNameEditable, const cConfiguration* currentConfig);
-    void AddWidgetsToLayout(const QString& initalParamName);
+    void InitUIElements(const QString &initalParamName, const QString &initalParamValue, const bool paramNameEditable,
+                        const cConfiguration *currentConfig);
+    void AddWidgetsToLayout(const QString &initalParamName);
 
-private:
-    void AddFileOpenButton(const char* slot);
+  private:
+    void AddFileOpenButton(const char *slot);
     void RemoveFileOpenButton();
 
-public slots:
-    void SwitchCall(const QString& paramName);
+  public slots:
+    void SwitchCall(const QString &paramName);
     void SaveAndClose();
     void OpenXODRFile();
     void OpenXOSCFile();
 };
 
 #endif
-

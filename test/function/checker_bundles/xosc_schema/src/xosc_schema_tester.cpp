@@ -12,8 +12,9 @@
 
 #define MODULE_NAME "XoscSchemaChecker"
 
-class cTesterXoscSchema : public ::testing::Test {
-public:
+class cTesterXoscSchema : public ::testing::Test
+{
+  public:
     std::string strTestFilesDir = std::string(QC4OPENX_DBQA_XOSC_SCHEMA_TEST_REF_DIR);
     std::string strWorkingDir = std::string(QC4OPENX_DBQA_XOSC_SCHEMA_TEST_WORK_DIR);
 };

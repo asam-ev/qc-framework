@@ -22,7 +22,8 @@ bool OSCSchemaChecker::RunChecks()
 {
     bool bXOSCValid = false;
 
-    try {
+    try
+    {
         unsigned revMajorHeader = 0;
         unsigned revMinorHeader = 0;
         std::stringstream ssVersionString;
@@ -35,13 +36,14 @@ bool OSCSchemaChecker::RunChecks()
         std::cout << "Found OpenSCENARIO version: " << ssVersionString.str() << ". ";
         std::string strSchemaFilesUsedDesc = "";
 
-        if (versionToXsdFile.find(ssVersionString.str().c_str()) != versionToXsdFile.end()) {
+        if (versionToXsdFile.find(ssVersionString.str().c_str()) != versionToXsdFile.end())
+        {
             std::list<fs::path> schemaFiles = versionToXsdFile.at(ssVersionString.str().c_str());
             std::cout << "Use schema files:" << std::endl;
 
             std::list<fs::path>::iterator itSchemaFile;
-            for (itSchemaFile = schemaFiles.begin(); itSchemaFile != schemaFiles.end();
-                 itSchemaFile++) {
+            for (itSchemaFile = schemaFiles.begin(); itSchemaFile != schemaFiles.end(); itSchemaFile++)
+            {
                 std::cout << "> " << itSchemaFile->filename() << std::endl;
                 strSchemaFilesUsedDesc += itSchemaFile->filename().string();
                 strSchemaFilesUsedDesc += ", ";
@@ -49,12 +51,11 @@ bool OSCSchemaChecker::RunChecks()
             std::cout << std::endl << "for validation." << std::endl << std::endl;
 
             if (strSchemaFilesUsedDesc.size() > 2)
-                strSchemaFilesUsedDesc =
-                    strSchemaFilesUsedDesc.substr(0, strSchemaFilesUsedDesc.size() - 2);
+                strSchemaFilesUsedDesc = strSchemaFilesUsedDesc.substr(0, strSchemaFilesUsedDesc.size() - 2);
 
             ValidateXSD(schemaFiles);
 
-            cChecker* pXSDParserChecker = pXSDCheckerBundle->GetCheckerById("xoscSchemaChecker");
+            cChecker *pXSDParserChecker = pXSDCheckerBundle->GetCheckerById("xoscSchemaChecker");
 
             if (nullptr == pXSDParserChecker)
                 pXSDParserChecker = pXSDCheckerBundle->CreateChecker(
@@ -62,24 +63,24 @@ bool OSCSchemaChecker::RunChecks()
 
             std::string s_description = pXSDParserChecker->GetDescription();
             std::stringstream ssDescription;
-            ssDescription << s_description << " Found xosc version: " << ssVersionString.str()
-                          << ". Used schema file " << strSchemaFilesUsedDesc << " for validation.";
+            ssDescription << s_description << " Found xosc version: " << ssVersionString.str() << ". Used schema file "
+                          << strSchemaFilesUsedDesc << " for validation.";
             pXSDParserChecker->SetDescription(ssDescription.str());
 
             pXSDParserChecker->UpdateSummary();
         }
-        else {
+        else
+        {
             std::stringstream errMsg;
             errMsg << "Got header version " << ssVersionString.str()
                    << " from OpenSCENARIO. This version is not supported.";
 
             std::cerr << errMsg.str();
 
-            cChecker* pXSDParserChecker = pXSDCheckerBundle->CreateChecker(
-                "xoscVersionChecker", "Checks the validity of an xosc.");
-            cLocationsContainer* loc = new cLocationsContainer(
-                "Version isn't supported.",
-                (cExtendedInformation*)new cFileLocation(eFileType::XOSC, 3, 5));
+            cChecker *pXSDParserChecker =
+                pXSDCheckerBundle->CreateChecker("xoscVersionChecker", "Checks the validity of an xosc.");
+            cLocationsContainer *loc = new cLocationsContainer(
+                "Version isn't supported.", (cExtendedInformation *)new cFileLocation(eFileType::XOSC, 3, 5));
             pXSDParserChecker->AddIssue(new cIssue(errMsg.str(), ERROR_LVL, loc));
             pXSDParserChecker->UpdateSummary();
             bXOSCValid = false;
@@ -87,7 +88,8 @@ bool OSCSchemaChecker::RunChecks()
 
         pXSDCheckerBundle->SetXOSCFilePath(xoscFilePath);
     }
-    catch (...) {
+    catch (...)
+    {
         std::cerr << "Unexpected exception occurred while parsing XOSC." << std::endl;
         XMLPlatformUtils::Terminate();
         exit(1);
@@ -114,21 +116,23 @@ bool OSCSchemaChecker::RunChecks()
     return bXOSCValid;
 }
 
-bool OSCSchemaChecker::ValidateXSD(const std::list<fs::path>& lSchemaFiles)
+bool OSCSchemaChecker::ValidateXSD(const std::list<fs::path> &lSchemaFiles)
 {
     bool validationSuccessfull = true;
 
     XercesDOMParser domParser;
     std::list<fs::path>::const_iterator itSchemaFile;
-    for (itSchemaFile = lSchemaFiles.begin(); itSchemaFile != lSchemaFiles.end(); itSchemaFile++) {
+    for (itSchemaFile = lSchemaFiles.begin(); itSchemaFile != lSchemaFiles.end(); itSchemaFile++)
+    {
         std::string strSchemaFilePath = itSchemaFile->string();
         std::cout << "Load Grammar: " << strSchemaFilePath << std::endl;
 
-        if (domParser.loadGrammar(strSchemaFilePath.c_str(), Grammar::SchemaGrammarType) == NULL) {
+        if (domParser.loadGrammar(strSchemaFilePath.c_str(), Grammar::SchemaGrammarType) == NULL)
+        {
             validationSuccessfull = false;
 
-            cChecker* pXSDParserChecker = pXSDCheckerBundle->CreateChecker(
-                "xoscSchemaChecker", "Checks the validity of an xosc.");
+            cChecker *pXSDParserChecker =
+                pXSDCheckerBundle->CreateChecker("xoscSchemaChecker", "Checks the validity of an xosc.");
 
             std::stringstream ssErrorDesc;
             ssErrorDesc << "Schema file '" << strSchemaFilePath
@@ -159,13 +163,14 @@ bool OSCSchemaChecker::ValidateXSD(const std::list<fs::path>& lSchemaFiles)
     return validationSuccessfull;
 }
 
-bool OSCSchemaChecker::ExtractXOSCVersion(unsigned* i_uRevMajor, unsigned* i_uRevMinor)
+bool OSCSchemaChecker::ExtractXOSCVersion(unsigned *i_uRevMajor, unsigned *i_uRevMinor)
 {
     bool bValid = false;
 
-    try {
-        XMLCh* i_pRevMinor = XMLString::transcode("revMinor");
-        XMLCh* i_pRevMajor = XMLString::transcode("revMajor");
+    try
+    {
+        XMLCh *i_pRevMinor = XMLString::transcode("revMinor");
+        XMLCh *i_pRevMajor = XMLString::transcode("revMajor");
 
         XercesDOMParser domParser;
         cParserErrorHandler parserErrorHandler(pXSDCheckerBundle, xoscFilePath.c_str());
@@ -174,22 +179,24 @@ bool OSCSchemaChecker::ExtractXOSCVersion(unsigned* i_uRevMajor, unsigned* i_uRe
 
         domParser.parse(xoscFilePath.c_str());
 
-        DOMDocument* pInputDocument = domParser.getDocument();
+        DOMDocument *pInputDocument = domParser.getDocument();
 
         if (nullptr == pInputDocument)
             return false;
 
-        XMLCh* pTagName = XMLString::transcode("FileHeader");
-        DOMNodeList* lHeaderNodes = pInputDocument->getElementsByTagName(pTagName);
+        XMLCh *pTagName = XMLString::transcode("FileHeader");
+        DOMNodeList *lHeaderNodes = pInputDocument->getElementsByTagName(pTagName);
 
-        if (lHeaderNodes->getLength() != 1) {
+        if (lHeaderNodes->getLength() != 1)
+        {
             std::stringstream errMsg;
             errMsg << "Found " << (lHeaderNodes->getLength() == 0 ? "zero" : "multiple")
                    << " file header tags in xml file. This is not supported.";
 
-            cChecker* pXSDParserChecker = pXSDCheckerBundle->GetCheckerById("xoscSchemaChecker");
+            cChecker *pXSDParserChecker = pXSDCheckerBundle->GetCheckerById("xoscSchemaChecker");
 
-            if (nullptr == pXSDParserChecker) {
+            if (nullptr == pXSDParserChecker)
+            {
                 pXSDParserChecker = pXSDCheckerBundle->CreateChecker(
                     "xoscSchemaChecker", "Checks the validity of the header tag of an xosc.");
             }
@@ -197,12 +204,13 @@ bool OSCSchemaChecker::ExtractXOSCVersion(unsigned* i_uRevMajor, unsigned* i_uRe
             pXSDParserChecker->AddIssue(new cIssue(errMsg.str(), ERROR_LVL));
             pXSDParserChecker->UpdateSummary();
         }
-        else {
+        else
+        {
             bValid = true;
         }
 
         XMLSize_t i_sIdx = 0;
-        DOMElement* i_nHeaderNode = dynamic_cast<DOMElement*>(lHeaderNodes->item(i_sIdx));
+        DOMElement *i_nHeaderNode = dynamic_cast<DOMElement *>(lHeaderNodes->item(i_sIdx));
 
         std::string i_sRevMinor = XMLString::transcode(i_nHeaderNode->getAttribute(i_pRevMinor));
         std::string i_sRevMajor = XMLString::transcode(i_nHeaderNode->getAttribute(i_pRevMajor));
@@ -214,11 +222,12 @@ bool OSCSchemaChecker::ExtractXOSCVersion(unsigned* i_uRevMajor, unsigned* i_uRe
         XMLString::release(&i_pRevMajor);
         XMLString::release(&i_pRevMinor);
     }
-    catch (...) {
+    catch (...)
+    {
         std::stringstream errMsg;
         errMsg << "Could not retrieve header version from OpenSCENARIO. Abort with error.";
 
-        cChecker* pXSDParserChecker = pXSDCheckerBundle->CreateChecker(
+        cChecker *pXSDParserChecker = pXSDCheckerBundle->CreateChecker(
             "xoscSchemaChecker", "Checks the validity of the header tag of an OpenSCENARIO.");
         pXSDParserChecker->AddIssue(new cIssue(errMsg.str(), ERROR_LVL));
         pXSDParserChecker->UpdateSummary();

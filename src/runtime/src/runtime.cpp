@@ -5,15 +5,15 @@
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-#include "stdafx.h"
 #include "runtime.h"
+#include "stdafx.h"
 
 #include "ui/c_runtime_window.h"
 
 XERCES_CPP_NAMESPACE_USE
 
 // Main program entry point
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     std::string strToolpath = argv[0];
 
@@ -68,10 +68,10 @@ int main(int argc, char* argv[])
 
     QApplication app(argc, argv);
     RunConfigGUI(strConfigurationFilepath, strXODRFilepath, strXOSCFilePath, bAutostart, app);
-return 0;
+    return 0;
 }
 
-void ShowHelp(const std::string& toolPath)
+void ShowHelp(const std::string &toolPath)
 {
     std::string applicationName = toolPath;
     std::string applicationNameWithoutExt = toolPath;
@@ -83,20 +83,15 @@ void ShowHelp(const std::string& toolPath)
               << applicationName << " myConfiguration.xml" << std::endl;
     std::cout << "\nOpen the application with myConfiguration.xml and a given xodr which is under "
                  "test. Autostart enables the automatic validation mode: \n"
-              << applicationName << " -config myConfiguration.xml -xodr myTrack.xodr [-autostart]"
-              << std::endl;
+              << applicationName << " -config myConfiguration.xml -xodr myTrack.xodr [-autostart]" << std::endl;
     std::cout << "\nOpen the application with myConfiguration.xml and a given xosc which is under "
                  "test. Autostart enables the automatic validation mode: \n"
-              << applicationName << " -config myConfiguration.xml -xosc myTrack.xosc [-autostart]"
-              << std::endl;
+              << applicationName << " -config myConfiguration.xml -xosc myTrack.xosc [-autostart]" << std::endl;
     std::cout << "\n\n";
 }
 
-void RunConfigGUI(const std::string& strConfigurationFilepath,
-                  const std::string& strXODRFilepath,
-                  const std::string& strXOSCFilePath,
-                  const bool bAutostart,
-                  const QApplication& app)
+void RunConfigGUI(const std::string &strConfigurationFilepath, const std::string &strXODRFilepath,
+                  const std::string &strXOSCFilePath, const bool bAutostart, const QApplication &app)
 {
     cRuntimeWindow mainWindow(strConfigurationFilepath, strXODRFilepath, strXOSCFilePath, bAutostart);
     mainWindow.show();
@@ -112,4 +107,3 @@ void RunConfigGUI(const std::string& strConfigurationFilepath,
     else
         app.exec();
 }
-

@@ -8,13 +8,13 @@
 #ifndef CCHECKER_DIALOG_H
 #define CCHECKER_DIALOG_H
 
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QVBoxLayout>
 
 #include "common/result_format/c_issue.h"
 
@@ -22,20 +22,20 @@ class cCheckerDialog : public QDialog
 {
     Q_OBJECT
 
-public:
-    cCheckerDialog(eIssueLevel minLevel, eIssueLevel maxLevel, QWidget* parent);
-    
+  public:
+    cCheckerDialog(eIssueLevel minLevel, eIssueLevel maxLevel, QWidget *parent);
+
     // Returns the min level
     eIssueLevel GetMinLevel() const;
 
     // Returns the max level
     eIssueLevel GetMaxLevel() const;
 
-protected:
-    QComboBox* _minLevelEdit{nullptr};
-    QComboBox* _maxLevelEdit{nullptr};
+  protected:
+    QComboBox *_minLevelEdit{nullptr};
+    QComboBox *_maxLevelEdit{nullptr};
 
-public slots:
+  public slots:
     void SaveAndClose();
 };
 
