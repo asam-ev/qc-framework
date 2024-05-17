@@ -10,8 +10,8 @@ project(${CHECKER_BUNDLE_XOSC_SCHEMA})
 add_executable(${CHECKER_BUNDLE_XOSC_SCHEMA}
     src/stdafx.h
     src/stdafx.cpp
-    src/staticOSCChecks.h
-    src/staticOSCChecks.cpp
+    src/static_osc_checks.h
+    src/static_osc_checks.cpp
 )
 
 target_link_libraries(${CHECKER_BUNDLE_XOSC_SCHEMA} PRIVATE

@@ -8,13 +8,13 @@
 
 #include "main.h"
 
-#include "common/result_format/cChecker.h"
-#include "common/result_format/cCheckerBundle.h"
-#include "common/result_format/cParameterContainer.h"
-#include "common/result_format/cResultContainer.h"
+#include "common/result_format/c_checker.h"
+#include "common/result_format/c_checker_bundle.h"
+#include "common/result_format/c_parameter_container.h"
+#include "common/result_format/c_result_container.h"
 
-#include "common/config_format/cConfiguration.h"
-#include "common/config_format/cConfigurationCheckerBundle.h"
+#include "common/config_format/c_configuration.h"
+#include "common/config_format/c_configuration_checker_bundle.h"
 
 // Main Programm
 int main(int argc, char* argv[])

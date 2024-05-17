@@ -12,7 +12,7 @@
 #include <QtCore/QDir>
 #include <QtXml/QDomDocument>
 
-#include "common/result_format/cFileLocation.h"
+#include "common/result_format/c_file_location.h"
 
 #include <iostream>
 
