@@ -11,26 +11,6 @@ add_subdirectory(report_modules)
 add_subdirectory(result_pooling)
 add_subdirectory(runtime)
 
-if (WIN32)
-    ## copy batch scripts
-    install(
-        FILES
-        DESTINATION
-            ${CMAKE_INSTALL_PREFIX}/bin
-    )
-else(WIN32)
-    ## copy shell scripts
-    install(
-        FILES
-        DESTINATION
-            ${CMAKE_INSTALL_PREFIX}/bin
-        PERMISSIONS
-            OWNER_EXECUTE OWNER_WRITE OWNER_READ
-            GROUP_EXECUTE GROUP_WRITE GROUP_READ
-            WORLD_EXECUTE WORLD_WRITE WORLD_READ
-    )
-endif(WIN32)
-
 # FIXME: install()?
 ## copy common lib
 file(
