@@ -29,9 +29,7 @@ add_library(qc4openx-common STATIC
     src/config_format/c_configuration_checker.cpp
     src/config_format/c_configuration_checker_bundle.cpp
     src/config_format/c_configuration_report_module.cpp
-	src/xsd/c_osc_schema_checker.cpp
-	src/xsd/c_parser_error_handler.cpp
-    src/xml/c_x_path_evaluator.cpp
+	src/xml/c_x_path_evaluator.cpp
 )
 
 target_include_directories(qc4openx-common PUBLIC ${PROJECT_SOURCE_DIR}/include
