@@ -22,6 +22,7 @@ add_executable(${REPORT_MODULE_GUI_PROJECT}
 
 target_link_libraries(${REPORT_MODULE_GUI_PROJECT} PRIVATE
     qc4openx-common
+    dev_essential::result
     Qt5::Gui
     Qt5::Widgets
     $<$<PLATFORM_ID:Linux>:dl>

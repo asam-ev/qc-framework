@@ -47,15 +47,12 @@ qc4openx::Result ExecuteCommand(std::string &strResultMessage, std::string strCo
 
 qc4openx::Result CheckFileExists(std::string &strResultMessage, const std::string strFilePath, const bool bDelete)
 {
-    if (fs::filesystem::exists(strFilePath.c_str()))
+    if (fs::exists(strFilePath.c_str()))
     {
-        // std::string strFileContent;
-        // a_util::filesystem::readTextFile(strFilePath.c_str(), strFileContent);
-
         // Specify the path to the text file
 
         // Check if the file exists
-        if (!fs::filesystem::exists(strFilePath))
+        if (!fs::exists(strFilePath))
         {
             std::cerr << "File does not exist: " << strFilePath << std::endl;
             return 1;
@@ -83,7 +80,7 @@ qc4openx::Result CheckFileExists(std::string &strResultMessage, const std::strin
         {
             if (bDelete == true)
             {
-                fs::filesystem::remove(strFilePath.c_str());
+                fs::remove(strFilePath.c_str());
             }
             return qc4openx::ERR_NOERROR;
         }
