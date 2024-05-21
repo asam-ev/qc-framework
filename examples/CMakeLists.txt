@@ -7,3 +7,11 @@
 
 add_subdirectory(checker_bundle_example)
 add_subdirectory(viewer_example)
+
+install(
+    DIRECTORY
+        xodr_examples
+        xosc_examples
+    DESTINATION
+        examples
+)
