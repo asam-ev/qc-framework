@@ -22,8 +22,6 @@ add_test(NAME ${TEST_NAME}
 target_link_libraries(${TEST_NAME}
     PRIVATE
     GTest::gtest_main
-    dev_essential::result
-    dev_essential::system
 )
 
 target_compile_definitions(${TEST_NAME} 

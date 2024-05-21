@@ -35,7 +35,7 @@ TEST_F(cTesterResultPooling, CmdBasic)
     nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
     ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
 
-    a_util::filesystem::remove(strResultFilePath.c_str());
+    fs::remove(strResultFilePath.c_str());
 }
 
 TEST_F(cTesterResultPooling, CmdDir)
@@ -70,7 +70,7 @@ TEST_F(cTesterResultPooling, CmdDirNoResults)
     nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
     ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
 
-    a_util::filesystem::remove(strResultFilePath.c_str());
+    std::filesystem::remove(strResultFilePath.c_str());
 }
 
 TEST_F(cTesterResultPooling, CmdDirNotValid)

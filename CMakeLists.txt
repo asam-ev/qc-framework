@@ -44,7 +44,6 @@ elseif()
         -Wall -Wextra -Wno-reorder -Wno-sign-compare)
 endif()
 
-find_package(dev_essential REQUIRED)
 find_package(XercesC REQUIRED)
 
 # QT

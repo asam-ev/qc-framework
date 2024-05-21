@@ -18,7 +18,7 @@ qc4openx::Result ExecuteCommand(std::string &strResultMessage, std::string strCo
 #endif
     strTotalCommand.append(strCommand.c_str());
 
-    if (a_util::filesystem::exists(strTotalCommand))
+    if (fs::exists(strTotalCommand))
     {
         if (!strArgument.empty())
         {
@@ -47,15 +47,43 @@ qc4openx::Result ExecuteCommand(std::string &strResultMessage, std::string strCo
 
 qc4openx::Result CheckFileExists(std::string &strResultMessage, const std::string strFilePath, const bool bDelete)
 {
-    if (a_util::filesystem::exists(strFilePath.c_str()))
+    if (fs::filesystem::exists(strFilePath.c_str()))
     {
-        std::string strFileContent;
-        a_util::filesystem::readTextFile(strFilePath.c_str(), strFileContent);
+        // std::string strFileContent;
+        // a_util::filesystem::readTextFile(strFilePath.c_str(), strFileContent);
+
+        // Specify the path to the text file
+
+        // Check if the file exists
+        if (!fs::filesystem::exists(strFilePath))
+        {
+            std::cerr << "File does not exist: " << strFilePath << std::endl;
+            return 1;
+        }
+
+        // Open the file in input mode
+        std::ifstream file(strFilePath);
+
+        // Check if the file was successfully opened
+        if (!file.is_open())
+        {
+            std::cerr << "Failed to open the file: " << strFilePath << std::endl;
+            return 1;
+        }
+
+        // Read the entire file content into a string
+        std::ostringstream oss;
+        oss << file.rdbuf();
+        std::string strFileContent = oss.str();
+
+        // Close the file
+        file.close();
+
         if (strFileContent.size() > 0)
         {
             if (bDelete == true)
             {
-                a_util::filesystem::remove(strFilePath.c_str());
+                fs::filesystem::remove(strFilePath.c_str());
             }
             return qc4openx::ERR_NOERROR;
         }

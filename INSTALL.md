@@ -18,7 +18,6 @@ The ASAM Quality Checker Framework runs on Linux and Windows.
 
 ## 3rd Party Dependencies
 
-- dev_essential
 - Xerces-C++
 - Qt 5
 - **Optional:** GoogleTest (only if tests are enabled)
