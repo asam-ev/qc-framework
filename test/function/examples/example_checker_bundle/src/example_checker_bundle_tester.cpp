@@ -57,7 +57,7 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfig)
     nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
     ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
 
-    a_util::filesystem::remove(strResultFilePath.c_str());
+    fs::remove(strResultFilePath.c_str());
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdXodr)
@@ -77,7 +77,7 @@ TEST_F(cTesterExampleCheckerBundle, CmdXodr)
     nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
     ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
 
-    a_util::filesystem::remove(strResultFilePath.c_str());
+    fs::remove(strResultFilePath.c_str());
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdConfigFileNotFound)

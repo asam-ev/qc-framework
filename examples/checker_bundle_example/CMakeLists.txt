@@ -20,7 +20,7 @@ add_executable(${EXAMPLE_CHECKER_BUNDLE}
     src/main.cpp
 )
 
-target_link_libraries(${EXAMPLE_CHECKER_BUNDLE} PRIVATE qc4openx-common)
+target_link_libraries(${EXAMPLE_CHECKER_BUNDLE} PRIVATE qc4openx-common $<$<PLATFORM_ID:Linux>:stdc++fs>)
 install(TARGETS ${EXAMPLE_CHECKER_BUNDLE} DESTINATION examples/checker_bundle_example/bin)
 qc4openx_install_qt(examples/checker_bundle_example/bin ${EXAMPLE_CHECKER_BUNDLE}.exe)
 

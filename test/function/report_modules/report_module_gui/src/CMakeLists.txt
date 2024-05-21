@@ -25,7 +25,6 @@ target_link_libraries(${TEST_NAME}
     PRIVATE
     GTest::gtest_main
     dev_essential::result
-    dev_essential::system
     $<$<PLATFORM_ID:Linux>:dl>
     $<$<PLATFORM_ID:Linux>:pthread>
     $<$<PLATFORM_ID:Linux>:stdc++fs>
