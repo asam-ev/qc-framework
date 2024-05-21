@@ -14,7 +14,7 @@ add_executable(${REPORT_MODULE_TEXT_PROJECT}
     src/report_format_text.cpp
 )
 
-target_link_libraries(${REPORT_MODULE_TEXT_PROJECT} PRIVATE qc4openx-common)
+target_link_libraries(${REPORT_MODULE_TEXT_PROJECT} PRIVATE qc4openx-common $<$<PLATFORM_ID:Linux>:stdc++fs>)
 
 install(TARGETS ${REPORT_MODULE_TEXT_PROJECT} DESTINATION bin)
 qc4openx_install_qt(bin ${REPORT_MODULE_TEXT_PROJECT}${CMAKE_EXECUTABLE_SUFFIX})
