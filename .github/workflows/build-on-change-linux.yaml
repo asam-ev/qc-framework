@@ -34,10 +34,15 @@ jobs:
           echo Installing dev_essentials...
           git clone https://github.com/cariad-tech/dev_essential.git
           cd dev_essentials
+
           echo Installing google test...
           USERNAME=$whoami
-          cmake -H. -B"/home/$USERNAME/dev_essential/build" -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/home/$USERNAME/dev_essential/install" -DCMAKE_BUILD_TYPE=RelWithDebInfo
-          cmake --build "/home/USERNAME/dev_essential/build" --target install --config RelWithDebInfo
+          cmake -H. -B"/home/$USERNAME/dev_essential/build" \
+            -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/home/$USERNAME/dev_essential/install" \
+            -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          cmake --build "/home/USERNAME/dev_essential/build" \
+            --target install \
+            --config RelWithDebInfo
           git clone https://github.com/google/googletest.git -b release-1.10.0
           cd googletest
           mkdir build
@@ -45,6 +50,7 @@ jobs:
           cmake ..
           make
           sudo make install
+
           echo Installing Qt...
           sudo apt update
           sudo apt install \
@@ -52,6 +58,8 @@ jobs:
             libqt5xmlpatterns5-dev \
             libxerces-c-dev \
             pkg-config
+
+          echo Dependencies installed.
         shell: bash
 
       - name: Build framework
