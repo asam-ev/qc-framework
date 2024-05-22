@@ -1,4 +1,4 @@
-name: Build framework on Linux
+name: Build framework on Windows
 
 on:
   # execute on every PR made targeting the branches bellow
@@ -31,7 +31,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        working-directory: dependencies
         run: |
           echo Specify the user's desktop path
           $desktopPath = "C:\Users\[username]\Desktop"
