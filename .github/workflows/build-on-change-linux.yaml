@@ -37,6 +37,12 @@ jobs:
       - name: Install dependencies
         working-directory: dependencies
         run: |
+          echo Updating CMAKE...
+          wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh
+          sudo apt remove cmake
+          sudo apt purge --auto-remove cmake
+          sudo cmake-3.29.3-linux-x86_64.sh --skip-license --exclude-subdir --prefix=/usr/local
+
           echo Installing dev_essential...
           git clone https://github.com/cariad-tech/dev_essential.git
           cd dev_essential
