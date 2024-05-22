@@ -64,6 +64,7 @@ jobs:
 
       - name: Build framework
         run: |
+          echo Building framework...
           USERNAME=$whoami
           cmake -G "Unix Makefiles" -B./build -S . -DCMAKE_INSTALL_PREFIX="/home/$USERNAME/qc-build" \
             -DENABLE_FUNCTIONAL_TESTS=ON  -DXERCES_ROOT="/usr" \
@@ -72,4 +73,5 @@ jobs:
             -Ddev_essential_DIR="/home/danivex/dev_essential/install/lib/cmake/dev_essential"
           cmake --build ./build --target install --config Release -j4
           cmake --install ./build
+          echo Done.
         shell: bash
