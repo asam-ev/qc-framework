@@ -47,7 +47,6 @@ jobs:
           git clone https://github.com/cariad-tech/dev_essential.git
           cd dev_essential
           echo '#include <new>' | cat - include/a_util/memory/detail/stack_ptr_impl.h > temp && mv temp include/a_util/memory/detail/stack_ptr_impl.h
-          rm temp
           cmake -H. -B"/home/$(whoami)/dev_essential/build" \
             -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/dev_essential/install" \
             -DCMAKE_BUILD_TYPE=RelWithDebInfo
