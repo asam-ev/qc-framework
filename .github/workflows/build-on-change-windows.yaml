@@ -23,7 +23,7 @@ on:
       - scripts/cmake/**
 
 jobs:
-  build-linux:
+  build-windows:
     runs-on: windows-2022
     environment: Build
     steps:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          $desktopPath = "C:\Users\${[System.Environment]::UserName}\Desktop"
+          $desktopPath = "D:\a"
 
           Write-Output "Installing Visual Studio 2019..."
           $vsInstaller = "$desktopPath\vs_community.exe"
