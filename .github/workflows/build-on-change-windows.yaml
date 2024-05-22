@@ -37,9 +37,9 @@ jobs:
           Write-Output "Installing Qt..."
           $qtInstaller = "$desktopPath\qt-unified-windows-x86-online.exe"
           Invoke-WebRequest -Uri "https://d13lb3tujbc8s0.cloudfront.net/onlineinstallers/qt-online-installer-windows-x64-4.8.0.exe" -OutFile $qtInstaller
-          Start-Process -FilePath $qtInstaller -ArgumentList ^
-            "--accept-license", "--default-answer", ^
-            "--confirm-command install qt.qt5.5158.win64_msvc2019_64 qt.qt5.5158.qtcharts qt.qt5.5158.debug_info qt.qt5.5158.src qt.tools.qtcreator", ^
+          Start-Process -FilePath $qtInstaller -ArgumentList `
+            "--accept-license", "--default-answer", `
+            "--confirm-command install qt.qt5.5158.win64_msvc2019_64 qt.qt5.5158.qtcharts qt.qt5.5158.debug_info qt.qt5.5158.src qt.tools.qtcreator", `
             -NoNewWindow -Wait
 
           Write-Output "Setting up Xerces-C++..."
