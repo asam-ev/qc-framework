@@ -1,0 +1,67 @@
+name: Build framework on Linux
+
+on:
+  # execute on every PR made targeting the branches bellow
+  pull_request:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+
+  # execute on every push made targeting the branches bellow
+  push:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+    environment: Build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          echo Installing dev_essentials...
+          git clone https://github.com/cariad-tech/dev_essential.git
+          cd dev_essentials
+          echo Installing google test...
+          USERNAME=$whoami
+          cmake -H. -B"/home/$USERNAME/dev_essential/build" -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/home/$USERNAME/dev_essential/install" -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          cmake --build "/home/USERNAME/dev_essential/build" --target install --config RelWithDebInfo
+          git clone https://github.com/google/googletest.git -b release-1.10.0
+          cd googletest
+          mkdir build
+          cd build
+          cmake ..
+          make
+          sudo make install
+          echo Installing Qt...
+          sudo apt update
+          sudo apt install \
+            qtbase5-dev \
+            libqt5xmlpatterns5-dev \
+            libxerces-c-dev \
+            pkg-config
+        shell: bash
+
+      - name: Build framework
+        run: |
+          USERNAME=$whoami
+          cmake -G "Unix Makefiles" -B./build -S . -DCMAKE_INSTALL_PREFIX="/home/$USERNAME/qc-build" \
+            -DENABLE_FUNCTIONAL_TESTS=ON  -DXERCES_ROOT="/usr" \
+            -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
+            -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/" \
+            -Ddev_essential_DIR="/home/danivex/dev_essential/install/lib/cmake/dev_essential"
+          cmake --build ./build --target install --config Release -j4
+          cmake --install ./build
+        shell: bash
