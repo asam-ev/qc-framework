@@ -37,10 +37,17 @@ jobs:
       - name: Install dependencies
         working-directory: dependencies
         run: |
-          echo $(pwd)
+          echo Updating CMAKE...
+          wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh
+          sudo apt remove cmake
+          sudo apt purge --auto-remove cmake
+          sudo bash cmake-3.29.3-linux-x86_64.sh --skip-license --exclude-subdir --prefix=/usr/local
+
           echo Installing dev_essential...
           git clone https://github.com/cariad-tech/dev_essential.git
           cd dev_essential
+          echo '#include <new>' | cat - include/a_util/memory/detail/stack_ptr_impl.h > temp && mv temp include/a_util/memory/detail/stack_ptr_impl.h
+          rm temp
           cmake -H. -B"/home/$(whoami)/dev_essential/build" \
             -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/dev_essential/install" \
             -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -49,6 +56,7 @@ jobs:
             --config RelWithDebInfo
 
           echo Installing google test...
+          cd ../dependencies
           git clone https://github.com/google/googletest.git -b release-1.10.0
           cd googletest
           mkdir build
@@ -58,6 +66,7 @@ jobs:
           sudo make install
 
           echo Installing Qt...
+          cd ../dependencies
           sudo apt update
           sudo apt install \
             qtbase5-dev \
