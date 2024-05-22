@@ -37,6 +37,7 @@ jobs:
       - name: Install dependencies
         working-directory: dependencies
         run: |
+          pwd
           echo Updating CMAKE...
           wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh
           sudo apt remove cmake
@@ -46,11 +47,10 @@ jobs:
           echo Installing dev_essential...
           git clone https://github.com/cariad-tech/dev_essential.git
           cd dev_essential
-          USERNAME=$whoami
-          cmake -H. -B"/home/$USERNAME/dev_essential/build" \
-            -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/home/$USERNAME/dev_essential/install" \
+          cmake -H. -B"/home/$(whoami)/dev_essential/build" \
+            -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/dev_essential/install" \
             -DCMAKE_BUILD_TYPE=RelWithDebInfo
-          cmake --build "/home/USERNAME/dev_essential/build" \
+          cmake --build "/home/$(whoami)/dev_essential/build" \
             --target install \
             --config RelWithDebInfo
 
@@ -78,12 +78,11 @@ jobs:
         working-directory: qc-framework
         run: |
           echo Building framework...
-          USERNAME=$whoami
-          cmake -G "Unix Makefiles" -B./build -S . -DCMAKE_INSTALL_PREFIX="/home/$USERNAME/qc-build" \
+          cmake -G "Unix Makefiles" -B./build -S . -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
             -DENABLE_FUNCTIONAL_TESTS=ON  -DXERCES_ROOT="/usr" \
             -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
             -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/" \
-            -Ddev_essential_DIR="/home/danivex/dev_essential/install/lib/cmake/dev_essential"
+            -Ddev_essential_DIR="/home/$(whoami)/dev_essential/install/lib/cmake/dev_essential"
           cmake --build ./build --target install --config Release -j4
           cmake --install ./build
           echo Done.
