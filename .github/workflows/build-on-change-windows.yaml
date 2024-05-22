@@ -32,7 +32,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          $desktopPath = "C:\Users\[username]\Desktop"
+          $desktopPath = "C:\Users\${[System.Environment]::UserName}\Desktop"
 
           Write-Output "Installing Visual Studio 2019..."
           $vsInstaller = "$desktopPath\vs_community.exe"
