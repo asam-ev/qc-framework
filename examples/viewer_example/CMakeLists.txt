@@ -19,7 +19,7 @@ include_directories(${VIEWER} PRIVATE
 )
 
 add_library(${VIEWER} SHARED viewer_example.cpp)
-target_link_libraries(${VIEWER} PRIVATE qc4openx-common)
+target_link_libraries(${VIEWER} PRIVATE qc4openx-common $<$<PLATFORM_ID:Linux>:stdc++fs>)
 
 install(
     TARGETS ${VIEWER}

@@ -23,7 +23,7 @@ target_link_libraries(${TEST_NAME}
     PRIVATE
     GTest::gtest_main
     dev_essential::result
-    dev_essential::system
+    $<$<PLATFORM_ID:Linux>:stdc++fs>
 )
 
 target_compile_definitions(${TEST_NAME} 

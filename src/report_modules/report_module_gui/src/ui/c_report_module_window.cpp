@@ -12,7 +12,6 @@
 #endif
 
 #include "c_report_module_window.h"
-#include <a_util/result.h>
 
 #include "c_checker_widget.h"
 #include "c_xodr_editor_widget.h"

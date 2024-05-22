@@ -10,11 +10,13 @@
 
 #include <string.h>
 
-#include "a_util/filesystem.h"
 #include "a_util/result.h"
-#include "gtest/gtest.h"
-
 #include "qc4openx_errors.h"
+#include "qc4openx_filesystem.h"
+#include "gtest/gtest.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 /**
  * This macro prints a formatted message during test execution.
