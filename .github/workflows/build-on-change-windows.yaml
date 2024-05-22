@@ -1,0 +1,135 @@
+name: Build framework on Linux
+
+on:
+  # execute on every PR made targeting the branches bellow
+  pull_request:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - .github/** # only for testing this PR
+
+  # execute on every push made targeting the branches bellow
+  push:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+
+jobs:
+  build-linux:
+    runs-on: windows-2022
+    environment: Build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        working-directory: dependencies
+        run: |
+          echo Specify the user's desktop path
+          $desktopPath = "C:\Users\[username]\Desktop"
+
+          echo Install Visual Studio 2019
+          Write-Output "Installing Visual Studio 2019..."
+          $vsInstaller = "$desktopPath\vs_community.exe"
+          Invoke-WebRequest -Uri "https://aka.ms/vs/16/release/vs_community.exe" -OutFile $vsInstaller
+          Start-Process -FilePath $vsInstaller -ArgumentList "--quiet", "--norestart", "--wait", "--add Microsoft.VisualStudio.Workload.NativeDesktop" -NoNewWindow -Wait
+
+          echo Install CMake
+          Write-Output "Installing CMake..."
+          $cmakeInstaller = "$desktopPath\cmake-3.20.2-windows-x86_64.msi"
+          Invoke-WebRequest -Uri "https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2-windows-x86_64.msi" -OutFile $cmakeInstaller
+          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", $cmakeInstaller, "/quiet", "/norestart" -NoNewWindow -Wait
+
+          echo Install Qt
+          Write-Output "Installing Qt..."
+          $qtInstaller = "$desktopPath\qt-unified-windows-x86-online.exe"
+          Invoke-WebRequest -Uri "http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe" -OutFile $qtInstaller
+          $qtScript = "$desktopPath\qt-installer-noninteractive.qs"
+          @"
+          function Controller() {
+              installer.autoRejectMessageBoxes();
+              installer.installationFinished.connect(function() {
+                  gui.clickButton(buttons.NextButton);
+              });
+          }
+          Controller.prototype.WelcomePageCallback = function() {
+              gui.clickButton(buttons.NextButton);
+          }
+          Controller.prototype.CredentialsPageCallback = function() {
+              gui.clickButton(buttons.NextButton);
+          }
+          Controller.prototype.IntroductionPageCallback = function() {
+              gui.clickButton(buttons.NextButton);
+          }
+          Controller.prototype.TargetDirectoryPageCallback = function() {
+              gui.currentPageWidget().TargetDirectoryLineEdit.setText("C:\\Qt");
+              gui.clickButton(buttons.NextButton);
+          }
+          Controller.prototype.ComponentSelectionPageCallback = function() {
+              var widget = gui.currentPageWidget();
+              widget.deselectAll();
+              widget.selectComponent("qt.qt5.5123.win64_msvc2019_64");
+              gui.clickButton(buttons.NextButton);
+          }
+          Controller.prototype.LicenseAgreementPageCallback = function() {
+              gui.currentPageWidget().AcceptLicenseRadioButton.setChecked(true);
+              gui.clickButton(buttons.NextButton);
+          }
+          Controller.prototype.StartMenuDirectoryPageCallback = function() {
+              gui.clickButton(buttons.NextButton);
+          }
+          Controller.prototype.ReadyForInstallationPageCallback = function() {
+              gui.clickButton(buttons.NextButton);
+          }
+          Controller.prototype.FinishedPageCallback = function() {
+              gui.clickButton(buttons.FinishButton);
+          }
+          "@ | Set-Content $qtScript
+          Start-Process -FilePath $qtInstaller -ArgumentList "--script $qtScript" -NoNewWindow -Wait
+
+          echo Xerces-C++ setup
+          Write-Output "Setting up Xerces-C++..."
+          $xercesZip = "$desktopPath\xerces-c-3.2.5.zip"
+          Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
+          Expand-Archive -Path $xercesZip -DestinationPath "$desktopPath\xerces-c-3.2.5"
+          cd "$desktopPath\xerces-c-3.2.5"
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$desktopPath\Xerces-Out" ..
+          cmake --build . --config Release
+          cmake --build . --config Release --target install
+
+          [System.Environment]::SetEnvironmentVariable("XERCES_ROOT", "$desktopPath\Xerces-Out", [System.EnvironmentVariableTarget]::Machine)
+          [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";$desktopPath\Xerces-Out\bin", [System.EnvironmentVariableTarget]::Machine)
+
+          echo Setup and build dev_essential
+          Write-Output "Setting up dev_essential..."
+          cd "$desktopPath\dev_essential-main"
+          mkdir build
+          cd build
+          cmake -H"$desktopPath\dev_essential-main" -B. -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$desktopPath\dev_essential-Out" ..
+          cmake --build . --config Release
+          cmake --build . --config Release --target install
+        shell: pwsh
+
+      - name: Build framework
+        run: |
+          Write-Output "Setting up QC-Framework..."
+          cd "$desktopPath\qc-framework-main"
+          mkdir build
+          cd build
+          cmake -H"$desktopPath\qc-framework-main" -B. -G "Visual Studio 16 2019" -A x64 -T v142 -DCMAKE_INSTALL_PREFIX="$desktopPath\QC-Framework-Out" -DENABLE_FUNCTIONAL_TESTS=OFF -Ddev_essential_ROOT="$desktopPath\dev_essential-Out\lib\cmake\dev_essential" -DQt5_ROOT="C:\Qt\5.15.2\msvc2019_64\lib\cmake\Qt5" -DXERCES_ROOT="$desktopPath\Xerces-Out" -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
+          cmake --build . --target install --config Release
+          cmake --install .
+
+          # Final output
+          Write-Output "All installations and setups are complete!"
+        shell: pwsh
