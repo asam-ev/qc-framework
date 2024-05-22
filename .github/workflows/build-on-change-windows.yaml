@@ -32,22 +32,18 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo Specify the user's desktop path
           $desktopPath = "C:\Users\[username]\Desktop"
 
-          echo Install Visual Studio 2019
           Write-Output "Installing Visual Studio 2019..."
           $vsInstaller = "$desktopPath\vs_community.exe"
           Invoke-WebRequest -Uri "https://aka.ms/vs/16/release/vs_community.exe" -OutFile $vsInstaller
           Start-Process -FilePath $vsInstaller -ArgumentList "--quiet", "--norestart", "--wait", "--add Microsoft.VisualStudio.Workload.NativeDesktop" -NoNewWindow -Wait
 
-          echo Install CMake
           Write-Output "Installing CMake..."
           $cmakeInstaller = "$desktopPath\cmake-3.20.2-windows-x86_64.msi"
           Invoke-WebRequest -Uri "https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2-windows-x86_64.msi" -OutFile $cmakeInstaller
           Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", $cmakeInstaller, "/quiet", "/norestart" -NoNewWindow -Wait
 
-          echo Install Qt
           Write-Output "Installing Qt..."
           $qtInstaller = "$desktopPath\qt-unified-windows-x86-online.exe"
           Invoke-WebRequest -Uri "http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe" -OutFile $qtInstaller
@@ -94,7 +90,6 @@ jobs:
           "@ | Set-Content $qtScript
           Start-Process -FilePath $qtInstaller -ArgumentList "--script $qtScript" -NoNewWindow -Wait
 
-          echo Xerces-C++ setup
           Write-Output "Setting up Xerces-C++..."
           $xercesZip = "$desktopPath\xerces-c-3.2.5.zip"
           Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
@@ -109,7 +104,6 @@ jobs:
           [System.Environment]::SetEnvironmentVariable("XERCES_ROOT", "$desktopPath\Xerces-Out", [System.EnvironmentVariableTarget]::Machine)
           [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";$desktopPath\Xerces-Out\bin", [System.EnvironmentVariableTarget]::Machine)
 
-          echo Setup and build dev_essential
           Write-Output "Setting up dev_essential..."
           cd "$desktopPath\dev_essential-main"
           mkdir build
