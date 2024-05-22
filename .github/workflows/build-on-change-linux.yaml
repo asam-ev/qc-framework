@@ -32,9 +32,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo Installing dev_essentials...
+          echo Installing dev_essential...
           git clone https://github.com/cariad-tech/dev_essential.git
-          cd dev_essentials
+          cd dev_essential
 
           echo Installing google test...
           USERNAME=$whoami
