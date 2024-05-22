@@ -36,8 +36,6 @@ jobs:
           version: 5.12.2
           host: windows
           target: desktop
-          arch: win64_msvc2019_64
-          setup-python: false
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
