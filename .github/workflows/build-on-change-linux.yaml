@@ -66,7 +66,6 @@ jobs:
         shell: bash
 
       - name: Build framework
-        working-directory: qc-framework
         run: |
           echo Building framework...
           cmake -G "Unix Makefiles" -B./build -S . -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
