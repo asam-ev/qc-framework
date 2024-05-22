@@ -33,6 +33,7 @@ target_link_libraries(${RUNTIME_PROJECT} PRIVATE
     qc4openx-common
     Qt5::Gui
     Qt5::Widgets
+    $<$<PLATFORM_ID:Linux>:stdc++fs>
 )
 
 if (WIN32)
