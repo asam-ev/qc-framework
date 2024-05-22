@@ -71,6 +71,8 @@ jobs:
 
       - name: Build framework
         run: |
+          $workingPath = "D:\a"
+          mkdir $workingPath\build
           Write-Output "Setting up QC-Framework..."
           cmake -H"$workingPath\qc-framework\qc-framework" -B"$workingPath\build" -G "Visual Studio 16 2019" -A x64 -T v142 -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" -DENABLE_FUNCTIONAL_TESTS=OFF -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" -DQt5_ROOT="C:\Qt\5.15.2\msvc2019_64\lib\cmake\Qt5" -DXERCES_ROOT="$workingPath\Xerces-Out" -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
           cmake --build "$workingPath\build" --target install --config Release
