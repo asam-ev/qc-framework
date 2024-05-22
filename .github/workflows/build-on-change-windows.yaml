@@ -34,16 +34,6 @@ jobs:
         run: |
           $desktopPath = "D:\a"
 
-          Write-Output "Installing Visual Studio 2019..."
-          $vsInstaller = "$desktopPath\vs_community.exe"
-          Invoke-WebRequest -Uri "https://aka.ms/vs/16/release/vs_community.exe" -OutFile $vsInstaller
-          Start-Process -FilePath $vsInstaller -ArgumentList "--quiet", "--norestart", "--wait", "--add Microsoft.VisualStudio.Workload.NativeDesktop" -NoNewWindow -Wait
-
-          Write-Output "Installing CMake..."
-          $cmakeInstaller = "$desktopPath\cmake-3.20.2-windows-x86_64.msi"
-          Invoke-WebRequest -Uri "https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2-windows-x86_64.msi" -OutFile $cmakeInstaller
-          Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", $cmakeInstaller, "/quiet", "/norestart" -NoNewWindow -Wait
-
           Write-Output "Installing Qt..."
           $qtInstaller = "$desktopPath\qt-unified-windows-x86-online.exe"
           Invoke-WebRequest -Uri "http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe" -OutFile $qtInstaller
