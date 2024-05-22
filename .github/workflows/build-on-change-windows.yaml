@@ -42,7 +42,7 @@ jobs:
           Write-Output "Setting up Xerces-C++..."
           $xercesZip = "$desktopPath\xerces-c-3.2.5.zip"
           Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
-          Expand-Archive -Path $xercesZip -DestinationPath "$desktopPath\xerces-c-3.2.5"
+          Expand-Archive -Path $xercesZip -DestinationPath "$desktopPath"
           cd "$desktopPath\xerces-c-3.2.5"
           mkdir build
           cd build
@@ -54,10 +54,11 @@ jobs:
           [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";$desktopPath\Xerces-Out\bin", [System.EnvironmentVariableTarget]::Machine)
 
           Write-Output "Setting up dev_essential..."
-          cd "$desktopPath\dev_essential-main"
+          git clone https://github.com/cariad-tech/dev_essential.git "$desktopPath"
+          cd "$desktopPath\dev_essential"
           mkdir build
           cd build
-          cmake -H"$desktopPath\dev_essential-main" -B. -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$desktopPath\dev_essential-Out" ..
+          cmake -H"$desktopPath\dev_essential" -B. -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$desktopPath\dev_essential-Out" ..
           cmake --build . --config Release
           cmake --build . --config Release --target install
         shell: pwsh
@@ -65,10 +66,7 @@ jobs:
       - name: Build framework
         run: |
           Write-Output "Setting up QC-Framework..."
-          cd "$desktopPath\qc-framework-main"
-          mkdir build
-          cd build
-          cmake -H"$desktopPath\qc-framework-main" -B. -G "Visual Studio 16 2019" -A x64 -T v142 -DCMAKE_INSTALL_PREFIX="$desktopPath\QC-Framework-Out" -DENABLE_FUNCTIONAL_TESTS=OFF -Ddev_essential_ROOT="$desktopPath\dev_essential-Out\lib\cmake\dev_essential" -DQt5_ROOT="C:\Qt\5.15.2\msvc2019_64\lib\cmake\Qt5" -DXERCES_ROOT="$desktopPath\Xerces-Out" -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
+          cmake -H. -B./build -G "Visual Studio 16 2019" -A x64 -T v142 -DCMAKE_INSTALL_PREFIX="$desktopPath\QC-Framework-Out" -DENABLE_FUNCTIONAL_TESTS=OFF -Ddev_essential_ROOT="$desktopPath\dev_essential-Out\lib\cmake\dev_essential" -DQt5_ROOT="C:\Qt\5.15.2\msvc2019_64\lib\cmake\Qt5" -DXERCES_ROOT="$desktopPath\Xerces-Out" -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
           cmake --build . --target install --config Release
           cmake --install .
 
