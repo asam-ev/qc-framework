@@ -55,8 +55,6 @@ jobs:
           cmake --build . --config Release
           cmake --build . --config Release --target install
 
-          [System.Environment]::SetEnvironmentVariable("XERCES_ROOT", "$workingPath\Xerces-Out", [System.EnvironmentVariableTarget]::Machine)
-          [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";$workingPath\Xerces-Out\bin", [System.EnvironmentVariableTarget]::Machine)
 
           Write-Output "Setting up dev_essential..."
           mkdir "$workingPath\dev_essential"
@@ -72,6 +70,10 @@ jobs:
       - name: Build framework
         run: |
           $workingPath = "D:\a"
+          [Environment]::SetEnvironmentVariable("XERCES_ROOT", "$workingPath\Xerces-Out", [EnvironmentVariableTarget]::Machine)
+          [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$workingPath\Xerces-Out\bin", [EnvironmentVariableTarget]::Machine)
+          . $profile
+
           mkdir $workingPath\build
           Write-Output "Setting up QC-Framework..."
           cmake -H"$workingPath\qc-framework\qc-framework" -B"$workingPath\build" -G "Visual Studio 16 2019" -A x64 -T v142 -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" -DENABLE_FUNCTIONAL_TESTS=OFF -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" -DQt5_ROOT="C:\Qt\5.15.2\msvc2019_64\lib\cmake\Qt5" -DXERCES_ROOT="$workingPath\Xerces-Out" -DXercesC_DIR="$workingPath\Xerces-Out\cmake" -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
