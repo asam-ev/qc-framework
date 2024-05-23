@@ -10,8 +10,6 @@
 
 #include <string.h>
 
-#include "a_util/result.h"
-#include "qc4openx_errors.h"
 #include "qc4openx_filesystem.h"
 #include "gtest/gtest.h"
 #include <fstream>
@@ -26,7 +24,7 @@
 #define GTEST_PRINTF(_message)                                                                                         \
     {                                                                                                                  \
         testing::internal::ColoredPrintf(testing::internal::COLOR_GREEN, "[          ] ");                             \
-        testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, _message);                                   \
+        testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, "%s", _message);                             \
         testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, "\n");                                       \
     }
 
@@ -43,13 +41,51 @@
     }                                                                                                                  \
     ASSERT_TRUE(expression)
 
-qc4openx::Result ExecuteCommand(std::string &strResultMessage, std::string strCommand,
-                                const std::string strArgument = "");
+class TestResult
+{
+  public:
+    // Enum to represent possible result values
+    enum class Value
+    {
+        ERR_NOERROR,
+        ERR_UNKNOWN,
+        ERR_UNEXPECTED,
+        ERR_UNKNOWN_FORMAT,
+        ERR_FILE_NOT_FOUND,
+        ERR_FAILED
+    };
 
-qc4openx::Result CheckFileExists(std::string &strResultMessage, const std::string strFilePath,
-                                 const bool bDelete = true);
+    // Constructor
+    TestResult(Value value);
 
-qc4openx::Result CheckFilesEqual(std::string &strResultMessage, const std::string strFilePath1,
-                                 const std::string strFilePath2);
+    // Getter
+    Value getValue() const;
+
+    // Comparison operators
+    bool operator==(const TestResult &other) const;
+    bool operator!=(const TestResult &other) const;
+
+    // Overload the |= operator
+    friend TestResult operator|=(TestResult lhs, const TestResult &rhs);
+
+    // Overload the | operator
+    friend TestResult operator|(TestResult lhs, const TestResult &rhs);
+
+    // Overload the stream insertion operator for easy output
+    friend std::ostream &operator<<(std::ostream &os, const TestResult &result);
+
+  private:
+    Value value;
+
+    // Helper function to combine values
+    static Value combineValues(Value a, Value b);
+};
+
+TestResult ExecuteCommand(std::string &strResultMessage, std::string strCommand, const std::string strArgument = "");
+
+TestResult CheckFileExists(std::string &strResultMessage, const std::string strFilePath, const bool bDelete = true);
+
+TestResult CheckFilesEqual(std::string &strResultMessage, const std::string strFilePath1,
+                           const std::string strFilePath2);
 
 #endif
