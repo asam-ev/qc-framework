@@ -55,7 +55,8 @@ jobs:
           cmake --build . --config Debug
           cmake --build . --config Debug --target install
 
-          Add-Content $env:GITHUB_PATH "$workingPath\xerces-c-3.2.5\build\src\Debug"
+          Add-Content $env:GITHUB_PATH "$workingPath\bin\xerces-c_3_2D.dll"
+          Add-Content $env:GITHUB_PATH "$workingPath\Xerces-Out\include"
           Add-Content $env:GITHUB_PATH "$workingPath\Xerces-Out\bin"
 
           Write-Output "Setting up dev_essential..."
@@ -72,13 +73,8 @@ jobs:
       - name: Build framework
         run: |
           $workingPath = "D:\a"
-          $env:XERCES_ROOT = "$workingPath\Xerces-Out"
-          $env:XercesC_INCLUDE_DIR="$workingPath/xerces-c-3.2.5/build/src/"
-          $env:XercesC_LIBRARY = "$workingPath/xerces-c-3.2.5/build/src/Debug/"
-          $env:XercesC_VERSION = "3.2.5"
 
           echo $env:PATH
-          echo $env:XERCES_ROOT
 
           mkdir $workingPath\build
           Write-Output "Setting up QC-Framework..."
@@ -87,6 +83,7 @@ jobs:
             -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
             -DENABLE_FUNCTIONAL_TESTS=OFF `
             -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
+            -DXercesC_ROOT="$workingPath\Xerces-Out" `
             -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
           cmake --build "$workingPath\build" --target install --config Release
           cmake --install "$workingPath\build"
