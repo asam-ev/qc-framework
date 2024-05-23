@@ -10,7 +10,6 @@ on:
       - src/**
       - include/**
       - scripts/cmake/**
-      - .github/** # only for testing this PR
 
   # execute on every push made targeting the branches bellow
   push:
