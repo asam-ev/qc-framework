@@ -10,22 +10,23 @@
 #include <QtWidgets/QApplication>
 
 /**
-* Main function for application
-*
-* @param    [in] argc                Number of arguments in shell
-* @param    [in] argv                Pointer to arguments
-*
-* @return   The standard return value
-*/
-int main(int argc, char* argv[]);
+ * Main function for application
+ *
+ * @param    [in] argc                Number of arguments in shell
+ * @param    [in] argv                Pointer to arguments
+ *
+ * @return   The standard return value
+ */
+int main(int argc, char *argv[]);
 
 /**
-* Shows the help for the application
-* @param    [in] applicationName    The name of the application
-*/
-void ShowHelp(const std::string& applicationName);
+ * Shows the help for the application
+ * @param    [in] applicationName    The name of the application
+ */
+void ShowHelp(const std::string &applicationName);
 
 /**
-* Runs the config gui
-*/
-void RunConfigGUI(const std::string& strConfigurationFilepath, const std::string& strXODRFilepath, const std::string& strXOSCFilePath, const bool bAutostart, const QApplication& app);
+ * Runs the config gui
+ */
+void RunConfigGUI(const std::string &strConfigurationFilepath, const std::string &strXODRFilepath,
+                  const std::string &strXOSCFilePath, const bool bAutostart, const QApplication &app);

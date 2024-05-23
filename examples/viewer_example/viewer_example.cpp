@@ -6,13 +6,13 @@
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#include "viewer/iConnector.h"
-#include "common/result_format/cIssue.h"
-#include "common/result_format/cLocationsContainer.h"
-#include <stdio.h>
+#include "common/result_format/c_issue.h"
+#include "common/result_format/c_locations_container.h"
+#include "viewer/i_connector.h"
 #include <cstring>
+#include <stdio.h>
 
-const char* lasterrormsg = "";
+const char *lasterrormsg = "";
 
 bool StartViewer()
 {
@@ -20,9 +20,9 @@ bool StartViewer()
     return true;
 }
 
-bool Initialize(const char* xoscPath, const char* xodrPath)
+bool Initialize(const char *xoscPath, const char *xodrPath)
 {
-    if (std::strcmp(xoscPath, "")==0 && std::strcmp(xodrPath,"")==0)
+    if (std::strcmp(xoscPath, "") == 0 && std::strcmp(xodrPath, "") == 0)
     {
         lasterrormsg = "ERROR: No valid xosc or xodr file found.";
         return false;
@@ -32,23 +32,23 @@ bool Initialize(const char* xoscPath, const char* xodrPath)
     return true;
 }
 
-bool AddIssue(void* issueToAdd)
+bool AddIssue(void *issueToAdd)
 {
-    auto issue = static_cast<cIssue*>(issueToAdd);
+    auto issue = static_cast<cIssue *>(issueToAdd);
     std::cout << "ADD ISSUE: " << issue->GetDescription() << std::endl;
     return true;
 }
 
-bool ShowIssue(void * itemToShow, void* locationToShow)
+bool ShowIssue(void *itemToShow, void *locationToShow)
 {
-    auto issue = static_cast<cIssue*>(itemToShow);
-    auto location = static_cast<cLocationsContainer*>(locationToShow);
+    auto issue = static_cast<cIssue *>(itemToShow);
+    auto location = static_cast<cLocationsContainer *>(locationToShow);
     std::cout << "SHOW ISSUE: " << issue->GetDescription() << std::endl;
     std::cout << "LOCATION: " << location->GetDescription() << std::endl;
     return true;
 }
 
-const char* GetName()
+const char *GetName()
 {
     return "Viewer Example";
 }
@@ -59,8 +59,7 @@ bool CloseViewer()
     return true;
 }
 
-const char* GetLastErrorMessage()
+const char *GetLastErrorMessage()
 {
     return lasterrormsg;
 }
-

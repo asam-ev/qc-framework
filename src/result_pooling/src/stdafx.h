@@ -8,12 +8,12 @@
 #ifndef _STD_INCLUDES_HEADER_FEP_XODR_MANIPULATION_
 #define _STD_INCLUDES_HEADER_FEP_XODR_MANIPULATION_
 
-#include <sstream>
 #include <fstream>
-#include <memory>
 #include <iostream>
-#include <map>
 #include <list>
+#include <map>
+#include <memory>
+#include <sstream>
 
 #include "common/util.h"
 

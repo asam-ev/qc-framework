@@ -30,8 +30,8 @@ TEST_F(cTesterReportModuleGui, CmdDefaultConfig)
 {
     std::string strResultMessage;
 
-    std::string strDefaultConfigFilePath = a_util::filesystem::getWorkingDirectory().toString() +
-                                           "/" + std::string(MODULE_NAME) + ".xml";
+    std::string strDefaultConfigFilePath =
+        a_util::filesystem::getWorkingDirectory().toString() + "/" + std::string(MODULE_NAME) + ".xml";
 
     qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "--defaultconfig");
     ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
