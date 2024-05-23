@@ -78,7 +78,7 @@ jobs:
 
           Write-Output "Setting up QC-Framework..."
           cd "$workingPath\qc-framework\qc-framework"
-          mkdir build
+          mkdir ../build
 
           cmake -B../build -S. ^
             -G "Visual Studio 16 2019" -A x64 -T v142 ^
