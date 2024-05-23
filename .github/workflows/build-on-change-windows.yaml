@@ -60,17 +60,6 @@ jobs:
           Add-Content $env:GITHUB_PATH "$workingPath\Xerces-Out\include"
           Add-Content $env:GITHUB_PATH "$workingPath\Xerces-Out\bin"
 
-          Write-Output "Setting up dev_essential..."
-          mkdir "$workingPath\dev_essential"
-          git clone https://github.com/cariad-tech/dev_essential.git "$workingPath\dev_essential"
-          cd "$workingPath\dev_essential"
-          mkdir build
-          cd build
-          cmake -H"$workingPath\dev_essential" -B. `
-            -G "Visual Studio 16 2019" -A x64 `
-            -DCMAKE_INSTALL_PREFIX="$workingPath\dev_essential-Out" `
-            -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
-          cmake --build . --config Release --target install --config RelWithDebInfo
         shell: pwsh
 
       - name: Build framework
@@ -86,11 +75,13 @@ jobs:
             -G "Visual Studio 16 2019" -A x64 -T v142 `
             -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
             -DENABLE_FUNCTIONAL_TESTS=OFF `
-            -DQt5_ROOT="$env:Qt5_DIR\Qt5" `
-            -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
+            -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
             -DXercesC_ROOT="$workingPath\Xerces-Out"
 
-          cmake --build build --target install --config Release
+          cmake --build build --target ALL_BUILD --config Release
+
+          dir D:/a/qc-framework/qc-framework/build/src/report_modules/report_module_gui/Release/
+
           cmake --install build
 
           # Final output
