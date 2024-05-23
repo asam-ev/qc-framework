@@ -74,6 +74,9 @@ jobs:
         run: |
           $workingPath = "D:\a"
 
+          echo $env:GITHUB_PATH
+          echo $env:PATH
+
           Write-Output "Setting up QC-Framework..."
 
           cd "$workingPath\qc-framework\qc-framework"
@@ -85,7 +88,6 @@ jobs:
             -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
             -DENABLE_FUNCTIONAL_TESTS=OFF `
             -DQt5_ROOT="$Qt5_DIR\Qt5" `
-            -DQt5_DIR="$Qt5_DIR\Qt5" `
             -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
             -DXercesC_ROOT="$workingPath\Xerces-Out"
 
