@@ -89,7 +89,6 @@ jobs:
             -DXercesC_ROOT="$workingPath\Xerces-Out"
 
           cmake --build . --target ALL_BUILD --config Release
-          cmake --install .
 
           # Final output
           Write-Output "All installations and setups are complete!"
