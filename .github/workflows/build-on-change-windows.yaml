@@ -30,65 +30,71 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4.0.0
-        with:
-          version: 5.12.2
-          host: windows
-          target: desktop
-
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
-
       - name: Install dependencies
         run: |
           $workingPath = "D:\a"
+          dir
+          dir qc-framework
+          dir "$workingPath\qc-framework\qc-framework"
 
-          Write-Output "Setting up Xerces-C++..."
-          $xercesZip = "$workingPath\xerces-c-3.2.5.zip"
-          Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
-          Expand-Archive -Path $xercesZip -DestinationPath "$workingPath"
-          cd "$workingPath\xerces-c-3.2.5"
-          mkdir build
-          cd build
-          cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$workingPath\Xerces-Out" ..
-          cmake --build . --config Debug
-          cmake --build . --config Debug --target install
+      # - name: Install Qt
+      #   uses: jurplel/install-qt-action@v4.0.0
+      #   with:
+      #     version: 5.12.2
+      #     host: windows
+      #     target: desktop
 
-          Add-Content $env:GITHUB_PATH "$workingPath\bin\xerces-c_3_2D.dll"
-          Add-Content $env:GITHUB_PATH "$workingPath\Xerces-Out\include"
-          Add-Content $env:GITHUB_PATH "$workingPath\Xerces-Out\bin"
+      # - name: Add MSBuild to PATH
+      #   uses: microsoft/setup-msbuild@v2
 
-          Write-Output "Setting up dev_essential..."
-          mkdir "$workingPath\dev_essential"
-          git clone https://github.com/cariad-tech/dev_essential.git "$workingPath\dev_essential"
-          cd "$workingPath\dev_essential"
-          mkdir build
-          cd build
-          cmake -H"$workingPath\dev_essential" -B. -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$workingPath\dev_essential-Out" ..
-          cmake --build . --config Release
-          cmake --build . --config Release --target install
-        shell: pwsh
+      # - name: Install dependencies
+      #   run: |
+      #     $workingPath = "D:\a"
 
-      - name: Build framework
-        run: |
-          $workingPath = "D:\a"
+      #     Write-Output "Setting up Xerces-C++..."
+      #     $xercesZip = "$workingPath\xerces-c-3.2.5.zip"
+      #     Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
+      #     Expand-Archive -Path $xercesZip -DestinationPath "$workingPath"
+      #     cd "$workingPath\xerces-c-3.2.5"
+      #     mkdir build
+      #     cd build
+      #     cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$workingPath\Xerces-Out" ..
+      #     cmake --build . --config Debug
+      #     cmake --build . --config Debug --target install
 
-          Write-Output "Setting up QC-Framework..."
-          cd "$workingPath\qc-framework\qc-framework"
-          mkdir ../build
+      #     Add-Content $env:GITHUB_PATH "$workingPath\bin\xerces-c_3_2D.dll"
+      #     Add-Content $env:GITHUB_PATH "$workingPath\Xerces-Out\include"
+      #     Add-Content $env:GITHUB_PATH "$workingPath\Xerces-Out\bin"
 
-          cmake -B../build -S. `
-            -G "Visual Studio 16 2019" -A x64 -T v142 `
-            -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
-            -DENABLE_FUNCTIONAL_TESTS=OFF `
-            -DQt5_ROOT="$Qt5_ROOT" `
-            -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
-            -DXercesC_ROOT="$workingPath\Xerces-Out" `
-            -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
-          cmake --build ../build --target ALL_BUILD --config Release
-          cmake --install ../build
+      #     Write-Output "Setting up dev_essential..."
+      #     mkdir "$workingPath\dev_essential"
+      #     git clone https://github.com/cariad-tech/dev_essential.git "$workingPath\dev_essential"
+      #     cd "$workingPath\dev_essential"
+      #     mkdir build
+      #     cd build
+      #     cmake -H"$workingPath\dev_essential" -B. -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$workingPath\dev_essential-Out" ..
+      #     cmake --build . --config Release
+      #     cmake --build . --config Release --target install
+      #   shell: pwsh
 
-          # Final output
-          Write-Output "All installations and setups are complete!"
-        shell: pwsh
+      # - name: Build framework
+      #   run: |
+      #     $workingPath = "D:\a"
+
+      #     Write-Output "Setting up QC-Framework..."
+      #     cd "$workingPath\qc-framework\qc-framework"
+      #     mkdir ../build
+
+      #     cmake -B../build -S. `
+      #       -G "Visual Studio 16 2019" -A x64 -T v142 `
+      #       -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
+      #       -DENABLE_FUNCTIONAL_TESTS=OFF `
+      #       -DQt5_ROOT="$Qt5_ROOT" `
+      #       -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
+      #       -DXercesC_ROOT="$workingPath\Xerces-Out"
+      #     cmake --build ../build --target install --config Release
+      #     cmake --install ../build
+
+      #     # Final output
+      #     Write-Output "All installations and setups are complete!"
+      #   shell: pwsh
