@@ -52,8 +52,8 @@ jobs:
           mkdir build
           cd build
           cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$workingPath\Xerces-Out" ..
-          cmake --build . --config Release
-          cmake --build . --config Release --target install
+          cmake --build . --config Debug
+          cmake --build . --config Debug --target install
 
           Write-Output "Setting up dev_essential..."
           mkdir "$workingPath\dev_essential"
