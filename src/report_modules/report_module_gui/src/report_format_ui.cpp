@@ -25,7 +25,7 @@ XERCES_CPP_NAMESPACE_USE
 int main(int argc, char *argv[])
 {
 #ifdef WIN32
-    auto workdir currentPath = std::filesystem::current_path();
+    auto currentPath = std::filesystem::current_path();
     auto currentPathW = currentPath.wstring();
     // Set the DLL directory
     SetDllDirectory(currentPathW.c_str());
