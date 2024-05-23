@@ -80,7 +80,7 @@ jobs:
 
           cmake --build build --target ALL_BUILD --config Release
 
-          cat ""$workingPath\qc-framework\qc-framework\build\src\report_modules\cmake_install.cmake"
+          cat "$workingPath\qc-framework\qc-framework\build\src\report_modules\cmake_install.cmake"
 
           cmake --install build
 
