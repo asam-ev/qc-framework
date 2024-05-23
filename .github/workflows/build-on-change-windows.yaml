@@ -66,9 +66,11 @@ jobs:
           cd "$workingPath\dev_essential"
           mkdir build
           cd build
-          cmake -H"$workingPath\dev_essential" -B. -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$workingPath\dev_essential-Out" ..
-          cmake --build . --config Release
-          cmake --build . --config Release --target install
+          cmake -H"$workingPath\dev_essential" -B. `
+            -G "Visual Studio 16 2019" -A x64 `
+            -DCMAKE_INSTALL_PREFIX="$workingPath\dev_essential-Out" `
+            -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+          cmake --build . --config Release --target install --config RelWithDebInfo
         shell: pwsh
 
       - name: Build framework
@@ -79,9 +81,8 @@ jobs:
 
           cd "$workingPath\qc-framework\qc-framework"
           mkdir build
-          cd build
 
-          cmake -S"$workingPath\qc-framework\qc-framework" -B. `
+          cmake -H"$workingPath\qc-framework\qc-framework" -S. -Bbuild `
             -G "Visual Studio 16 2019" -A x64 -T v142 `
             -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
             -DENABLE_FUNCTIONAL_TESTS=OFF `
@@ -89,8 +90,8 @@ jobs:
             -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
             -DXercesC_ROOT="$workingPath\Xerces-Out"
 
-          cmake --build . --target install --config Release
-          cmake --install .
+          cmake --build build --target install --config Release
+          cmake --install build
 
           # Final output
           Write-Output "All installations and setups are complete!"
