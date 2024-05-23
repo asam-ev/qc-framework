@@ -18,6 +18,7 @@ target_link_libraries(${RESULT_POOLING_PROJECT} PRIVATE
     qc4openx-common
     Qt5::Network
     Qt5::XmlPatterns
+    $<$<PLATFORM_ID:Linux>:stdc++fs>
 )
 
 install(TARGETS ${RESULT_POOLING_PROJECT} DESTINATION bin)
