@@ -76,6 +76,7 @@ jobs:
 
           echo $env:GITHUB_PATH
           echo $env:PATH
+          echo $env:Qt5_DIR\Qt5
 
           Write-Output "Setting up QC-Framework..."
 
@@ -87,7 +88,7 @@ jobs:
             -G "Visual Studio 16 2019" -A x64 -T v142 `
             -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
             -DENABLE_FUNCTIONAL_TESTS=OFF `
-            -DQt5_ROOT="$Qt5_DIR\Qt5" `
+            -DQt5_ROOT="$env:Qt5_DIR\Qt5" `
             -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
             -DXercesC_ROOT="$workingPath\Xerces-Out"
 
