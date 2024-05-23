@@ -80,12 +80,11 @@ jobs:
           mkdir build
           cd build
 
-          echo "$env:Qt5_DIR\Qt5\" 
-
           cmake -S"$workingPath\qc-framework\qc-framework" -B. `
             -G "Visual Studio 16 2019" -A x64 -T v142 `
             -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
             -DENABLE_FUNCTIONAL_TESTS=OFF `
+            -DQt5_ROOT="$env:Qt5_ROOT" `
             -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
             -DXercesC_ROOT="$workingPath\Xerces-Out"
 
