@@ -27,13 +27,13 @@ TEST_F(cTesterResultPooling, CmdBasic)
     std::string strExpectedResultFilePath = strTestFilesDir + "/" + "EmptyResult.xqar";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
 }
@@ -46,10 +46,10 @@ TEST_F(cTesterResultPooling, CmdDir)
     std::string strExpectedResultFilePath = strTestFilesDir + "/" + "Result.xqar";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strTestFilesDir);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     // Result.xqar has timestamps and no explicit order --> no simple check for files equality possible
 }
@@ -62,13 +62,13 @@ TEST_F(cTesterResultPooling, CmdDirNoResults)
     std::string strExpectedResultFilePath = strTestFilesDir + "/" + "EmptyResult.xqar";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "..");
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
 }
@@ -78,7 +78,7 @@ TEST_F(cTesterResultPooling, CmdDirNotValid)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "./error/");
-    ASSERT_TRUE(nRes == TestResult(TestResult::Value::ERR_FAILED));
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterResultPooling, CmdTooMuchArguments)
@@ -86,5 +86,5 @@ TEST_F(cTesterResultPooling, CmdTooMuchArguments)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
-    ASSERT_TRUE(nRes == TestResult(TestResult::Value::ERR_FAILED));
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }

@@ -24,10 +24,10 @@ TEST_F(cTesterRuntime, CmdHelp)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-h");
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= ExecuteCommand(strResultMessage, MODULE_NAME, "--help");
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterRuntime, CmdConfig)
@@ -43,12 +43,12 @@ TEST_F(cTesterRuntime, CmdConfigAutostart)
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -autostart");
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     // DemoCheckerBundle not found in bin (is in examples) --> no DemoCheckerBundle.xqar --> Result.xqar with no entries
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterRuntime, CmdConfigXodrAutostart)
@@ -62,13 +62,13 @@ TEST_F(cTesterRuntime, CmdConfigXodrAutostart)
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME,
                                      "-config " + strConfigFilePath + " -xodr " + strXodrFilePath + " -autostart");
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strXodrSchemaCheckerResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterRuntime, CmdConfigXoscAutostart)
@@ -82,11 +82,11 @@ TEST_F(cTesterRuntime, CmdConfigXoscAutostart)
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME,
                                      "-config " + strConfigFilePath + " -xosc " + strXoscFilePath + " -autostart");
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strXoscSchemaCheckerResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }

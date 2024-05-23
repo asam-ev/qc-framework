@@ -24,7 +24,7 @@ TEST_F(cTesterExampleCheckerBundle, CmdBasic)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdDefaultConfig)
@@ -34,10 +34,10 @@ TEST_F(cTesterExampleCheckerBundle, CmdDefaultConfig)
     std::string strDefaultConfigFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "--defaultconfig");
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strDefaultConfigFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdConfig)
@@ -49,13 +49,13 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfig)
     std::string strExpectedResultFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + ".xqar";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strConfigFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
 }
@@ -69,13 +69,13 @@ TEST_F(cTesterExampleCheckerBundle, CmdXodr)
     std::string strExpectedResultFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + ".xqar";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strXodrFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
 }
@@ -85,7 +85,7 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfigFileNotFound)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error.xml");
-    ASSERT_TRUE(nRes == TestResult(TestResult::Value::ERR_FAILED));
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdFirstArgumentWrong)
@@ -93,7 +93,7 @@ TEST_F(cTesterExampleCheckerBundle, CmdFirstArgumentWrong)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error");
-    ASSERT_TRUE(nRes == TestResult(TestResult::Value::ERR_FAILED));
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdTooMuchArguments)
@@ -101,5 +101,5 @@ TEST_F(cTesterExampleCheckerBundle, CmdTooMuchArguments)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
-    ASSERT_TRUE(nRes == TestResult(TestResult::Value::ERR_FAILED));
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }

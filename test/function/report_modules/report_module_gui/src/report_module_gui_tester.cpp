@@ -20,10 +20,10 @@ TEST_F(cTesterReportModuleGui, CmdHelp)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-h");
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= ExecuteCommand(strResultMessage, MODULE_NAME, "--help");
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterReportModuleGui, CmdDefaultConfig)
@@ -33,10 +33,10 @@ TEST_F(cTesterReportModuleGui, CmdDefaultConfig)
     std::string strDefaultConfigFilePath = fs::current_path().string() + "/" + std::string(MODULE_NAME) + ".xml";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "--defaultconfig");
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strDefaultConfigFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult(TestResult::Value::ERR_NOERROR), strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterReportModuleGui, CmdConfig)
@@ -54,7 +54,7 @@ TEST_F(cTesterReportModuleGui, CmdConfigFileNotFound)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error.xml");
-    ASSERT_TRUE(nRes == TestResult(TestResult::Value::ERR_FAILED));
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterReportModuleGui, CmdXqarFileNotFound)
@@ -62,7 +62,7 @@ TEST_F(cTesterReportModuleGui, CmdXqarFileNotFound)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error.xqar");
-    ASSERT_TRUE(nRes == TestResult(TestResult::Value::ERR_FAILED));
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterReportModuleGui, CmdFirstArgumentWrong)
@@ -70,7 +70,7 @@ TEST_F(cTesterReportModuleGui, CmdFirstArgumentWrong)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error");
-    ASSERT_TRUE(nRes == TestResult(TestResult::Value::ERR_FAILED));
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterReportModuleGui, CmdTooMuchArguments)
@@ -78,5 +78,5 @@ TEST_F(cTesterReportModuleGui, CmdTooMuchArguments)
     std::string strResultMessage;
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
-    ASSERT_TRUE(nRes == TestResult(TestResult::Value::ERR_FAILED));
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }

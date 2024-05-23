@@ -5,101 +5,8 @@
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
+
 #include "helper.h"
-
-// Constructor
-TestResult::TestResult(Value value) : value(value)
-{
-}
-
-// Getter
-TestResult::Value TestResult::getValue() const
-{
-    return value;
-}
-
-// Comparison operators
-bool TestResult::operator==(const TestResult &other) const
-{
-    return value == other.value;
-}
-
-bool TestResult::operator!=(const TestResult &other) const
-{
-    return value != other.value;
-}
-
-// Overload the |= operator
-TestResult operator|=(TestResult lhs, const TestResult &rhs)
-{
-    lhs.value = TestResult::combineValues(lhs.value, rhs.value);
-    return lhs;
-}
-
-// Overload the | operator
-TestResult operator|(TestResult lhs, const TestResult &rhs)
-{
-    lhs |= rhs;
-    return lhs;
-}
-
-// Overload the stream insertion operator for easy output
-std::ostream &operator<<(std::ostream &os, const TestResult &result)
-{
-    os << "TestResult(value: ";
-    switch (result.value)
-    {
-    case TestResult::Value::ERR_NOERROR:
-        os << "ERR_NOERROR";
-        break;
-    case TestResult::Value::ERR_UNKNOWN:
-        os << "ERR_UNKNOWN";
-        break;
-    case TestResult::Value::ERR_UNEXPECTED:
-        os << "ERR_UNEXPECTED";
-        break;
-    case TestResult::Value::ERR_UNKNOWN_FORMAT:
-        os << "ERR_UNKNOWN_FORMAT";
-        break;
-    case TestResult::Value::ERR_FILE_NOT_FOUND:
-        os << "ERR_FILE_NOT_FOUND";
-        break;
-    case TestResult::Value::ERR_FAILED:
-        os << "ERR_FAILED";
-        break;
-    }
-    os << ")";
-    return os;
-}
-
-// Helper function to combine values
-TestResult::Value TestResult::combineValues(Value a, Value b)
-{
-    if (a == Value::ERR_FAILED || b == Value::ERR_FAILED)
-    {
-        return Value::ERR_FAILED;
-    }
-    else if (a == Value::ERR_FILE_NOT_FOUND || b == Value::ERR_FILE_NOT_FOUND)
-    {
-        return Value::ERR_FILE_NOT_FOUND;
-    }
-    else if (a == Value::ERR_UNEXPECTED || b == Value::ERR_UNEXPECTED)
-    {
-        return Value::ERR_UNEXPECTED;
-    }
-    else if (a == Value::ERR_UNKNOWN_FORMAT || b == Value::ERR_UNKNOWN_FORMAT)
-    {
-        return Value::ERR_UNKNOWN_FORMAT;
-    }
-    else if (a == Value::ERR_UNKNOWN || b == Value::ERR_UNKNOWN)
-    {
-        return Value::ERR_UNKNOWN;
-    }
-    else
-    {
-        return Value::ERR_NOERROR;
-    }
-}
 
 TestResult ExecuteCommand(std::string &strResultMessage, std::string strCommand, const std::string strArgument)
 {
@@ -126,17 +33,17 @@ TestResult ExecuteCommand(std::string &strResultMessage, std::string strCommand,
         {
             strResultMessage =
                 "Command executed with result " + std::to_string(i32Res) + ". Command: '" + strTotalCommand + "'.";
-            return TestResult(TestResult::Value::ERR_FAILED);
+            return TestResult::ERR_FAILED;
         }
         else
         {
-            return TestResult(TestResult::Value::ERR_NOERROR);
+            return TestResult::ERR_NOERROR;
         }
     }
 
     strResultMessage =
         "Command to execute was not found in any defined install directory. Command: '" + strTotalCommand + "'.";
-    return TestResult(TestResult::Value::ERR_FILE_NOT_FOUND);
+    return TestResult::ERR_FILE_NOT_FOUND;
 }
 
 TestResult CheckFileExists(std::string &strResultMessage, const std::string strFilePath, const bool bDelete)
@@ -150,7 +57,7 @@ TestResult CheckFileExists(std::string &strResultMessage, const std::string strF
         if (!file.is_open())
         {
             std::cerr << "Failed to open the file: " << strFilePath << std::endl;
-            return TestResult(TestResult::Value::ERR_FAILED);
+            return TestResult::ERR_FAILED;
         }
 
         // Read the entire file content into a string
@@ -167,15 +74,15 @@ TestResult CheckFileExists(std::string &strResultMessage, const std::string strF
             {
                 fs::remove(strFilePath.c_str());
             }
-            return TestResult(TestResult::Value::ERR_NOERROR);
+            return TestResult::ERR_NOERROR;
         }
 
         strResultMessage = "File '" + strFilePath + "' is empty.";
-        return TestResult(TestResult::Value::ERR_UNEXPECTED);
+        return TestResult::ERR_UNEXPECTED;
     }
 
     strResultMessage = "Could not find file '" + strFilePath + "'.";
-    return TestResult(TestResult::Value::ERR_FILE_NOT_FOUND);
+    return TestResult::ERR_FILE_NOT_FOUND;
 }
 
 TestResult CheckFilesEqual(std::string &strResultMessage, const std::string strFilePath1,
@@ -198,11 +105,11 @@ TestResult CheckFilesEqual(std::string &strResultMessage, const std::string strF
             fclose(f1);
             fclose(f2);
             strResultMessage = "Files '" + strFilePath1 + "' and '" + strFilePath2 + "' do not match.";
-            return TestResult(TestResult::Value::ERR_FAILED);
+            return TestResult::ERR_FAILED;
         }
     }
 
     fclose(f1);
     fclose(f2);
-    return TestResult(TestResult::Value::ERR_NOERROR);
+    return TestResult::ERR_NOERROR;
 }
