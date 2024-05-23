@@ -55,6 +55,9 @@ jobs:
           cmake --build . --config Debug
           cmake --build . --config Debug --target install
 
+          echo ";$workingPath\xerces-c-3.2.5\build\src\Debug" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo ";$workingPath\Xerces-Out" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
           Write-Output "Setting up dev_essential..."
           mkdir "$workingPath\dev_essential"
           git clone https://github.com/cariad-tech/dev_essential.git "$workingPath\dev_essential"
@@ -69,7 +72,6 @@ jobs:
       - name: Build framework
         run: |
           $workingPath = "D:\a"
-          $env:PATH = $env:PATH + ";$workingPath\xerces-c-3.2.5\build\src\Debug\xerces-c_3_2D.dll"
           $env:XERCES_ROOT = "$workingPath\Xerces-Out"
 
           echo $env:PATH
