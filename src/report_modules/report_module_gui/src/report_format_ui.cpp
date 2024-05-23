@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 {
 #ifdef WIN32
     auto currentPath = std::filesystem::current_path();
-    auto currentPathW = currentPath.wstring();
+    auto currentPathW = currentPath.string();
     // Set the DLL directory
     SetDllDirectory(currentPathW.c_str());
 #endif
