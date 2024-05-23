@@ -72,7 +72,7 @@ jobs:
           $workingPath = "D:\a"
           [Environment]::SetEnvironmentVariable("XERCES_ROOT", "$workingPath\Xerces-Out", [EnvironmentVariableTarget]::Machine)
           [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$workingPath\Xerces-Out\bin", [EnvironmentVariableTarget]::Machine)
-          . $profile
+          & $profile
 
           mkdir $workingPath\build
           Write-Output "Setting up QC-Framework..."
