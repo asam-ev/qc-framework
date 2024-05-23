@@ -18,7 +18,6 @@ The ASAM Quality Checker Framework runs on Linux and Windows.
 
 ## 3rd Party Dependencies
 
-- dev_essential
 - Xerces-C++
 - Qt 5
 - **Optional:** GoogleTest (only if tests are enabled)
@@ -83,7 +82,6 @@ $ cmake -G "Visual Studio 16 2019" -A "x64" -T "v142" -B../build -S. ^
     -DASAM_OPENDRIVE_XSD_DIR="<asam_opendrive_xsd_dir>" ^
     -DASAM_OPENSCENARIO_XSD_DIR="<asam_openscenario_xsd_dir>" ^ 
     -DXERCES_ROOT="<xerces_c_root>" ^
-    -Ddev_essential_ROOT="<dev_essential_root>" ^
     -DQt5_ROOT="<qt5_root>"
 $ cmake --build ../build --target ALL_BUILD --config Release
 $ ctest --test-dir ../build -C Release
@@ -101,7 +99,6 @@ With the following CMake values:
   files for OpenSCENARIO downloaded from the ASAM website (multiple versions of
   the schema files in this directory are supported).
 - _\<xerces_c_root\>_: The root dir of the pre-built Xerces-C++ package
-- _\<dev_essential_ROOT\>_: The root dir of the pre-built dev_essential package
 - _\<Qt5_ROOT\>_: The root dir of the pre-built qt5 package
 
 ### Options

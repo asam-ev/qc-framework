@@ -23,8 +23,8 @@ TEST_F(cTesterExampleCheckerBundle, CmdBasic)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdDefaultConfig)
@@ -33,11 +33,11 @@ TEST_F(cTesterExampleCheckerBundle, CmdDefaultConfig)
 
     std::string strDefaultConfigFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "--defaultconfig");
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "--defaultconfig");
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strDefaultConfigFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdConfig)
@@ -48,14 +48,14 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfig)
     std::string strResultFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
     std::string strExpectedResultFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + ".xqar";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strConfigFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strConfigFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
 }
@@ -68,14 +68,14 @@ TEST_F(cTesterExampleCheckerBundle, CmdXodr)
     std::string strResultFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
     std::string strExpectedResultFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + ".xqar";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strXodrFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strXodrFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
 }
@@ -84,22 +84,22 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfigFileNotFound)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error.xml");
-    ASSERT_TRUE(nRes == qc4openx::ERR_FAILED);
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error.xml");
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdFirstArgumentWrong)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error");
-    ASSERT_TRUE(nRes == qc4openx::ERR_FAILED);
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error");
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdTooMuchArguments)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
-    ASSERT_TRUE(nRes == qc4openx::ERR_FAILED);
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
