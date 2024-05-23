@@ -84,7 +84,7 @@ jobs:
             -G "Visual Studio 16 2019" -A x64 -T v142 `
             -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
             -DENABLE_FUNCTIONAL_TESTS=OFF `
-            -DQt5_ROOT="$Qt5_ROOT" `
+            -DQt5_ROOT="$Qt5_DIR" `
             -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
             -DXercesC_ROOT="$workingPath\Xerces-Out"
 
