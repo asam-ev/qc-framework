@@ -73,13 +73,21 @@ jobs:
         run: |
           $workingPath = "D:\a"
           $env:XERCES_ROOT = "$workingPath\Xerces-Out"
+          $env:XercesC_INCLUDE_DIR="$workingPath/xerces-c-3.2.5/build/src/"
+          $env:XercesC_LIBRARY = "$workingPath/xerces-c-3.2.5/build/src/Debug/"
+          $env:XercesC_VERSION = "3.2.5"
 
           echo $env:PATH
           echo $env:XERCES_ROOT
 
           mkdir $workingPath\build
           Write-Output "Setting up QC-Framework..."
-          cmake -H"$workingPath\qc-framework\qc-framework" -B"$workingPath\build" -G "Visual Studio 16 2019" -A x64 -T v142 -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" -DENABLE_FUNCTIONAL_TESTS=OFF -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" -DQt5_ROOT="C:\Qt\5.15.2\msvc2019_64\lib\cmake\Qt5" -DXERCES_ROOT="$workingPath\Xerces-Out" -DXercesC_DIR="$workingPath\Xerces-Out\cmake" -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
+          cmake -H"$workingPath\qc-framework\qc-framework" -B"$workingPath\build" `
+            -G "Visual Studio 16 2019" -A x64 -T v142 `
+            -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
+            -DENABLE_FUNCTIONAL_TESTS=OFF `
+            -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
+            -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
           cmake --build "$workingPath\build" --target install --config Release
           cmake --install "$workingPath\build"
 
