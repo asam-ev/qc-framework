@@ -11,11 +11,6 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 This software is licensed under [MPL - Mozilla Public License - Version
 2.0](https://mozilla.org/MPL/2.0/) and uses the following 3rd party components.
 
-## dev_essential
-
-- [dev_essential_LICENSE](./3rd_party_terms_and_licenses/dev_essential_LICENSE)
-- Download source:
-  <https://github.com/cariad-tech/dev_essential/releases/tag/v1.1.1>
 
 ## GoogleTest
 

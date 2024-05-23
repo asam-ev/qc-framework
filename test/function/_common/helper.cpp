@@ -5,9 +5,10 @@
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
+
 #include "helper.h"
 
-qc4openx::Result ExecuteCommand(std::string &strResultMessage, std::string strCommand, const std::string strArgument)
+TestResult ExecuteCommand(std::string &strResultMessage, std::string strCommand, const std::string strArgument)
 {
     std::string strInstallDir = std::string(QC4OPENX_DBQA_BIN_DIR);
     strInstallDir.append("/");
@@ -32,20 +33,20 @@ qc4openx::Result ExecuteCommand(std::string &strResultMessage, std::string strCo
         {
             strResultMessage =
                 "Command executed with result " + std::to_string(i32Res) + ". Command: '" + strTotalCommand + "'.";
-            return qc4openx::ERR_FAILED;
+            return TestResult::ERR_FAILED;
         }
         else
         {
-            return qc4openx::ERR_NOERROR;
+            return TestResult::ERR_NOERROR;
         }
     }
 
     strResultMessage =
         "Command to execute was not found in any defined install directory. Command: '" + strTotalCommand + "'.";
-    return qc4openx::ERR_FILE_NOT_FOUND;
+    return TestResult::ERR_FILE_NOT_FOUND;
 }
 
-qc4openx::Result CheckFileExists(std::string &strResultMessage, const std::string strFilePath, const bool bDelete)
+TestResult CheckFileExists(std::string &strResultMessage, const std::string strFilePath, const bool bDelete)
 {
     if (fs::exists(strFilePath.c_str()))
     {
@@ -56,7 +57,7 @@ qc4openx::Result CheckFileExists(std::string &strResultMessage, const std::strin
         if (!file.is_open())
         {
             std::cerr << "Failed to open the file: " << strFilePath << std::endl;
-            return 1;
+            return TestResult::ERR_FAILED;
         }
 
         // Read the entire file content into a string
@@ -73,19 +74,19 @@ qc4openx::Result CheckFileExists(std::string &strResultMessage, const std::strin
             {
                 fs::remove(strFilePath.c_str());
             }
-            return qc4openx::ERR_NOERROR;
+            return TestResult::ERR_NOERROR;
         }
 
         strResultMessage = "File '" + strFilePath + "' is empty.";
-        return qc4openx::ERR_UNEXPECTED;
+        return TestResult::ERR_UNEXPECTED;
     }
 
     strResultMessage = "Could not find file '" + strFilePath + "'.";
-    return qc4openx::ERR_FILE_NOT_FOUND;
+    return TestResult::ERR_FILE_NOT_FOUND;
 }
 
-qc4openx::Result CheckFilesEqual(std::string &strResultMessage, const std::string strFilePath1,
-                                 const std::string strFilePath2)
+TestResult CheckFilesEqual(std::string &strResultMessage, const std::string strFilePath1,
+                           const std::string strFilePath2)
 {
     FILE *f1 = fopen(strFilePath1.c_str(), "r");
     FILE *f2 = fopen(strFilePath2.c_str(), "r");
@@ -104,11 +105,11 @@ qc4openx::Result CheckFilesEqual(std::string &strResultMessage, const std::strin
             fclose(f1);
             fclose(f2);
             strResultMessage = "Files '" + strFilePath1 + "' and '" + strFilePath2 + "' do not match.";
-            return qc4openx::ERR_FAILED;
+            return TestResult::ERR_FAILED;
         }
     }
 
     fclose(f1);
     fclose(f2);
-    return qc4openx::ERR_NOERROR;
+    return TestResult::ERR_NOERROR;
 }
