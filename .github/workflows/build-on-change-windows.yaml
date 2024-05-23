@@ -55,7 +55,6 @@ jobs:
           cmake --build . --config Release
           cmake --build . --config Release --target install
 
-
           Write-Output "Setting up dev_essential..."
           mkdir "$workingPath\dev_essential"
           git clone https://github.com/cariad-tech/dev_essential.git "$workingPath\dev_essential"
@@ -70,9 +69,8 @@ jobs:
       - name: Build framework
         run: |
           $workingPath = "D:\a"
-          [Environment]::SetEnvironmentVariable("XERCES_ROOT", "$workingPath\Xerces-Out", [EnvironmentVariableTarget]::Machine)
-          [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$workingPath\Xerces-Out\bin", [EnvironmentVariableTarget]::Machine)
-          & $profile
+          $env:PATH = $env:PATH + ";$workingPath\Xerces-Out\bin"
+          $env:XERCES_ROOT = "$workingPath\Xerces-Out"
 
           mkdir $workingPath\build
           Write-Output "Setting up QC-Framework..."
