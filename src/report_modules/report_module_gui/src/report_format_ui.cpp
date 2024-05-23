@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 {
 #ifdef WIN32
     auto workdir = fs::current_path();
-    SetDllDirectoryA(workdir.toString().c_str());
+    SetDllDirectoryA(workdir);
 #endif
 
     std::string strToolpath = argv[0];
