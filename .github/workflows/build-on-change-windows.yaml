@@ -89,7 +89,7 @@ jobs:
             -Ddev_essential_ROOT="$workingPath\dev_essential-Out\lib\cmake\dev_essential" `
             -DXercesC_ROOT="$workingPath\Xerces-Out"
 
-          cmake --build . --target install --config Debug
+          cmake --build . --target install --config Release
           cmake --install .
 
           # Final output
