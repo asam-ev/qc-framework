@@ -26,7 +26,6 @@ if(NOT CMAKE_PROJECT_NAME)
     endif()
 
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
-    find_package(dev_essential REQUIRED)
     enable_testing()
 endif()
 

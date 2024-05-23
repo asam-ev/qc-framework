@@ -19,8 +19,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 
-add_definitions( -DDEV_ESSENTIAL_DISABLE_MAKE_RESULT_CHECK_RESERVED_ZERO=1 -DDEV_ESSENTIAL_DISABLE_DEPRECATED_WARNINGS=1)
-
 file(STRINGS version QC4OPENX_VERSION LIMIT_COUNT 1)
 project(qc4openx VERSION ${QC4OPENX_VERSION})
 
@@ -44,7 +42,6 @@ elseif()
         -Wall -Wextra -Wno-reorder -Wno-sign-compare)
 endif()
 
-find_package(dev_essential REQUIRED)
 find_package(XercesC REQUIRED)
 
 # QT

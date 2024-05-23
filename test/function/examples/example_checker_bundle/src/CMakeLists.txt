@@ -24,7 +24,6 @@ add_test(NAME ${TEST_NAME}
 target_link_libraries(${TEST_NAME}
     PRIVATE
     GTest::gtest_main
-    dev_essential::result
     $<$<PLATFORM_ID:Linux>:stdc++fs>
 )
 
