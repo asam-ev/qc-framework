@@ -69,8 +69,11 @@ jobs:
       - name: Build framework
         run: |
           $workingPath = "D:\a"
-          $env:PATH = $env:PATH + ";$workingPath\Xerces-Out\bin"
+          $env:PATH = $env:PATH + ";$workingPath\xerces-c-3.2.5\build\src\Debug\xerces-c_3_2D.dll"
           $env:XERCES_ROOT = "$workingPath\Xerces-Out"
+
+          echo $env:PATH
+          echo $env:XERCES_ROOT
 
           mkdir $workingPath\build
           Write-Output "Setting up QC-Framework..."
