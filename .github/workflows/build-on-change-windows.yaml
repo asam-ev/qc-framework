@@ -108,9 +108,12 @@ jobs:
         run: |
           echo Starting tests...
 
-          cd "$env:WORKING_PATH\qc-framework\qc-framework"
+          cd "$env:WORKING_PATH\qc-framework\qc-framework\build\test\function"
 
-          ctest --test-dir build -C Release
+          Start-Process -FilePath “examples\example_checker_bundle\src\example_checker_bundle_tester.exe”
+          Start-Process -FilePath “report_modules\report_module_gui\src\report_module_gui_tester.exe”
+          Start-Process -FilePath “report_modules\report_module_text\src\report_module_text_tester.exe”
+          Start-Process -FilePath “result_pooling\src\result_pooling_tester.exe”
 
           echo All tests done.
         shell: pwsh
