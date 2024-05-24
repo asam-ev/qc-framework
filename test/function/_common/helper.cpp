@@ -85,31 +85,56 @@ TestResult CheckFileExists(std::string &strResultMessage, const std::string strF
     return TestResult::ERR_FILE_NOT_FOUND;
 }
 
-TestResult CheckFilesEqual(std::string &strResultMessage, const std::string strFilePath1,
-                           const std::string strFilePath2)
+namespace
 {
-    FILE *f1 = fopen(strFilePath1.c_str(), "r");
-    FILE *f2 = fopen(strFilePath2.c_str(), "r");
-
-    constexpr int n = 10000;
-    char buf1[n];
-    char buf2[n];
-
-    while (!feof(f1) || !feof(f2))
+class SimpleErrorHandler : public xercesc::HandlerBase
+{
+  public:
+    void warning(const xercesc::SAXParseException &e) override
     {
-        size_t r1 = fread(buf1, 1, n, f1);
-        size_t r2 = fread(buf2, 1, n, f2);
+        std::cerr << "Warning: " << xercesc::XMLString::transcode(e.getMessage()) << std::endl;
+    }
+    void error(const xercesc::SAXParseException &e) override
+    {
+        std::cerr << "Error: " << xercesc::XMLString::transcode(e.getMessage()) << std::endl;
+    }
+    void fatalError(const xercesc::SAXParseException &e) override
+    {
+        std::cerr << "Fatal Error: " << xercesc::XMLString::transcode(e.getMessage()) << std::endl;
+    }
+};
+} // namespace
 
-        if (r1 != r2 || memcmp(buf1, buf2, r1))
-        {
-            fclose(f1);
-            fclose(f2);
-            strResultMessage = "Files '" + strFilePath1 + "' and '" + strFilePath2 + "' do not match.";
-            return TestResult::ERR_FAILED;
-        }
+TestResult ValidateXmlSchema(const std::string &xmlFile, const std::string &xsdFile)
+{
+    try
+    {
+        xercesc::XMLPlatformUtils::Initialize();
+    }
+    catch (const xercesc::XMLException &e)
+    {
+        std::cerr << "Error during initialization! :\n" << xercesc::XMLString::transcode(e.getMessage()) << std::endl;
+        return TestResult::ERR_FAILED;
     }
 
-    fclose(f1);
-    fclose(f2);
+    xercesc::XercesDOMParser parser;
+    parser.setExternalNoNamespaceSchemaLocation(xsdFile.c_str());
+    parser.setExitOnFirstFatalError(true);
+    parser.setValidationConstraintFatal(true);
+    parser.setValidationScheme(xercesc::XercesDOMParser::Val_Auto);
+    parser.setDoNamespaces(true);
+    parser.setDoSchema(true);
+
+    SimpleErrorHandler errorHandler;
+    parser.setErrorHandler(&errorHandler);
+
+    parser.parse(xmlFile.c_str());
+
+    // Check error handler state
+    if (parser.getErrorCount() > 0)
+    {
+        // If error handler recorded errors, return ERR_FAILED
+        return TestResult::ERR_FAILED;
+    }
     return TestResult::ERR_NOERROR;
 }

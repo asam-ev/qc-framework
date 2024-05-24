@@ -16,6 +16,16 @@
 #include <iostream>
 #include <sstream>
 
+#include <string>
+#include <xercesc/framework/XMLGrammarPoolImpl.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/sax/ErrorHandler.hpp>
+#include <xercesc/sax/HandlerBase.hpp>
+#include <xercesc/sax/SAXParseException.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/util/XMLException.hpp>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/validators/schema/SchemaValidator.hpp>
 /**
  * This macro prints a formatted message during test execution.
  *
@@ -63,7 +73,6 @@ TestResult ExecuteCommand(std::string &strResultMessage, std::string strCommand,
 
 TestResult CheckFileExists(std::string &strResultMessage, const std::string strFilePath, const bool bDelete = true);
 
-TestResult CheckFilesEqual(std::string &strResultMessage, const std::string strFilePath1,
-                           const std::string strFilePath2);
+TestResult ValidateXmlSchema(const std::string &xmlFile, const std::string &xsdFile);
 
 #endif

@@ -9,7 +9,6 @@
 #include "gtest/gtest.h"
 
 #include "helper.h"
-#include "xml_validator.h"
 
 #define MODULE_NAME "DemoCheckerBundle"
 
@@ -54,7 +53,7 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfig)
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    nRes |= XmlValidator::validate(strResultFilePath, strXsdFilePath);
+    nRes |= ValidateXmlSchema(strResultFilePath, strXsdFilePath);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
@@ -74,7 +73,7 @@ TEST_F(cTesterExampleCheckerBundle, CmdXodr)
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    nRes |= XmlValidator::validate(strResultFilePath, strXsdFilePath);
+    nRes |= ValidateXmlSchema(strResultFilePath, strXsdFilePath);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());

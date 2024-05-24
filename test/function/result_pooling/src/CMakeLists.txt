@@ -17,7 +17,6 @@ include_directories(${TEST_NAME} PRIVATE
 
 add_executable(${TEST_NAME}         
     ${CMAKE_CURRENT_SOURCE_DIR}/../../_common/helper.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../_common/xml_validator.cpp
     ${TEST_NAME}.cpp)
 
 add_test(NAME ${TEST_NAME}
