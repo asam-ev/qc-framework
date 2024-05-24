@@ -9,6 +9,7 @@
 #include "gtest/gtest.h"
 
 #include "helper.h"
+#include "xml_validator.h"
 
 #define MODULE_NAME "DemoCheckerBundle"
 
@@ -46,15 +47,14 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfig)
 
     std::string strConfigFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + "_config.xml";
     std::string strResultFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
-    std::string strExpectedResultFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + ".xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../../doc/schema/xqar_report_format.xsd";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strConfigFilePath);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
+    nRes |= XmlValidator::validate(strResultFilePath, strXsdFilePath);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
@@ -66,7 +66,7 @@ TEST_F(cTesterExampleCheckerBundle, CmdXodr)
 
     std::string strXodrFilePath = "../stimuli/xodr_examples/three_connected_roads_with_steps.xodr";
     std::string strResultFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
-    std::string strExpectedResultFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + ".xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../../doc/schema/xqar_report_format.xsd";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strXodrFilePath);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
@@ -74,7 +74,7 @@ TEST_F(cTesterExampleCheckerBundle, CmdXodr)
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
+    nRes |= XmlValidator::validate(strResultFilePath, strXsdFilePath);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());

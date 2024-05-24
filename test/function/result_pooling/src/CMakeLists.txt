@@ -9,11 +9,15 @@ set(TEST_NAME result_pooling_tester)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS true)
 
+find_package(XercesC REQUIRED)
+
 include_directories(${TEST_NAME} PRIVATE 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../_common)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../_common
+    ${XercesC_INCLUDE_DIRS})
 
 add_executable(${TEST_NAME}         
     ${CMAKE_CURRENT_SOURCE_DIR}/../../_common/helper.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../_common/xml_validator.cpp
     ${TEST_NAME}.cpp)
 
 add_test(NAME ${TEST_NAME}
@@ -25,6 +29,7 @@ target_link_libraries(${TEST_NAME}
     PRIVATE
     GTest::gtest_main
     $<$<PLATFORM_ID:Linux>:stdc++fs>
+    ${XercesC_LIBRARIES}
 )
 
 target_compile_definitions(${TEST_NAME} 
