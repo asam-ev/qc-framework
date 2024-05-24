@@ -54,8 +54,8 @@ jobs:
           mkdir build
           cd build
           cmake -G "Visual Studio 16 2019" ..
-          make
-          make install
+          cmake --build . --config Debug
+          cmake --build . --config Debug --target install
 
           echo Gtest installed.
         shell: pwsh
