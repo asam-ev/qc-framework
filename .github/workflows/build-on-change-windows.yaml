@@ -110,6 +110,8 @@ jobs:
         run: |
           echo Starting tests...
 
+          cd "$workingPath\qc-framework\qc-framework"
+
           ctest --test-dir build -C Release
 
           echo All tests done.
