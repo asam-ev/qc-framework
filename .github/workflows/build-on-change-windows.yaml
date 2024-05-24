@@ -54,7 +54,9 @@ jobs:
           cd googletest
           mkdir build
           cd build
-          cmake -G "Visual Studio 16 2019" -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\gtest-Out" ..
+          cmake -G "Visual Studio 16 2019" `
+            -Dgtest_force_shared_crt=ON `
+            -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\gtest-Out" ..
           cmake --build . --config Release
           cmake --build . --config Release --target install
 
@@ -93,9 +95,10 @@ jobs:
             -DENABLE_FUNCTIONAL_TESTS="$env:TEST_ENABLED" `
             -DGTest_ROOT="$env:WORKING_PATH\gtest-Out" `
             -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
-            -DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out"
+            -DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out" `
+            -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
 
-          cmake --build build --target ALL_BUILD --config Release
+          cmake --build build --target Release --config Release
 
           cmake --install build
 
