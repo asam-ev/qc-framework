@@ -10,6 +10,8 @@ on:
       - src/**
       - include/**
       - scripts/cmake/**
+      - tests/**
+      - .github/workflows/** # only for testing this PR
 
   # execute on every push made targeting the branches bellow
   push:
@@ -24,6 +26,8 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-22.04
+    env:
+      TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -52,16 +56,49 @@ jobs:
           echo Dependencies installed.
         shell: bash
 
+      - name: Install gtest
+        working-directory: dependencies
+        if: github.event_name == 'pull_request'
+        run: |
+          echo Installing gtest...
+
+          git clone https://github.com/google/googletest.git -b release-1.10.0
+          cd googletest        # Main directory of the cloned repository.
+          mkdir build          # Create a directory to hold the build output.
+          cd build
+          cmake ..             # Generate native build scripts for GoogleTest.
+          make
+          sudo make install    # Install in /usr/local/ by default
+
+          echo Gtest installed.
+        shell: bash
+
       - name: Build framework
         # Currently this is building without the XSD file. If we want to expose
         # the build artifact after, we might as well need to add the XSD file.
         run: |
           echo Building framework...
-          cmake -G "Unix Makefiles" -B./build -S . -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
-            -DENABLE_FUNCTIONAL_TESTS=OFF  -DXERCES_ROOT="/usr" \
+          cmake -G "Unix Makefiles" -B./build -S . \
+            -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
+            -DENABLE_FUNCTIONAL_TESTS=$TEST_ENABLED  -DXERCES_ROOT="/usr" \
             -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
             -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/"
           cmake --build ./build --target install --config Release -j4
           cmake --install ./build
           echo Done.
+        shell: bash
+
+      - name: Test
+        if: github.event_name == 'pull_request'
+        run: |
+          echo Starting tests...
+
+          cd ./build/test/function
+
+          ./examples/example_checker_bundle/src/example_checker_bundle_tester
+          ./report_modules/report_module_gui/src/report_module_gui_tester
+          ./report_modules/report_module_text/src/report_module_text_tester
+          ./result_pooling/src/result_pooling_tester
+
+          echo All tests done.
         shell: bash
