@@ -91,7 +91,7 @@ jobs:
             -G "Visual Studio 16 2019" -A x64 -T v142 `
             -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\QC-Framework-Out" `
             -DENABLE_FUNCTIONAL_TESTS="$env:TEST_ENABLED" `
-            -DGTest_ROOT="$env:WORKING_PATH\gtest-Out\lib\gtestd.lib" `
+            -DGTest_ROOT="$env:WORKING_PATH\gtest-Out" `
             -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
             -DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out"
 
