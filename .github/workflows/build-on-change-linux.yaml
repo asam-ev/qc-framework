@@ -1,0 +1,67 @@
+name: Build framework on Linux
+
+on:
+  # execute on every PR made targeting the branches bellow
+  pull_request:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+
+  # execute on every push made targeting the branches bellow
+  push:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create dependencies build space
+        run: mkdir dependencies
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: dependencies
+        run: |
+          echo Updating CMAKE...
+          wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh
+          sudo apt remove cmake
+          sudo apt purge --auto-remove cmake
+          sudo bash cmake-3.29.3-linux-x86_64.sh --skip-license --exclude-subdir --prefix=/usr/local
+
+          echo Installing Qt...
+          sudo apt update
+          sudo apt install \
+            qtbase5-dev \
+            libqt5xmlpatterns5-dev \
+            libxerces-c-dev \
+            pkg-config
+
+          echo Dependencies installed.
+        shell: bash
+
+      - name: Build framework
+        # Currently this is building without the XSD file. If we want to expose
+        # the build artifact after, we might as well need to add the XSD file.
+        run: |
+          echo Building framework...
+          cmake -G "Unix Makefiles" -B./build -S . -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
+            -DENABLE_FUNCTIONAL_TESTS=OFF  -DXERCES_ROOT="/usr" \
+            -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
+            -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/"
+          cmake --build ./build --target install --config Release -j4
+          cmake --install ./build
+          echo Done.
+        shell: bash
