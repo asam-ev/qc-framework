@@ -10,6 +10,7 @@ on:
       - src/**
       - include/**
       - scripts/cmake/**
+      - .github/workflows/** # only for testing this PR
 
   # execute on every push made targeting the branches bellow
   push:
@@ -24,6 +25,8 @@ on:
 jobs:
   build-windows:
     runs-on: windows-2019
+    env:
+      TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -39,7 +42,26 @@ jobs:
           target: desktop
           arch: win64_msvc2019_64
 
-      - name: Install dependencies
+      - name: Install gtest
+        working-directory: dependencies
+        if: github.event_name == 'pull_request'
+        env:
+          CXX: g++-10
+        run: |
+          echo Installing gtest...
+
+          git clone https://github.com/google/googletest.git -b release-1.10.0
+          cd googletest
+          mkdir build
+          cd build
+          cmake ..
+          make
+          make install
+
+          echo Gtest installed.
+        shell: pwsh
+
+      - name: Install XercesC
         run: |
           $workingPath = "D:\a"
 
@@ -72,7 +94,7 @@ jobs:
           cmake -H"$workingPath\qc-framework\qc-framework" -S. -Bbuild `
             -G "Visual Studio 16 2019" -A x64 -T v142 `
             -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
-            -DENABLE_FUNCTIONAL_TESTS=OFF `
+            -DENABLE_FUNCTIONAL_TESTS=$env:TEST_ENABLED `
             -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
             -DXercesC_ROOT="$workingPath\Xerces-Out"
 
@@ -82,4 +104,14 @@ jobs:
 
           # Final output
           Write-Output "All installations and setups are complete!"
+        shell: pwsh
+
+      - name: Test
+        if: github.event_name == 'pull_request'
+        run: |
+          echo Starting tests...
+
+          ctest --test-dir build -C Release
+
+          echo All tests done.
         shell: pwsh
