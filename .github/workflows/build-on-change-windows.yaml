@@ -97,7 +97,7 @@ jobs:
             -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
             -DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out"
 
-          cmake --build build --target Release --config Release
+          cmake --build build --target ALL_BUILD --config Release
 
           cmake --install build
 
