@@ -24,7 +24,6 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-22.04
-    environment: Build
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
