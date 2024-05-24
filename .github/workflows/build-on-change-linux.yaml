@@ -59,10 +59,12 @@ jobs:
       - name: Install gtest
         working-directory: dependencies
         if: github.event_name == 'pull_request'
+        env:
+          CXX: g++-10
         run: |
           echo Installing gtest...
 
-          git clone https://github.com/google/googletest.git -b release-1.11.0
+          git clone https://github.com/google/googletest.git -b release-1.10.0
           cd googletest
           mkdir build
           cd build
