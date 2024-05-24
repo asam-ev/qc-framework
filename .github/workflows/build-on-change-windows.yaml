@@ -43,7 +43,6 @@ jobs:
           arch: win64_msvc2019_64
 
       - name: Install gtest
-        working-directory: dependencies
         if: github.event_name == 'pull_request'
         env:
           CXX: g++-10
