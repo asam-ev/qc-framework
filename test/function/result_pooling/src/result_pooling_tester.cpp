@@ -24,7 +24,7 @@ TEST_F(cTesterResultPooling, CmdBasic)
     std::string strResultMessage;
 
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-    std::string strExpectedResultFilePath = strTestFilesDir + "/" + "EmptyResult.xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_report_format.xsd";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
@@ -32,7 +32,7 @@ TEST_F(cTesterResultPooling, CmdBasic)
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
+    nRes |= ValidateXmlSchema(strResultFilePath, strXsdFilePath);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
@@ -59,7 +59,7 @@ TEST_F(cTesterResultPooling, CmdDirNoResults)
     std::string strResultMessage;
 
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-    std::string strExpectedResultFilePath = strTestFilesDir + "/" + "EmptyResult.xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_report_format.xsd";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "..");
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
@@ -67,7 +67,7 @@ TEST_F(cTesterResultPooling, CmdDirNoResults)
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
+    nRes |= ValidateXmlSchema(strResultFilePath, strXsdFilePath);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
