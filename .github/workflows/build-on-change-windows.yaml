@@ -95,8 +95,7 @@ jobs:
             -DENABLE_FUNCTIONAL_TESTS="$env:TEST_ENABLED" `
             -DGTest_ROOT="$env:WORKING_PATH\gtest-Out" `
             -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
-            -DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out" `
-            -DCMAKE_EXE_LINKER_FLAGS="/FORCE:MULTIPLE"
+            -DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out"
 
           cmake --build build --target Release --config Release
 
