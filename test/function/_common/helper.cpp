@@ -117,6 +117,25 @@ TestResult ValidateXmlSchema(const std::string &xmlFile, const std::string &xsdF
         return TestResult::ERR_FAILED;
     }
 
+    // Read and print the XML file
+    std::ifstream xmlStream(xmlFile);
+    if (xmlStream.is_open())
+    {
+        std::cout << "Beginning of XML file: " << std::endl;
+        for (int i = 0; !xmlStream.eof(); ++i)
+        {
+            std::string line;
+            std::getline(xmlStream, line);
+            std::cout << line << std::endl;
+        }
+        xmlStream.close();
+    }
+    else
+    {
+        std::cerr << "Failed to open XML file: " << xmlFile << std::endl;
+        return TestResult::ERR_FILE_NOT_FOUND;
+    }
+
     xercesc::XercesDOMParser parser;
     parser.setExternalNoNamespaceSchemaLocation(xsdFile.c_str());
     parser.setExitOnFirstFatalError(true);
@@ -137,4 +156,50 @@ TestResult ValidateXmlSchema(const std::string &xmlFile, const std::string &xsdF
         return TestResult::ERR_FAILED;
     }
     return TestResult::ERR_NOERROR;
+}
+
+TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeName)
+{
+    try
+    {
+        xercesc::XMLPlatformUtils::Initialize();
+    }
+    catch (const xercesc::XMLException &e)
+    {
+        std::cerr << "Error during initialization! :\n" << xercesc::XMLString::transcode(e.getMessage()) << std::endl;
+        return TestResult::ERR_FAILED;
+    }
+
+    xercesc::XercesDOMParser parser;
+    parser.setValidationScheme(xercesc::XercesDOMParser::Val_Never);
+    parser.setDoNamespaces(false);
+    parser.setDoSchema(false);
+    parser.parse(xmlFile.c_str());
+
+    // Get the DOM document
+    xercesc::DOMDocument *doc = parser.getDocument();
+    if (!doc)
+    {
+        std::cerr << "Unable to get DOMDocument object " << std::endl;
+        xercesc::XMLPlatformUtils::Terminate();
+        return TestResult::ERR_FILE_NOT_FOUND;
+    }
+
+    // Convert nodeName to XMLCh*
+    XMLCh *xmlNodeName = xercesc::XMLString::transcode(nodeName.c_str());
+
+    // Find the node
+    xercesc::DOMNodeList *nodes = doc->getElementsByTagName(xmlNodeName);
+    xercesc::XMLString::release(&xmlNodeName);
+
+    if (nodes->getLength() > 0)
+    {
+        xercesc::XMLPlatformUtils::Terminate();
+        return TestResult::ERR_NOERROR;
+    }
+    else
+    {
+        xercesc::XMLPlatformUtils::Terminate();
+        return TestResult::ERR_UNKNOWN_FORMAT;
+    }
 }

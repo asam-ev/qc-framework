@@ -17,10 +17,12 @@
 #include <sstream>
 
 #include <string>
+#include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/XMLGrammarPoolImpl.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
 #include <xercesc/sax/HandlerBase.hpp>
+#include <xercesc/sax/SAXException.hpp>
 #include <xercesc/sax/SAXParseException.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLException.hpp>
@@ -75,4 +77,5 @@ TestResult CheckFileExists(std::string &strResultMessage, const std::string strF
 
 TestResult ValidateXmlSchema(const std::string &xmlFile, const std::string &xsdFile);
 
+TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeName);
 #endif
