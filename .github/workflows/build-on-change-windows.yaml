@@ -110,15 +110,9 @@ jobs:
         run: |
           Write-Output "Starting tests..."
 
-          cd "$env:WORKING_PATH\qc-framework\qc-framework\build\test\function"
+          cd "$env:WORKING_PATH\qc-framework\qc-framework"
 
-          dir -Recurse
-
-          .\examples\example_checker_bundle\src\Release\example_checker_bundle_tester.exe
-          .\report_modules\report_module_gui\src\Release\report_module_gui_tester.exe
-          .\report_modules\report_module_text\src\Release\report_module_text_tester.exe
-          .\result_pooling\src\Release\result_pooling_tester.exe
-          .\runtime\src\Release\runtime_tester.exe
+          ctest --test-dir build -C Release
 
           Write-Output "All tests done."
         shell: pwsh
