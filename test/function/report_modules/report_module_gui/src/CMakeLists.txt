@@ -9,8 +9,11 @@ set(TEST_NAME report_module_gui_tester)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS true)
 
+find_package(XercesC REQUIRED)
+
 include_directories(${TEST_NAME} PRIVATE 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../_common)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../_common
+    ${XercesC_INCLUDE_DIRS})
 
 add_executable(${TEST_NAME}         
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../_common/helper.cpp
@@ -27,6 +30,7 @@ target_link_libraries(${TEST_NAME}
     $<$<PLATFORM_ID:Linux>:dl>
     $<$<PLATFORM_ID:Linux>:pthread>
     $<$<PLATFORM_ID:Linux>:stdc++fs>
+    ${XercesC_LIBRARIES}
 )
 
 target_compile_definitions(${TEST_NAME} PRIVATE QC4OPENX_DBQA_BIN_DIR="${QC4OPENX_DBQA_DIR}/bin")

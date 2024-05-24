@@ -32,7 +32,10 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 ${CMAKE_CURRENT_SOURCE_DIR}/runtime/files
                 ${REFERENCE_FILES_INSTALL_DIR}/function/runtime
-
+        
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../doc/schema
+                ${REFERENCE_FILES_INSTALL_DIR}/doc/schema
     COMMENT "Copying test reference files..."
 )
 
