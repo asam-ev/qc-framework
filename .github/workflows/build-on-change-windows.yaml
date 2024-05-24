@@ -1,0 +1,85 @@
+name: Build framework on Windows
+
+on:
+  # execute on every PR made targeting the branches bellow
+  pull_request:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+
+  # execute on every push made targeting the branches bellow
+  push:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+
+jobs:
+  build-windows:
+    runs-on: windows-2019
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4.0.0
+        with:
+          version: 5.15.2
+          host: windows
+          target: desktop
+          arch: win64_msvc2019_64
+
+      - name: Install dependencies
+        run: |
+          $workingPath = "D:\a"
+
+          Write-Output "Setting up Xerces-C++..."
+          $xercesZip = "$workingPath\xerces-c-3.2.5.zip"
+          Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
+          Expand-Archive -Path $xercesZip -DestinationPath "$workingPath"
+          cd "$workingPath\xerces-c-3.2.5"
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$workingPath\Xerces-Out" ..
+          cmake --build . --config Debug
+          cmake --build . --config Debug --target install
+
+          Add-Content $env:GITHUB_PATH "$workingPath\bin\xerces-c_3_2D.dll"
+          Add-Content $env:GITHUB_PATH "$workingPath\Xerces-Out\include"
+          Add-Content $env:GITHUB_PATH "$workingPath\Xerces-Out\bin"
+
+        shell: pwsh
+
+      - name: Build framework
+        run: |
+          $workingPath = "D:\a"
+
+          Write-Output "Setting up QC-Framework..."
+
+          cd "$workingPath\qc-framework\qc-framework"
+          mkdir build
+
+          cmake -H"$workingPath\qc-framework\qc-framework" -S. -Bbuild `
+            -G "Visual Studio 16 2019" -A x64 -T v142 `
+            -DCMAKE_INSTALL_PREFIX="$workingPath\QC-Framework-Out" `
+            -DENABLE_FUNCTIONAL_TESTS=OFF `
+            -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
+            -DXercesC_ROOT="$workingPath\Xerces-Out"
+
+          cmake --build build --target ALL_BUILD --config Release
+
+          cmake --install build
+
+          # Final output
+          Write-Output "All installations and setups are complete!"
+        shell: pwsh
