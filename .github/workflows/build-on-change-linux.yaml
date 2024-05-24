@@ -62,13 +62,17 @@ jobs:
         run: |
           echo Installing gtest...
 
-          git clone https://github.com/google/googletest.git -b release-1.10.0
-          cd googletest        # Main directory of the cloned repository.
-          mkdir build          # Create a directory to hold the build output.
+          sudo apt-get install -y libgtest-dev
+          mkdir -p build
           cd build
-          cmake ..             # Generate native build scripts for GoogleTest.
-          make
-          sudo make install    # Install in /usr/local/ by default
+          sudo cmake /usr/src/googletest/googletest
+          sudo make
+          sudo cp lib/libgtest* /usr/lib/
+          cd ..
+          sudo rm -rf build
+          sudo mkdir /usr/local/lib/googletest
+          sudo ln -s /usr/lib/libgtest.a /usr/local/lib/googletest/libgtest.a
+          sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/googletest/libgtest_main.a
 
           echo Gtest installed.
         shell: bash
