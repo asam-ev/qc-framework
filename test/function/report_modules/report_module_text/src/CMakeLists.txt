@@ -7,8 +7,11 @@
 
 set(TEST_NAME report_module_text_tester)
 
+find_package(XercesC REQUIRED)
+
 include_directories(${TEST_NAME} PRIVATE 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../_common)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../_common
+    ${XercesC_INCLUDE_DIRS})
 
 add_executable(${TEST_NAME}         
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../_common/helper.cpp
@@ -23,6 +26,7 @@ target_link_libraries(${TEST_NAME}
     PRIVATE
     GTest::gtest_main
     $<$<PLATFORM_ID:Linux>:stdc++fs>
+    ${XercesC_LIBRARIES}
 )
 
 target_compile_definitions(${TEST_NAME} 
