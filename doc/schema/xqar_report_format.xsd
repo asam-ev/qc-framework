@@ -24,7 +24,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
   
   <xs:complexType name="IssueType">
     <xs:sequence>
-	  <xs:element name="Locations" type="LocationsType" minOccurs="1" maxOccurs="unbounded" />
+	  <xs:element name="Locations" type="LocationsType" minOccurs="0" maxOccurs="unbounded" />
 	</xs:sequence>
 	<xs:attribute name="issueId" type="xs:string" />
 	<xs:attribute name="description" type="xs:string" />
@@ -61,7 +61,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
   <xs:element name="CheckerResults">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="CheckerBundle" minOccurs="1" maxOccurs="unbounded" >
+        <xs:element name="CheckerBundle" minOccurs="0" maxOccurs="unbounded" >
 		  <xs:complexType>
 			  <xs:sequence>
 			    <xs:choice minOccurs="0" maxOccurs="unbounded">
