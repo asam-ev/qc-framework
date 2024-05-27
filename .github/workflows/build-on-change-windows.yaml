@@ -10,6 +10,7 @@ on:
       - src/**
       - include/**
       - scripts/cmake/**
+      - test/**
       - .github/workflows/** # only for testing this PR
 
   # execute on every push made targeting the branches bellow
@@ -122,4 +123,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: qc-framework/build/Testing/Temporary/LastTest.log
+          path: ${{ github.workspace }}/qc-framework/build/Testing/Temporary/LastTest.log
