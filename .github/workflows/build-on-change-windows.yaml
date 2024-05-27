@@ -116,3 +116,10 @@ jobs:
 
           Write-Output "All tests done."
         shell: pwsh
+
+      - name: Archive test results
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: qc-framework/build/Testing/Temporary/LastTest.log
