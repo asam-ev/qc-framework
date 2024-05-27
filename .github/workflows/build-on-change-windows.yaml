@@ -123,4 +123,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: ${{ github.workspace }}/qc-framework/build/Testing/Temporary/LastTest.log
+          path: ${{ github.workspace }}\build\Testing\Temporary\LastTest.log
