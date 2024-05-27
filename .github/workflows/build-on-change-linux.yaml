@@ -11,6 +11,7 @@ on:
       - include/**
       - scripts/cmake/**
       - tests/**
+      - .github/workflows/** # only for testing this PR
 
   # execute on every push made targeting the branches bellow
   push:
@@ -94,12 +95,7 @@ jobs:
         run: |
           echo Starting tests...
 
-          cd ./build/test/function
-
-          ./examples/example_checker_bundle/src/example_checker_bundle_tester
-          ./report_modules/report_module_gui/src/report_module_gui_tester
-          ./report_modules/report_module_text/src/report_module_text_tester
-          ./result_pooling/src/result_pooling_tester
+          ctest --test-dir build -C Release
 
           echo All tests done.
         shell: bash
