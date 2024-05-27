@@ -11,6 +11,7 @@ on:
       - include/**
       - scripts/cmake/**
       - tests/**
+      - .github/workflows/** # only for testing this PR
 
   # execute on every push made targeting the branches bellow
   push:
