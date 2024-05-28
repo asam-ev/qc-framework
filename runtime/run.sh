@@ -7,6 +7,7 @@
 
 
 readonly XML_PATH=$1
+readonly OUTPUT_PATH=$2
 
 docker stop runtime
 docker rm runtime
@@ -19,4 +20,6 @@ XML_DIRECTORY=$(dirname "$XML_PATH")
 
 docker run --name runtime \
     -v $XML_DIRECTORY:/data \
-    runtime -config=$(basename "$XML_PATH")
+    --mount type=bind,source="${OUTPUT_PATH}",target=/output \
+    -e OUTPUT_PATH="/output" \
+    runtime $(basename "$XML_PATH")

@@ -74,4 +74,4 @@ COPY --from=cpp_builder /home/root/qc-build /app/build
 
 ENV PYTHONUNBUFFERED=1
 
-ENTRYPOINT ["python", "/app/src/runtime/runtime.py"]
+ENTRYPOINT ["python", "/app/src/runtime/runtime.py", "-config"]

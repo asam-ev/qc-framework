@@ -78,6 +78,23 @@ def get_os_command_from_app_name(app_name):
     return os_command
 
 
+def copy_files_with_extensions(src_dir, dst_dir, extensions):
+
+    # Convert the list of extensions to a tuple
+    extensions = tuple(extensions)
+
+    # Iterate over all files in the source directory
+    for root, _, files in os.walk(src_dir):
+        for file in files:
+            # Check if the file has one of the specified extensions
+            if file.endswith(extensions):
+                # Construct full file path
+                full_file_path = os.path.join(root, file)
+                # Copy the file to the destination directory
+                shutil.copy(full_file_path, dst_dir)
+                print(f"Copied: {full_file_path} to {dst_dir}")
+
+
 def run_commands_from_xml(xml_file):
     tree = ET.parse(xml_file)
     root = tree.getroot()
@@ -113,6 +130,8 @@ def run_commands_from_xml(xml_file):
         os_command = get_os_command_from_app_name(app_name)
         cmd_list = [os_command, xml_file]
         run_command(cmd_list)
+
+    copy_files_with_extensions(BIN_FOLDER, os.getenv("OUTPUT_PATH"), [".txt", ".xqar"])
 
 
 def main(xml_file):
