@@ -7,6 +7,8 @@ FROM ubuntu:22.04 AS cpp_builder
 
 SHELL ["/bin/bash", "-c"]
 
+#COPY examples /app/framework/examples
+
 RUN apt update && apt install -y g++ g++-10 git wget make build-essential && mkdir -p /app
 
 RUN mkdir dependencies && \
@@ -45,8 +47,6 @@ RUN echo "Building framework..." && \
     -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/" && \
     cmake --build ./build --target install --config Release -j4 && \
     cmake --install ./build && \
-    # @TODO this is just because DemoCheckerBundle is not installed by default
-    cp /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /home/root/qc-build/bin/ && \
     echo "Done."
 
 
@@ -59,7 +59,7 @@ RUN echo "Installing Qt..." && \
     libqt5xmlpatterns5-dev \
     libxerces-c-dev \
     pkg-config && \
-    echo "Dependencies installed." 
+    echo "Dependencies installed."   
 
 RUN  mkdir -p /app
 WORKDIR /app
@@ -71,6 +71,9 @@ COPY src/ /app/src/
 COPY --from=cpp_builder /app/framework/doc/ /app/doc
 # Copy install directory in runtime image
 COPY --from=cpp_builder /home/root/qc-build /app/build
+
+# @NOTE this is just because DemoCheckerBundle is not installed by default
+COPY --from=cpp_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/build/bin/
 
 ENV PYTHONUNBUFFERED=1
 
