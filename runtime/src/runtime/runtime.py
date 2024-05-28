@@ -5,6 +5,9 @@ import sys, os
 import argparse
 import shutil
 
+BIN_FOLDER = "/app/build/bin"
+SCHEMA_FOLDER = "/app/doc/schema/"
+
 
 def on_windows():
     return os.name == "nt"
@@ -35,11 +38,21 @@ def validate_xml(xml_file, schema_file):
 def run_command(cmd_list):
     try:
         print(f"Executing command: {' '.join(cmd_list)}")
-        result = subprocess.run(cmd_list, check=True, capture_output=True, text=True)
-        print(f"Output: {result.stdout}")
-        return result
-    except subprocess.CalledProcessError as e:
-        print(f"Error: {e.stderr}")
+        process = subprocess.Popen(
+            cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=os.getcwd()
+        )
+        stdout, stderr = process.communicate()
+        exit_code = process.returncode
+        if exit_code == 0:
+            print("Command executed successfully.")
+            print("Output:")
+            print(stdout.decode())
+        else:
+            print("Error occurred while executing the command.")
+            print("Error message:")
+            print(stderr.decode())
+    except Exception as e:
+        print(f"Error: {str(e)}")
 
 
 def list_files_in_cwd():
@@ -49,44 +62,62 @@ def list_files_in_cwd():
     return files
 
 
+def get_os_command_from_app_name(app_name):
+    os_command = None
+
+    if on_windows():
+        app_name = app_name + ".exe"
+        os_command = app_name
+    else:
+        os_command = "./" + app_name
+
+    if not check_executable_exists(app_name):
+        print(f"Executable {app_name} does not exist!\nAbort...")
+        sys.exit()
+
+    return os_command
+
+
 def run_commands_from_xml(xml_file):
     tree = ET.parse(xml_file)
     root = tree.getroot()
 
-    BIN_FOLDER = "/app/bin"
-
     os.chdir(BIN_FOLDER)
 
+    print("Executable found in install directory: ", list_files_in_cwd())
+
     # 1. Execute all CheckerBundle
+    print("#" * 50)
+    print("1. Execute all CheckerBundle")
+    print("#" * 50)
     for element in root.findall(".//CheckerBundle"):
-        command = element.get("application")
-
-        if on_windows():
-            command += ".exe"
-
-        if not check_executable_exists(command):
-            print(f"Executable {command} does not exist!\nAbort...")
-            sys.exit()
-
-        if command and check_executable_exists(command):
-            cmd_list = [command, xml_file]
-            run_command(cmd_list)
-        else:
-            print("No command found in process element.")
+        app_name = element.get("application")
+        os_command = get_os_command_from_app_name(app_name)
+        cmd_list = [os_command, xml_file]
+        run_command(cmd_list)
 
     # 2. Execute ResultPooling
-    command = "ResultPooling"
-    if on_windows():
-        command += ".exe"
+    print("#" * 50)
+    print("2. Execute ResultPooling")
+    print("#" * 50)
+    app_name = "ResultPooling"
+    os_command = get_os_command_from_app_name(app_name)
+    run_command([os_command])
 
-    if not check_executable_exists(command):
-        print(f"Executable {command} does not exist!\nAbort...")
-        sys.exit()
+    # 3. Execute Report Modules
+    print("#" * 50)
+    print("3. Execute Report Modules")
+    print("#" * 50)
+    for element in root.findall(".//ReportModule"):
+        app_name = element.get("application")
+        os_command = get_os_command_from_app_name(app_name)
+        cmd_list = [os_command, xml_file]
+        run_command(cmd_list)
 
-    run_command([command])
 
+def main(xml_file):
 
-def main(xml_file, xodr_file, xosc_file, schema_file):
+    schema_file = os.path.join(SCHEMA_FOLDER, "config_format.xsd")
     if not validate_xml(xml_file, schema_file):
         print("Aborting due to invalid XML.")
         sys.exit()
@@ -104,15 +135,6 @@ if __name__ == "__main__":
         required=True,
     )
 
-    # Define mutually exclusive group
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument("-xodr", type=str, help="Xodr file under test")
-    group.add_argument(
-        "-xosc",
-        type=str,
-        help="Xosc file under test",
-    )
     args = parser.parse_args()
 
-    schema_file = "/app/doc/schema/config_format.xsd"
-    main(f"/data/{args.config}", args.xodr, args.xosc, schema_file)
+    main(f"/data/{args.config}")
