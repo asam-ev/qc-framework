@@ -29,4 +29,4 @@ void ShowHelp(const std::string &applicationName);
  * Runs the config gui
  */
 void RunConfigGUI(const std::string &strConfigurationFilepath, const std::string &strXODRFilepath,
-                  const std::string &strXOSCFilePath, const bool bAutostart, const QApplication &app);
+                  const std::string &strXOSCFilePath, const QApplication &app);

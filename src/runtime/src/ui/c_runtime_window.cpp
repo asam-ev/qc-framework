@@ -28,10 +28,9 @@ const QString cRuntimeWindow::DEFAULT_XODR_CONFIG = "DefaultXodrConfiguration.xm
 const QString cRuntimeWindow::DEFAULT_XOSC_CONFIG = "DefaultXoscConfiguration.xml";
 
 cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, const std::string &xodrFile,
-                               const std::string &xoscFile, const bool bAutostart, QWidget *parent)
+                               const std::string &xoscFile, QWidget *parent)
     : QMainWindow(parent)
 {
-    _autostart = bAutostart;
 
     QAction *newAction = new QAction(tr("&New"), this);
     newAction->setShortcuts(QKeySequence::New);
@@ -183,7 +182,7 @@ void cRuntimeWindow::OpenConfigurationFile()
     ShowConfiguration(&_currentConfiguration);
 }
 
-bool cRuntimeWindow::SaveConfigurationFile(const bool bAutostart)
+bool cRuntimeWindow::SaveConfigurationFile()
 {
     if (!_currentConfigurationPath.isEmpty())
     {
@@ -201,14 +200,11 @@ bool cRuntimeWindow::SaveConfigurationFile(const bool bAutostart)
             else
             {
                 QMessageBox::StandardButton reply = QMessageBox::NoButton;
-                if (!bAutostart)
-                {
-                    reply = QMessageBox::question(this, "Overwrite Configuration",
-                                                  "Do you want to overwrite:\n" + fileInfo.fileName(),
-                                                  QMessageBox::Yes | QMessageBox::No);
-                }
+                reply = QMessageBox::question(this, "Overwrite Configuration",
+                                              "Do you want to overwrite:\n" + fileInfo.fileName(),
+                                              QMessageBox::Yes | QMessageBox::No);
 
-                if (bAutostart || reply == QMessageBox::Yes)
+                if (reply == QMessageBox::Yes)
                 {
                     UpdateConfiguration();
                     _currentConfiguration.WriteConfigurationToFile(_currentConfigurationPath.toLocal8Bit().data());
@@ -366,19 +362,14 @@ void cRuntimeWindow::Run()
         ssDetails << std::endl << std::endl;
         ssDetails << "Please fix. Skip execution.";
 
-        if (!_autostart)
-        {
-            QMessageBox::warning(this, tr("Error"), tr(ssDetails.str().c_str()), QMessageBox::Ok);
-        }
-        else
-            std::cerr << ssDetails.str();
+        QMessageBox::warning(this, tr("Error"), tr(ssDetails.str().c_str()), QMessageBox::Ok);
 
         emit Finished();
         return;
     }
 
     // Save configuration if not saved
-    bool saved = SaveConfigurationFile(_autostart);
+    bool saved = SaveConfigurationFile();
 
     if (!saved)
     {

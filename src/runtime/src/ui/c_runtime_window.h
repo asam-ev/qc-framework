@@ -31,11 +31,10 @@ class cRuntimeWindow : public QMainWindow
 
     cRuntimeThread _runningThread;
     bool _configurationChanged{false};
-    bool _autostart{true};
 
   public:
     cRuntimeWindow(const std::string &configurationFilePath, const std::string &xodrFile, const std::string &xoscFile,
-                   const bool bAutostart, QWidget *parent = 0);
+                   QWidget *parent = 0);
 
     /*
      * Loads a configuration from file to datastructure
@@ -70,7 +69,7 @@ class cRuntimeWindow : public QMainWindow
     bool SaveAsConfigurationFile();
 
     // Save configuration file
-    bool SaveConfigurationFile(const bool);
+    bool SaveConfigurationFile();
 
     // Creates a new Configuration
     void NewConfiguration();
