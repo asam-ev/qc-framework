@@ -41,3 +41,7 @@ where
 - `$PATH_TO_EXE` points to the folder where framework executables are installed
 - `$PATH_TO_XSD` points to a folder containig the config_format.xsd file
 
+#### Note
+
+- `$PATH_TO_EXE` and `$PATH_TO_XSD` args are temporarily supported until better handling of external directory will be implemented
+
