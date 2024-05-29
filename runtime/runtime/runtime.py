@@ -17,7 +17,7 @@ def check_executable_exists(executable):
     return executable in list_files_in_cwd()
 
 
-def validate_xml(xml_file, schema_file):
+def is_valid_xml(xml_file, schema_file):
     with open(schema_file, "rb") as schema_f:
         schema_doc = etree.parse(schema_f)
         schema = etree.XMLSchema(schema_doc)
@@ -78,11 +78,11 @@ def get_os_command_from_app_name(app_name):
     return os_command
 
 
-def run_commands_from_xml(xml_file, bin_folder):
+def run_commands_from_xml(xml_file, install_folder):
     tree = ET.parse(xml_file)
     root = tree.getroot()
 
-    os.chdir(bin_folder)
+    os.chdir(install_folder)
 
     print("Executable found in install directory: ", list_files_in_cwd())
 
@@ -117,17 +117,16 @@ def run_commands_from_xml(xml_file, bin_folder):
     return True
 
 
-def main(xml_file, install_folder, schema_folder):
-
+def execute_runtime(xml_file, install_folder, schema_folder):
     schema_file = os.path.join(schema_folder, "config_format.xsd")
-    if not validate_xml(xml_file, schema_file):
+    if not is_valid_xml(xml_file, schema_file):
         print("Aborting due to invalid XML.")
         sys.exit()
 
     return run_commands_from_xml(xml_file, install_folder)
 
 
-if __name__ == "__main__":
+def main():
 
     parser = argparse.ArgumentParser(description="Process XML configuration file.")
     parser.add_argument(
@@ -151,4 +150,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    main(args.config, args.install_dir, args.schema_dir)
+    return execute_runtime(args.config, args.install_dir, args.schema_dir)
+
+
+if __name__ == "__main__":
+    main()
