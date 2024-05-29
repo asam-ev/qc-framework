@@ -1,7 +1,7 @@
-# Copyright 2023, IVEX NV
-# All rights reserved.
-# Unauthorized copying of this file, via any medium is strictly prohibited
-# Proprietary and confidential
+# Copyright 2024, ASAM e.V.
+# This Source Code Form is subject to the terms of the Mozilla
+# Public License, v. 2.0. If a copy of the MPL was not distributed
+# with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 FROM ubuntu:22.04 AS framework_builder
 

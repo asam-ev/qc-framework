@@ -9,7 +9,7 @@ The runtime module execute the following steps:
 1. Validate input xml file given the config_format.xsd schema
 2. For each checker bundle specified in configuration, execute its process
 3. Execute result pooling for collect results from all checker bundle executed in step 2
-4. For each report module specified in configuration, execute its process+
+4. For each report module specified in configuration, execute its process
 
 ## Installation & Usage
 
