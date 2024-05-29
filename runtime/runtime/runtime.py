@@ -59,7 +59,7 @@ def is_valid_xml(xml_file: str, schema_file: str) -> bool:
         return False
 
 
-def run_command(cmd_list: List):
+def run_command(cmd_list: List[str]) -> None:
     """Execute command specified in cmd_list list parameter
 
     Args:
@@ -86,7 +86,7 @@ def run_command(cmd_list: List):
         print(f"Error: {str(e)}")
 
 
-def list_files_in_cwd() -> List:
+def list_files_in_cwd() -> List[str]:
     """List all files in current working directory
 
     Returns:
@@ -127,7 +127,7 @@ def get_os_command_from_app_name(app_name: str) -> str:
     return os_command
 
 
-def run_commands_from_xml(xml_file: str, install_folder: str):
+def run_commands_from_xml(xml_file: str, install_folder: str) -> None:
     """Execute the qc-framework runtime steps specified in the input xml file
 
         The function:
@@ -193,7 +193,6 @@ def execute_runtime(xml_file: str, install_folder: str, schema_folder: str):
 
 
 def main():
-
     parser = argparse.ArgumentParser(description="Process XML configuration file.")
     parser.add_argument(
         "--config",
@@ -216,7 +215,7 @@ def main():
 
     args = parser.parse_args()
 
-    return execute_runtime(args.config, args.install_dir, args.schema_dir)
+    execute_runtime(args.config, args.install_dir, args.schema_dir)
 
 
 if __name__ == "__main__":
