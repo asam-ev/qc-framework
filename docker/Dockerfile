@@ -75,7 +75,7 @@ COPY runtime/requirements.txt /app/
 RUN pip install -r /app/requirements.txt
 
 COPY runtime/runtime /app/runtime/
-COPY runtime/test /app/test/
+COPY runtime/tests /app/tests/
 # For testing files
 COPY --from=framework_builder /app/framework/test/ /app/framework/test
 COPY --from=framework_builder /app/framework/doc/ /app/doc
