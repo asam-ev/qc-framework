@@ -1,0 +1,89 @@
+# Copyright 2024, ASAM e.V.
+# This Source Code Form is subject to the terms of the Mozilla
+# Public License, v. 2.0. If a copy of the MPL was not distributed
+# with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+FROM ubuntu:22.04 AS framework_builder
+
+SHELL ["/bin/bash", "-c"]
+
+RUN apt update && apt install -y g++ g++-10 git wget make build-essential && \
+    mkdir -p /app && mkdir -p /app/framework
+
+COPY examples /app/framework/examples
+COPY include /app/framework/include
+COPY scripts /app/framework/scripts
+COPY src /app/framework/src
+COPY test /app/framework/test
+COPY doc /app/framework/doc
+COPY CMakeLists.txt /app/framework/CMakeLists.txt
+COPY version /app/framework/version
+COPY licenses /app/framework/licenses
+
+RUN mkdir dependencies && \
+    echo "Updating CMAKE..." && \
+    wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh && \
+    apt remove cmake && \
+    apt purge --auto-remove cmake && \
+    bash cmake-3.29.3-linux-x86_64.sh --skip-license --exclude-subdir --prefix=/usr/local && \
+    echo "Installing Qt..." && \
+    apt update && apt install -y \ 
+    qtbase5-dev \
+    libqt5xmlpatterns5-dev \
+    libxerces-c-dev \
+    pkg-config && \
+    echo "Dependencies installed." 
+
+RUN echo "Installing gtest..." && \
+    git clone https://github.com/google/googletest.git -b release-1.10.0 && \
+    cd googletest && \
+    mkdir build && \
+    cd build && \
+    CXX=g++-10 cmake .. && \
+    make && \
+    make install && \
+    echo "Gtest installed."
+
+
+RUN echo "Building framework..." && \
+    cd /app/framework && \
+    cmake -G "Unix Makefiles" -B./build -S . \
+    -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
+    -DENABLE_FUNCTIONAL_TESTS=ON  -DXERCES_ROOT="/usr" \
+    -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
+    -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/" && \
+    cmake --build ./build --target install --config Release -j4 && \
+    cmake --install ./build && \
+    echo "Done."
+
+
+# Runtime stage
+FROM python:3.11.9-slim-bookworm  as runtime_test
+
+RUN echo "Installing Qt..." && \
+    apt update && apt install -y \ 
+    qtbase5-dev \
+    libqt5xmlpatterns5-dev \
+    libxerces-c-dev \
+    pkg-config && \
+    echo "Dependencies installed."   
+
+RUN  mkdir -p /app
+WORKDIR /app
+
+COPY runtime/requirements.txt /app/
+RUN pip install -r /app/requirements.txt
+
+COPY runtime/runtime /app/runtime/
+COPY runtime/tests /app/tests/
+# For testing files
+COPY --from=framework_builder /app/framework/doc/ /app/doc
+# Copy install directory in runtime image
+COPY --from=framework_builder /home/root/qc-build /app/build
+
+# @NOTE this is just because DemoCheckerBundle is not installed by default
+COPY --from=framework_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/build/bin/
+
+ENV PYTHONUNBUFFERED=1
+
+CMD ["python3", "-m", "pytest"]
