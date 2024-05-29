@@ -3,13 +3,22 @@
 # Unauthorized copying of this file, via any medium is strictly prohibited
 # Proprietary and confidential
 
-FROM ubuntu:22.04 AS cpp_builder
+FROM ubuntu:22.04 AS framework_builder
 
 SHELL ["/bin/bash", "-c"]
 
-#COPY examples /app/framework/examples
+RUN apt update && apt install -y g++ g++-10 git wget make build-essential && \
+    mkdir -p /app && mkdir -p /app/framework
 
-RUN apt update && apt install -y g++ g++-10 git wget make build-essential && mkdir -p /app
+COPY examples /app/framework/examples
+COPY include /app/framework/include
+COPY scripts /app/framework/scripts
+COPY src /app/framework/src
+COPY test /app/framework/test
+COPY doc /app/framework/doc
+COPY CMakeLists.txt /app/framework/CMakeLists.txt
+COPY version /app/framework/version
+COPY licenses /app/framework/licenses
 
 RUN mkdir dependencies && \
     echo "Updating CMAKE..." && \
@@ -35,14 +44,12 @@ RUN echo "Installing gtest..." && \
     make install && \
     echo "Gtest installed."
 
-COPY framework /app/framework
-
 
 RUN echo "Building framework..." && \
     cd /app/framework && \
     cmake -G "Unix Makefiles" -B./build -S . \
     -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
-    -DENABLE_FUNCTIONAL_TESTS=$TEST_ENABLED  -DXERCES_ROOT="/usr" \
+    -DENABLE_FUNCTIONAL_TESTS=ON  -DXERCES_ROOT="/usr" \
     -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
     -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/" && \
     cmake --build ./build --target install --config Release -j4 && \
@@ -51,7 +58,7 @@ RUN echo "Building framework..." && \
 
 
 # Runtime stage
-FROM python:3.11.9-slim-bookworm  as runtime
+FROM python:3.11.9-slim-bookworm  as runtime_test
 
 RUN echo "Installing Qt..." && \
     apt update && apt install -y \ 
@@ -64,17 +71,20 @@ RUN echo "Installing Qt..." && \
 RUN  mkdir -p /app
 WORKDIR /app
 
-COPY requirements.txt /app/
+COPY runtime/requirements.txt /app/
 RUN pip install -r /app/requirements.txt
 
-COPY src/ /app/src/
-COPY --from=cpp_builder /app/framework/doc/ /app/doc
+COPY runtime/runtime /app/runtime/
+COPY runtime/test /app/test/
+# For testing files
+COPY --from=framework_builder /app/framework/test/ /app/framework/test
+COPY --from=framework_builder /app/framework/doc/ /app/doc
 # Copy install directory in runtime image
-COPY --from=cpp_builder /home/root/qc-build /app/build
+COPY --from=framework_builder /home/root/qc-build /app/build
 
 # @NOTE this is just because DemoCheckerBundle is not installed by default
-COPY --from=cpp_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/build/bin/
+COPY --from=framework_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/build/bin/
 
 ENV PYTHONUNBUFFERED=1
 
-ENTRYPOINT ["python", "/app/src/runtime/runtime.py", "-config"]
+CMD ["python3", "-m", "pytest"]
