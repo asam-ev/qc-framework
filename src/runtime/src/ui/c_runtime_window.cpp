@@ -52,23 +52,11 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
     saveAsAction->setStatusTip(tr("Save configuration"));
     connect(saveAsAction, &QAction::triggered, this, &cRuntimeWindow::SaveAsConfigurationFile);
 
-    QAction *clearConsoleAction = new QAction(tr("Clear"), this);
-    clearConsoleAction->setStatusTip(tr("Clear console"));
-    connect(clearConsoleAction, &QAction::triggered, this, &cRuntimeWindow::ClearConsole);
-
-    QAction *saveConsoleAction = new QAction(tr("Save"), this);
-    saveConsoleAction->setStatusTip(tr("Save console output"));
-    connect(saveConsoleAction, &QAction::triggered, this, &cRuntimeWindow::SaveConsole);
-
     auto fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAction);
     fileMenu->addAction(openAction);
     fileMenu->addAction(saveAction);
     fileMenu->addAction(saveAsAction);
-
-    auto consoleMenu = menuBar()->addMenu(tr("&Console"));
-    consoleMenu->addAction(clearConsoleAction);
-    consoleMenu->addAction(saveConsoleAction);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
 
@@ -83,8 +71,12 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
     QPushButton *addParameter = new QPushButton(this);
     addParameter->setText("Add global Parameter");
 
+    // QPushButton *saveConfiguration = new QPushButton(this);
+    // saveConfiguration->setText("Save configuration...");
+
     processButtonBarLayout->addWidget(addParameter);
     processButtonBarLayout->addWidget(addModule);
+    // processButtonBarLayout->addWidget(saveConfiguration);
     processButtonBarLayout->setContentsMargins(2, 2, 2, 2);
     processButtonBar->setLayout(processButtonBarLayout);
 
@@ -111,12 +103,6 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
 
     QWidget *outputWidget = new QWidget(this);
     QVBoxLayout *outputLayout = new QVBoxLayout;
-    QLabel *outputLabel = new QLabel(outputWidget);
-    outputLabel->setText("Console Output");
-    outputLabel->setStyleSheet("font-weight: bold;");
-    _processLog = new cProcessLog(this);
-    outputLayout->addWidget(outputLabel);
-    outputLayout->addWidget(_processLog);
     outputLayout->setContentsMargins(3, 6, 3, 3);
     outputWidget->setLayout(outputLayout);
     splitter->addWidget(outputWidget);
@@ -134,9 +120,6 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
 
     connect(runtimeControl, &cRuntimeControl::Run, this, &cRuntimeWindow::Run);
     connect(runtimeControl, &cRuntimeControl::Abort, this, &cRuntimeWindow::Abort);
-
-    connect(&_runningThread, SIGNAL(Log(QString)), _processLog, SLOT(Log(QString)));
-    connect(this, SIGNAL(Log(QString)), _processLog, SLOT(Log(QString)));
 
     connect(&_runningThread, SIGNAL(Finished()), runtimeControl, SLOT(FinishedExecution()));
     connect(&_runningThread, SIGNAL(Finished()), runtimeControl, SLOT(FinishedExecution()));
@@ -343,7 +326,6 @@ void cRuntimeWindow::CreateNewConfiguration(cConfiguration *const configuration)
 
 void cRuntimeWindow::ShowConfiguration(cConfiguration *const configurationToBeShown)
 {
-    _processLog->clear();
 
     _processView->LoadConfiguration(configurationToBeShown);
 
@@ -360,21 +342,6 @@ void cRuntimeWindow::closeEvent(QCloseEvent * /*event*/)
 {
     _runningThread.Abort();
     _runningThread.wait();
-}
-
-void cRuntimeWindow::ClearConsole()
-{
-    _processLog->Clear();
-}
-
-void cRuntimeWindow::SaveConsole()
-{
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Console Dump"), GetWorkingDir(), tr("Log (*.log)"));
-
-    if (!filePath.isEmpty())
-    {
-        _processLog->SaveToFile(filePath);
-    }
 }
 
 void cRuntimeWindow::OnChangeConfiguration()
@@ -422,12 +389,10 @@ void cRuntimeWindow::Run()
         return;
     }
 
-    _processLog->Clear();
-
     if (_runningThread.IsRunning())
         _runningThread.Abort();
 
-    _runningThread.Initialize(_processLog, &_currentConfiguration, _currentConfigurationPath);
+    //_runningThread.Initialize(_processLog, &_currentConfiguration, _currentConfigurationPath);
 
     _runningThread.start();
 }

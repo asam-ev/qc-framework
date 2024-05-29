@@ -72,12 +72,6 @@ class cRuntimeWindow : public QMainWindow
     // Save configuration file
     bool SaveConfigurationFile(const bool);
 
-    // Saves the console output
-    void SaveConsole();
-
-    // Clear the console output
-    void ClearConsole();
-
     // Creates a new Configuration
     void NewConfiguration();
 
