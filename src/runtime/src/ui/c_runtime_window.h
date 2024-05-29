@@ -10,8 +10,8 @@
 
 #include <QtWidgets/QMainWindow>
 
-#include "c_runtime_thread.h"
 #include "common/config_format/c_configuration.h"
+#include "common/qc4openx_filesystem.h"
 
 class cProcessView;
 class cProcessLog;
@@ -29,7 +29,6 @@ class cRuntimeWindow : public QMainWindow
     cConfiguration _currentConfiguration;
     QString _currentConfigurationPath;
 
-    cRuntimeThread _runningThread;
     bool _configurationChanged{false};
 
   public:
@@ -58,8 +57,6 @@ class cRuntimeWindow : public QMainWindow
     // Runs the process
     void Run();
 
-    // Aborts the running process
-    void Abort();
 
   private slots:
     // Open result file
@@ -111,8 +108,6 @@ class cRuntimeWindow : public QMainWindow
      */
     const QString GetWorkingDir();
 
-    // Handle application close
-    void closeEvent(QCloseEvent *bar);
 
     // Changes the window title of the application
     void SetupWindowTitle();

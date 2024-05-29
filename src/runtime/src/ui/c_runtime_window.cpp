@@ -22,7 +22,6 @@
 #include "../c_configuration_validator.h"
 #include "c_process_log.h"
 #include "c_process_view.h"
-#include "c_runtime_control.h"
 
 const QString cRuntimeWindow::DEFAULT_XODR_CONFIG = "DefaultXodrConfiguration.xml";
 const QString cRuntimeWindow::DEFAULT_XOSC_CONFIG = "DefaultXoscConfiguration.xml";
@@ -70,12 +69,8 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
     QPushButton *addParameter = new QPushButton(this);
     addParameter->setText("Add global Parameter");
 
-    // QPushButton *saveConfiguration = new QPushButton(this);
-    // saveConfiguration->setText("Save configuration...");
-
     processButtonBarLayout->addWidget(addParameter);
     processButtonBarLayout->addWidget(addModule);
-    // processButtonBarLayout->addWidget(saveConfiguration);
     processButtonBarLayout->setContentsMargins(2, 2, 2, 2);
     processButtonBar->setLayout(processButtonBarLayout);
 
@@ -90,12 +85,9 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
     _processView->setRootIsDecorated(true);
     _processView->setHeaderHidden(true);
 
-    auto runtimeControl = new cRuntimeControl(this);
-
     processLayout->addWidget(processLabel);
     processLayout->addWidget(_processView, 2);
     processLayout->addWidget(processButtonBar, 0);
-    processLayout->addWidget(runtimeControl, 0);
     processLayout->setContentsMargins(3, 6, 3, 3);
     processWidget->setLayout(processLayout);
     splitter->addWidget(processWidget);
@@ -116,13 +108,6 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
     connect(_processView, SIGNAL(ChangeConfiguration()), this, SLOT(OnChangeConfiguration()));
     connect(_processView, SIGNAL(ExecuteProcessAndAddConfiguration(QString)), this,
             SLOT(ExecuteProcessAndAddConfiguration(QString)));
-
-    connect(runtimeControl, &cRuntimeControl::Run, this, &cRuntimeWindow::Run);
-    connect(runtimeControl, &cRuntimeControl::Abort, this, &cRuntimeWindow::Abort);
-
-    connect(&_runningThread, SIGNAL(Finished()), runtimeControl, SLOT(FinishedExecution()));
-    connect(&_runningThread, SIGNAL(Finished()), runtimeControl, SLOT(FinishedExecution()));
-    connect(this, SIGNAL(Finished()), runtimeControl, SLOT(FinishedExecution()));
 
     // Set the size of the application of the half size of desktop
     QSize quarterDesktopSize = QDesktopWidget().availableGeometry(this).size() * 0.5f;
@@ -334,11 +319,6 @@ void cRuntimeWindow::NewConfiguration()
     ShowConfiguration(&_currentConfiguration);
 }
 
-void cRuntimeWindow::closeEvent(QCloseEvent * /*event*/)
-{
-    _runningThread.Abort();
-    _runningThread.wait();
-}
 
 void cRuntimeWindow::OnChangeConfiguration()
 {
@@ -380,23 +360,9 @@ void cRuntimeWindow::Run()
         return;
     }
 
-    if (_runningThread.IsRunning())
-        _runningThread.Abort();
 
-    //_runningThread.Initialize(_processLog, &_currentConfiguration, _currentConfigurationPath);
-
-    _runningThread.start();
 }
 
-void cRuntimeWindow::Abort()
-{
-    _runningThread.Abort();
-}
-
-bool cRuntimeWindow::IsRunning() const
-{
-    return _runningThread.IsRunning();
-}
 
 int cRuntimeWindow::ExecuteProcessAndAddConfiguration(const QString &processPath)
 {
