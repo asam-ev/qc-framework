@@ -78,11 +78,11 @@ def get_os_command_from_app_name(app_name):
     return os_command
 
 
-def run_commands_from_xml(xml_file):
+def run_commands_from_xml(xml_file, bin_folder):
     tree = ET.parse(xml_file)
     root = tree.getroot()
 
-    os.chdir(BIN_FOLDER)
+    os.chdir(bin_folder)
 
     print("Executable found in install directory: ", list_files_in_cwd())
 
@@ -117,26 +117,38 @@ def run_commands_from_xml(xml_file):
     return True
 
 
-def main(xml_file):
+def main(xml_file, install_folder, schema_folder):
 
-    schema_file = os.path.join(SCHEMA_FOLDER, "config_format.xsd")
+    schema_file = os.path.join(schema_folder, "config_format.xsd")
     if not validate_xml(xml_file, schema_file):
         print("Aborting due to invalid XML.")
         sys.exit()
 
-    return run_commands_from_xml(xml_file)
+    return run_commands_from_xml(xml_file, install_folder)
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Process XML configuration file.")
     parser.add_argument(
-        "-config",
+        "--config",
         type=str,
         help="Path to the XML configuration file",
+        required=True,
+    )
+    parser.add_argument(
+        "--install_dir",
+        type=str,
+        help="Path where compiled binaries are installed",
+        required=True,
+    )
+    parser.add_argument(
+        "--schema_dir",
+        type=str,
+        help="Path to the XSD schema for validation",
         required=True,
     )
 
     args = parser.parse_args()
 
-    main(f"/data/{args.config}")
+    main(args.config, args.install_dir, args.schema_dir)

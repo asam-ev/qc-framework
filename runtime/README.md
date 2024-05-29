@@ -11,28 +11,33 @@ The runtime module execute the following steps:
 3. Execute result pooling for collect results from all checker bundle executed in step 2
 4. For each report module specified in configuration, execute its process+
 
+## Installation & Usage
 
-## Usage
+The runtime module is implemented in the [python script runtime.py](./runtime/runtime.py)
 
-The runtime module is implemented in the [python script runtime.py](../src/runtime/runtime.py)
+In order to use the runtime, you can set up a virtual environment using your preferred python 3.6+ e.g. with 3.8
 
-It is executed by the docker specified in this folder.
-
-To build the docker image:
-
-```bash
-./build.sh
+```
+python3.8 -m venv runtime_env
 ```
 
-To execute the runtime:
+activate it and install the required dependencies
 
-```bash
-./run.sh XML_FILE OUTPUT_FOLDER
+```
+source runtime_env/bin/activate
+
+pip3 install -r requirements.txt
 ```
 
-where
+Then from the same terminal you can execute the runtime:
 
-- XML_FILE is an xml file following the config xsd schema that specifies the steps to execute
-- OUTPUT_FOLDER is a path on the host where xqar and txt report are saved
+```
+python3 runtime/runtime.py --config=$PATH_TO_CONFIG_XML --install_dir=$PATH_TO_EXE --schema_dir=$PATH_TO_XSD 
+```
 
-## Tests
+where 
+
+- `$PATH_TO_CONFIG_XML` points to an xml file following the [config xsd schema](../doc/schema/config_format.xsd)
+- `$PATH_TO_EXE` points to the folder where framework executables are installed
+- `$PATH_TO_XSD` points to a folder containig the config_format.xsd file
+
