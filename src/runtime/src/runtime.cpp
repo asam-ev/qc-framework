@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
     std::string strConfigurationFilepath = "";
     std::string strXODRFilepath = "";
     std::string strXOSCFilePath = "";
-    bool bAutostart = false;
 
     std::cout << std::endl << std::endl;
 
@@ -50,11 +49,6 @@ int main(int argc, char *argv[])
                 std::cout << "XOSC: " << strXOSCFilePath << std::endl;
             }
         }
-        else if (strcmp(argv[i], "-autostart") == 0)
-        {
-            bAutostart = true;
-            std::cout << "Autostart: true" << std::endl;
-        }
         else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
         {
             ShowHelp(strToolpath);
@@ -67,7 +61,7 @@ int main(int argc, char *argv[])
         strConfigurationFilepath = argv[1];
 
     QApplication app(argc, argv);
-    RunConfigGUI(strConfigurationFilepath, strXODRFilepath, strXOSCFilePath, bAutostart, app);
+    RunConfigGUI(strConfigurationFilepath, strXODRFilepath, strXOSCFilePath, app);
     return 0;
 }
 
@@ -82,28 +76,21 @@ void ShowHelp(const std::string &toolPath)
     std::cout << "\nOpen the application with DefaultXodrConfiguration.xml: \n"
               << applicationName << " myConfiguration.xml" << std::endl;
     std::cout << "\nOpen the application with myConfiguration.xml and a given xodr which is under "
-                 "test. Autostart enables the automatic validation mode: \n"
-              << applicationName << " -config myConfiguration.xml -xodr myTrack.xodr [-autostart]" << std::endl;
+                 "test. \n"
+              << applicationName << " -config myConfiguration.xml -xodr myTrack.xodr " << std::endl;
     std::cout << "\nOpen the application with myConfiguration.xml and a given xosc which is under "
-                 "test. Autostart enables the automatic validation mode: \n"
-              << applicationName << " -config myConfiguration.xml -xosc myTrack.xosc [-autostart]" << std::endl;
+                 "test.  \n"
+              << applicationName << " -config myConfiguration.xml -xosc myTrack.xosc " << std::endl;
     std::cout << "\n\n";
 }
 
 void RunConfigGUI(const std::string &strConfigurationFilepath, const std::string &strXODRFilepath,
-                  const std::string &strXOSCFilePath, const bool bAutostart, const QApplication &app)
+                  const std::string &strXOSCFilePath, const QApplication &app)
 {
-    cRuntimeWindow mainWindow(strConfigurationFilepath, strXODRFilepath, strXOSCFilePath, bAutostart);
+    cRuntimeWindow mainWindow(strConfigurationFilepath, strXODRFilepath, strXOSCFilePath);
     mainWindow.show();
 
     app.processEvents();
 
-    if (bAutostart)
-    {
-        mainWindow.Run();
-        while (mainWindow.IsRunning())
-            app.processEvents(QEventLoop::AllEvents, 200);
-    }
-    else
-        app.exec();
+    app.exec();
 }

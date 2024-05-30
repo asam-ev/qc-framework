@@ -30,23 +30,3 @@ TEST_F(cTesterRuntime, CmdHelp)
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
-TEST_F(cTesterRuntime, CmdConfig)
-{
-    // Implicit tested with PCB Test dbqa_roundtrip test_config_gui
-}
-
-TEST_F(cTesterRuntime, CmdConfigAutostart)
-{
-    std::string strResultMessage;
-
-    std::string strConfigFilePath = strTestFilesDir + "/" + "DemoCheckerBundle_config.xml";
-    std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-
-    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -autostart");
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-
-    // DemoCheckerBundle not found in bin (is in examples) --> no DemoCheckerBundle.xqar --> Result.xqar with no entries
-
-    nRes |= CheckFileExists(strResultMessage, strResultFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-}
