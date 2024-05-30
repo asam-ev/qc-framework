@@ -21,7 +21,6 @@ add_executable(${RUNTIME_PROJECT}
     src/ui/c_param_dialog.cpp
     src/ui/c_local_param_dialog.cpp
     src/ui/c_global_param_dialog.cpp
-    src/ui/c_process_log.cpp
     src/ui/c_process_view.cpp
     src/ui/c_runtime_window.cpp
     ${Resources}

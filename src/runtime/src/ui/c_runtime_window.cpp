@@ -20,7 +20,6 @@
 #include "common/result_format/c_result_container.h"
 
 #include "../c_configuration_validator.h"
-#include "c_process_log.h"
 #include "c_process_view.h"
 
 const QString cRuntimeWindow::DEFAULT_XODR_CONFIG = "DefaultXodrConfiguration.xml";
