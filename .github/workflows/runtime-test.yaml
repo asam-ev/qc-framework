@@ -4,11 +4,11 @@ on:
     branches:
     - develop
     - main
-  paths: # we only include paths critical for building to avoid unnecessary runs
-      - src/**
-      - include/**
-      - scripts/cmake/**
-      - tests/**
+    paths: # we only include paths critical for building to avoid unnecessary runs
+        - src/**
+        - include/**
+        - scripts/cmake/**
+        - tests/**
 
 jobs:
   build-containers:
