@@ -1,0 +1,8 @@
+# Use the official Windows Server Core image
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
+
+# Set the working directory
+WORKDIR /app
+
+# Define the entry point to echo "Hello World"
+CMD ["cmd", "/c", "echo Hello World"]

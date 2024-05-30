@@ -28,11 +28,14 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-22.04, windows-2019]
         include:
         - os: ubuntu-22.04
           base: ubuntu-22.04
           file: docker/Dockerfile.linux
+        - os: windows-2019
+          base: windows-2019
+          file: docker/Dockerfile.windows
 
     steps:
     - name: Checkout
