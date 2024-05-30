@@ -1,15 +1,19 @@
-# Use the official Windows Server Core image
-FROM mcr.microsoft.com/windows/servercore:ltsc2019 as runtime_test
 
+# Use the latest Windows Server Core image
+FROM mcr.microsoft.com/windows/servercore:ltsc2019 as runtime_test
 
 # Set environment variables
 ENV TEST_ENABLED=OFF \
     WORKING_PATH="D:\\a"
 
-# Download MSBuild
-ADD https://github.com/microsoft/setup-msbuild/releases/download/v2.0.0/setup-msbuild.zip C:\\setup-msbuild.zip
+# Install Git
+RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
+    Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.33.1.windows.1/Git-2.33.1-64-bit.exe' -OutFile 'Git-64-bit.exe'; \
+    Start-Process -FilePath 'Git-64-bit.exe' -ArgumentList '/VERYSILENT', '/NORESTART' -Wait; \
+    Remove-Item -Force 'Git-64-bit.exe'"
 
-# Extract MSBuild
-RUN powershell -Command "Expand-Archive -Path C:\\setup-msbuild.zip -DestinationPath C:\\setup-msbuild; \
-    Remove-Item -Force C:\\setup-msbuild.zip; \
-    $env:Path += ';C:\\setup-msbuild';"
+# Install MSBuild
+RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
+    Invoke-WebRequest -Uri 'https://aka.ms/vs/16/release/vs_buildtools.exe' -OutFile 'vs_buildtools.exe'; \
+    Start-Process -FilePath 'vs_buildtools.exe' -ArgumentList '--quiet', '--norestart', '--wait', '--add Microsoft.VisualStudio.Workload.MSBuildTools', '--includeRecommended', '--includeOptional' -Wait; \
+    Remove-Item -Force 'vs_buildtools.exe'"
