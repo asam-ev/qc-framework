@@ -21,3 +21,22 @@ RUN powershell -Command " \
     Install-Package -Name unzip -Source chocolatey -Force; \
     $env:Path += ';C:\\Program Files\\Git\\bin'; \
     $env:Path += ';C:\\Program Files\\CMake\\bin';"
+
+
+# Add MSBuild to PATH
+RUN powershell -Command " \
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; \
+    Invoke-WebRequest -Uri 'https://github.com/microsoft/setup-msbuild/releases/download/v2.0.0/setup-msbuild.zip' -OutFile 'C:\\setup-msbuild.zip'; \
+    Expand-Archive -Path 'C:\\setup-msbuild.zip' -DestinationPath 'C:\\setup-msbuild'; \
+    Remove-Item -Force 'C:\\setup-msbuild.zip'; \
+    $env:Path += ';C:\\setup-msbuild';"
+
+# Install Qt
+RUN powershell -Command " \
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; \
+    Invoke-WebRequest -Uri 'https://github.com/jurplel/install-qt-action/releases/download/v4.0.0/install-qt.zip' -OutFile 'C:\\install-qt.zip'; \
+    Expand-Archive -Path 'C:\\install-qt.zip' -DestinationPath 'C:\\install-qt'; \
+    Remove-Item -Force 'C:\\install-qt.zip'; \
+    cd 'C:\\install-qt'; \
+    .\\install-qt.ps1 -version 5.15.2 -host windows -target desktop -arch win64_msvc2019_64;"
+
