@@ -157,6 +157,27 @@ const QString cRuntimeWindow::GetWorkingDir()
     return QString::fromStdString(fs::current_path().string());
 }
 
+
+bool cRuntimeWindow::ValidateAndWrite(cConfiguration& configuration, const std::string& filePath){
+    std::string message = "";
+    if (!cConfigurationValidator::ValidateConfiguration(&configuration,
+                                                        message)) {
+        std::stringstream ssDetails;
+
+        ssDetails << "Configuration is invalid." << std::endl << std::endl;
+        ssDetails << "Message: " << std::endl;
+        ssDetails << message;
+        ssDetails << std::endl << std::endl;
+        ssDetails << "Please fix it before saving configuration file";
+
+        QMessageBox::warning(this, tr("Error"), tr(ssDetails.str().c_str()),
+                            QMessageBox::Ok);
+        return false;
+    }
+    configuration.WriteConfigurationToFile(filePath);
+    return true;
+}
+
 void cRuntimeWindow::OpenConfigurationFile()
 {
     QString filePath =
@@ -191,8 +212,11 @@ bool cRuntimeWindow::SaveConfigurationFile()
                 if (reply == QMessageBox::Yes)
                 {
                     UpdateConfiguration();
-                    _currentConfiguration.WriteConfigurationToFile(_currentConfigurationPath.toLocal8Bit().data());
-
+                    bool validation_result = false;
+                    validation_result = ValidateAndWrite(_currentConfiguration, _currentConfigurationPath.toLocal8Bit().data());
+                    if (!validation_result){
+                        return false;
+                    }
                     _configurationChanged = false;
                     SetupWindowTitle();
                     return true;
@@ -210,6 +234,7 @@ bool cRuntimeWindow::SaveConfigurationFile()
     // Open Dialog
     return SaveAsConfigurationFile();
 }
+
 
 bool cRuntimeWindow::SaveAsConfigurationFile()
 {
@@ -236,7 +261,11 @@ bool cRuntimeWindow::SaveAsConfigurationFile()
         UpdateConfiguration();
 
         _currentConfigurationPath = filePath;
-        _currentConfiguration.WriteConfigurationToFile(filePath.toLocal8Bit().data());
+        bool validation_result = false;
+        validation_result = ValidateAndWrite(_currentConfiguration, filePath.toLocal8Bit().data());
+        if (!validation_result){ 
+            return false;
+        }
 
         _configurationChanged = false;
         SetupWindowTitle();

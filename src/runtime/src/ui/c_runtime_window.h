@@ -57,6 +57,8 @@ class cRuntimeWindow : public QMainWindow
     // SaveAs configuration file
     bool SaveAsConfigurationFile();
 
+    bool ValidateAndWrite(cConfiguration& , const std::string&);
+
     // Save configuration file
     bool SaveConfigurationFile();
 
