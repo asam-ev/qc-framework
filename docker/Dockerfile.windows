@@ -6,21 +6,15 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019 as runtime_test
 ENV TEST_ENABLED=OFF \
     WORKING_PATH="D:\\a"
 
-# Install Git
-RUN powershell -Command "Invoke-WebRequest -Uri https://github.com/git-for-windows/git/releases/download/v2.32.0.windows.2/MinGit-2.32.0.2-64-bit.zip -OutFile C:\\git.zip; \
-    Expand-Archive -Path C:\\git.zip -DestinationPath C:\\git; \
-    Remove-Item -Force C:\\git.zip; \
-    $env:Path += ';C:\\git\\cmd';"
+# Install Chocolatey
+RUN powershell -Command " \
+    Set-ExecutionPolicy Bypass -Scope Process -Force; \
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; \
+    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
+    "
 
-# Install CMake
-RUN powershell -Command "Invoke-WebRequest -Uri https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2-windows-x86_64.zip -OutFile C:\\cmake.zip; \
-    Expand-Archive -Path C:\\cmake.zip -DestinationPath C:\\cmake; \
-    Remove-Item -Force C:\\cmake.zip; \
-    $env:Path += ';C:\\cmake\\bin';"
-
-# Install curl
-RUN powershell -Command "Invoke-WebRequest -Uri https://curl.se/windows/dl-7.77.0_3/curl-7.77.0_3-win64-mingw.zip -OutFile C:\\curl.zip; \
-    Expand-Archive -Path C:\\curl.zip -DestinationPath C:\\curl; \
-    Remove-Item -Force C:\\curl.zip; \
-    $env:Path += ';C:\\curl\\bin';"
-
+# Install Git, CMake, and curl using Chocolatey
+RUN powershell -Command "choco install git -y; \
+    choco install cmake -y; \
+    choco install curl -y; \
+    "
