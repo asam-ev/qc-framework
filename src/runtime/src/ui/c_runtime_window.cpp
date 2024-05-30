@@ -327,42 +327,6 @@ void cRuntimeWindow::OnChangeConfiguration()
     SetupWindowTitle();
 }
 
-void cRuntimeWindow::Run()
-{
-    UpdateConfiguration();
-
-    std::string message = "";
-    if (!cConfigurationValidator::ValidateConfiguration(&_currentConfiguration, message))
-    {
-        std::stringstream ssDetails;
-
-        ssDetails << "Configuration is invalid." << std::endl << std::endl;
-        ssDetails << "Message: " << std::endl;
-        ssDetails << message;
-        ssDetails << std::endl << std::endl;
-        ssDetails << "Please fix. Skip execution.";
-
-        QMessageBox::warning(this, tr("Error"), tr(ssDetails.str().c_str()), QMessageBox::Ok);
-
-        emit Finished();
-        return;
-    }
-
-    // Save configuration if not saved
-    bool saved = SaveConfigurationFile();
-
-    if (!saved)
-    {
-        QMessageBox::warning(this, tr("Error"), tr("Skip execution. Please save the configuration first."),
-                             QMessageBox::Ok);
-
-        emit Finished();
-        return;
-    }
-
-
-}
-
 
 int cRuntimeWindow::ExecuteProcessAndAddConfiguration(const QString &processPath)
 {

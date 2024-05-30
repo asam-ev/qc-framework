@@ -24,7 +24,6 @@ class cRuntimeWindow : public QMainWindow
 
   protected:
     cProcessView *_processView{nullptr};
-    cProcessLog *_processLog{nullptr};
 
     cConfiguration _currentConfiguration;
     QString _currentConfigurationPath;
@@ -49,13 +48,6 @@ class cRuntimeWindow : public QMainWindow
 
     // Updates the internal configuration
     void UpdateConfiguration();
-
-    // Returns true if the execution thread is running
-    bool IsRunning() const;
-
-  public slots:
-    // Runs the process
-    void Run();
 
 
   private slots:
