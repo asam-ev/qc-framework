@@ -9,7 +9,16 @@ on:
         - include/**
         - scripts/cmake/**
         - tests/**
-
+  
+  # execute on every push made targeting the branches bellow
+  push:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
 jobs:
   build-containers:
     name: Build Containers
