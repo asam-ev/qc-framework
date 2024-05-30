@@ -8,7 +8,6 @@ set(RUNTIME_PROJECT "ConfigGUI")
 project(${RUNTIME_PROJECT})
 
 set(CMAKE_AUTOMOC ON)
-qt5_add_resources(Resources res/POC_Runtime.qrc)
 
 add_executable(${RUNTIME_PROJECT}
     src/c_configuration_validator.cpp
@@ -23,7 +22,6 @@ add_executable(${RUNTIME_PROJECT}
     src/ui/c_global_param_dialog.cpp
     src/ui/c_process_view.cpp
     src/ui/c_runtime_window.cpp
-    ${Resources}
 )
 
 target_link_libraries(${RUNTIME_PROJECT} PRIVATE
