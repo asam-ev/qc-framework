@@ -1,9 +1,15 @@
 # Use the official Windows Server Core image
-FROM windows-2019 as runtime_test
+FROM mcr.microsoft.com/windows/servercore:ltsc2019 as runtime_test
 
 
-# Set the working directory
-WORKDIR /app
+# Set environment variables
+ENV TEST_ENABLED=OFF \
+    WORKING_PATH="D:\\a"
 
-# Define the entry point to echo "Hello World"
-CMD ["cmd", "/c", "echo Hello World"]
+# Download MSBuild
+ADD https://github.com/microsoft/setup-msbuild/releases/download/v2.0.0/setup-msbuild.zip C:\\setup-msbuild.zip
+
+# Extract MSBuild
+RUN powershell -Command "Expand-Archive -Path C:\\setup-msbuild.zip -DestinationPath C:\\setup-msbuild; \
+    Remove-Item -Force C:\\setup-msbuild.zip; \
+    $env:Path += ';C:\\setup-msbuild';"
