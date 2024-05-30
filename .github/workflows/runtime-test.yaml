@@ -1,0 +1,35 @@
+name: Runtime test
+on:
+  pull_request:
+    branches:
+    - develop
+    - main
+  paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - tests/**
+
+jobs:
+  build-containers:
+    name: Build Containers
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 2
+      matrix:
+        os: [ubuntu-22.04]
+        include:
+        - os: ubuntu-22.04
+          base: ubuntu-22.04
+          file: docker/Dockerfile.linux
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Docker Build
+      run: |
+        docker build -f ${{ matrix.file }} --target runtime_test -t runtime_test-${{ matrix.os }} .       
+    - name: Test execution
+      run: |
+        docker run --rm --name runtime_test-${{ matrix.os }} runtime_test-${{ matrix.os }} 
+       
