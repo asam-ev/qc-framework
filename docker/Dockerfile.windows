@@ -4,7 +4,9 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019 as runtime_test
 
 # Set environment variables
 ENV TEST_ENABLED=OFF \
-    WORKING_PATH="D:\\a"
+    WORKING_PATH="D:\\a" \
+    CMAKE_VERSION=3.29.3 \
+    CMAKE_INSTALL_DIR=C:\cmake
 
 # Install Git
 RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
@@ -25,6 +27,9 @@ RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
     Invoke-WebRequest -Uri 'https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-windows-x86_64.zip' -OutFile 'cmake.zip'; \
     Expand-Archive -Path 'cmake.zip' -DestinationPath 'C:\'; \
     Remove-Item -Force 'cmake.zip'"
+
+# Update PATH to include CMake
+RUN setx /M PATH "%PATH%;%CMAKE_INSTALL_DIR%\bin"
 
 # Install gtest
 RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
