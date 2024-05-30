@@ -42,7 +42,7 @@ TEST_F(cTesterRuntime, CmdConfigAutostart)
     std::string strConfigFilePath = strTestFilesDir + "/" + "DemoCheckerBundle_config.xml";
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
 
-    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -autostart");
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-config " + strConfigFilePath);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     // DemoCheckerBundle not found in bin (is in examples) --> no DemoCheckerBundle.xqar --> Result.xqar with no entries
