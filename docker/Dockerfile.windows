@@ -20,7 +20,11 @@ RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
 
 # Install qt
 
-
+# Install CMake
+RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
+    Invoke-WebRequest -Uri 'https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-windows-x86_64.zip' -OutFile 'cmake.zip'; \
+    Expand-Archive -Path 'cmake.zip' -DestinationPath 'C:\'; \
+    Remove-Item -Force 'cmake.zip'"
 
 # Install gtest
 RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
