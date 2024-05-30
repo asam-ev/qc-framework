@@ -1,5 +1,5 @@
 # Use the official Windows Server Core image
-FROM mcr.microsoft.com/windows/servercore:ltsc2019
+FROM mcr.microsoft.com/windows/servercore:ltsc2019 as runtime_test
 
 # Set the working directory
 WORKDIR /app
