@@ -1,8 +1,42 @@
 # Use the official Windows Server Core image
 FROM mcr.microsoft.com/windows/servercore:ltsc2019 as runtime_test
 
-# Set the working directory
-WORKDIR /app
 
-# Define the entry point to echo "Hello World"
-CMD ["cmd", "/c", "echo Hello World"]
+# Set environment variables
+ENV TEST_ENABLED=OFF \
+    WORKING_PATH="D:\\a"
+
+# Install necessary tools: git, cmake, curl, unzip
+RUN powershell -Command " \
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; \
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; \
+    Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vc_redist.x64.exe -OutFile C:\\vc_redist.x64.exe; \
+    Start-Process -FilePath C:\\vc_redist.x64.exe -ArgumentList '/quiet', '/norestart' -NoNewWindow -Wait; \
+    Remove-Item -Force C:\\vc_redist.x64.exe; \
+    Install-PackageProvider -Name NuGet -Force; \
+    Install-Module -Name ChocolateyGet -Force; \
+    Install-Package -Name git -Source chocolatey; \
+    Install-Package -Name cmake -Source chocolatey; \
+    Install-Package -Name curl -Source chocolatey; \
+    Install-Package -Name unzip -Source chocolatey; \
+    $env:Path += ';C:\\Program Files\\Git\\bin'; \
+    $env:Path += ';C:\\Program Files\\CMake\\bin';"
+
+# Add MSBuild to PATH
+RUN powershell -Command " \
+    Invoke-WebRequest -Uri https://github.com/microsoft/setup-msbuild/releases/download/v2.0.0/setup-msbuild.zip -OutFile C:\\setup-msbuild.zip; \
+    Expand-Archive -Path C:\\setup-msbuild.zip -DestinationPath C:\\setup-msbuild; \
+    Remove-Item -Force C:\\setup-msbuild.zip; \
+    $env:Path += ';C:\\setup-msbuild';"
+
+# Install Qt
+RUN powershell -Command " \
+    Invoke-WebRequest -Uri https://github.com/jurplel/install-qt-action/releases/download/v4.0.0/install-qt.zip -OutFile C:\\install-qt.zip; \
+    Expand-Archive -Path C:\\install-qt.zip -DestinationPath C:\\install-qt; \
+    Remove-Item -Force C:\\install-qt.zip; \
+    cd C:\\install-qt; \
+    .\\install-qt.ps1 -version 5.15.2 -host windows -target desktop -arch win64_msvc2019_64;"
+
+# Copy the repository code to WORKING_PATH
+COPY . /app
+WORKDIR /app
