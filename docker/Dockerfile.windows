@@ -6,15 +6,17 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019 as runtime_test
 ENV TEST_ENABLED=OFF \
     WORKING_PATH="D:\\a"
 
-# Install Chocolatey
+# Add MSBuild to PATH
 RUN powershell -Command " \
-    Set-ExecutionPolicy Bypass -Scope Process -Force; \
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; \
-    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')); \
-    "
+    Invoke-WebRequest -Uri https://github.com/microsoft/setup-msbuild/releases/download/v2.0.0/setup-msbuild.zip -OutFile C:\\setup-msbuild.zip; \
+    Expand-Archive -Path C:\\setup-msbuild.zip -DestinationPath C:\\setup-msbuild; \
+    Remove-Item -Force C:\\setup-msbuild.zip; \
+    $env:Path += ';C:\\setup-msbuild';"
 
-# Install Git, CMake, and curl using Chocolatey
-RUN powershell -Command "choco install git -y; \
-    choco install cmake -y; \
-    choco install curl -y; \
-    "
+# Install Qt
+RUN powershell -Command " \
+    Invoke-WebRequest -Uri https://github.com/jurplel/install-qt-action/releases/download/v4.0.0/install-qt.zip -OutFile C:\\install-qt.zip; \
+    Expand-Archive -Path C:\\install-qt.zip -DestinationPath C:\\install-qt; \
+    Remove-Item -Force C:\\install-qt.zip; \
+    cd C:\\install-qt; \
+    .\\install-qt.ps1 -version 5.15.2 -host windows -target desktop -arch win64_msvc2019_64;"
