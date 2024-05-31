@@ -13,11 +13,11 @@ ENV TEST_ENABLED=OFF \
 #     Start-Process -FilePath 'Git-64-bit.exe' -ArgumentList '/VERYSILENT', '/NORESTART' -Wait; \
 #     Remove-Item -Force 'Git-64-bit.exe'"
 
-# # Install MSBuild
-# RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
-#     Invoke-WebRequest -Uri 'https://aka.ms/vs/16/release/vs_buildtools.exe' -OutFile 'vs_buildtools.exe'; \
-#     Start-Process -FilePath 'vs_buildtools.exe' -ArgumentList '--quiet', '--norestart', '--wait', '--add Microsoft.VisualStudio.Workload.MSBuildTools', '--includeRecommended', '--includeOptional' -Wait; \
-#     Remove-Item -Force 'vs_buildtools.exe'"
+# Install MSBuild
+RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
+    Invoke-WebRequest -Uri 'https://aka.ms/vs/16/release/vs_buildtools.exe' -OutFile 'vs_buildtools.exe'; \
+    Start-Process -FilePath 'vs_buildtools.exe' -ArgumentList '--quiet', '--norestart', '--wait', '--add Microsoft.VisualStudio.Workload.MSBuildTools', '--includeRecommended', '--includeOptional' -Wait; \
+    Remove-Item -Force 'vs_buildtools.exe'"
 
 # Install qt
 
