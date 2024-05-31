@@ -13,26 +13,25 @@ ENV TEST_ENABLED=OFF \
 #     Start-Process -FilePath 'Git-64-bit.exe' -ArgumentList '/VERYSILENT', '/NORESTART' -Wait; \
 #     Remove-Item -Force 'Git-64-bit.exe'"
 
+
 # Install CMake
-RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
-    Invoke-WebRequest -Uri 'https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-windows-x86_64.zip' -OutFile 'cmake.zip'; \
+RUN Invoke-WebRequest -Uri 'https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-windows-x86_64.zip' -OutFile 'cmake.zip'; \
     Expand-Archive -Path 'cmake.zip' -DestinationPath $env:CMAKE_INSTALL_DIR; \
-    Remove-Item -Force 'cmake.zip'"
+    Remove-Item -Force 'cmake.zip'
 
 # Update PATH to include CMake
-RUN setx /M PATH "%CMAKE_INSTALL_DIR%\\cmake-3.29.3-windows-x86_64\\bin;%PATH%"
+RUN setx /M PATH "$($env:CMAKE_INSTALL_DIR\\cmake-3.29.3-windows-x86_64\\bin);$($env:PATH)"
 
 # Verify CMake installation
 RUN $env:CMAKE_INSTALL_DIR\\cmake-3.29.3-windows-x86_64\\bin\\cmake --version
 
 # Install gtest
-RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
-    Invoke-WebRequest -Uri 'https://github.com/google/googletest/archive/release-1.10.0.zip' -OutFile 'gtest.zip'; \
+RUN Invoke-WebRequest -Uri 'https://github.com/google/googletest/archive/release-1.10.0.zip' -OutFile 'gtest.zip'; \
     Expand-Archive -Path 'gtest.zip' -DestinationPath 'C:\\gtest'; \
     Remove-Item -Force 'gtest.zip'; \
     cd 'C:\\gtest\\googletest-release-1.10.0'; \
     mkdir build; \
     cd build; \
-    cmake -G 'Visual Studio 16 2019' -Dgtest_force_shared_crt=ON -DCMAKE_INSTALL_PREFIX='C:\\gtest\\gtest-Out' ..; \
-    cmake --build . --config Release; \
-    cmake --build . --config Release --target install"
+    $env:CMAKE_INSTALL_DIR\\cmake-3.29.3-windows-x86_64\\bin\\cmake -G 'Visual Studio 16 2019' -Dgtest_force_shared_crt=ON -DCMAKE_INSTALL_PREFIX='C:\\gtest\\gtest-Out' ..; \
+    $env:CMAKE_INSTALL_DIR\\cmake-3.29.3-windows-x86_64\\bin\\cmake --build . --config Release; \
+    $env:CMAKE_INSTALL_DIR\\cmake-3.29.3-windows-x86_64\\bin\\cmake --build . --config Release --target install
