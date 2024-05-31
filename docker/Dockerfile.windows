@@ -1,5 +1,5 @@
 # Use the .NET Framework SDK image which includes MSBuild and other tools
-FROM mcr.microsoft.com/dotnet/framework/sdk:4.8
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8 as runtime_test
 
 # Set environment variables
 ENV TEST_ENABLED=OFF \
