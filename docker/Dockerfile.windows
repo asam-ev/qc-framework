@@ -5,40 +5,42 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2019 as runtime_test
 # Set environment variables
 ENV TEST_ENABLED=OFF \
     WORKING_PATH="D:\\a" \
-    CMAKE_VERSION=3.29.3 \
-    CMAKE_INSTALL_DIR=C:\cmake
+    CMAKE_VERSION=3.29.3
 
-# Install Git
-RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
-    Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.33.1.windows.1/Git-2.33.1-64-bit.exe' -OutFile 'Git-64-bit.exe'; \
-    Start-Process -FilePath 'Git-64-bit.exe' -ArgumentList '/VERYSILENT', '/NORESTART' -Wait; \
-    Remove-Item -Force 'Git-64-bit.exe'"
+# # Install Git
+# RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
+#     Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.33.1.windows.1/Git-2.33.1-64-bit.exe' -OutFile 'Git-64-bit.exe'; \
+#     Start-Process -FilePath 'Git-64-bit.exe' -ArgumentList '/VERYSILENT', '/NORESTART' -Wait; \
+#     Remove-Item -Force 'Git-64-bit.exe'"
 
-# Install MSBuild
-RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
-    Invoke-WebRequest -Uri 'https://aka.ms/vs/16/release/vs_buildtools.exe' -OutFile 'vs_buildtools.exe'; \
-    Start-Process -FilePath 'vs_buildtools.exe' -ArgumentList '--quiet', '--norestart', '--wait', '--add Microsoft.VisualStudio.Workload.MSBuildTools', '--includeRecommended', '--includeOptional' -Wait; \
-    Remove-Item -Force 'vs_buildtools.exe'"
+# # Install MSBuild
+# RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
+#     Invoke-WebRequest -Uri 'https://aka.ms/vs/16/release/vs_buildtools.exe' -OutFile 'vs_buildtools.exe'; \
+#     Start-Process -FilePath 'vs_buildtools.exe' -ArgumentList '--quiet', '--norestart', '--wait', '--add Microsoft.VisualStudio.Workload.MSBuildTools', '--includeRecommended', '--includeOptional' -Wait; \
+#     Remove-Item -Force 'vs_buildtools.exe'"
 
 # Install qt
 
 # Install CMake
 RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
     Invoke-WebRequest -Uri 'https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-windows-x86_64.zip' -OutFile 'cmake.zip'; \
-    Expand-Archive -Path 'cmake.zip' -DestinationPath 'C:\'; \
+    Expand-Archive -Path 'cmake.zip' -DestinationPath 'C:\\cmake'; \
     Remove-Item -Force 'cmake.zip'"
 
 # Update PATH to include CMake
-RUN setx /M PATH "%PATH%;%CMAKE_INSTALL_DIR%\bin"
+RUN setx /M PATH "C:\\cmake\\cmake-3.29.3-windows-x86_64\\bin;%PATH%"
+
+# Verify CMake installation
+RUN C:\\cmake\\cmake-3.29.3-windows-x86_64\\bin\\cmake --version
 
 # Install gtest
 RUN powershell -Command "$ProgressPreference = 'SilentlyContinue'; \
     Invoke-WebRequest -Uri 'https://github.com/google/googletest/archive/release-1.10.0.zip' -OutFile 'gtest.zip'; \
-    Expand-Archive -Path 'gtest.zip' -DestinationPath 'C:\'; \
-    cd 'C:\googletest-release-1.10.0'; \
+    Expand-Archive -Path 'gtest.zip' -DestinationPath 'C:\\gtest'; \
+    Remove-Item -Force 'gtest.zip'; \
+    cd 'C:\\gtest\\googletest-release-1.10.0'; \
     mkdir build; \
     cd build; \
-    cmake -G 'Visual Studio 16 2019' -Dgtest_force_shared_crt=ON -DCMAKE_INSTALL_PREFIX='$env:WORKING_PATH\gtest-Out' ..; \
-    cmake --build . --config Release; \
-    cmake --build . --config Release --target install; \
-    Remove-Item -Force 'gtest.zip'"
+    C:\\cmake\\cmake-3.29.3-windows-x86_64\\bin\\cmake -G 'Visual Studio 16 2019' -Dgtest_force_shared_crt=ON -DCMAKE_INSTALL_PREFIX='C:\\gtest\\gtest-Out' ..; \
+    C:\\cmake\\cmake-3.29.3-windows-x86_64\\bin\\cmake --build . --config Release; \
+    C:\\cmake\\cmake-3.29.3-windows-x86_64\\bin\\cmake --build . --config Release --target install"
