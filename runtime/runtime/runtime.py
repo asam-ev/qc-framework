@@ -4,7 +4,6 @@
 # with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import subprocess
-import xml.etree.ElementTree as ET
 from lxml import etree
 import sys, os
 import argparse
@@ -138,9 +137,8 @@ def run_commands_from_xml(xml_file: str, install_folder: str) -> None:
         xml_file (str): input configuration xml file
         install_folder (str): folder where executables specified in the input xml files are installed
     """
-    tree = ET.parse(xml_file)
-    root = tree.getroot()
 
+    root = etree.parse(xml_file)
     os.chdir(install_folder)
 
     print("Executable found in install directory: ", list_files_in_cwd())
