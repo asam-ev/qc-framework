@@ -20,7 +20,8 @@ RUN Invoke-WebRequest -Uri 'https://github.com/Kitware/CMake/releases/download/v
     Remove-Item -Force 'cmake.zip'
 
 # Update PATH to include CMake
-RUN setx /M PATH "$($env:CMAKE_INSTALL_DIR\\cmake-3.29.3-windows-x86_64\\bin);$($env:PATH)"
+# RUN setx /M PATH "$($env:CMAKE_INSTALL_DIR\\cmake-3.29.3-windows-x86_64\\bin);$($env:PATH)"
+# RUN setx /M PATH "$env:CMAKE_INSTALL_DIR\cmake-3.29.3-windows-x86_64\bin;$env:PATH"
 
 # Verify CMake installation
 RUN $env:CMAKE_INSTALL_DIR\\cmake-3.29.3-windows-x86_64\\bin\\cmake --version
