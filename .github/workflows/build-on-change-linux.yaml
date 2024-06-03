@@ -39,14 +39,14 @@ jobs:
       - name: Unit test execution
         if: github.event_name == 'pull_request'
         run: |
-          docker run -v  ${{ github.workspace }}:/app/framework --name unit_test unit_test
+          docker run -v ${{ github.workspace }}:/out --name unit_test unit_test
 
       - name: Archive test results
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: ${{ github.workspace }}/build/Testing/Temporary/LastTest.log
+          path: ${{ github.workspace }}/LastTest.log
           
       - name: Runtime test execution
         if: github.event_name == 'pull_request'

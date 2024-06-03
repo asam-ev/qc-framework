@@ -92,4 +92,4 @@ CMD ["python3", "-m", "pytest"]
 # Runtime stage
 FROM framework_builder as unit_test
 
-CMD ctest --test-dir /app/framework/build -C Release
+CMD ctest --test-dir /app/framework/build -C Release && cp /app/framework/build/Testing/Temporary/LastTest.log /out/
