@@ -11,5 +11,5 @@ DOCKER_BUILDKIT=1 \
   --target runtime_test \
   -t runtime_test .
 
-docker run --rm --name runtime_test runtime_test 
+docker run  --rm --name runtime_test runtime_test 
 

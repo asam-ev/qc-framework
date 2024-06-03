@@ -139,7 +139,6 @@ def run_commands_from_xml(xml_file: str, install_folder: str) -> None:
     """
 
     root = etree.parse(xml_file)
-    os.chdir(install_folder)
 
     print("Executable found in install directory: ", list_files_in_cwd())
 
@@ -182,6 +181,8 @@ def execute_runtime(xml_file: str, install_folder: str, schema_folder: str):
         install_folder (str):  folder where executables specified in the input xml files are installed
         schema_folder (str):  folder where schema files are located to load the config_format.xsd file used in validation
     """
+    os.chdir(install_folder)
+
     schema_file = os.path.join(schema_folder, "config_format.xsd")
     if not is_valid_xml(xml_file, schema_file):
         print("Aborting due to invalid XML.")

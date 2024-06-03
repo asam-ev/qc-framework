@@ -56,9 +56,18 @@ def check_node_exists(xml_file: str, node_name: str) -> bool:
 
 
 def test_runtime_execution():
-    config_xml = "/app/tests/test_data/DemoCheckerBundle_config.xml"
+    config_xml = os.path.join(
+        "..", "..", "runtime", "tests", "test_data", "DemoCheckerBundle_config.xml"
+    )
+
+    install_dir = os.path.join("..", "build", "bin")
+    os.chdir(install_dir)
+
+    schema_dir = os.path.join("..", "..", "doc", "schema")
+
+    runtime_script = os.path.join("..", "..", "runtime", "runtime", "runtime.py")
     process = subprocess.Popen(
-        f"python3 /app/runtime/runtime.py --config={config_xml} --install_dir=/app/build/bin --schema_dir=/app/doc/schema/",
+        f"python3 {runtime_script} --config={config_xml} --install_dir=./ --schema_dir={schema_dir}",
         shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -66,10 +75,10 @@ def test_runtime_execution():
     )
     _, _ = process.communicate()
     # Check that result file is correctly generated
-    result_file = "/app/build/bin/Result.xqar"
+    result_file = os.path.join("Result.xqar")
     assert os.path.isfile(result_file)
     # Check that result file follows its xsd schema
-    xsd_file = "/app/doc/schema/xqar_report_format.xsd"
+    xsd_file = os.path.join(schema_dir, "xqar_report_format.xsd")
     assert is_valid_xml(result_file, xsd_file)
     # Check that at least one node called "Issue" is present in the result
     node_name = "Issue"
