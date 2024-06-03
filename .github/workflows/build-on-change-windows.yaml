@@ -124,7 +124,7 @@ jobs:
         run: |
           Write-Output "Starting runtime tests..."
   
-          cd "$env:WORKING_PATH\qc-framework\qc-framework"
+          cd "$env:WORKING_PATH\qc-framework\qc-framework\runtime\tests"
 
           python3 -m pip install lxml==5.0.0
           python3 -m pip install pytest==7.4.3
