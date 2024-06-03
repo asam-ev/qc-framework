@@ -92,12 +92,4 @@ CMD ["python3", "-m", "pytest"]
 # Runtime stage
 FROM framework_builder as unit_test
 
-RUN  mkdir -p /app 
-
-# For framework files
-COPY --from=framework_builder /app/framework/ /app/framework
-COPY --from=framework_builder /home/root/qc-build /home/root/qc-build
-
-WORKDIR /app/framework
-
-CMD ctest --test-dir build -C Release
+CMD ctest --test-dir /app/framework/build -C Release
