@@ -103,6 +103,8 @@ jobs:
 
           cmake --install build
 
+          Copy-Item -Path "$env:WORKING_PATH\QC-Framework-Out" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build" -Recurse
+
           # Final output
           Write-Output "All installations and setups are complete!"
         shell: pwsh
