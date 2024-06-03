@@ -90,22 +90,7 @@ CMD ["python3", "-m", "pytest"]
 
 
 # Runtime stage
-FROM python:3.11.9-slim-bookworm  as unit_test
-
-RUN mkdir dependencies && \
-    echo "Installing Qt..." && \
-    apt update && apt install -y \ 
-    wget \
-    qtbase5-dev \
-    libqt5xmlpatterns5-dev \
-    libxerces-c-dev \
-    pkg-config && \
-    echo "Updating CMAKE..." && \
-    wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh && \
-    apt remove cmake && \
-    apt purge --auto-remove cmake && \
-    bash cmake-3.29.3-linux-x86_64.sh --skip-license --exclude-subdir --prefix=/usr/local && \
-    echo "Dependencies installed." 
+FROM framework_builder as unit_test
 
 RUN  mkdir -p /app 
 
