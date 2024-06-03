@@ -49,5 +49,6 @@ jobs:
       #     path: ${{ github.workspace }}/build/Testing/Temporary/LastTest.log
       
       - name: Runtime test execution
+        if: github.event_name == 'pull_request'
         run: |
           docker run --rm --name runtime_test runtime_test

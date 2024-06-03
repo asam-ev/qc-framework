@@ -11,6 +11,7 @@ on:
       - include/**
       - scripts/cmake/**
       - test/**
+      - .github/workflows/**
 
   # execute on every push made targeting the branches bellow
   push:
@@ -21,6 +22,7 @@ on:
       - src/**
       - include/**
       - scripts/cmake/**
+      - .github/workflows/**
 
 jobs:
   build-windows:
@@ -105,16 +107,28 @@ jobs:
           Write-Output "All installations and setups are complete!"
         shell: pwsh
 
-      - name: Test
+      - name: Unit test execution
         if: github.event_name == 'pull_request'
         run: |
-          Write-Output "Starting tests..."
+          Write-Output "Starting unit tests..."
 
           cd "$env:WORKING_PATH\qc-framework\qc-framework"
 
           ctest --test-dir build -C Release
 
-          Write-Output "All tests done."
+          Write-Output "All unit tests done."
+        shell: pwsh
+      
+      - name: Runtime test execution
+        if: github.event_name == 'pull_request'
+        run: |
+          Write-Output "Starting runtime tests..."
+  
+          cd "$env:WORKING_PATH\qc-framework\qc-framework"
+
+          python3 -m pytest
+
+          Write-Output "All runtime tests done."
         shell: pwsh
 
       - name: Archive test results
