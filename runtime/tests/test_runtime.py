@@ -7,7 +7,6 @@ import pytest
 import runtime.runtime as runtime
 import os
 import subprocess
-import xml.etree.ElementTree as ET
 from lxml import etree
 from typing import List
 
