@@ -126,6 +126,8 @@ jobs:
   
           cd "$env:WORKING_PATH\qc-framework\qc-framework"
 
+          python3 -m pip install lxml==5.0.0
+          python3 -m pip install pytest==8.2.1
           python3 -m pytest
 
           Write-Output "All runtime tests done."
