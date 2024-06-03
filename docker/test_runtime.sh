@@ -7,7 +7,7 @@ cd ..
 
 DOCKER_BUILDKIT=1 \
   docker build \
-  -f docker/Dockerfile \
+  -f docker/Dockerfile.linux \
   --target runtime_test \
   -t runtime_test .
 

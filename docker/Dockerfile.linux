@@ -87,3 +87,32 @@ COPY --from=framework_builder /app/framework/build/examples/checker_bundle_examp
 ENV PYTHONUNBUFFERED=1
 
 CMD ["python3", "-m", "pytest"]
+
+
+# Runtime stage
+FROM python:3.11.9-slim-bookworm  as unit_test
+
+RUN mkdir dependencies && \
+    echo "Installing Qt..." && \
+    apt update && apt install -y \ 
+    wget \
+    qtbase5-dev \
+    libqt5xmlpatterns5-dev \
+    libxerces-c-dev \
+    pkg-config && \
+    echo "Updating CMAKE..." && \
+    wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh && \
+    apt remove cmake && \
+    apt purge --auto-remove cmake && \
+    bash cmake-3.29.3-linux-x86_64.sh --skip-license --exclude-subdir --prefix=/usr/local && \
+    echo "Dependencies installed." 
+
+RUN  mkdir -p /app 
+
+# For framework files
+COPY --from=framework_builder /app/framework/ /app/framework
+COPY --from=framework_builder /home/root/qc-build /home/root/qc-build
+
+WORKDIR /app/framework
+
+CMD ctest --test-dir build -C Release

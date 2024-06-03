@@ -25,83 +25,27 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-22.04
-    env:
-      TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Create dependencies build space
-        run: mkdir dependencies
-        shell: bash
-
-      - name: Install dependencies
-        working-directory: dependencies
+      - name: Docker Build
         run: |
-          echo Updating CMAKE...
-          wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh
-          sudo apt remove cmake
-          sudo apt purge --auto-remove cmake
-          sudo bash cmake-3.29.3-linux-x86_64.sh --skip-license --exclude-subdir --prefix=/usr/local
-
-          echo Installing Qt...
-          sudo apt update
-          sudo apt install \
-            qtbase5-dev \
-            libqt5xmlpatterns5-dev \
-            libxerces-c-dev \
-            pkg-config
-
-          echo Dependencies installed.
-        shell: bash
-
-      - name: Install gtest
-        working-directory: dependencies
-        if: github.event_name == 'pull_request'
-        env:
-          CXX: g++-10
-        run: |
-          echo Installing gtest...
-
-          git clone https://github.com/google/googletest.git -b release-1.10.0
-          cd googletest
-          mkdir build
-          cd build
-          cmake ..
-          make
-          sudo make install
-
-          echo Gtest installed.
-        shell: bash
-
-      - name: Build framework
-        # Currently this is building without the XSD file. If we want to expose
-        # the build artifact after, we might as well need to add the XSD file.
-        run: |
-          echo Building framework...
-          cmake -G "Unix Makefiles" -B./build -S . \
-            -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
-            -DENABLE_FUNCTIONAL_TESTS=$TEST_ENABLED  -DXERCES_ROOT="/usr" \
-            -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
-            -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/"
-          cmake --build ./build --target install --config Release -j4
-          cmake --install ./build
-          echo Done.
-        shell: bash
-
-      - name: Test
+          docker build -f docker/Dockerfile.linux --target unit_test -t unit_test .       
+          docker build -f docker/Dockerfile.linux --target runtime_test -t runtime_test .       
+        
+      - name: Unit test execution
         if: github.event_name == 'pull_request'
         run: |
-          echo Starting tests...
-
-          ctest --test-dir build -C Release
-
-          echo All tests done.
-        shell: bash
-
-      - name: Archive test results
-        if: github.event_name == 'pull_request' && (success() || failure())
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: ${{ github.workspace }}/build/Testing/Temporary/LastTest.log
+          docker run --rm --name unit_test unit_test
+          
+      # - name: Archive test results
+      #   if: github.event_name == 'pull_request' && (success() || failure())
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: test-report
+      #     path: ${{ github.workspace }}/build/Testing/Temporary/LastTest.log
+      
+      - name: Runtime test execution
+        run: |
+          docker run --rm --name runtime_test runtime_test
