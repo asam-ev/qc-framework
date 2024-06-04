@@ -114,7 +114,7 @@ jobs:
 
           cd "$env:WORKING_PATH\qc-framework\qc-framework"
 
-          ctest --test-dir out_build -C Release
+          ctest --test-dir build -C Release
 
           Write-Output "All unit tests done."
         shell: pwsh
