@@ -119,6 +119,13 @@ jobs:
           Write-Output "All unit tests done."
         shell: pwsh
       
+      - name: Archive test results
+        if: github.event_name == 'pull_request' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: ${{ github.workspace }}\build\Testing\Temporary\LastTest.log
+
       - name: Runtime test execution
         if: github.event_name == 'pull_request'
         run: |
@@ -137,9 +144,5 @@ jobs:
           Write-Output "All runtime tests done."
         shell: pwsh
 
-      - name: Archive test results
-        if: github.event_name == 'pull_request' && (success() || failure())
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: ${{ github.workspace }}\build\Testing\Temporary\LastTest.log
+
+
