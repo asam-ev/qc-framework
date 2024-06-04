@@ -56,6 +56,7 @@ RUN echo "Building framework..." && \
     cmake --install ./build && \
     echo "Done."
 
+COPY runtime /app/framework/runtime
 
 # Runtime stage
 FROM python:3.11.9-slim-bookworm  as runtime_test
@@ -69,21 +70,25 @@ RUN echo "Installing Qt..." && \
     echo "Dependencies installed."   
 
 RUN  mkdir -p /app
-WORKDIR /app
 
 COPY runtime/requirements.txt /app/
 RUN pip install -r /app/requirements.txt
 
-COPY runtime/runtime /app/runtime/
-COPY runtime/tests /app/tests/
 # For testing files
-COPY --from=framework_builder /app/framework/doc/ /app/doc
+COPY --from=framework_builder /app/framework /app/framework
 # Copy install directory in runtime image
-COPY --from=framework_builder /home/root/qc-build /app/build
+COPY --from=framework_builder /home/root/qc-build /app/framework/build
 
 # @NOTE this is just because DemoCheckerBundle is not installed by default
-COPY --from=framework_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/build/bin/
+COPY --from=framework_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/framework/build/bin/
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["python3", "-m", "pytest"]
+WORKDIR /app/framework/runtime/
+
+CMD python3 -m pytest -rA > runtime_test.log && cp /app/framework/runtime/runtime_test.log /out/runtime_test.log
+
+# Runtime stage
+FROM framework_builder as unit_test
+
+CMD ctest --test-dir /app/framework/build -C Release && cp /app/framework/build/Testing/Temporary/LastTest.log /out/
