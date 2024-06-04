@@ -74,8 +74,6 @@ RUN  mkdir -p /app
 COPY runtime/requirements.txt /app/
 RUN pip install -r /app/requirements.txt
 
-# COPY runtime/runtime /app/runtime/
-# COPY runtime/tests /app/tests/
 # For testing files
 COPY --from=framework_builder /app/framework /app/framework
 # Copy install directory in runtime image
@@ -88,7 +86,6 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app/framework/runtime/
 
-#CMD ["python3", "-m", "pytest"]
 CMD python3 -m pytest -rA > runtime_test.log && cp /app/framework/runtime/runtime_test.log /out/runtime_test.log
 
 # Runtime stage

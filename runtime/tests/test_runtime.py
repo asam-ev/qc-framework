@@ -55,10 +55,6 @@ def check_node_exists(xml_file: str, node_name: str) -> bool:
     return len(nodes) > 0
 
 
-def ls(directory=None):
-    print(os.listdir(directory))
-
-
 def test_runtime_execution():
 
     install_dir = os.path.join("..", "build", "bin")
