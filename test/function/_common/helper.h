@@ -9,14 +9,11 @@
 #define _HELPER_HEADER_
 
 #include <string.h>
-
 #include "qc4openx_filesystem.h"
 #include "gtest/gtest.h"
-
 #include <fstream>
 #include <iostream>
 #include <sstream>
-
 #include <string>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/XMLGrammarPoolImpl.hpp>
