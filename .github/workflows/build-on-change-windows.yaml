@@ -134,9 +134,7 @@ jobs:
           Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build\bin"
           
           cd "$env:WORKING_PATH\qc-framework\qc-framework\runtime"
-
-          python3 -m pip install lxml==5.0.0
-          python3 -m pip install pytest==8.2.1
+          python3 -m pip install -r requirements.txt
           python3 -m pytest
 
           Write-Output "All runtime tests done."
