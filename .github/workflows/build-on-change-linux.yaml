@@ -45,7 +45,7 @@ jobs:
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
-          name: test-report
+          name: unit-test-report
           path: ${{ github.workspace }}/LastTest.log
           
       - name: Runtime test execution
@@ -57,6 +57,6 @@ jobs:
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
-          name: test-report
+          name: runtime-test-report
           path: ${{ github.workspace }}/runtime_test.log
       
