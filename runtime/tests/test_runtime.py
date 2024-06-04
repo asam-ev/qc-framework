@@ -75,13 +75,22 @@ def test_runtime_execution():
     runtime_script = os.path.join("..", "..", "runtime", "runtime", "runtime.py")
 
     process = subprocess.Popen(
-        f"python3 {runtime_script} --config={config_xml} --install_dir=./ --schema_dir={schema_dir}",
+        f"python3 {runtime_script} --config={config_xml} --install_dir={os.getcwd()} --schema_dir={schema_dir}",
         shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         cwd=os.getcwd(),
     )
-    _, _ = process.communicate()
+    stdout, stderr = process.communicate()
+    exit_code = process.returncode
+    if exit_code == 0:
+        print("Command executed successfully.")
+        print("Output:")
+        print(stdout.decode())
+    else:
+        print("Error occurred while executing the command.")
+        print("Error message:")
+        print(stderr.decode())
     # Check that result file is correctly generated
     result_file = os.path.join("Result.xqar")
     assert os.path.isfile(result_file)
