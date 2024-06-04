@@ -56,8 +56,8 @@ The results that a Checker or CheckerBundle defines as output are stored in a
 report file. Reports contain information about the defects found, which are
 called issues. At least a description and an identifier is assigned to an
 issue. Additional meta information can be added to an issue: file location (
-cFileLocation ), XML file location ( cXMLLocation ) or road information (
-cRoadLocation ). This information is relevant for the ReportModule, for
+cFileLocation ), XML file location ( cXMLLocation ) or inertial location (
+cInertialLocation ). This information is relevant for the ReportModule, for
 example, to point out meaningful errors in a GUI. The report XML file has to
 follow the schema file doc/schema/xqar_report_format.xsd.
 

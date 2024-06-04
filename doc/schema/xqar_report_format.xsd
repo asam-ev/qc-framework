@@ -36,7 +36,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 	  <xs:choice minOccurs="1" maxOccurs="unbounded">
 	    <xs:element name="FileLocation" type="FileLocationType" />
 		<xs:element name="XMLLocation" type="XMLLocationType" />
-		<xs:element name="RoadLocation" type="RoadLocationType" />
+		<xs:element name="InertialLocation" type="InertialLocationType" />
 	  </xs:choice>
 	</xs:sequence>
 	<xs:attribute name="description" type="xs:string" />
@@ -52,10 +52,10 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 	<xs:attribute name="xpath" type="xs:string" />
   </xs:complexType>
   
-  <xs:complexType name="RoadLocationType">
-	<xs:attribute name="roadId" type="xs:string" />
-	<xs:attribute name="t" type="xs:string" />
-	<xs:attribute name="s" type="xs:string" />
+  <xs:complexType name="InertialLocationType">
+	<xs:attribute name="x" type="xs:string" />
+	<xs:attribute name="y" type="xs:string" />
+	<xs:attribute name="z" type="xs:string" />
   </xs:complexType>  
 
   <xs:element name="CheckerResults">

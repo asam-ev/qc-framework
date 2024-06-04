@@ -23,7 +23,6 @@
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_result_container.h"
-#include "common/result_format/c_road_location.h"
 #include "common/result_format/c_xml_location.h"
 
 #include "common/util.h"
@@ -330,8 +329,7 @@ void cCheckerWidget::FillIssueTreeItem(QTreeWidgetItem *treeItem, cIssue *const 
 
         for (const auto subIssue : issue->GetLocationsContainer())
         {
-            if (subIssue->HasExtendedInformation<cRoadLocation *>() ||
-                subIssue->HasExtendedInformation<cInertialLocation *>())
+            if (subIssue->HasExtendedInformation<cInertialLocation *>())
             {
                 isVisibleInViewer = true;
             }
@@ -640,8 +638,8 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
                         ShowXOSCIssue(itemToShow, row);
                 }
 
-                // Show RoadLocations and InertialLocations in Viewer
-                if (extInfo->IsType<cRoadLocation *>() || extInfo->IsType<cInertialLocation *>())
+                // Show InertialLocations in Viewer
+                if (extInfo->IsType<cInertialLocation *>())
                 {
                     ShowIssueIn3DViewer(itemToShow, locationToShow);
                 }
@@ -758,15 +756,6 @@ void cCheckerWidget::PrintExtendedInformationIntoStream(cExtendedInformation *it
         cXMLLocation *xmlLoc = (cXMLLocation *)item;
         *ssStream << std::endl << "   XPath: " << xmlLoc->GetXPath();
     }
-    else if (item->IsType<cRoadLocation *>())
-    {
-        cRoadLocation *roadLoc = (cRoadLocation *)item;
-
-        ssStream->setf(std::ios::fixed, std::ios::floatfield);
-        *ssStream << std::endl
-                  << "   Road: id=" << roadLoc->GetRoadID() << " s=" << std::setprecision(2) << roadLoc->GetS()
-                  << " t=" << std::setprecision(2) << roadLoc->GetT();
-    }
     else if (item->IsType<cInertialLocation *>())
     {
         cInertialLocation *initialLoc = (cInertialLocation *)item;
@@ -774,8 +763,6 @@ void cCheckerWidget::PrintExtendedInformationIntoStream(cExtendedInformation *it
         ssStream->setf(std::ios::fixed, std::ios::floatfield);
         *ssStream << std::endl
                   << "   Location: x=" << std::setprecision(2) << initialLoc->GetX() << " y=" << std::setprecision(2)
-                  << initialLoc->GetY() << " z=" << std::setprecision(2) << initialLoc->GetZ()
-                  << " heading=" << std::setprecision(2) << initialLoc->GetHead() << " pitch=" << std::setprecision(2)
-                  << initialLoc->GetPitch() << " roll=" << std::setprecision(2) << initialLoc->GetRoll();
+                  << initialLoc->GetY() << " z=" << std::setprecision(2) << initialLoc->GetZ();
     }
 }
