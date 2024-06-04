@@ -41,7 +41,7 @@ jobs:
         run: |
           docker run -v ${{ github.workspace }}:/out --name unit_test unit_test
 
-      - name: Archive test results
+      - name: Archive unit test results
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
@@ -51,4 +51,12 @@ jobs:
       - name: Runtime test execution
         if: github.event_name == 'pull_request'
         run: |
-          docker run --rm --name runtime_test runtime_test
+          docker run -v ${{ github.workspace }}:/out --rm --name runtime_test runtime_test
+      
+      - name: Archive runtime test results
+        if: github.event_name == 'pull_request' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: ${{ github.workspace }}/runtime_test.log
+      

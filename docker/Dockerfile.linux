@@ -88,8 +88,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app/framework/runtime/
 
-CMD ["python3", "-m", "pytest"]
-
+#CMD ["python3", "-m", "pytest"]
+CMD python3 -m pytest -rA > runtime_test.log && cp /app/framework/runtime/runtime_test.log /out/runtime_test.log
 
 # Runtime stage
 FROM framework_builder as unit_test
