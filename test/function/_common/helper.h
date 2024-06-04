@@ -9,13 +9,11 @@
 #define _HELPER_HEADER_
 
 #include <string.h>
-
 #include "qc4openx_filesystem.h"
 #include "gtest/gtest.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
-
 #include <string>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/XMLGrammarPoolImpl.hpp>
@@ -28,6 +26,12 @@
 #include <xercesc/util/XMLException.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/validators/schema/SchemaValidator.hpp>
+
+// Define ANSI color codes
+#define COLOR_GREEN "\033[32m"
+#define COLOR_YELLOW "\033[33m"
+#define COLOR_RESET "\033[0m"
+
 /**
  * This macro prints a formatted message during test execution.
  *
@@ -35,9 +39,7 @@
  */
 #define GTEST_PRINTF(_message)                                                                                         \
     {                                                                                                                  \
-        testing::internal::ColoredPrintf(testing::internal::COLOR_GREEN, "[          ] ");                             \
-        testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, "%s", _message);                             \
-        testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, "\n");                                       \
+        std::cout << COLOR_GREEN << "[          ] " << COLOR_YELLOW << _message << COLOR_YELLOW << "\n" << COLOR_RESET; \
     }
 
 /**
