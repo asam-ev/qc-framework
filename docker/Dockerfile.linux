@@ -7,8 +7,21 @@ FROM ubuntu:22.04 AS framework_builder
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt update && apt install -y g++ g++-10 git wget make build-essential && \
-    mkdir -p /app && mkdir -p /app/framework
+RUN echo "Installing Dependencies..." && \
+    apt update && apt install -y \ 
+    g++ \
+    g++-10 \
+    make \
+    build-essential \
+    cmake \
+    libgtest-dev \
+    qtbase5-dev \
+    libqt5xmlpatterns5-dev \
+    libxerces-c-dev \
+    pkg-config && \
+    echo "Dependencies installed." 
+
+RUN mkdir -p /app/framework
 
 COPY examples /app/framework/examples
 COPY include /app/framework/include
@@ -19,31 +32,7 @@ COPY doc /app/framework/doc
 COPY CMakeLists.txt /app/framework/CMakeLists.txt
 COPY version /app/framework/version
 COPY licenses /app/framework/licenses
-
-RUN mkdir dependencies && \
-    echo "Updating CMAKE..." && \
-    wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh && \
-    apt remove cmake && \
-    apt purge --auto-remove cmake && \
-    bash cmake-3.29.3-linux-x86_64.sh --skip-license --exclude-subdir --prefix=/usr/local && \
-    echo "Installing Qt..." && \
-    apt update && apt install -y \ 
-    qtbase5-dev \
-    libqt5xmlpatterns5-dev \
-    libxerces-c-dev \
-    pkg-config && \
-    echo "Dependencies installed." 
-
-RUN echo "Installing gtest..." && \
-    git clone https://github.com/google/googletest.git -b release-1.10.0 && \
-    cd googletest && \
-    mkdir build && \
-    cd build && \
-    CXX=g++-10 cmake .. && \
-    make && \
-    make install && \
-    echo "Gtest installed."
-
+COPY runtime /app/framework/runtime
 
 RUN echo "Building framework..." && \
     cd /app/framework && \
@@ -56,7 +45,6 @@ RUN echo "Building framework..." && \
     cmake --install ./build && \
     echo "Done."
 
-COPY runtime /app/framework/runtime
 
 # Runtime stage
 FROM python:3.11.9-slim-bookworm  as runtime_test
