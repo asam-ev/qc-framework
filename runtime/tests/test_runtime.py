@@ -60,9 +60,6 @@ def ls(directory=None):
 
 
 def test_runtime_execution():
-    ls()
-    ls("..")
-    ls(os.path.join("..", "build"))
 
     install_dir = os.path.join("..", "build", "bin")
     os.chdir(install_dir)

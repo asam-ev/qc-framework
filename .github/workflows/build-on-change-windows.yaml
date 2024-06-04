@@ -103,10 +103,6 @@ jobs:
 
           cmake --install build
 
-          Rename-Item -path "$env:WORKING_PATH\qc-framework\qc-framework\build" -NewName "$env:WORKING_PATH\qc-framework\qc-framework\out_build"
-          Copy-Item -Path "$env:WORKING_PATH\QC-Framework-Out" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build" -Recurse
-          Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build\bin"
-          
           # Final output
           Write-Output "All installations and setups are complete!"
         shell: pwsh
@@ -127,7 +123,11 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           Write-Output "Starting runtime tests..."
-  
+
+          Rename-Item -path "$env:WORKING_PATH\qc-framework\qc-framework\build" -NewName "$env:WORKING_PATH\qc-framework\qc-framework\out_build"
+          Copy-Item -Path "$env:WORKING_PATH\QC-Framework-Out" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build" -Recurse
+          Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build\bin"
+          
           cd "$env:WORKING_PATH\qc-framework\qc-framework\runtime"
 
           python3 -m pip install lxml==5.0.0
