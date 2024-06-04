@@ -11,6 +11,10 @@ on:
       - include/**
       - scripts/cmake/**
       - tests/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
 
   # execute on every push made targeting the branches bellow
   push:
@@ -21,6 +25,10 @@ on:
       - src/**
       - include/**
       - scripts/cmake/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
 
 jobs:
   build-linux:
