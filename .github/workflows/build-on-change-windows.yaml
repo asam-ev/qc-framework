@@ -105,7 +105,8 @@ jobs:
 
           Rename-Item -path "$env:WORKING_PATH\qc-framework\qc-framework\build" -NewName "$env:WORKING_PATH\qc-framework\qc-framework\out_build"
           Copy-Item -Path "$env:WORKING_PATH\QC-Framework-Out" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build" -Recurse
-
+          Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build\bin"
+          
           # Final output
           Write-Output "All installations and setups are complete!"
         shell: pwsh
