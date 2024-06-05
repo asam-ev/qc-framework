@@ -12,6 +12,8 @@
 #include "common/result_format/c_checker_bundle.h"
 #include "common/result_format/c_parameter_container.h"
 #include "common/result_format/c_result_container.h"
+#include "common/result_format/c_inertial_location.h"
+#include "common/result_format/c_locations_container.h"
 
 #include "common/config_format/c_configuration.h"
 #include "common/config_format/c_configuration_checker_bundle.h"
@@ -125,9 +127,14 @@ void RunChecks(const cParameterContainer &inputParams)
 
     // Create a checker with a factory in the checker bundle
     cChecker *pExampeChecker = pExampleCheckerBundle->CreateChecker("exampleChecker", "This is a description");
-
     // Lets add now an issue
     pExampeChecker->AddIssue(new cIssue("This is an information from the demo usecase", INFO_LVL));
+
+    // Create a test checker with an inertial location
+    cChecker *pExampleInertialChecker = pExampleCheckerBundle->CreateChecker("exampleInertialChecker", "This is a description of inertial checker");
+    std::list<cLocationsContainer*> listLoc;
+    listLoc.push_back(new cLocationsContainer("inertial position", new cInertialLocation(1.0,2.0,3.0)));
+    pExampleInertialChecker->AddIssue(new cIssue("This is an information from the demo usecase", INFO_LVL, listLoc));
 
     // Lets add a summary for the checker bundle
     unsigned int issueCount = pExampleCheckerBundle->GetIssueCount();
