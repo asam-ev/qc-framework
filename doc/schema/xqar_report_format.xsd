@@ -16,11 +16,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
   <xs:complexType name="CheckerType">
     <xs:sequence>
       <xs:element name="Issue" type="IssueType" minOccurs="0" maxOccurs="unbounded" />
-    </xs:sequence>
-    <xs:sequence>
       <xs:element name="Rule" type="RuleType" minOccurs="0" maxOccurs="unbounded" />
-    </xs:sequence>
-    <xs:sequence>
       <xs:element name="Metadata" type="MetadataType" minOccurs="0" maxOccurs="unbounded" />
     </xs:sequence>
     <xs:attribute name="checkerId" type="xs:string" />
