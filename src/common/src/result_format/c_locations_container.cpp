@@ -12,7 +12,6 @@
 #include "common/result_format/c_extended_information.h"
 #include "common/result_format/c_file_location.h"
 #include "common/result_format/c_inertial_location.h"
-#include "common/result_format/c_road_location.h"
 #include "common/result_format/c_xml_location.h"
 
 XERCES_CPP_NAMESPACE_USE
@@ -106,12 +105,6 @@ cLocationsContainer *cLocationsContainer::ParseFromXML(DOMNode *pXMLNode, DOMEle
             {
                 subIssue->AddExtendedInformation(
                     (cExtendedInformation *)cXMLLocation::ParseFromXML(currentIssueNode, currentIssueElement));
-            }
-            // Parse cRoadLocation
-            else if (Equals(currentTagName, XMLString::transcode(cRoadLocation::TAG_NAME)))
-            {
-                subIssue->AddExtendedInformation(
-                    (cExtendedInformation *)cRoadLocation::ParseFromXML(currentIssueNode, currentIssueElement));
             }
             // Parse cInertialLocation
             else if (Equals(currentTagName, XMLString::transcode(cInertialLocation::TAG_NAME)))

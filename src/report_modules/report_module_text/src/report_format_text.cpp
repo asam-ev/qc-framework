@@ -16,7 +16,6 @@
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_parameter_container.h"
 #include "common/result_format/c_result_container.h"
-#include "common/result_format/c_road_location.h"
 #include "common/result_format/c_xml_location.h"
 #include "stdafx.h"
 
@@ -302,20 +301,12 @@ void PrintExtendedInformationIntoStream(cIssue *issue, std::stringstream *ssStre
                 *ssStream << "\n                    "
                           << "   XPath: " << xmlLoc->GetXPath();
             }
-            else if ((*extIt)->IsType<cRoadLocation *>())
-            {
-                cRoadLocation *roadLoc = (cRoadLocation *)(*extIt);
-                *ssStream << "\n                    "
-                          << "   Road: id=" << roadLoc->GetRoadID() << " s=" << roadLoc->GetS()
-                          << " t=" << roadLoc->GetT();
-            }
             else if ((*extIt)->IsType<cInertialLocation *>())
             {
                 cInertialLocation *inertialLoc = (cInertialLocation *)(*extIt);
                 *ssStream << "\n                    "
                           << "   Location: x=" << inertialLoc->GetX() << " y=" << inertialLoc->GetY()
-                          << " z=" << inertialLoc->GetZ() << " heading=" << inertialLoc->GetHead()
-                          << " pitch=" << inertialLoc->GetPitch() << " roll=" << inertialLoc->GetRoll();
+                          << " z=" << inertialLoc->GetZ();
             }
         }
     }

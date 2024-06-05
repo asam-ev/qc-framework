@@ -51,7 +51,7 @@ If you start a viewer the following functions are called in this order:
 If an error occurs during the startup process, the ReportGUI will call
 GetLastErrorMessage to print out the error in the ReportGUI itself.
 
-ShowIssue is triggered if you click on a RoadLocation issue in the ReportGUI.
+ShowIssue is triggered if you click on a InertialLocation issue in the ReportGUI.
 It will send the clicked issue and its location to the viewer.
 
 If the ReportGUI is closed a currently active Viewer receives the closeViewer
