@@ -24,9 +24,6 @@ class cInertialLocation : public cExtendedInformation
     static const XMLCh *ATTR_X;
     static const XMLCh *ATTR_Y;
     static const XMLCh *ATTR_Z;
-    static const XMLCh *ATTR_H;
-    static const XMLCh *ATTR_P;
-    static const XMLCh *ATTR_R;
 
     /*
      * Creates a new instance of cInertialLocation
@@ -36,19 +33,7 @@ class cInertialLocation : public cExtendedInformation
      * \param description: Additional description
      */
     cInertialLocation(double x, double y, double z)
-        : cExtendedInformation("InertialLocation"), m_X(x), m_Y(y), m_Z(z), m_H(0.0), m_P(0.0), m_R(0.0)
-    {
-    }
-
-    /*
-     * Creates a new instance of cInertialLocation
-     * \param x: X of the position in inertial coordinate system
-     * \param y: Y of the position in inertial coordinate system
-     * \param z: Z of the position in inertial coordinate system
-     * \param description: Additional description
-     */
-    cInertialLocation(double x, double y, double z, double head, double pitch, double roll)
-        : cExtendedInformation("InertialLocation"), m_X(x), m_Y(y), m_Z(z), m_H(head), m_P(pitch), m_R(roll)
+        : cExtendedInformation("InertialLocation"), m_X(x), m_Y(y), m_Z(z)
     {
     }
 
@@ -68,18 +53,10 @@ class cInertialLocation : public cExtendedInformation
     // Returns the Z
     double GetZ() const;
 
-    // Returns the Head
-    double GetHead() const;
-
-    // Returns the Pitch
-    double GetPitch() const;
-
-    // Returns the Roll
-    double GetRoll() const;
+  
 
   protected:
     double m_X, m_Y, m_Z;
-    double m_H, m_P, m_R;
 
   private:
     cInertialLocation();
