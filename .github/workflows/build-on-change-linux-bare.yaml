@@ -130,4 +130,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: runtime-test-report
-          path: ${{ github.workspace }}/runtime_test.log
+          path: ${{ github.workspace }}/runtime/runtime_test.log
