@@ -1,6 +1,6 @@
 /**
  * Copyright 2024, ASAM e.V.
- * 
+ *
  * This Source Code Form is subject to the terms of the Mozilla
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -14,11 +14,11 @@ const XMLCh *cRule::ATTR_RULE_UID = CONST_XMLCH("ruleUID");
 
 DOMElement *cRule::WriteXML(DOMDocument *p_resultDocument)
 {
-    
+
     DOMElement *p_DataElement = p_resultDocument->createElement(TAG_NAME);
     XMLCh *pRuleUID = XMLString::transcode(m_RuleUID.c_str());
     p_DataElement->setAttribute(ATTR_RULE_UID, pRuleUID);
-   
+
     XMLString::release(&pRuleUID);
 
     return p_DataElement;

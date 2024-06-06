@@ -1,6 +1,6 @@
 /**
  * Copyright 2024, ASAM e.V.
- * 
+ *
  * This Source Code Form is subject to the terms of the Mozilla
  * Public License, v. 2.0. If a copy of the MPL was not distributed
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -16,7 +16,7 @@ const XMLCh *cMetadata::ATTR_DESCRIPTION = CONST_XMLCH("description");
 
 DOMElement *cMetadata::WriteXML(DOMDocument *p_resultDocument)
 {
-    
+
     DOMElement *p_DataElement = p_resultDocument->createElement(TAG_NAME);
     XMLCh *pKey = XMLString::transcode(m_Key.c_str());
     XMLCh *pValue = XMLString::transcode(m_Value.c_str());
@@ -24,7 +24,7 @@ DOMElement *cMetadata::WriteXML(DOMDocument *p_resultDocument)
     p_DataElement->setAttribute(ATTR_KEY, pKey);
     p_DataElement->setAttribute(ATTR_VALUE, pValue);
     p_DataElement->setAttribute(ATTR_DESCRIPTION, pDescription);
-   
+
     XMLString::release(&pKey);
     XMLString::release(&pValue);
     XMLString::release(&pDescription);
