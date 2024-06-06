@@ -13,6 +13,7 @@
 #include "../xml/util_xerces.h"
 #include "c_issue.h"
 #include "c_rule.h"
+#include "c_metadata.h"
 #include "c_parameter_container.h"
 
 #include <list>
@@ -22,6 +23,7 @@
 class cCheckerBundle;
 class cIssue;
 class cRule;
+class cMetadata;
 
 /*
  * Definition of a basic checker
@@ -31,6 +33,7 @@ class cChecker
     friend class cCheckerBundle;
     friend class cIssue;
     friend class cRule;
+    friend class cMetadata;
 
   public:
     static const XMLCh *TAG_CHECKER;
@@ -65,6 +68,12 @@ class cChecker
      */
     cRule *AddRule(cRule *const ruleToAdd);
 
+    /*
+     * Adds an metadata info to the checker results
+     * \param instance if the result
+     */
+    cMetadata *AddMetadata(cMetadata *const metadataToAdd);
+
     // Clears all issues from the container
     void Clear();
 
@@ -83,6 +92,9 @@ class cChecker
       // Counts the Rules
     unsigned int GetRuleCount();
 
+      // Counts the Rules
+    unsigned int GetMetadataCount();
+
     // Updates the summary
     void UpdateSummary();
 
@@ -91,6 +103,9 @@ class cChecker
 
     // Returns the rules
     std::list<cRule *> GetRules();
+
+    // Returns the rules
+    std::list<cMetadata *> GetMetadata();
 
     // Processes every issue and does a defined processing
     void DoProcessing(void (*funcIzteratorPtr)(cIssue *));
@@ -189,6 +204,7 @@ class cChecker
 
     std::list<cIssue *> m_Issues;
     std::list<cRule *> m_Rules;
+    std::list<cMetadata *> m_Metadata;
     cParameterContainer m_Params;
 };
 

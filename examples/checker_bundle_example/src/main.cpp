@@ -140,6 +140,8 @@ void RunChecks(const cParameterContainer &inputParams)
     // Create a test checker with RuleUID and metadata
     cChecker *pExampleRuleUIDChecker = pExampleCheckerBundle->CreateChecker("exampleRuleUIDChecker", "This is a description of ruleUID checker");
     pExampleRuleUIDChecker->AddRule(new cRule("test.com::qwerty.qwerty"));
+    pExampleRuleUIDChecker->AddMetadata(new cMetadata("run date", "2024/06/06", "Date in which the checker was executed"));
+    pExampleRuleUIDChecker->AddMetadata(new cMetadata("reference project", "project01", "Name of the project that created the checker"));
 
     // Lets add a summary for the checker bundle
     unsigned int issueCount = pExampleCheckerBundle->GetIssueCount();
