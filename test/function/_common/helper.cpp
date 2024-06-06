@@ -158,9 +158,9 @@ TestResult ValidateXmlSchema(const std::string &xmlFile, const std::string &xsdF
     return TestResult::ERR_NOERROR;
 }
 
-std::vector<xercesc::DOMNode *> getNodes(const std::string &xmlFile, const std::string &nodeName)
+std::vector<xercesc::DOMElement *> getNodes(const std::string &xmlFile, const std::string &nodeName)
 {
-    std::vector<xercesc::DOMNode *> nodeList;
+    std::vector<xercesc::DOMElement *> nodeList;
 
     try
     {
@@ -214,21 +214,23 @@ std::vector<xercesc::DOMNode *> getNodes(const std::string &xmlFile, const std::
 
     // Find the nodes
     xercesc::DOMNodeList *nodes = doc->getElementsByTagName(xmlNodeName);
-    xercesc::XMLString::release(&xmlNodeName);
 
     // Store nodes in the vector
     for (XMLSize_t i = 0; i < nodes->getLength(); ++i)
     {
-        nodeList.push_back(nodes->item(i));
+        xercesc::DOMElement *element = static_cast<xercesc::DOMElement *>(nodes->item(i));
+        nodeList.push_back(element);
     }
 
+    xercesc::XMLString::release(&xmlNodeName);
     xercesc::XMLPlatformUtils::Terminate();
+
     return nodeList;
 }
 
 TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeName)
 {
-    std::vector<xercesc::DOMNode *> nodes = getNodes(xmlFile, nodeName);
+    std::vector<xercesc::DOMElement *> nodes = getNodes(xmlFile, nodeName);
     if (!nodes.empty())
     {
         return TestResult::ERR_NOERROR;
@@ -241,7 +243,7 @@ TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeNa
 
 TestResult NodeHasAttribute(const std::string &xmlFile, const std::string &nodeName, const std::string &attributeName)
 {
-    std::vector<xercesc::DOMNode *> nodes = getNodes(xmlFile, nodeName);
+    std::vector<xercesc::DOMElement *> nodes = getNodes(xmlFile, nodeName);
     if (nodes.empty())
     {
         return TestResult::ERR_UNKNOWN_FORMAT;
@@ -249,10 +251,9 @@ TestResult NodeHasAttribute(const std::string &xmlFile, const std::string &nodeN
 
     XMLCh *xmlAttributeName = xercesc::XMLString::transcode(attributeName.c_str());
 
-    for (xercesc::DOMNode *node : nodes)
+    for (xercesc::DOMElement *element : nodes)
     {
-        xercesc::DOMElement *element = dynamic_cast<xercesc::DOMElement *>(node);
-        if (element && element->hasAttribute(xmlAttributeName))
+        if (element->hasAttribute(xmlAttributeName))
         {
             xercesc::XMLString::release(&xmlAttributeName);
             return TestResult::ERR_NOERROR;
