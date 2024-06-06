@@ -1,4 +1,4 @@
-name: Build framework on Linux
+name: Build framework on Linux Docker
 
 on:
   # execute on every PR made targeting the branches bellow
@@ -10,7 +10,7 @@ on:
       - src/**
       - include/**
       - scripts/cmake/**
-      - tests/**
+      - test/**
       - .github/workflows/**
       - doc/**
       - runtime/**
@@ -25,6 +25,7 @@ on:
       - src/**
       - include/**
       - scripts/cmake/**
+      - test/**
       - .github/workflows/**
       - doc/**
       - runtime/**
@@ -39,9 +40,9 @@ jobs:
 
       - name: Docker Build
         run: |
-          docker build -f docker/Dockerfile.linux --target unit_test -t unit_test .       
-          docker build -f docker/Dockerfile.linux --target runtime_test -t runtime_test .       
-        
+          docker build -f docker/Dockerfile.linux --target unit_test -t unit_test .
+          docker build -f docker/Dockerfile.linux --target runtime_test -t runtime_test .
+
       - name: Unit test execution
         if: github.event_name == 'pull_request'
         run: |
@@ -53,16 +54,15 @@ jobs:
         with:
           name: unit-test-report
           path: ${{ github.workspace }}/LastTest.log
-          
+
       - name: Runtime test execution
         if: github.event_name == 'pull_request'
         run: |
           docker run -v ${{ github.workspace }}:/out --rm --name runtime_test runtime_test
-      
+
       - name: Archive runtime test results
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
           name: runtime-test-report
           path: ${{ github.workspace }}/runtime_test.log
-      
