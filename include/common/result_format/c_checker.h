@@ -12,6 +12,8 @@
 #include "../util.h"
 #include "../xml/util_xerces.h"
 #include "c_issue.h"
+#include "c_rule.h"
+#include "c_metadata.h"
 #include "c_parameter_container.h"
 
 #include <list>
@@ -20,6 +22,8 @@
 // Forward declaration to avoid problems with circular dependencies (especially under Linux)
 class cCheckerBundle;
 class cIssue;
+class cRule;
+class cMetadata;
 
 /*
  * Definition of a basic checker
@@ -28,6 +32,8 @@ class cChecker
 {
     friend class cCheckerBundle;
     friend class cIssue;
+    friend class cRule;
+    friend class cMetadata;
 
   public:
     static const XMLCh *TAG_CHECKER;
@@ -56,6 +62,18 @@ class cChecker
      */
     cIssue *AddIssue(cIssue *const issueToAdd);
 
+    /*
+     * Adds an rule to the checker results
+     * \param instance if the result
+     */
+    cRule *AddRule(cRule *const ruleToAdd);
+
+    /*
+     * Adds an metadata info to the checker results
+     * \param instance if the result
+     */
+    cMetadata *AddMetadata(cMetadata *const metadataToAdd);
+
     // Clears all issues from the container
     void Clear();
 
@@ -71,11 +89,23 @@ class cChecker
     // Counts the Issues
     unsigned int GetIssueCount();
 
+      // Counts the Rules
+    unsigned int GetRuleCount();
+
+      // Counts the Rules
+    unsigned int GetMetadataCount();
+
     // Updates the summary
     void UpdateSummary();
 
     // Returns the issues
     std::list<cIssue *> GetIssues();
+
+    // Returns the rules
+    std::list<cRule *> GetRules();
+
+    // Returns the rules
+    std::list<cMetadata *> GetMetadata();
 
     // Processes every issue and does a defined processing
     void DoProcessing(void (*funcIzteratorPtr)(cIssue *));
@@ -173,6 +203,8 @@ class cChecker
     cCheckerBundle *m_Bundle;
 
     std::list<cIssue *> m_Issues;
+    std::list<cRule *> m_Rules;
+    std::list<cMetadata *> m_Metadata;
     cParameterContainer m_Params;
 };
 

@@ -14,12 +14,24 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
   </xs:complexType>
   
   <xs:complexType name="CheckerType">
-	<xs:sequence>
-	  <xs:element name="Issue" type="IssueType" minOccurs="0" maxOccurs="unbounded" />
-	</xs:sequence>
-	<xs:attribute name="checkerId" type="xs:string" />
-	<xs:attribute name="description" type="xs:string" />
-	<xs:attribute name="summary" type="xs:string" />
+    <xs:sequence>
+      <xs:element name="Issue" type="IssueType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="AddressedRule" type="RuleType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="Metadata" type="MetadataType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="checkerId" type="xs:string" />
+    <xs:attribute name="description" type="xs:string" />
+    <xs:attribute name="summary" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="MetadataType">
+    <xs:attribute name="key" type="xs:string" />
+    <xs:attribute name="value" type="xs:string" />
+    <xs:attribute name="description" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="RuleType">
+    <xs:attribute name="ruleUID" type="xs:string" />
   </xs:complexType>
   
   <xs:complexType name="IssueType">
