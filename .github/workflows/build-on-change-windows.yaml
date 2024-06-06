@@ -1,0 +1,152 @@
+name: Build framework on Windows
+
+on:
+  # execute on every PR made targeting the branches bellow
+  pull_request:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - test/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
+
+  # execute on every push made targeting the branches bellow
+  push:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
+
+jobs:
+  build-windows:
+    runs-on: windows-2019
+    env:
+      TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
+      WORKING_PATH: "D:\\a"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4.0.0
+        with:
+          version: 5.15.2
+          host: windows
+          target: desktop
+          arch: win64_msvc2019_64
+
+      - name: Install gtest
+        if: github.event_name == 'pull_request'
+        env:
+          CXX: g++-10
+        run: |
+          Write-Output "Installing gtest..."
+
+          git clone https://github.com/google/googletest.git -b release-1.10.0
+          cd googletest
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 16 2019" `
+            -Dgtest_force_shared_crt=ON `
+            -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\gtest-Out" ..
+          cmake --build . --config Release
+          cmake --build . --config Release --target install
+
+          Write-Output "Gtest installed."
+        shell: pwsh
+
+      - name: Install XercesC
+        run: |
+          Write-Output "Setting up Xerces-C++..."
+          $xercesZip = "$env:WORKING_PATH\xerces-c-3.2.5.zip"
+          Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
+          Expand-Archive -Path $xercesZip -DestinationPath "$env:WORKING_PATH"
+          cd "$env:WORKING_PATH\xerces-c-3.2.5"
+          mkdir build
+          cd build
+          cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\Xerces-Out" ..
+          cmake --build . --config Debug
+          cmake --build . --config Debug --target install
+
+          Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\bin\xerces-c_3_2D.dll"
+          Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\Xerces-Out\include"
+          Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\Xerces-Out\bin"
+
+        shell: pwsh
+
+      - name: Build framework
+        run: |
+          Write-Output "Setting up QC-Framework..."
+
+          cd "$env:WORKING_PATH\qc-framework\qc-framework"
+          mkdir build
+
+          cmake -H"$env:WORKING_PATH\qc-framework\qc-framework" -S. -Bbuild `
+            -G "Visual Studio 16 2019" -A x64 -T v142 `
+            -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\QC-Framework-Out" `
+            -DENABLE_FUNCTIONAL_TESTS="$env:TEST_ENABLED" `
+            -DGTest_ROOT="$env:WORKING_PATH\gtest-Out" `
+            -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
+            -DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out"
+
+          cmake --build build --target ALL_BUILD --config Release
+
+          cmake --install build
+
+          # Final output
+          Write-Output "All installations and setups are complete!"
+        shell: pwsh
+
+      - name: Unit test execution
+        if: github.event_name == 'pull_request'
+        run: |
+          Write-Output "Starting unit tests..."
+
+          cd "$env:WORKING_PATH\qc-framework\qc-framework"
+
+          ctest --test-dir build -C Release
+
+          Write-Output "All unit tests done."
+        shell: pwsh
+      
+      - name: Archive test results
+        if: github.event_name == 'pull_request' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: ${{ github.workspace }}\build\Testing\Temporary\LastTest.log
+
+      - name: Runtime test execution
+        if: github.event_name == 'pull_request'
+        run: |
+          Write-Output "Starting runtime tests..."
+
+          Rename-Item -path "$env:WORKING_PATH\qc-framework\qc-framework\build" -NewName "$env:WORKING_PATH\qc-framework\qc-framework\out_build"
+          Copy-Item -Path "$env:WORKING_PATH\QC-Framework-Out" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build" -Recurse
+          Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build\bin"
+          
+          cd "$env:WORKING_PATH\qc-framework\qc-framework\runtime"
+          python3 -m pip install -r requirements.txt
+          python3 -m pytest
+
+          Write-Output "All runtime tests done."
+        shell: pwsh
+
+
+

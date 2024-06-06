@@ -20,18 +20,15 @@
 #include "common/result_format/c_result_container.h"
 
 #include "../c_configuration_validator.h"
-#include "c_process_log.h"
 #include "c_process_view.h"
-#include "c_runtime_control.h"
 
 const QString cRuntimeWindow::DEFAULT_XODR_CONFIG = "DefaultXodrConfiguration.xml";
 const QString cRuntimeWindow::DEFAULT_XOSC_CONFIG = "DefaultXoscConfiguration.xml";
 
 cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, const std::string &xodrFile,
-                               const std::string &xoscFile, const bool bAutostart, QWidget *parent)
+                               const std::string &xoscFile, QWidget *parent)
     : QMainWindow(parent)
 {
-    _autostart = bAutostart;
 
     QAction *newAction = new QAction(tr("&New"), this);
     newAction->setShortcuts(QKeySequence::New);
@@ -52,23 +49,11 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
     saveAsAction->setStatusTip(tr("Save configuration"));
     connect(saveAsAction, &QAction::triggered, this, &cRuntimeWindow::SaveAsConfigurationFile);
 
-    QAction *clearConsoleAction = new QAction(tr("Clear"), this);
-    clearConsoleAction->setStatusTip(tr("Clear console"));
-    connect(clearConsoleAction, &QAction::triggered, this, &cRuntimeWindow::ClearConsole);
-
-    QAction *saveConsoleAction = new QAction(tr("Save"), this);
-    saveConsoleAction->setStatusTip(tr("Save console output"));
-    connect(saveConsoleAction, &QAction::triggered, this, &cRuntimeWindow::SaveConsole);
-
     auto fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAction);
     fileMenu->addAction(openAction);
     fileMenu->addAction(saveAction);
     fileMenu->addAction(saveAsAction);
-
-    auto consoleMenu = menuBar()->addMenu(tr("&Console"));
-    consoleMenu->addAction(clearConsoleAction);
-    consoleMenu->addAction(saveConsoleAction);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
 
@@ -99,24 +84,15 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
     _processView->setRootIsDecorated(true);
     _processView->setHeaderHidden(true);
 
-    auto runtimeControl = new cRuntimeControl(this);
-
     processLayout->addWidget(processLabel);
     processLayout->addWidget(_processView, 2);
     processLayout->addWidget(processButtonBar, 0);
-    processLayout->addWidget(runtimeControl, 0);
     processLayout->setContentsMargins(3, 6, 3, 3);
     processWidget->setLayout(processLayout);
     splitter->addWidget(processWidget);
 
     QWidget *outputWidget = new QWidget(this);
     QVBoxLayout *outputLayout = new QVBoxLayout;
-    QLabel *outputLabel = new QLabel(outputWidget);
-    outputLabel->setText("Console Output");
-    outputLabel->setStyleSheet("font-weight: bold;");
-    _processLog = new cProcessLog(this);
-    outputLayout->addWidget(outputLabel);
-    outputLayout->addWidget(_processLog);
     outputLayout->setContentsMargins(3, 6, 3, 3);
     outputWidget->setLayout(outputLayout);
     splitter->addWidget(outputWidget);
@@ -131,16 +107,6 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
     connect(_processView, SIGNAL(ChangeConfiguration()), this, SLOT(OnChangeConfiguration()));
     connect(_processView, SIGNAL(ExecuteProcessAndAddConfiguration(QString)), this,
             SLOT(ExecuteProcessAndAddConfiguration(QString)));
-
-    connect(runtimeControl, &cRuntimeControl::Run, this, &cRuntimeWindow::Run);
-    connect(runtimeControl, &cRuntimeControl::Abort, this, &cRuntimeWindow::Abort);
-
-    connect(&_runningThread, SIGNAL(Log(QString)), _processLog, SLOT(Log(QString)));
-    connect(this, SIGNAL(Log(QString)), _processLog, SLOT(Log(QString)));
-
-    connect(&_runningThread, SIGNAL(Finished()), runtimeControl, SLOT(FinishedExecution()));
-    connect(&_runningThread, SIGNAL(Finished()), runtimeControl, SLOT(FinishedExecution()));
-    connect(this, SIGNAL(Finished()), runtimeControl, SLOT(FinishedExecution()));
 
     // Set the size of the application of the half size of desktop
     QSize quarterDesktopSize = QDesktopWidget().availableGeometry(this).size() * 0.5f;
@@ -191,6 +157,27 @@ const QString cRuntimeWindow::GetWorkingDir()
     return QString::fromStdString(fs::current_path().string());
 }
 
+
+bool cRuntimeWindow::ValidateAndWrite(cConfiguration& configuration, const std::string& filePath){
+    std::string message = "";
+    if (!cConfigurationValidator::ValidateConfiguration(&configuration,
+                                                        message)) {
+        std::stringstream ssDetails;
+
+        ssDetails << "Configuration is invalid." << std::endl << std::endl;
+        ssDetails << "Message: " << std::endl;
+        ssDetails << message;
+        ssDetails << std::endl << std::endl;
+        ssDetails << "Please fix it before saving configuration file";
+
+        QMessageBox::warning(this, tr("Error"), tr(ssDetails.str().c_str()),
+                            QMessageBox::Ok);
+        return false;
+    }
+    configuration.WriteConfigurationToFile(filePath);
+    return true;
+}
+
 void cRuntimeWindow::OpenConfigurationFile()
 {
     QString filePath =
@@ -200,7 +187,7 @@ void cRuntimeWindow::OpenConfigurationFile()
     ShowConfiguration(&_currentConfiguration);
 }
 
-bool cRuntimeWindow::SaveConfigurationFile(const bool bAutostart)
+bool cRuntimeWindow::SaveConfigurationFile()
 {
     if (!_currentConfigurationPath.isEmpty())
     {
@@ -218,18 +205,18 @@ bool cRuntimeWindow::SaveConfigurationFile(const bool bAutostart)
             else
             {
                 QMessageBox::StandardButton reply = QMessageBox::NoButton;
-                if (!bAutostart)
-                {
-                    reply = QMessageBox::question(this, "Overwrite Configuration",
-                                                  "Do you want to overwrite:\n" + fileInfo.fileName(),
-                                                  QMessageBox::Yes | QMessageBox::No);
-                }
+                reply = QMessageBox::question(this, "Overwrite Configuration",
+                                              "Do you want to overwrite:\n" + fileInfo.fileName(),
+                                              QMessageBox::Yes | QMessageBox::No);
 
-                if (bAutostart || reply == QMessageBox::Yes)
+                if (reply == QMessageBox::Yes)
                 {
                     UpdateConfiguration();
-                    _currentConfiguration.WriteConfigurationToFile(_currentConfigurationPath.toLocal8Bit().data());
-
+                    bool validation_result = false;
+                    validation_result = ValidateAndWrite(_currentConfiguration, _currentConfigurationPath.toLocal8Bit().data());
+                    if (!validation_result){
+                        return false;
+                    }
                     _configurationChanged = false;
                     SetupWindowTitle();
                     return true;
@@ -247,6 +234,7 @@ bool cRuntimeWindow::SaveConfigurationFile(const bool bAutostart)
     // Open Dialog
     return SaveAsConfigurationFile();
 }
+
 
 bool cRuntimeWindow::SaveAsConfigurationFile()
 {
@@ -273,7 +261,11 @@ bool cRuntimeWindow::SaveAsConfigurationFile()
         UpdateConfiguration();
 
         _currentConfigurationPath = filePath;
-        _currentConfiguration.WriteConfigurationToFile(filePath.toLocal8Bit().data());
+        bool validation_result = false;
+        validation_result = ValidateAndWrite(_currentConfiguration, filePath.toLocal8Bit().data());
+        if (!validation_result){ 
+            return false;
+        }
 
         _configurationChanged = false;
         SetupWindowTitle();
@@ -343,7 +335,6 @@ void cRuntimeWindow::CreateNewConfiguration(cConfiguration *const configuration)
 
 void cRuntimeWindow::ShowConfiguration(cConfiguration *const configurationToBeShown)
 {
-    _processLog->clear();
 
     _processView->LoadConfiguration(configurationToBeShown);
 
@@ -356,26 +347,6 @@ void cRuntimeWindow::NewConfiguration()
     ShowConfiguration(&_currentConfiguration);
 }
 
-void cRuntimeWindow::closeEvent(QCloseEvent * /*event*/)
-{
-    _runningThread.Abort();
-    _runningThread.wait();
-}
-
-void cRuntimeWindow::ClearConsole()
-{
-    _processLog->Clear();
-}
-
-void cRuntimeWindow::SaveConsole()
-{
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Console Dump"), GetWorkingDir(), tr("Log (*.log)"));
-
-    if (!filePath.isEmpty())
-    {
-        _processLog->SaveToFile(filePath);
-    }
-}
 
 void cRuntimeWindow::OnChangeConfiguration()
 {
@@ -384,63 +355,6 @@ void cRuntimeWindow::OnChangeConfiguration()
     SetupWindowTitle();
 }
 
-void cRuntimeWindow::Run()
-{
-    UpdateConfiguration();
-
-    std::string message = "";
-    if (!cConfigurationValidator::ValidateConfiguration(&_currentConfiguration, message))
-    {
-        std::stringstream ssDetails;
-
-        ssDetails << "Configuration is invalid." << std::endl << std::endl;
-        ssDetails << "Message: " << std::endl;
-        ssDetails << message;
-        ssDetails << std::endl << std::endl;
-        ssDetails << "Please fix. Skip execution.";
-
-        if (!_autostart)
-        {
-            QMessageBox::warning(this, tr("Error"), tr(ssDetails.str().c_str()), QMessageBox::Ok);
-        }
-        else
-            std::cerr << ssDetails.str();
-
-        emit Finished();
-        return;
-    }
-
-    // Save configuration if not saved
-    bool saved = SaveConfigurationFile(_autostart);
-
-    if (!saved)
-    {
-        QMessageBox::warning(this, tr("Error"), tr("Skip execution. Please save the configuration first."),
-                             QMessageBox::Ok);
-
-        emit Finished();
-        return;
-    }
-
-    _processLog->Clear();
-
-    if (_runningThread.IsRunning())
-        _runningThread.Abort();
-
-    _runningThread.Initialize(_processLog, &_currentConfiguration, _currentConfigurationPath);
-
-    _runningThread.start();
-}
-
-void cRuntimeWindow::Abort()
-{
-    _runningThread.Abort();
-}
-
-bool cRuntimeWindow::IsRunning() const
-{
-    return _runningThread.IsRunning();
-}
 
 int cRuntimeWindow::ExecuteProcessAndAddConfiguration(const QString &processPath)
 {

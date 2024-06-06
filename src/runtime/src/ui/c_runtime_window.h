@@ -10,8 +10,8 @@
 
 #include <QtWidgets/QMainWindow>
 
-#include "c_runtime_thread.h"
 #include "common/config_format/c_configuration.h"
+#include "common/qc4openx_filesystem.h"
 
 class cProcessView;
 class cProcessLog;
@@ -24,18 +24,15 @@ class cRuntimeWindow : public QMainWindow
 
   protected:
     cProcessView *_processView{nullptr};
-    cProcessLog *_processLog{nullptr};
 
     cConfiguration _currentConfiguration;
     QString _currentConfigurationPath;
 
-    cRuntimeThread _runningThread;
     bool _configurationChanged{false};
-    bool _autostart{true};
 
   public:
     cRuntimeWindow(const std::string &configurationFilePath, const std::string &xodrFile, const std::string &xoscFile,
-                   const bool bAutostart, QWidget *parent = 0);
+                   QWidget *parent = 0);
 
     /*
      * Loads a configuration from file to datastructure
@@ -52,15 +49,6 @@ class cRuntimeWindow : public QMainWindow
     // Updates the internal configuration
     void UpdateConfiguration();
 
-    // Returns true if the execution thread is running
-    bool IsRunning() const;
-
-  public slots:
-    // Runs the process
-    void Run();
-
-    // Aborts the running process
-    void Abort();
 
   private slots:
     // Open result file
@@ -69,14 +57,10 @@ class cRuntimeWindow : public QMainWindow
     // SaveAs configuration file
     bool SaveAsConfigurationFile();
 
+    bool ValidateAndWrite(cConfiguration& , const std::string&);
+
     // Save configuration file
-    bool SaveConfigurationFile(const bool);
-
-    // Saves the console output
-    void SaveConsole();
-
-    // Clear the console output
-    void ClearConsole();
+    bool SaveConfigurationFile();
 
     // Creates a new Configuration
     void NewConfiguration();
@@ -118,8 +102,6 @@ class cRuntimeWindow : public QMainWindow
      */
     const QString GetWorkingDir();
 
-    // Handle application close
-    void closeEvent(QCloseEvent *bar);
 
     // Changes the window title of the application
     void SetupWindowTitle();

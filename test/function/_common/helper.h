@@ -9,12 +9,28 @@
 #define _HELPER_HEADER_
 
 #include <string.h>
-
-#include "a_util/filesystem.h"
-#include "a_util/result.h"
+#include "qc4openx_filesystem.h"
 #include "gtest/gtest.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/framework/XMLGrammarPoolImpl.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/sax/ErrorHandler.hpp>
+#include <xercesc/sax/HandlerBase.hpp>
+#include <xercesc/sax/SAXException.hpp>
+#include <xercesc/sax/SAXParseException.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/util/XMLException.hpp>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/validators/schema/SchemaValidator.hpp>
 
-#include "qc4openx_errors.h"
+// Define ANSI color codes
+#define COLOR_GREEN "\033[32m"
+#define COLOR_YELLOW "\033[33m"
+#define COLOR_RESET "\033[0m"
 
 /**
  * This macro prints a formatted message during test execution.
@@ -23,9 +39,7 @@
  */
 #define GTEST_PRINTF(_message)                                                                                         \
     {                                                                                                                  \
-        testing::internal::ColoredPrintf(testing::internal::COLOR_GREEN, "[          ] ");                             \
-        testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, _message);                                   \
-        testing::internal::ColoredPrintf(testing::internal::COLOR_YELLOW, "\n");                                       \
+        std::cout << COLOR_GREEN << "[          ] " << COLOR_YELLOW << _message << COLOR_YELLOW << "\n" << COLOR_RESET; \
     }
 
 /**
@@ -41,13 +55,29 @@
     }                                                                                                                  \
     ASSERT_TRUE(expression)
 
-qc4openx::Result ExecuteCommand(std::string &strResultMessage, std::string strCommand,
-                                const std::string strArgument = "");
+enum class TestResult
+{
+    ERR_NOERROR,
+    ERR_UNKNOWN,
+    ERR_UNEXPECTED,
+    ERR_UNKNOWN_FORMAT,
+    ERR_FILE_NOT_FOUND,
+    ERR_FAILED,
+};
 
-qc4openx::Result CheckFileExists(std::string &strResultMessage, const std::string strFilePath,
-                                 const bool bDelete = true);
+// Overload the |= operator
+inline TestResult &operator|=(TestResult &lhs, const TestResult &rhs)
+{
+    lhs = static_cast<TestResult>(static_cast<std::underlying_type<TestResult>::type>(lhs) |
+                                  static_cast<std::underlying_type<TestResult>::type>(rhs));
+    return lhs;
+}
 
-qc4openx::Result CheckFilesEqual(std::string &strResultMessage, const std::string strFilePath1,
-                                 const std::string strFilePath2);
+TestResult ExecuteCommand(std::string &strResultMessage, std::string strCommand, const std::string strArgument = "");
 
+TestResult CheckFileExists(std::string &strResultMessage, const std::string strFilePath, const bool bDelete = true);
+
+TestResult ValidateXmlSchema(const std::string &xmlFile, const std::string &xsdFile);
+
+TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeName);
 #endif

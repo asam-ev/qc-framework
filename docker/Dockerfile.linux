@@ -1,0 +1,82 @@
+# Copyright 2024, ASAM e.V.
+# This Source Code Form is subject to the terms of the Mozilla
+# Public License, v. 2.0. If a copy of the MPL was not distributed
+# with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+FROM ubuntu:22.04 AS framework_builder
+
+SHELL ["/bin/bash", "-c"]
+
+RUN echo "Installing Dependencies..." && \
+    apt update && apt install -y \ 
+    g++ \
+    g++-10 \
+    make \
+    build-essential \
+    cmake \
+    libgtest-dev \
+    qtbase5-dev \
+    libqt5xmlpatterns5-dev \
+    libxerces-c-dev \
+    pkg-config && \
+    echo "Dependencies installed." 
+
+RUN mkdir -p /app/framework
+
+COPY examples /app/framework/examples
+COPY include /app/framework/include
+COPY scripts /app/framework/scripts
+COPY src /app/framework/src
+COPY test /app/framework/test
+COPY doc /app/framework/doc
+COPY CMakeLists.txt /app/framework/CMakeLists.txt
+COPY version /app/framework/version
+COPY licenses /app/framework/licenses
+COPY runtime /app/framework/runtime
+
+RUN echo "Building framework..." && \
+    cd /app/framework && \
+    cmake -G "Unix Makefiles" -B./build -S . \
+    -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
+    -DENABLE_FUNCTIONAL_TESTS=ON  -DXERCES_ROOT="/usr" \
+    -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
+    -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/" && \
+    cmake --build ./build --target install --config Release -j4 && \
+    cmake --install ./build && \
+    echo "Done."
+
+
+# Runtime stage
+FROM python:3.11.9-slim-bookworm  as runtime_test
+
+RUN echo "Installing Qt..." && \
+    apt update && apt install -y \ 
+    qtbase5-dev \
+    libqt5xmlpatterns5-dev \
+    libxerces-c-dev \
+    pkg-config && \
+    echo "Dependencies installed."   
+
+RUN  mkdir -p /app
+
+COPY runtime/requirements.txt /app/
+RUN pip install -r /app/requirements.txt
+
+# For testing files
+COPY --from=framework_builder /app/framework /app/framework
+# Copy install directory in runtime image
+COPY --from=framework_builder /home/root/qc-build /app/framework/build
+
+# @NOTE this is just because DemoCheckerBundle is not installed by default
+COPY --from=framework_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/framework/build/bin/
+
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app/framework/runtime/
+
+CMD python3 -m pytest -rA > runtime_test.log && cp /app/framework/runtime/runtime_test.log /out/runtime_test.log
+
+# Runtime stage
+FROM framework_builder as unit_test
+
+CMD ctest --test-dir /app/framework/build -C Release && cp /app/framework/build/Testing/Temporary/LastTest.log /out/

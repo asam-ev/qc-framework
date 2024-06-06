@@ -23,71 +23,10 @@ TEST_F(cTesterRuntime, CmdHelp)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-h");
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "-h");
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= ExecuteCommand(strResultMessage, MODULE_NAME, "--help");
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
-TEST_F(cTesterRuntime, CmdConfig)
-{
-    // Implicit tested with PCB Test dbqa_roundtrip test_config_gui
-}
-
-TEST_F(cTesterRuntime, CmdConfigAutostart)
-{
-    std::string strResultMessage;
-
-    std::string strConfigFilePath = strTestFilesDir + "/" + "DemoCheckerBundle_config.xml";
-    std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-
-    qc4openx::Result nRes =
-        ExecuteCommand(strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -autostart");
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
-
-    // DemoCheckerBundle not found in bin (is in examples) --> no DemoCheckerBundle.xqar --> Result.xqar with no entries
-
-    nRes |= CheckFileExists(strResultMessage, strResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
-}
-
-TEST_F(cTesterRuntime, CmdConfigXodrAutostart)
-{
-    std::string strResultMessage;
-
-    std::string strConfigFilePath = strTestFilesDir + "/" + "XodrSchemaChecker_config.xml";
-    std::string strXodrFilePath = "../stimuli/xodr_examples/three_connected_roads_with_steps.xodr";
-    std::string strXodrSchemaCheckerResultFilePath = strWorkingDir + "/" + "XodrSchemaChecker.xqar";
-    std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-
-    qc4openx::Result nRes = ExecuteCommand(
-        strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -xodr " + strXodrFilePath + " -autostart");
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
-
-    nRes |= CheckFileExists(strResultMessage, strXodrSchemaCheckerResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
-
-    nRes |= CheckFileExists(strResultMessage, strResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
-}
-
-TEST_F(cTesterRuntime, CmdConfigXoscAutostart)
-{
-    std::string strResultMessage;
-
-    std::string strConfigFilePath = strTestFilesDir + "/" + "XoscSchemaChecker_config.xml";
-    std::string strXoscFilePath = "../stimuli/xosc_examples/Einscherer_with_errors.xosc";
-    std::string strXoscSchemaCheckerResultFilePath = strWorkingDir + "/" + "XoscSchemaChecker.xqar";
-    std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-
-    qc4openx::Result nRes = ExecuteCommand(
-        strResultMessage, MODULE_NAME, "-config " + strConfigFilePath + " -xosc " + strXoscFilePath + " -autostart");
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
-
-    nRes |= CheckFileExists(strResultMessage, strXoscSchemaCheckerResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
-
-    nRes |= CheckFileExists(strResultMessage, strResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
-}

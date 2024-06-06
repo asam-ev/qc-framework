@@ -13,11 +13,11 @@
 
 #include "common/config_format/c_configuration.h"
 #include "common/config_format/c_configuration_report_module.h"
+#include "common/qc4openx_filesystem.h"
 #include "common/result_format/c_parameter_container.h"
 #include "common/result_format/c_result_container.h"
 #include "report_format_ui.h"
 #include "ui/c_report_module_window.h"
-#include <a_util/filesystem.h>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -25,8 +25,10 @@ XERCES_CPP_NAMESPACE_USE
 int main(int argc, char *argv[])
 {
 #ifdef WIN32
-    auto workdir = a_util::filesystem::getWorkingDirectory();
-    SetDllDirectoryA(workdir.toString().c_str());
+    auto currentPath = std::filesystem::current_path();
+    auto currentPathW = currentPath.string();
+    // Set the DLL directory
+    SetDllDirectory(currentPathW.c_str());
 #endif
 
     std::string strToolpath = argv[0];

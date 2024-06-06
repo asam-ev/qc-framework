@@ -23,8 +23,8 @@ TEST_F(cTesterExampleCheckerBundle, CmdBasic)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdDefaultConfig)
@@ -33,11 +33,11 @@ TEST_F(cTesterExampleCheckerBundle, CmdDefaultConfig)
 
     std::string strDefaultConfigFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "--defaultconfig");
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "--defaultconfig");
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strDefaultConfigFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdConfig)
@@ -46,18 +46,35 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfig)
 
     std::string strConfigFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + "_config.xml";
     std::string strResultFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
-    std::string strExpectedResultFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + ".xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../../doc/schema/xqar_report_format.xsd";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strConfigFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
-
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strConfigFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    nRes |= ValidateXmlSchema(strResultFilePath, strXsdFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    a_util::filesystem::remove(strResultFilePath.c_str());
+    fs::remove(strResultFilePath.c_str());
+}
+
+TEST_F(cTesterExampleCheckerBundle, CmdConfigContainsIssue)
+{
+    std::string strResultMessage;
+
+    std::string strConfigFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + "_config.xml";
+    std::string strResultFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
+
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strConfigFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+    nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+
+    nRes |= XmlContainsNode(strResultFilePath, "Issue");
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+
+    fs::remove(strResultFilePath.c_str());
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdXodr)
@@ -66,40 +83,40 @@ TEST_F(cTesterExampleCheckerBundle, CmdXodr)
 
     std::string strXodrFilePath = "../stimuli/xodr_examples/three_connected_roads_with_steps.xodr";
     std::string strResultFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
-    std::string strExpectedResultFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + ".xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../../doc/schema/xqar_report_format.xsd";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strXodrFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strXodrFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    nRes |= ValidateXmlSchema(strResultFilePath, strXsdFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    a_util::filesystem::remove(strResultFilePath.c_str());
+    fs::remove(strResultFilePath.c_str());
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdConfigFileNotFound)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error.xml");
-    ASSERT_TRUE(nRes == qc4openx::ERR_FAILED);
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error.xml");
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdFirstArgumentWrong)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error");
-    ASSERT_TRUE(nRes == qc4openx::ERR_FAILED);
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "error");
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterExampleCheckerBundle, CmdTooMuchArguments)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
-    ASSERT_TRUE(nRes == qc4openx::ERR_FAILED);
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }

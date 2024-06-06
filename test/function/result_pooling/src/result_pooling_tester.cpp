@@ -24,18 +24,18 @@ TEST_F(cTesterResultPooling, CmdBasic)
     std::string strResultMessage;
 
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-    std::string strExpectedResultFilePath = strTestFilesDir + "/" + "EmptyResult.xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_report_format.xsd";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    nRes |= ValidateXmlSchema(strResultFilePath, strXsdFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    a_util::filesystem::remove(strResultFilePath.c_str());
+    fs::remove(strResultFilePath.c_str());
 }
 
 TEST_F(cTesterResultPooling, CmdDir)
@@ -45,11 +45,11 @@ TEST_F(cTesterResultPooling, CmdDir)
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
     std::string strExpectedResultFilePath = strTestFilesDir + "/" + "Result.xqar";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strTestFilesDir);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strTestFilesDir);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     // Result.xqar has timestamps and no explicit order --> no simple check for files equality possible
 }
@@ -59,32 +59,32 @@ TEST_F(cTesterResultPooling, CmdDirNoResults)
     std::string strResultMessage;
 
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-    std::string strExpectedResultFilePath = strTestFilesDir + "/" + "EmptyResult.xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_report_format.xsd";
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "..");
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "..");
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    nRes |= CheckFilesEqual(strResultMessage, strResultFilePath, strExpectedResultFilePath);
-    ASSERT_TRUE_EXT(nRes == qc4openx::ERR_NOERROR, strResultMessage.c_str());
+    nRes |= ValidateXmlSchema(strResultFilePath, strXsdFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
-    a_util::filesystem::remove(strResultFilePath.c_str());
+    fs::remove(strResultFilePath.c_str());
 }
 
 TEST_F(cTesterResultPooling, CmdDirNotValid)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "./error/");
-    ASSERT_TRUE(nRes == qc4openx::ERR_FAILED);
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "./error/");
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
 
 TEST_F(cTesterResultPooling, CmdTooMuchArguments)
 {
     std::string strResultMessage;
 
-    qc4openx::Result nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
-    ASSERT_TRUE(nRes == qc4openx::ERR_FAILED);
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
+    ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
