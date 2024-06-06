@@ -12,6 +12,7 @@
 #include "../util.h"
 #include "../xml/util_xerces.h"
 #include "c_issue.h"
+#include "c_rule.h"
 #include "c_parameter_container.h"
 
 #include <list>
@@ -20,6 +21,7 @@
 // Forward declaration to avoid problems with circular dependencies (especially under Linux)
 class cCheckerBundle;
 class cIssue;
+class cRule;
 
 /*
  * Definition of a basic checker
@@ -28,6 +30,7 @@ class cChecker
 {
     friend class cCheckerBundle;
     friend class cIssue;
+    friend class cRule;
 
   public:
     static const XMLCh *TAG_CHECKER;
@@ -56,6 +59,12 @@ class cChecker
      */
     cIssue *AddIssue(cIssue *const issueToAdd);
 
+    /*
+     * Adds an rule to the checker results
+     * \param instance if the result
+     */
+    cRule *AddRule(cRule *const ruleToAdd);
+
     // Clears all issues from the container
     void Clear();
 
@@ -71,11 +80,17 @@ class cChecker
     // Counts the Issues
     unsigned int GetIssueCount();
 
+      // Counts the Rules
+    unsigned int GetRuleCount();
+
     // Updates the summary
     void UpdateSummary();
 
     // Returns the issues
     std::list<cIssue *> GetIssues();
+
+    // Returns the rules
+    std::list<cRule *> GetRules();
 
     // Processes every issue and does a defined processing
     void DoProcessing(void (*funcIzteratorPtr)(cIssue *));
@@ -173,6 +188,7 @@ class cChecker
     cCheckerBundle *m_Bundle;
 
     std::list<cIssue *> m_Issues;
+    std::list<cRule *> m_Rules;
     cParameterContainer m_Params;
 };
 

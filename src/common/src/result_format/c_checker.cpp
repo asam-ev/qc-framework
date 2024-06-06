@@ -63,6 +63,15 @@ DOMElement *cChecker::WriteXML(DOMDocument *pResultDocument)
             pCheckerNode->appendChild(p_DataElement);
     }
 
+    // Add Rules und cCheckerSummaries
+    for (std::list<cRule *>::const_iterator it = m_Rules.begin(); it != m_Rules.end(); ++it)
+    {
+        DOMElement *p_DataElement = (*it)->WriteXML(pResultDocument);
+
+        if (nullptr != p_DataElement)
+            pCheckerNode->appendChild(p_DataElement);
+    }
+
     return pCheckerNode;
 }
 
@@ -168,6 +177,28 @@ cIssue *cChecker::AddIssue(cIssue *const issueToAdd)
     return nullptr;
 }
 
+cRule *cChecker::AddRule(cRule *const ruleToAdd)
+{
+    if (nullptr == m_Bundle)
+    {
+        // use runtime_error instead of exception for linux
+        throw std::runtime_error("Create the checker by using CheckerBundle::CreateChecker()!");
+    }
+    else
+    {
+        ruleToAdd->AssignChecker(this);
+        m_Rules.push_back(ruleToAdd);
+
+        return ruleToAdd;
+    }
+    return nullptr;
+}
+
+unsigned int cChecker::GetRuleCount()
+{
+    return (unsigned int)m_Rules.size();
+}
+
 // Deletes all issues
 void cChecker::Clear()
 {
@@ -175,6 +206,11 @@ void cChecker::Clear()
         delete *it;
 
     m_Issues.clear();
+
+    for (std::list<cRule *>::iterator it = m_Rules.begin(); it != m_Rules.end(); it++)
+        delete *it;
+
+    m_Rules.clear();
 }
 
 // Counts the Issues
@@ -187,6 +223,11 @@ unsigned int cChecker::GetIssueCount()
 std::list<cIssue *> cChecker::GetIssues()
 {
     return m_Issues;
+}
+
+std::list<cRule *> cChecker::GetRules()
+{
+    return m_Rules;
 }
 
 // Assigns a specific bundle to the checker

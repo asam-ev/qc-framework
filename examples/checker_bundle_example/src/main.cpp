@@ -14,6 +14,7 @@
 #include "common/result_format/c_result_container.h"
 #include "common/result_format/c_inertial_location.h"
 #include "common/result_format/c_locations_container.h"
+#include "common/result_format/c_rule.h"
 
 #include "common/config_format/c_configuration.h"
 #include "common/config_format/c_configuration_checker_bundle.h"
@@ -135,6 +136,10 @@ void RunChecks(const cParameterContainer &inputParams)
     std::list<cLocationsContainer*> listLoc;
     listLoc.push_back(new cLocationsContainer("inertial position", new cInertialLocation(1.0,2.0,3.0)));
     pExampleInertialChecker->AddIssue(new cIssue("This is an information from the demo usecase", INFO_LVL, listLoc));
+
+    // Create a test checker with RuleUID and metadata
+    cChecker *pExampleRuleUIDChecker = pExampleCheckerBundle->CreateChecker("exampleRuleUIDChecker", "This is a description of ruleUID checker");
+    pExampleRuleUIDChecker->AddRule(new cRule("test.com::qwerty.qwerty"));
 
     // Lets add a summary for the checker bundle
     unsigned int issueCount = pExampleCheckerBundle->GetIssueCount();
