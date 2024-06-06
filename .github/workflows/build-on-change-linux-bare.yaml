@@ -47,40 +47,20 @@ jobs:
       - name: Install dependencies
         working-directory: dependencies
         run: |
-          echo Updating CMAKE...
-          wget https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh
-          sudo apt remove cmake
-          sudo apt purge --auto-remove cmake
-          sudo bash cmake-3.29.3-linux-x86_64.sh --skip-license --exclude-subdir --prefix=/usr/local
-
-          echo Installing Qt...
+          echo "Installing Dependencies..."
           sudo apt update
           sudo apt install \
+            g++ \
+            g++-10 \
+            make \
+            build-essential \
+            cmake \
+            libgtest-dev \
             qtbase5-dev \
             libqt5xmlpatterns5-dev \
             libxerces-c-dev \
             pkg-config
-
-          echo Dependencies installed.
-        shell: bash
-
-      - name: Install gtest
-        working-directory: dependencies
-        if: github.event_name == 'pull_request'
-        env:
-          CXX: g++-10
-        run: |
-          echo Installing gtest...
-
-          git clone https://github.com/google/googletest.git -b release-1.10.0
-          cd googletest
-          mkdir build
-          cd build
-          cmake ..
-          make
-          sudo make install
-
-          echo Gtest installed.
+          echo "Dependencies installed."
         shell: bash
 
       - name: Build framework
