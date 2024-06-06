@@ -118,7 +118,7 @@ jobs:
       - name: Runtime test execution
         if: github.event_name == 'pull_request'
         run: |
-          mv -r build out_build
+          mv build out_build
           cp -r /home/$(whoami)/qc-build build
           cp out_build/examples/checker_bundle_example/DemoCheckerBundle build/bin/
           cd runtime
