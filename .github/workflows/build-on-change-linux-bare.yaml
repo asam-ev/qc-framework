@@ -1,0 +1,113 @@
+name: Build framework on Linux Bare
+
+on:
+  # execute on every PR made targeting the branches bellow
+  pull_request:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - test/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
+
+  # execute on every push made targeting the branches bellow
+  push:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - test/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-22.04
+    env:
+      TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create dependencies build space
+        run: mkdir dependencies
+        shell: bash
+
+      - name: Install dependencies
+        working-directory: dependencies
+        run: |
+          echo "Installing Dependencies..."
+          sudo apt update
+          sudo apt install \
+            g++ \
+            g++-10 \
+            make \
+            build-essential \
+            cmake \
+            libgtest-dev \
+            qtbase5-dev \
+            libqt5xmlpatterns5-dev \
+            libxerces-c-dev \
+            pkg-config
+          echo "Dependencies installed."
+        shell: bash
+
+      - name: Build framework
+        # Currently this is building without the XSD file. If we want to expose
+        # the build artifact after, we might as well need to add the XSD file.
+        run: |
+          echo Building framework...
+          cmake -G "Unix Makefiles" -B./build -S . \
+            -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
+            -DENABLE_FUNCTIONAL_TESTS=$TEST_ENABLED  -DXERCES_ROOT="/usr" \
+            -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
+            -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/"
+          cmake --build ./build --target install --config Release -j4
+          cmake --install ./build
+          echo Done.
+        shell: bash
+
+      - name: Unit test execution
+        if: github.event_name == 'pull_request'
+        run: |
+          echo Starting tests...
+
+          ctest --test-dir build -C Release
+
+          echo All tests done.
+        shell: bash
+
+      - name: Archive test results
+        if: github.event_name == 'pull_request' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: ${{ github.workspace }}/build/Testing/Temporary/LastTest.log
+
+      - name: Runtime test execution
+        if: github.event_name == 'pull_request'
+        run: |
+          mv build out_build
+          cp -r /home/$(whoami)/qc-build build
+          cp out_build/examples/checker_bundle_example/DemoCheckerBundle build/bin/
+          cd runtime
+          python3 -m pip install -r requirements.txt
+          python3 -m pytest -rA > runtime_test.log
+
+      - name: Archive runtime test results
+        if: github.event_name == 'pull_request' && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-test-report
+          path: ${{ github.workspace }}/runtime/runtime_test.log
