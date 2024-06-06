@@ -204,7 +204,7 @@ std::vector<xercesc::DOMElement *> getNodes(const std::string &xmlFile, const st
     xercesc::DOMDocument *doc = parser.getDocument();
     if (!doc)
     {
-        std::cerr << "Unable to get DOMDocument object " << std::endl;
+        std::cerr << "Unable to get DOMDocument object" << std::endl;
         xercesc::XMLPlatformUtils::Terminate();
         return nodeList;
     }
@@ -214,17 +214,26 @@ std::vector<xercesc::DOMElement *> getNodes(const std::string &xmlFile, const st
 
     // Find the nodes
     xercesc::DOMNodeList *nodes = doc->getElementsByTagName(xmlNodeName);
+    xercesc::XMLString::release(&xmlNodeName);
+
+    if (!nodes)
+    {
+        std::cerr << "Unable to get DOMNodeList object" << std::endl;
+        xercesc::XMLPlatformUtils::Terminate();
+        return nodeList;
+    }
 
     // Store nodes in the vector
     for (XMLSize_t i = 0; i < nodes->getLength(); ++i)
     {
         xercesc::DOMElement *element = static_cast<xercesc::DOMElement *>(nodes->item(i));
-        nodeList.push_back(element);
+        if (element)
+        {
+            nodeList.push_back(element);
+        }
     }
 
-    xercesc::XMLString::release(&xmlNodeName);
     xercesc::XMLPlatformUtils::Terminate();
-
     return nodeList;
 }
 
