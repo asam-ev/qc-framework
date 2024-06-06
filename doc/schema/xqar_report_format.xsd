@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 Copyright 2023 CARIAD SE.
- 
+
 This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -41,6 +41,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
         <xs:attribute name="issueId" type="xs:string" />
         <xs:attribute name="description" type="xs:string" />
         <xs:attribute name="level" type="xs:string" />
+        <xs:attribute name="ruleUID" type="xs:string" />
     </xs:complexType>
 
     <xs:complexType name="LocationsType">

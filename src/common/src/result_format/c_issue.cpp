@@ -18,14 +18,17 @@ const XMLCh *cIssue::TAG_ISSUE = CONST_XMLCH("Issue");
 const XMLCh *cIssue::ATTR_ISSUE_ID = CONST_XMLCH("issueId");
 const XMLCh *cIssue::ATTR_DESCRIPTION = CONST_XMLCH("description");
 const XMLCh *cIssue::ATTR_LEVEL = CONST_XMLCH("level");
+const XMLCh *cIssue::ATTR_RULEUID = CONST_XMLCH("ruleUID");
 
 const std::map<eIssueLevel, std::string> cIssue::issueLevelToString = {
     {eIssueLevel::INFO_LVL, "Info"}, {eIssueLevel::WARNING_LVL, "Warning"}, {eIssueLevel::ERROR_LVL, "Error"}};
 
-cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, cLocationsContainer *locationsContainer)
+cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID,
+               cLocationsContainer *locationsContainer)
 {
     m_Description = description;
     m_IssueLevel = infoLvl;
+    m_RuleUID = ruleUID;
     m_Checker = nullptr;
 
     AddLocationsContainer(locationsContainer);
@@ -33,6 +36,13 @@ cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, cLocationsCo
 
 cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, std::list<cLocationsContainer *> listLoc)
     : cIssue(description, infoLvl)
+{
+    AddLocationsContainer(listLoc);
+}
+
+cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID,
+               std::list<cLocationsContainer *> listLoc)
+    : cIssue(description, infoLvl, ruleUID)
 {
     AddLocationsContainer(listLoc);
 }
@@ -78,10 +88,12 @@ DOMElement *cIssue::WriteXML(DOMDocument *p_resultDocument)
     XMLCh *pIssueId = XMLString::transcode(std::to_string(m_Id).c_str());
     XMLCh *pDescription = XMLString::transcode(m_Description.c_str());
     XMLCh *pLevel = XMLString::transcode(std::to_string((int)m_IssueLevel).c_str());
+    XMLCh *pRuleUID = XMLString::transcode(m_RuleUID.c_str());
 
     p_DataElement->setAttribute(ATTR_ISSUE_ID, pIssueId);
     p_DataElement->setAttribute(ATTR_DESCRIPTION, pDescription);
     p_DataElement->setAttribute(ATTR_LEVEL, pLevel);
+    p_DataElement->setAttribute(ATTR_RULEUID, pRuleUID);
 
     // Write extended informations
     if (HasLocations())
@@ -97,6 +109,7 @@ DOMElement *cIssue::WriteXML(DOMDocument *p_resultDocument)
     XMLString::release(&pIssueId);
     XMLString::release(&pDescription);
     XMLString::release(&pLevel);
+    XMLString::release(&pRuleUID);
 
     return p_DataElement;
 }
@@ -143,8 +156,9 @@ cIssue *cIssue::ParseFromXML(DOMNode *pXMLNode, DOMElement *pXMLElement, cChecke
     std::string strDescription = XMLString::transcode(pXMLElement->getAttribute(ATTR_DESCRIPTION));
     std::string strID = XMLString::transcode(pXMLElement->getAttribute(ATTR_ISSUE_ID));
     std::string strLevel = XMLString::transcode(pXMLElement->getAttribute(ATTR_LEVEL));
+    std::string strRuleUID = XMLString::transcode(pXMLElement->getAttribute(ATTR_RULEUID));
 
-    cIssue *issue = new cIssue(strDescription, GetIssueLevelFromStr(strLevel));
+    cIssue *issue = new cIssue(strDescription, GetIssueLevelFromStr(strLevel), strRuleUID);
 
     issue->AssignChecker(checker);
     issue->SetIssueId(strID);
@@ -200,6 +214,11 @@ void cIssue::SetDescription(const std::string &strDescription)
     m_Description = strDescription;
 }
 
+void cIssue::SetRuleUID(const std::string &strRuleUID)
+{
+    m_RuleUID = strRuleUID;
+}
+
 void cIssue::SetLevel(eIssueLevel level)
 {
     m_IssueLevel = level;
@@ -209,6 +228,11 @@ void cIssue::SetLevel(eIssueLevel level)
 std::string cIssue::GetDescription() const
 {
     return m_Description;
+}
+
+std::string cIssue::GetRuleUID() const
+{
+    return m_RuleUID;
 }
 
 // Returns the issue level
