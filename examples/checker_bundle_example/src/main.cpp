@@ -157,7 +157,7 @@ void RunChecks(const cParameterContainer &inputParams)
     // Create a test checker with Issue and RuleUID
     cChecker *pSkippedChecker = pExampleCheckerBundle->CreateChecker(
         "exampleSkippedChecker", "This is a description of checker with skipped status", "Skipped execution",
-        eStatus::SKIPPED);
+        "skipped");
 
     // Lets add a summary for the checker bundle
     unsigned int issueCount = pExampleCheckerBundle->GetIssueCount();

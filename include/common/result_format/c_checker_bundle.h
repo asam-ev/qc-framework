@@ -57,7 +57,7 @@ class cCheckerBundle
 
     // Adds a new checker
     cChecker *CreateChecker(const std::string &checkerId, const std::string &strDescription = "",
-                            const std::string &strSummary = "", const eStatus &inStatus = eStatus::COMPLETED);
+                            const std::string &strSummary = "", const std::string &strStatus = "completed");
 
     /*
      * Adds an amout of issues to the checker bundle

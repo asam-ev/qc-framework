@@ -16,11 +16,6 @@ const XMLCh *cChecker::ATTR_STATUS = CONST_XMLCH("status");
 
 XERCES_CPP_NAMESPACE_USE
 
-const std::map<eStatus, std::string> cChecker::statusToString = {
-    {eStatus::COMPLETED, "completed"}, {eStatus::SKIPPED, "skipped"}, {eStatus::ERROR, "error"}};
-const std::map<std::string, eStatus> cChecker::stringToStatus = {
-    {"completed", eStatus::COMPLETED}, {"skipped", eStatus::SKIPPED}, {"error", eStatus::ERROR}};
-
 cChecker::~cChecker()
 {
     Clear();
@@ -40,7 +35,7 @@ std::string cChecker::GetSummary() const
 }
 
 // Returns the status
-eStatus cChecker::GetStatus() const
+std::string cChecker::GetStatus() const
 {
     return m_Status;
 }
@@ -58,7 +53,7 @@ void cChecker::SetDescription(const std::string &strDescription)
 }
 
 // Sets the description
-void cChecker::SetStatus(const eStatus &eStatus)
+void cChecker::SetStatus(const std::string &eStatus)
 {
     m_Status = eStatus;
 }
@@ -115,7 +110,7 @@ cChecker *cChecker::ParseFromXML(DOMNode *pXMLNode, DOMElement *pXMLElement, cCh
     std::string strDescription = XMLString::transcode(pXMLElement->getAttribute(ATTR_DESCRIPTION));
     std::string strStatus = XMLString::transcode(pXMLElement->getAttribute(ATTR_STATUS));
 
-    cChecker *pChecker = new cChecker(strCheckerId, strDescription, strSummary, GetStrStatus(strStatus));
+    cChecker *pChecker = new cChecker(strCheckerId, strDescription, strSummary, strStatus);
     pChecker->AssignCheckerBundle(checkerBundle);
 
     DOMNodeList *pIssueChildList = pXMLNode->getChildNodes();
@@ -152,27 +147,6 @@ cChecker *cChecker::ParseFromXML(DOMNode *pXMLNode, DOMElement *pXMLElement, cCh
     return pChecker;
 }
 
-// Returns the issue level
-eStatus cChecker::GetStrStatus(const std::string &inputStr)
-{
-    const std::map<std::string, eStatus>::const_iterator pos = stringToStatus.find(inputStr);
-
-    if (pos != stringToStatus.end())
-        return pos->second;
-
-    return eStatus::ERROR;
-}
-
-// Returns the issue level
-std::string cChecker::GetStatusStr() const
-{
-    const std::map<eStatus, std::string>::const_iterator pos = statusToString.find(m_Status);
-
-    if (pos != statusToString.end())
-        return pos->second;
-
-    return std::string("Unknown");
-}
 DOMElement *cChecker::CreateNode(DOMDocument *pDOMDocResultDocument)
 {
     DOMElement *pBundleSummary = pDOMDocResultDocument->createElement(TAG_CHECKER);
@@ -180,7 +154,7 @@ DOMElement *cChecker::CreateNode(DOMDocument *pDOMDocResultDocument)
     XMLCh *pCheckerId = XMLString::transcode(m_CheckerId.c_str());
     XMLCh *pDescription = XMLString::transcode(m_Description.c_str());
     XMLCh *pSummary = XMLString::transcode(m_Summary.c_str());
-    XMLCh *pStatus = XMLString::transcode(GetStatusStr().c_str());
+    XMLCh *pStatus = XMLString::transcode(m_Status.c_str());
 
     pBundleSummary->setAttribute(ATTR_CHECKER_ID, pCheckerId);
     pBundleSummary->setAttribute(ATTR_DESCRIPTION, pDescription);
@@ -443,22 +417,4 @@ unsigned long long cChecker::NextFreeId() const
             return newId;
         }
     }
-}
-
-std::string PrintStatus(const eStatus status)
-{
-    std::string retval;
-
-    switch (status)
-    {
-    case COMPLETED:
-        retval = "completed";
-        break;
-    case SKIPPED:
-        retval = "skipped";
-        break;
-    default:
-        retval = "error";
-    }
-    return retval;
 }

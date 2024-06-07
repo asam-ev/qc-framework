@@ -22,7 +22,15 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
         <xs:attribute name="checkerId" type="xs:string" />
         <xs:attribute name="description" type="xs:string" />
         <xs:attribute name="summary" type="xs:string" />
-        <xs:attribute name="status" type="xs:string" />
+        <xs:attribute name="status">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="completed" />
+                    <xs:enumeration value="skipped" />
+                    <xs:enumeration value="error" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="MetadataType">
