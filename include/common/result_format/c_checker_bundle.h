@@ -12,6 +12,7 @@
 #include "../util.h"
 #include "../xml/util_xerces.h"
 #include "c_parameter_container.h"
+#include "common/result_format/c_checker.h"
 #include "common/result_format/c_issue.h"
 
 // Forward declaration to avoid problems with circular dependencies (especially under Linux)
@@ -56,7 +57,7 @@ class cCheckerBundle
 
     // Adds a new checker
     cChecker *CreateChecker(const std::string &checkerId, const std::string &strDescription = "",
-                            const std::string &strSummary = "");
+                            const std::string &strSummary = "", const eStatus &inStatus = eStatus::COMPLETED);
 
     /*
      * Adds an amout of issues to the checker bundle

@@ -154,6 +154,11 @@ void RunChecks(const cParameterContainer &inputParams)
     pExampleIssueRuleChecker->AddIssue(
         new cIssue("This is an information from the demo usecase", ERROR_LVL, "test.com::qwerty.qwerty"));
 
+    // Create a test checker with Issue and RuleUID
+    cChecker *pSkippedChecker = pExampleCheckerBundle->CreateChecker(
+        "exampleSkippedChecker", "This is a description of checker with skipped status", "Skipped execution",
+        eStatus::SKIPPED);
+
     // Lets add a summary for the checker bundle
     unsigned int issueCount = pExampleCheckerBundle->GetIssueCount();
     std::stringstream ssSummaryString;
