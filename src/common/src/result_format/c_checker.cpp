@@ -12,6 +12,7 @@ const XMLCh *cChecker::TAG_CHECKER = CONST_XMLCH("Checker");
 const XMLCh *cChecker::ATTR_CHECKER_ID = CONST_XMLCH("checkerId");
 const XMLCh *cChecker::ATTR_DESCRIPTION = CONST_XMLCH("description");
 const XMLCh *cChecker::ATTR_SUMMARY = CONST_XMLCH("summary");
+const XMLCh *cChecker::ATTR_STATUS = CONST_XMLCH("status");
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -33,6 +34,12 @@ std::string cChecker::GetSummary() const
     return m_Summary;
 }
 
+// Returns the status
+std::string cChecker::GetStatus() const
+{
+    return m_Status;
+}
+
 // Returns the description
 std::string cChecker::GetDescription() const
 {
@@ -43,6 +50,12 @@ std::string cChecker::GetDescription() const
 void cChecker::SetDescription(const std::string &strDescription)
 {
     m_Description = strDescription;
+}
+
+// Sets the description
+void cChecker::SetStatus(const std::string &eStatus)
+{
+    m_Status = eStatus;
 }
 
 // Write the xml for this issue
@@ -81,7 +94,6 @@ DOMElement *cChecker::WriteXML(DOMDocument *pResultDocument)
             pCheckerNode->appendChild(p_DataElement);
     }
 
-
     return pCheckerNode;
 }
 
@@ -96,9 +108,9 @@ cChecker *cChecker::ParseFromXML(DOMNode *pXMLNode, DOMElement *pXMLElement, cCh
     std::string strCheckerId = XMLString::transcode(pXMLElement->getAttribute(ATTR_CHECKER_ID));
     std::string strSummary = XMLString::transcode(pXMLElement->getAttribute(ATTR_SUMMARY));
     std::string strDescription = XMLString::transcode(pXMLElement->getAttribute(ATTR_DESCRIPTION));
+    std::string strStatus = XMLString::transcode(pXMLElement->getAttribute(ATTR_STATUS));
 
-    cChecker *pChecker = new cChecker(strCheckerId, strDescription, strSummary);
-
+    cChecker *pChecker = new cChecker(strCheckerId, strDescription, strSummary, strStatus);
     pChecker->AssignCheckerBundle(checkerBundle);
 
     DOMNodeList *pIssueChildList = pXMLNode->getChildNodes();
@@ -142,14 +154,17 @@ DOMElement *cChecker::CreateNode(DOMDocument *pDOMDocResultDocument)
     XMLCh *pCheckerId = XMLString::transcode(m_CheckerId.c_str());
     XMLCh *pDescription = XMLString::transcode(m_Description.c_str());
     XMLCh *pSummary = XMLString::transcode(m_Summary.c_str());
+    XMLCh *pStatus = XMLString::transcode(m_Status.c_str());
 
     pBundleSummary->setAttribute(ATTR_CHECKER_ID, pCheckerId);
     pBundleSummary->setAttribute(ATTR_DESCRIPTION, pDescription);
     pBundleSummary->setAttribute(ATTR_SUMMARY, pSummary);
+    pBundleSummary->setAttribute(ATTR_STATUS, pStatus);
 
     XMLString::release(&pCheckerId);
     XMLString::release(&pDescription);
     XMLString::release(&pSummary);
+    XMLString::release(&pStatus);
 
     return pBundleSummary;
 }
