@@ -250,7 +250,8 @@ TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeNa
     }
 }
 
-TestResult NodeHasAttribute(const std::string &xmlFile, const std::string &nodeName, const std::string &attributeName)
+TestResult NodeHasAttributeValue(const std::string &xmlFile, const std::string &nodeName,
+                                 const std::string &attributeName, const std::string &attributeValue)
 {
     std::vector<xercesc::DOMElement *> nodes = getNodes(xmlFile, nodeName);
 
@@ -267,8 +268,13 @@ TestResult NodeHasAttribute(const std::string &xmlFile, const std::string &nodeN
     }
     for (xercesc::DOMElement *element : nodes)
     {
-        if (element != nullptr && element->hasAttribute(xmlAttributeName))
+        char *attrValueCStr = xercesc::XMLString::transcode(element->getAttribute(xmlAttributeName));
+        std::string attrValueStr(attrValueCStr);
+        std::cout << attrValueStr << std::endl;
+
+        if (attrValueCStr == attributeValue)
         {
+            xercesc::XMLString::release(&xmlAttributeName);
             return TestResult::ERR_NOERROR;
         }
     }
