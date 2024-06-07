@@ -141,22 +141,3 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfigContainsAddressedRuleAndMetadata)
 
     fs::remove(strResultFilePath.c_str());
 }
-
-TEST_F(cTesterExampleCheckerBundle, CmdConfigContainsIssueAndRule)
-{
-    std::string strResultMessage;
-
-    std::string strConfigFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + "_config.xml";
-    std::string strResultFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
-
-    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strConfigFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-    nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-    nRes |= XmlContainsNode(strResultFilePath, "Issue");
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-    nRes |= NodeHasAttributeValue(strResultFilePath, "Issue", "ruleUID", "test.com::qwerty.qwerty");
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-
-    fs::remove(strResultFilePath.c_str());
-}

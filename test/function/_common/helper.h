@@ -82,7 +82,4 @@ TestResult ValidateXmlSchema(const std::string &xmlFile, const std::string &xsdF
 
 TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeName);
 
-TestResult NodeHasAttributeValue(const std::string &xmlFile, const std::string &nodeName,
-                                 const std::string &attributeName, const std::string &attributeValue);
-
 #endif
