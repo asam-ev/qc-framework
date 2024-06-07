@@ -262,7 +262,7 @@ TestResult NodeHasAttribute(const std::string &xmlFile, const std::string &nodeN
 
     for (xercesc::DOMElement *element : nodes)
     {
-        if (element->hasAttribute(xmlAttributeName))
+        if (element != nullptr && element->hasAttribute(xmlAttributeName))
         {
             xercesc::XMLString::release(&xmlAttributeName);
             return TestResult::ERR_NOERROR;
