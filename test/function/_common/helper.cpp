@@ -158,8 +158,10 @@ TestResult ValidateXmlSchema(const std::string &xmlFile, const std::string &xsdF
     return TestResult::ERR_NOERROR;
 }
 
-TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeName)
+std::vector<xercesc::DOMElement *> getNodes(const std::string &xmlFile, const std::string &nodeName)
 {
+    std::vector<xercesc::DOMElement *> nodeList;
+
     try
     {
         xercesc::XMLPlatformUtils::Initialize();
@@ -167,39 +169,83 @@ TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeNa
     catch (const xercesc::XMLException &e)
     {
         std::cerr << "Error during initialization! :\n" << xercesc::XMLString::transcode(e.getMessage()) << std::endl;
-        return TestResult::ERR_FAILED;
+        return nodeList;
     }
 
     xercesc::XercesDOMParser parser;
     parser.setValidationScheme(xercesc::XercesDOMParser::Val_Never);
     parser.setDoNamespaces(false);
     parser.setDoSchema(false);
-    parser.parse(xmlFile.c_str());
+
+    try
+    {
+        parser.parse(xmlFile.c_str());
+    }
+    catch (const xercesc::XMLException &e)
+    {
+        std::cerr << "Error during parsing! :\n" << xercesc::XMLString::transcode(e.getMessage()) << std::endl;
+        xercesc::XMLPlatformUtils::Terminate();
+        return nodeList;
+    }
+    catch (const xercesc::DOMException &e)
+    {
+        std::cerr << "DOM Error during parsing! :\n" << xercesc::XMLString::transcode(e.getMessage()) << std::endl;
+        xercesc::XMLPlatformUtils::Terminate();
+        return nodeList;
+    }
+    catch (...)
+    {
+        std::cerr << "Unexpected error during parsing!" << std::endl;
+        xercesc::XMLPlatformUtils::Terminate();
+        return nodeList;
+    }
 
     // Get the DOM document
     xercesc::DOMDocument *doc = parser.getDocument();
     if (!doc)
     {
-        std::cerr << "Unable to get DOMDocument object " << std::endl;
+        std::cerr << "Unable to get DOMDocument object" << std::endl;
         xercesc::XMLPlatformUtils::Terminate();
-        return TestResult::ERR_FILE_NOT_FOUND;
+        return nodeList;
     }
 
     // Convert nodeName to XMLCh*
     XMLCh *xmlNodeName = xercesc::XMLString::transcode(nodeName.c_str());
 
-    // Find the node
+    // Find the nodes
     xercesc::DOMNodeList *nodes = doc->getElementsByTagName(xmlNodeName);
     xercesc::XMLString::release(&xmlNodeName);
 
-    if (nodes->getLength() > 0)
+    if (!nodes)
     {
+        std::cerr << "Unable to get DOMNodeList object" << std::endl;
         xercesc::XMLPlatformUtils::Terminate();
+        return nodeList;
+    }
+
+    // Store nodes in the vector
+    for (XMLSize_t i = 0; i < nodes->getLength(); ++i)
+    {
+        xercesc::DOMElement *element = static_cast<xercesc::DOMElement *>(nodes->item(i));
+        if (element)
+        {
+            nodeList.push_back(element);
+        }
+    }
+
+    xercesc::XMLPlatformUtils::Terminate();
+    return nodeList;
+}
+
+TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeName)
+{
+    std::vector<xercesc::DOMElement *> nodes = getNodes(xmlFile, nodeName);
+    if (!nodes.empty())
+    {
         return TestResult::ERR_NOERROR;
     }
     else
     {
-        xercesc::XMLPlatformUtils::Terminate();
         return TestResult::ERR_UNKNOWN_FORMAT;
     }
 }
