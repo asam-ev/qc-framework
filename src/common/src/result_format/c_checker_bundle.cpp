@@ -147,15 +147,15 @@ cChecker *cCheckerBundle::CreateChecker(cChecker *newChecker)
 
 // Adds a new checker
 cChecker *cCheckerBundle::CreateChecker(const std::string &checkerId, const std::string &strDescription,
-                                        const std::string &strSummary)
+                                        const std::string &strSummary, const std::string &strStatus)
 {
-    return CreateChecker(new cChecker(checkerId, strDescription, strSummary));
+    return CreateChecker(new cChecker(checkerId, strDescription, strSummary, strStatus));
 }
 
 cChecker *cCheckerBundle::CreateCheckerWithIssues(const std::string &strCheckerId, const std::string &strDescription,
                                                   eIssueLevel issueLevel, std::map<std::string, std::string> m_Issues)
 {
-    cChecker *pChecker = new cChecker(strCheckerId, strDescription, "");
+    cChecker *pChecker = new cChecker(strCheckerId, strDescription, "", "completed");
     CreateChecker(pChecker);
 
     for (std::map<std::string, std::string>::const_iterator it = m_Issues.cbegin(); it != m_Issues.cend(); it++)

@@ -12,9 +12,9 @@
 #include "../util.h"
 #include "../xml/util_xerces.h"
 #include "c_issue.h"
-#include "c_rule.h"
 #include "c_metadata.h"
 #include "c_parameter_container.h"
+#include "c_rule.h"
 
 #include <list>
 #include <string>
@@ -40,12 +40,16 @@ class cChecker
     static const XMLCh *ATTR_CHECKER_ID;
     static const XMLCh *ATTR_DESCRIPTION;
     static const XMLCh *ATTR_SUMMARY;
+    static const XMLCh *ATTR_STATUS;
 
     // Returns the checker id
     std::string GetCheckerID() const;
 
     // Returns the summary
     std::string GetSummary() const;
+
+    // Returns the status
+    std::string GetStatus() const;
 
     // Returns the description
     std::string GetDescription() const;
@@ -55,6 +59,9 @@ class cChecker
 
     // sets the summary
     void SetSummary(const std::string &strSummary);
+
+    // sets the status
+    void SetStatus(const std::string &eStatus);
 
     /*
      * Adds an issue to the checker results
@@ -89,10 +96,10 @@ class cChecker
     // Counts the Issues
     unsigned int GetIssueCount();
 
-      // Counts the Rules
+    // Counts the Rules
     unsigned int GetRuleCount();
 
-      // Counts the Rules
+    // Counts the Rules
     unsigned int GetMetadataCount();
 
     // Updates the summary
@@ -179,13 +186,15 @@ class cChecker
 
   protected:
     // Creates a new checker instance
-    cChecker(const std::string &strCheckerId, const std::string &strDescription, const std::string &strSummary)
-        : m_Bundle(nullptr), m_CheckerId(strCheckerId), m_Description(strDescription), m_Summary(strSummary)
+    cChecker(const std::string &strCheckerId, const std::string &strDescription, const std::string &strSummary,
+             const std::string &strStatus)
+        : m_Bundle(nullptr), m_CheckerId(strCheckerId), m_Description(strDescription), m_Summary(strSummary),
+          m_Status(strStatus)
     {
     }
 
     // Creates a new checker instance
-    cChecker() : m_Bundle(nullptr), m_CheckerId(""), m_Description(""), m_Summary("")
+    cChecker() : m_Bundle(nullptr), m_CheckerId(""), m_Description(""), m_Summary(""), m_Status("completed")
     {
     }
 
@@ -200,6 +209,7 @@ class cChecker
     std::string m_CheckerId;
     std::string m_Description;
     std::string m_Summary;
+    std::string m_Status;
     cCheckerBundle *m_Bundle;
 
     std::list<cIssue *> m_Issues;

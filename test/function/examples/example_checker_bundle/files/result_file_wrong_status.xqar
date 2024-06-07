@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<CheckerResults version="1.0.0">
+
+  <CheckerBundle build_date="" description="" name="DemoCheckerBundle" summary="Found 3 issues" version="">
+    <Checker checkerId="exampleSkippedChecker" description="This is a description of checker with skipped status" status="success" summary="Skipped execution"/>
+  </CheckerBundle>
+
+</CheckerResults>
