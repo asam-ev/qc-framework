@@ -42,6 +42,7 @@ class cIssue : public IResult
     static const XMLCh *ATTR_ISSUE_ID;
     static const XMLCh *ATTR_DESCRIPTION;
     static const XMLCh *ATTR_LEVEL;
+    static const XMLCh *ATTR_RULEUID;
 
     static const std::map<eIssueLevel, std::string> issueLevelToString;
 
@@ -49,13 +50,17 @@ class cIssue : public IResult
      * Creates a new Issue
      *
      */
-    cIssue(const std::string &description, eIssueLevel infoLvl, cLocationsContainer *locationsContainer = nullptr);
+    cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID = "",
+           cLocationsContainer *locationsContainer = nullptr);
 
     /*
      * Creates a new Issue
      *
      */
     cIssue(const std::string &description, eIssueLevel infoLvl, std::list<cLocationsContainer *> listLoc);
+
+    cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID,
+           std::list<cLocationsContainer *> listLoc);
 
     ~cIssue();
 
@@ -95,8 +100,14 @@ class cIssue : public IResult
     // Sets the level
     void SetLevel(eIssueLevel level);
 
+    // Sets the RuleUID
+    void SetRuleUID(const std::string &strRuleUID);
+
     // Returns the description
     std::string GetDescription() const;
+
+    // Returns the ruleUID
+    std::string GetRuleUID() const;
 
     // Returns the issue level
     eIssueLevel GetIssueLevel() const;
@@ -129,6 +140,7 @@ class cIssue : public IResult
     unsigned long long m_Id;
     std::string m_Description;
     eIssueLevel m_IssueLevel;
+    std::string m_RuleUID;
     cChecker *m_Checker;
 
     std::list<cLocationsContainer *> m_Locations;

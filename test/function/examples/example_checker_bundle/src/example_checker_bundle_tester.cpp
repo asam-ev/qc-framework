@@ -135,7 +135,7 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfigContainsAddressedRuleAndMetadata)
 
     nRes |= XmlContainsNode(strResultFilePath, "AddressedRule");
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-    
+
     nRes |= XmlContainsNode(strResultFilePath, "Metadata");
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
