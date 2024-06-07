@@ -253,6 +253,7 @@ TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeNa
 TestResult NodeHasAttribute(const std::string &xmlFile, const std::string &nodeName, const std::string &attributeName)
 {
     std::vector<xercesc::DOMElement *> nodes = getNodes(xmlFile, nodeName);
+
     if (nodes.empty())
     {
         return TestResult::ERR_UNKNOWN_FORMAT;
@@ -260,11 +261,14 @@ TestResult NodeHasAttribute(const std::string &xmlFile, const std::string &nodeN
 
     XMLCh *xmlAttributeName = xercesc::XMLString::transcode(attributeName.c_str());
 
+    if (xmlAttributeName == nullptr)
+    {
+        return TestResult::ERR_UNKNOWN_FORMAT;
+    }
     for (xercesc::DOMElement *element : nodes)
     {
         if (element != nullptr && element->hasAttribute(xmlAttributeName))
         {
-            xercesc::XMLString::release(&xmlAttributeName);
             return TestResult::ERR_NOERROR;
         }
     }
