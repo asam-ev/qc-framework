@@ -155,7 +155,7 @@ cChecker *cCheckerBundle::CreateChecker(const std::string &checkerId, const std:
 cChecker *cCheckerBundle::CreateCheckerWithIssues(const std::string &strCheckerId, const std::string &strDescription,
                                                   eIssueLevel issueLevel, std::map<std::string, std::string> m_Issues)
 {
-    cChecker *pChecker = new cChecker(strCheckerId, strDescription, "", "");
+    cChecker *pChecker = new cChecker(strCheckerId, strDescription, "", "completed");
     CreateChecker(pChecker);
 
     for (std::map<std::string, std::string>::const_iterator it = m_Issues.cbegin(); it != m_Issues.cend(); it++)
