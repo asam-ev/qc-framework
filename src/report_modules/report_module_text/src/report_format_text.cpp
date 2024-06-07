@@ -20,6 +20,7 @@
 #include "stdafx.h"
 
 #include "common/qc4openx_filesystem.h"
+#include <set>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -175,6 +176,9 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
     std::list<cCheckerBundle *> bundles = ptrResultContainer->GetCheckerBundles();
     std::list<cChecker *> checkers;
     std::list<cIssue *> issues;
+    std::list<cRule *> rules;
+    std::set<std::string> violated_rules;
+    std::set<std::string> checked_rules;
 
     if (outFile.is_open())
     {
@@ -256,12 +260,37 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                            << (*it_Issue)->GetDescription();
 
                         PrintExtendedInformationIntoStream((*it_Issue), &ss);
+                        if ((*it_Issue)->GetRuleUID() != "")
+                        {
+                            violated_rules.insert((*it_Issue)->GetRuleUID());
+                        }
                     }
                     ss << "\n";
+                }
+                // Get all rules and issues covered by the current checker
+                rules = (*itChecker)->GetRules();
+                for (std::list<cRule *>::const_iterator it_Rule = rules.begin(); it_Rule != rules.end(); it_Rule++)
+                {
+                    if ((*it_Rule)->GetRuleUID() != "")
+                    {
+                        checked_rules.insert((*it_Rule)->GetRuleUID());
+                    }
                 }
             }
 
             ss << "\n" << BASIC_SEPARATOR_LINE << "\n";
+        }
+
+        ss << "\n    Total number of checked rules:        " << checked_rules.size();
+        for (const auto &str : checked_rules)
+        {
+            ss << "\n     ->  " << str << "\n";
+        }
+
+        ss << "\n    Total number of violated rules:        " << violated_rules.size();
+        for (const auto &str : violated_rules)
+        {
+            ss << "\n     ->  " << str << "\n";
         }
 
         outFile << ss.rdbuf();
