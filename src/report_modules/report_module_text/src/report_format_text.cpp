@@ -20,6 +20,7 @@
 #include "stdafx.h"
 
 #include "common/qc4openx_filesystem.h"
+#include <set>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -175,6 +176,9 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
     std::list<cCheckerBundle *> bundles = ptrResultContainer->GetCheckerBundles();
     std::list<cChecker *> checkers;
     std::list<cIssue *> issues;
+    std::list<cRule *> rules;
+    std::set<std::string> violated_rules;
+    std::set<std::string> addressed_rules;
 
     if (outFile.is_open())
     {
@@ -256,13 +260,42 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                            << (*it_Issue)->GetDescription();
 
                         PrintExtendedInformationIntoStream((*it_Issue), &ss);
+                        if ((*it_Issue)->GetRuleUID() != "")
+                        {
+                            violated_rules.insert((*it_Issue)->GetRuleUID());
+                        }
                     }
                     ss << "\n";
+                }
+                // Get all rules and issues covered by the current checker
+                rules = (*itChecker)->GetRules();
+                for (std::list<cRule *>::const_iterator it_Rule = rules.begin(); it_Rule != rules.end(); it_Rule++)
+                {
+                    if ((*it_Rule)->GetRuleUID() != "")
+                    {
+                        addressed_rules.insert((*it_Rule)->GetRuleUID());
+                    }
                 }
             }
 
             ss << "\n" << BASIC_SEPARATOR_LINE << "\n";
         }
+
+        ss << "Addressed vs Violated rules report \n\n";
+
+        ss << "\nTotal number of addressed rules:   " << addressed_rules.size();
+        for (const auto &str : addressed_rules)
+        {
+            ss << "\n\t-> Addressed RuleUID: " << str << "\n";
+        }
+
+        ss << "\nTotal number of violated rules:    " << violated_rules.size();
+        for (const auto &str : violated_rules)
+        {
+            ss << "\n\t-> Violated RuleUID: " << str << "\n";
+        }
+
+        ss << "\n" << BASIC_SEPARATOR_LINE << "\n";
 
         outFile << ss.rdbuf();
         outFile.close();
