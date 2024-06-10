@@ -283,13 +283,13 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
 
         ss << "Addressed vs Violated rules report \n\n";
 
-        ss << "\nTotal number of addressed rules: \t" << addressed_rules.size();
+        ss << "\nTotal number of addressed rules:   " << addressed_rules.size();
         for (const auto &str : addressed_rules)
         {
             ss << "\n\t-> Addressed RuleUID: " << str << "\n";
         }
 
-        ss << "\nTotal number of violated rules: \t" << violated_rules.size();
+        ss << "\nTotal number of violated rules:    " << violated_rules.size();
         for (const auto &str : violated_rules)
         {
             ss << "\n\t-> Violated RuleUID: " << str << "\n";
