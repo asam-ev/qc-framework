@@ -178,7 +178,7 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
     std::list<cIssue *> issues;
     std::list<cRule *> rules;
     std::set<std::string> violated_rules;
-    std::set<std::string> checked_rules;
+    std::set<std::string> addressed_rules;
 
     if (outFile.is_open())
     {
@@ -273,7 +273,7 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                 {
                     if ((*it_Rule)->GetRuleUID() != "")
                     {
-                        checked_rules.insert((*it_Rule)->GetRuleUID());
+                        addressed_rules.insert((*it_Rule)->GetRuleUID());
                     }
                 }
             }
@@ -283,13 +283,13 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
 
         ss << "Addressed vs Violated rules report \n\n";
 
-        ss << "\nTotal number of addressed rules:\t" << checked_rules.size();
-        for (const auto &str : checked_rules)
+        ss << "\nTotal number of addressed rules: \t" << addressed_rules.size();
+        for (const auto &str : addressed_rules)
         {
             ss << "\n\t-> Addressed RuleUID: " << str << "\n";
         }
 
-        ss << "\nTotal number of violated rules:\t" << violated_rules.size();
+        ss << "\nTotal number of violated rules: \t" << violated_rules.size();
         for (const auto &str : violated_rules)
         {
             ss << "\n\t-> Violated RuleUID: " << str << "\n";
