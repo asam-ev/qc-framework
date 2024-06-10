@@ -281,12 +281,12 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
             ss << "\n" << BASIC_SEPARATOR_LINE << "\n";
         }
 
-        ss << "Checked vs Violated rules report \n\n";
+        ss << "Addressed vs Violated rules report \n\n";
 
-        ss << "\nTotal number of checked rules:\t" << checked_rules.size();
+        ss << "\nTotal number of addressed rules:\t" << checked_rules.size();
         for (const auto &str : checked_rules)
         {
-            ss << "\n\t-> Checked RuleUID: " << str << "\n";
+            ss << "\n\t-> Addressed RuleUID: " << str << "\n";
         }
 
         ss << "\nTotal number of violated rules:\t" << violated_rules.size();
