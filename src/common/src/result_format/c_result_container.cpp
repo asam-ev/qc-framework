@@ -58,7 +58,6 @@ void cResultContainer::Clear()
 
 void cResultContainer::WriteResults(const std::string &path) const
 {
-    XMLPlatformUtils::Initialize();
     DOMImplementation *p_DOMImplementationCore = DOMImplementationRegistry::getDOMImplementation(CONST_XMLCH("core"));
 
     // For storing a file, we need DOMImplementationLS
@@ -97,7 +96,6 @@ void cResultContainer::WriteResults(const std::string &path) const
     p_DOMSerializer->release();
 
     XMLString::release(&pPath);
-    XMLPlatformUtils::Terminate();
 }
 
 /*
@@ -118,7 +116,6 @@ void cResultContainer::AddResultsFromXML(const std::string &strXmlFilePath)
     }
     else
     {
-        XMLPlatformUtils::Initialize();
         xercesc::XercesDOMParser *pDomParser = new xercesc::XercesDOMParser();
 
         pDomParser->setValidationScheme(XercesDOMParser::Val_Never);
@@ -165,7 +162,6 @@ void cResultContainer::AddResultsFromXML(const std::string &strXmlFilePath)
         }
 
         delete pDomParser;
-        // XMLPlatformUtils::Terminate();
     }
 }
 

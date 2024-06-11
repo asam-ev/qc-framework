@@ -21,7 +21,7 @@ cConfiguration::~cConfiguration()
 
 bool cConfiguration::ParseFromXML(cConfiguration *config, const std::string &configFilePath)
 {
-    XMLPlatformUtils::Initialize();
+    // XMLPlatformUtils::Initialize();
     if (!CheckIfFileExists(configFilePath))
         return false;
 
@@ -71,7 +71,7 @@ bool cConfiguration::ParseFromXML(cConfiguration *config, const std::string &con
 
     delete pDomParser;
 
-    XMLPlatformUtils::Terminate();
+    // XMLPlatformUtils::Terminate();
 
     return true;
 }
@@ -88,7 +88,7 @@ cConfiguration *cConfiguration::ParseFromXML(const std::string &configFilePath)
 
 void cConfiguration::WriteConfigurationToFile(const std::string &filePath)
 {
-    XMLPlatformUtils::Initialize();
+    // XMLPlatformUtils::Initialize();
     DOMImplementation *p_DOMImplementationCore =
         DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("core"));
     DOMLSSerializer *p_DOMSerializer = ((DOMImplementationLS *)p_DOMImplementationCore)->createLSSerializer();
@@ -131,7 +131,7 @@ void cConfiguration::WriteConfigurationToFile(const std::string &filePath)
     theOutput->release();
     p_DOMSerializer->release();
 
-    XMLPlatformUtils::Terminate();
+    // XMLPlatformUtils::Terminate();
 }
 
 void cConfiguration::ProcessDomNode(DOMNode *const nodeToProcess, cConfiguration *const cConfig) const
