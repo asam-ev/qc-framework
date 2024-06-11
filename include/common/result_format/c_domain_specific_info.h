@@ -29,8 +29,14 @@ class cDomainSpecificInfo
      * \param inputRoot: xml tree root for the initialization
      * \param name: Name of the tag
      */
-    cDomainSpecificInfo(DOMElement *inputRoot, const std::string &name = "") : m_Root(inputRoot), m_Name(name)
+    cDomainSpecificInfo(DOMElement *inputRoot, const std::string &name = "") : m_Name(name)
     {
+        // Get the original document's implementation
+        DOMImplementation *impl = inputRoot->getOwnerDocument()->getImplementation();
+        // Create a new document to own the cloned element
+        m_Doc = impl->createDocument();
+        // Import the element into the new document, effectively cloning it
+        m_Root = dynamic_cast<DOMElement *>(m_Doc->importNode(inputRoot, true));
     }
 
     // Serialize this information
@@ -44,9 +50,13 @@ class cDomainSpecificInfo
     DOMElement *GetRoot() const;
     // Returns the name
     std::string GetName() const;
+    DOMDocument *GetDoc() const;
+
+    ~cDomainSpecificInfo();
 
   protected:
     DOMElement *m_Root;
+    DOMDocument *m_Doc;
     std::string m_Name;
 
   private:

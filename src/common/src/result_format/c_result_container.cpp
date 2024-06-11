@@ -165,7 +165,7 @@ void cResultContainer::AddResultsFromXML(const std::string &strXmlFilePath)
         }
 
         delete pDomParser;
-        XMLPlatformUtils::Terminate();
+        // XMLPlatformUtils::Terminate();
     }
 }
 

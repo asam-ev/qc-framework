@@ -52,7 +52,7 @@ class cIssue : public IResult
      *
      */
     cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID = "",
-           cLocationsContainer *locationsContainer = nullptr);
+           cLocationsContainer *locationsContainer = nullptr, cDomainSpecificInfo *domainSpecificInfo = nullptr);
 
     /*
      * Creates a new Issue
@@ -88,6 +88,8 @@ class cIssue : public IResult
 
     // Returns th count of locations
     std::size_t GetLocationsCount() const;
+
+    size_t GetDomainSpecificCount() const;
 
     // Assigns an issue to a checker
     void AssignChecker(cChecker *checkerToAssign);

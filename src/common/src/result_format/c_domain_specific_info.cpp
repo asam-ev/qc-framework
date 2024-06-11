@@ -16,10 +16,23 @@
 
 const XMLCh *cDomainSpecificInfo::TAG_DOMAIN_SPECIFIC_INFO = CONST_XMLCH("DomainSpecificInfo");
 const XMLCh *cDomainSpecificInfo::ATTR_NAME = CONST_XMLCH("name");
-// Returns the X
+// Returns the root
 DOMElement *cDomainSpecificInfo::GetRoot() const
 {
     return m_Root;
+}
+DOMDocument *cDomainSpecificInfo::GetDoc() const
+{
+    return m_Doc;
+}
+std::string cDomainSpecificInfo::GetName() const
+{
+    return m_Name;
+}
+
+cDomainSpecificInfo::~cDomainSpecificInfo()
+{
+    m_Doc->release();
 }
 
 DOMElement *cDomainSpecificInfo::WriteXML(DOMDocument *p_resultDocument)
@@ -42,6 +55,8 @@ DOMElement *cDomainSpecificInfo::WriteXML(DOMDocument *p_resultDocument)
 cDomainSpecificInfo *cDomainSpecificInfo::ParseFromXML(DOMNode *pXMLNode, DOMElement *pXMLElement)
 {
     std::string strName = XMLString::transcode(pXMLElement->getAttribute(ATTR_NAME));
-    cDomainSpecificInfo *domain_info = new cDomainSpecificInfo(pXMLElement, strName);
-    return domain_info;
+
+    cDomainSpecificInfo *domainInfo = new cDomainSpecificInfo(pXMLElement, strName);
+    // Return the parsed instance
+    return domainInfo;
 }
