@@ -130,6 +130,8 @@ void ShowHelp(const std::string &toolPath)
 
 void RunTextReport(const cParameterContainer &inputParams)
 {
+    XMLPlatformUtils::Initialize();
+
     cResultContainer *pResultContainer = new cResultContainer();
 
     try
