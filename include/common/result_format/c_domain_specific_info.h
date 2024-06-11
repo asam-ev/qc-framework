@@ -26,8 +26,8 @@ class cDomainSpecificInfo
     static const XMLCh *ATTR_NAME;
     /*
      * Creates a new instance of cDomainSpecificInfo
-     * \param m_AnyDoc: rule id
-     * \param description: Additional description
+     * \param inputRoot: xml tree root for the initialization
+     * \param name: Name of the tag
      */
     cDomainSpecificInfo(DOMElement *inputRoot, const std::string &name = "") : m_Root(inputRoot), m_Name(name)
     {

@@ -57,7 +57,7 @@ def check_node_exists(xml_file: str, node_name: str) -> bool:
 
 def test_runtime_execution():
 
-    start_wd = os.getcwd()
+    # start_wd = os.getcwd()
     install_dir = os.path.join("..", "build", "bin")
     os.chdir(install_dir)
 
@@ -95,12 +95,12 @@ def test_runtime_execution():
     node_name = "Issue"
     assert check_node_exists(result_file, node_name)
 
-    os.chdir(start_wd)
+    # os.chdir(start_wd)
 
 
 def test_3steps_config():
 
-    start_wd = os.getcwd()
+    # start_wd = os.getcwd()
     install_dir = os.path.join("..", "build", "bin")
     os.chdir(install_dir)
 
@@ -135,4 +135,4 @@ def test_3steps_config():
     result_file = os.path.join("Report.txt")
     assert os.path.isfile(result_file)
 
-    os.chdir(start_wd)
+    # os.chdir(start_wd)
