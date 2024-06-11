@@ -9,6 +9,7 @@
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_checker.h"
 #include "common/result_format/c_checker_bundle.h"
+#include "common/result_format/c_domain_specific_info.h"
 #include "common/result_format/c_locations_container.h"
 #include "common/util.h"
 
@@ -40,6 +41,13 @@ cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, std::list<cL
     AddLocationsContainer(listLoc);
 }
 
+cIssue::cIssue(const std::string &description, eIssueLevel infoLvl,
+               std::list<cDomainSpecificInfo *> listDomainSpecificInfo)
+    : cIssue(description, infoLvl)
+{
+    AddDomainSpecificInfo(listDomainSpecificInfo);
+}
+
 cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID,
                std::list<cLocationsContainer *> listLoc)
     : cIssue(description, infoLvl, ruleUID)
@@ -66,11 +74,22 @@ void cIssue::AddLocationsContainer(cLocationsContainer *locationsContainer)
         m_Locations.push_back(locationsContainer);
 }
 
+void cIssue::AddDomainSpecificInfo(cDomainSpecificInfo *domainSpecificInfo)
+{
+    if (nullptr != domainSpecificInfo)
+        m_DomainSpecificInfo.push_back(domainSpecificInfo);
+}
+
 void cIssue::AddLocationsContainer(std::list<cLocationsContainer *> listLoc)
 {
     m_Locations.insert(m_Locations.end(), listLoc.begin(), listLoc.end());
 }
 
+void cIssue::AddDomainSpecificInfo(std::list<cDomainSpecificInfo *> listDomainSpecificInfo)
+{
+    m_DomainSpecificInfo.insert(m_DomainSpecificInfo.end(), listDomainSpecificInfo.begin(),
+                                listDomainSpecificInfo.end());
+}
 void cIssue::AssignChecker(cChecker *checkerToAssign)
 {
     m_Checker = checkerToAssign;
@@ -103,6 +122,17 @@ DOMElement *cIssue::WriteXML(DOMDocument *p_resultDocument)
         {
             DOMElement *locElement = (*locIt)->WriteXML(p_resultDocument);
             p_DataElement->appendChild(locElement);
+        }
+    }
+
+    // Write domain specific info
+    if (HasDomainSpecificInfo())
+    {
+        for (std::list<cDomainSpecificInfo *>::const_iterator domIt = m_DomainSpecificInfo.cbegin();
+             domIt != m_DomainSpecificInfo.cend(); domIt++)
+        {
+            DOMElement *domainElement = (*domIt)->WriteXML(p_resultDocument);
+            p_DataElement->appendChild(domainElement);
         }
     }
 
@@ -182,6 +212,12 @@ cIssue *cIssue::ParseFromXML(DOMNode *pXMLNode, DOMElement *pXMLElement, cChecke
                 issue->AddLocationsContainer(
                     (cLocationsContainer *)cLocationsContainer::ParseFromXML(currentIssueNode, currentIssueElement));
             }
+            // Parse cFileLocation
+            if (Equals(currentTagName, XMLString::transcode(cDomainSpecificInfo::TAG_DOMAIN_SPECIFIC_INFO)))
+            {
+                issue->AddDomainSpecificInfo(
+                    (cDomainSpecificInfo *)cDomainSpecificInfo::ParseFromXML(currentIssueNode, currentIssueElement));
+            }
         }
     }
 
@@ -191,6 +227,11 @@ cIssue *cIssue::ParseFromXML(DOMNode *pXMLNode, DOMElement *pXMLElement, cChecke
 bool cIssue::HasLocations() const
 {
     return (m_Locations.size() != 0);
+}
+
+bool cIssue::HasDomainSpecificInfo() const
+{
+    return (m_DomainSpecificInfo.size() != 0);
 }
 
 size_t cIssue::GetLocationsCount() const

@@ -19,6 +19,7 @@
 
 class cChecker;
 class cLocationsContainer;
+class cDomainSpecificInfo;
 
 /*
  * Definition of issue levels
@@ -59,6 +60,9 @@ class cIssue : public IResult
      */
     cIssue(const std::string &description, eIssueLevel infoLvl, std::list<cLocationsContainer *> listLoc);
 
+    cIssue(const std::string &description, eIssueLevel infoLvl,
+           std::list<cDomainSpecificInfo *> listDomainSpecificInfo);
+
     cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID,
            std::list<cLocationsContainer *> listLoc);
 
@@ -67,8 +71,14 @@ class cIssue : public IResult
     // Adds extendesd information to this issue
     void AddLocationsContainer(cLocationsContainer *locationsContainer);
 
+    // Adds domain specific info to this issue
+    void AddDomainSpecificInfo(cDomainSpecificInfo *domainSpecificInfo);
+
     // Adds extendesd information to this issue
     void AddLocationsContainer(std::list<cLocationsContainer *> listLoc);
+
+    // Adds domain specific info to this issue
+    void AddDomainSpecificInfo(std::list<cDomainSpecificInfo *> listDomainSpecificInfo);
 
     // Write the xml for this issue
     virtual DOMElement *WriteXML(XERCES_CPP_NAMESPACE::DOMDocument *p_resultDocument);
@@ -121,8 +131,13 @@ class cIssue : public IResult
     // Returns true if this issue has location containers
     bool HasLocations() const;
 
+    bool HasDomainSpecificInfo() const;
+
     // Returns all extended informations
     std::list<cLocationsContainer *> GetLocationsContainer() const;
+
+    // Returns all domain specific info
+    std::list<cDomainSpecificInfo *> GetDomainSpecificInfo() const;
 
     // Returns the checker this issue belongs to
     cChecker *GetChecker() const;
@@ -144,6 +159,7 @@ class cIssue : public IResult
     cChecker *m_Checker;
 
     std::list<cLocationsContainer *> m_Locations;
+    std::list<cDomainSpecificInfo *> m_DomainSpecificInfo;
 };
 
 std::string PrintIssueLevel(const eIssueLevel);
