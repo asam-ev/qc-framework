@@ -61,6 +61,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
         <xs:sequence>
             <xs:any processContents="lax" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
+        <xs:attribute name="name" type="xs:string" />
     </xs:complexType>
 
     <xs:complexType name="LocationsType">
