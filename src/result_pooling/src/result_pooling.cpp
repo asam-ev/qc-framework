@@ -72,7 +72,6 @@ int main(int argc, char *argv[])
     }
 
     RunResultPooling(inputParams, resultsDirectory);
-
     return 0;
 }
 
@@ -93,6 +92,7 @@ void ShowHelp(const std::string &toolPath)
 
 void RunResultPooling(const cParameterContainer &inputParams, const fs::path &resultsDirectory)
 {
+    XMLPlatformUtils::Initialize();
     std::string strResultFile = inputParams.GetParam("strResultFile");
 
     pResultContainer = new cResultContainer();
@@ -140,6 +140,7 @@ void RunResultPooling(const cParameterContainer &inputParams, const fs::path &re
     std::cout << "Finished." << std::endl;
 
     delete pResultContainer;
+    XMLPlatformUtils::Terminate();
 }
 
 static void AddFileLocationsToIssues()

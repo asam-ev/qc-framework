@@ -31,6 +31,7 @@ add_library(qc4openx-common STATIC
 	src/xml/c_x_path_evaluator.cpp
     src/result_format/c_rule.cpp
     src/result_format/c_metadata.cpp
+    src/result_format/c_domain_specific_info.cpp
 )
 
 target_include_directories(qc4openx-common PUBLIC ${PROJECT_SOURCE_DIR}/include

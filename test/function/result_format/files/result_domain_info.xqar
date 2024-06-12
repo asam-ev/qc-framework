@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<CheckerResults version="1.0.0">
+
+  <CheckerBundle build_date="" description="" name="DemoCheckerBundle" summary="Found 4 issues"
+    version="">
+    <Checker checkerId="exampleDomainChecker"
+      description="This is a description of example domain info checker" status="completed"
+      summary="">
+      <Issue description="This is an information from the demo usecase" issueId="3" level="3"
+        ruleUID="">
+        <DomainSpecificInfo name="test_domain">
+          <RoadLocation b="5.4" c="0.0" id="aa" />
+        </DomainSpecificInfo>
+      </Issue>
+    </Checker>
+  </CheckerBundle>
+
+</CheckerResults>

@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
     SetDllDirectory(currentPathW.c_str());
 #endif
 
+    XMLPlatformUtils::Initialize();
     std::string strToolpath = argv[0];
 
     if (argc > 2)
@@ -121,6 +122,7 @@ void ShowHelp(const std::string &toolPath)
 
 int RunReportGUI(const cParameterContainer &inputParams, const QApplication &app)
 {
+    XMLPlatformUtils::Initialize();
     cResultContainer *pResultContainer = new cResultContainer();
 
     std::string strXMLResultsPath = inputParams.GetParam("strInputFile");
@@ -150,6 +152,7 @@ int RunReportGUI(const cParameterContainer &inputParams, const QApplication &app
 
     pResultContainer->Clear();
     delete pResultContainer;
+    XMLPlatformUtils::Terminate();
 
     return execCode;
 }
