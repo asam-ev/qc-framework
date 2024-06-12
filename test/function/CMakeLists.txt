@@ -7,6 +7,7 @@
 add_subdirectory(examples)
 add_subdirectory(report_modules)
 add_subdirectory(result_pooling/src)
+add_subdirectory(result_format/src)
 
 if (WIN32)
     # FIXME: We need some adaptions that this works in Linux
@@ -32,10 +33,15 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 ${CMAKE_CURRENT_SOURCE_DIR}/runtime/files
                 ${REFERENCE_FILES_INSTALL_DIR}/function/runtime
-        
+
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 ${CMAKE_CURRENT_SOURCE_DIR}/../../doc/schema
                 ${REFERENCE_FILES_INSTALL_DIR}/doc/schema
+
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_CURRENT_SOURCE_DIR}/result_format/files
+                ${REFERENCE_FILES_INSTALL_DIR}/function/result_format
+
     COMMENT "Copying test reference files..."
 )
 
