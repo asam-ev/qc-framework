@@ -23,47 +23,28 @@ def update_param_value(xml_file, name, new_value, output_file):
 
 def main():
     input_path = "/input_path"
-    input_name = os.getenv("INPUT_NAME")
+    input_filename = os.getenv("INPUT_FILENAME")
 
-    input_file = None
-
-    full_input = os.path.join(input_path, input_name)
+    full_input_path = os.path.join(input_path, input_filename)
 
     XODR_TEMPLATE_PATH = "/app/demo_pipeline/templates/xodr_template.xml"
     XOSC_TEMPLATE_PATH = "/app/demo_pipeline/templates/xosc_template.xml"
     GENERATED_CONFIG_PATH = "/app/demo_pipeline/generated_config"
     os.makedirs(GENERATED_CONFIG_PATH, exist_ok=True)
 
-    if os.path.isdir(full_input):
-        print("Folder specified as input. Searching for xosc or xodr files..")
-        xosc_files = glob.glob(os.path.join(full_input, f"*.xosc"))
-        xodr_files = glob.glob(os.path.join(full_input, f"*.xodr"))
-        all_files = xosc_files + xodr_files
-        if all_files:
-            input_file = all_files[0]
-        else:
-            print(
-                f"""No xosc or xodr file found in {full_input}.
-                \nImpossible to run demo runtime.
-                \n Exiting..."""
-            )
-            return
-    elif os.path.isfile(full_input):
-        print(f"File specified as input. Using {full_input}")
-        input_file = full_input
-    else:
-        print("Error. Impossible to read specified input. Exiting...")
+    if not os.path.isfile(full_input_path):
+        print("No file specified as input. Please provide xosc or xodr file. Exiting...")
         return
 
-    print("Input file: ", input_file)
-    _, input_file_extension = os.path.splitext(input_file)
+    print("Input file: ", full_input_path)
+    _, input_file_extension = os.path.splitext(full_input_path)
 
     if input_file_extension == ".xosc":
         print("XOSC selected")
         update_param_value(
             XOSC_TEMPLATE_PATH,
             "XoscFile",
-            input_file,
+            full_input_path,
             os.path.join(GENERATED_CONFIG_PATH, "config.xml"),
         )
     elif input_file_extension == ".xodr":
@@ -71,11 +52,12 @@ def main():
         update_param_value(
             XODR_TEMPLATE_PATH,
             "XodrFile",
-            input_file,
+            full_input_path,
             os.path.join(GENERATED_CONFIG_PATH, "config.xml"),
         )
     else:
         print(f"Error in input file extension. Unrecognized {input_file_extension}")
+        return
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ python3 /app/framework/runtime/runtime/runtime.py \
     --install_dir  "/app/framework/build/bin" \
     --schema_dir   "/app/framework/doc/schema"
 
-rm -rf /out/$INPUT_NAME
-mkdir -p /out/$INPUT_NAME
-cp /app/framework/build/bin/*.xqar /out/$INPUT_NAME
-cp /app/framework/build/bin/*.txt /out/$INPUT_NAME
+rm -rf /out/$INPUT_FILENAME
+mkdir -p /out/$INPUT_FILENAME
+cp /app/framework/build/bin/*.xqar /out/$INPUT_FILENAME
+cp /app/framework/build/bin/*.txt /out/$INPUT_FILENAME
