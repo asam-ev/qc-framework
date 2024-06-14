@@ -17,15 +17,8 @@ DOCKER_BUILDKIT=1 \
   --target demo_pipeline \
   -t demo_pipeline .
 
-#  docker run \
-#  -v $INPUT_DIRECTORY:/input_path \
-#   -v "$OUTPUT_PATH":/out \
-#   -e INPUT_NAME=$INPUT_NAME \
-#  --rm  --name demo_pipeline demo_pipeline
-
-
  docker run \
- -v $INPUT_DIRECTORY:/input_path \
- -v $OUTPUT_PATH:/out \
- -it \
- --rm  --name demo_pipeline --entrypoint /bin/bash demo_pipeline
+  -v $INPUT_DIRECTORY:/input_path \
+  -v "$OUTPUT_PATH":/out \
+  -e INPUT_NAME=$INPUT_NAME \
+ --rm --name demo_pipeline demo_pipeline

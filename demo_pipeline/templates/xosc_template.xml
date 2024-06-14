@@ -3,7 +3,7 @@
 
     <Param name="XoscFile" value="template.xosc" />
 
-    <CheckerBundle application="OpenscenarioChecker">
+    <CheckerBundle application="xoscBundle">
         <Param name="resultFile" value="xosc_bundle_report.xqar" />
         <Checker checkerId="schema_xosc" maxLevel="1" minLevel="3" />
     </CheckerBundle>

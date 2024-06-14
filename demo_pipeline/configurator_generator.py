@@ -31,6 +31,8 @@ def main():
 
     XODR_TEMPLATE_PATH = "/app/demo_pipeline/templates/xodr_template.xml"
     XOSC_TEMPLATE_PATH = "/app/demo_pipeline/templates/xosc_template.xml"
+    GENERATED_CONFIG_PATH = "/app/demo_pipeline/generated_config"
+    os.makedirs(GENERATED_CONFIG_PATH, exist_ok=True)
 
     if os.path.isdir(full_input):
         print("Folder specified as input. Searching for xosc or xodr files..")
@@ -59,40 +61,21 @@ def main():
     if input_file_extension == ".xosc":
         print("XOSC selected")
         update_param_value(
-            XOSC_TEMPLATE_PATH, "XoscFile", input_file, "/out/generated_xosc.xml"
+            XOSC_TEMPLATE_PATH,
+            "XoscFile",
+            input_file,
+            os.path.join(GENERATED_CONFIG_PATH, "config.xml"),
         )
     elif input_file_extension == ".xodr":
         print("XODR selected")
         update_param_value(
-            XOSC_TEMPLATE_PATH, "XodrFile", input_file, "/out/generated_xodr.xml"
+            XODR_TEMPLATE_PATH,
+            "XodrFile",
+            input_file,
+            os.path.join(GENERATED_CONFIG_PATH, "config.xml"),
         )
     else:
         print(f"Error in input file extension. Unrecognized {input_file_extension}")
-
-    ### TEST
-
-    config_xml = "/out/generated_xosc.xml"
-    install_dir = "/app/framework/build/bin"
-    schema_dir = "/app/framework/doc/schema"
-    runtime_script = "/app/framework/runtime/runtime/runtime.py"
-
-    process = subprocess.Popen(
-        f"python3 {runtime_script} --config={config_xml} --install_dir={install_dir} --schema_dir={schema_dir}",
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        cwd="/out",
-    )
-    stdout, stderr = process.communicate()
-    exit_code = process.returncode
-    if exit_code == 0:
-        print("Command executed successfully.")
-        print("Output:")
-        print(stdout.decode())
-    else:
-        print("Error occurred while executing the command.")
-        print("Error message:")
-        print(stderr.decode())
 
 
 if __name__ == "__main__":

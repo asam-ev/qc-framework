@@ -78,7 +78,6 @@ CMD ctest --test-dir /app/framework/build -C Release && cp /app/framework/build/
 
 FROM runtime_test as demo_pipeline
 
-
 SHELL ["/bin/bash", "-c"]
 
 RUN apt install -y git
@@ -102,39 +101,8 @@ RUN git clone --single-branch --branch develop https://github.com/asam-ev/qc-ope
     pip install --no-cache-dir -r qc-opendrive/requirements.txt
 
 COPY demo_pipeline /app/demo_pipeline
-RUN chmod +x /app/demo_pipeline/OpenscenarioChecker && cp /app/demo_pipeline/OpenscenarioChecker /app/framework/build/bin/
-RUN chmod +x /app/demo_pipeline/OpendriveChecker && cp /app/demo_pipeline/OpendriveChecker /app/framework/build/bin/
+RUN chmod +x /app/demo_pipeline/xoscBundle && cp /app/demo_pipeline/xoscBundle /app/framework/build/bin/
+RUN chmod +x /app/demo_pipeline/xodrBundle && cp /app/demo_pipeline/xodrBundle /app/framework/build/bin/
 
 RUN pip install -r /app/demo_pipeline/requirements.txt
-CMD ["python3", "/app/demo_pipeline/configurator_generator.py"]
-
-# RUN python3 /app/demo_pipeline/configurator_generator.py
-# CMD ["python3","/app/runtime/runtime.py","--config","","--install_dir", "--schema_dir", ""]
-
-
-
-
-
-# if specify file, then use the file, otherwise use the first element in passed folder
-
-# configurator_generator.py
-
-# check input file.
-# xosc OR xodr
-
-# if xosc -> generate corresponding configuration file
-
-# demo_pipeline_xodr config as template
-# demo_pipeline_xosc config as template
-# and then just change the Param tag config
-
-# Generate config
-
-# Call runtime
-
-# Save result pooling output + text report
-
-# Input
-# docker run —rm -v /user_input_path:/input_path ghcr.io/asam-ev/qc-framework:latest
-
-# PLUS: push this image to github container registry (manually)
+CMD /app/demo_pipeline/run_pipeline.sh
