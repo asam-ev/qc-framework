@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Config>
+
+    <Param name="XoscFile" value="template.xosc" />
+
+    <CheckerBundle application="OpenscenarioChecker">
+        <Param name="resultFile" value="xosc_bundle_report.xqar" />
+        <Checker checkerId="schema_xosc" maxLevel="1" minLevel="3" />
+    </CheckerBundle>
+
+    <ReportModule application="TextReport">
+        <Param name="strInputFile" value="Result.xqar" />
+        <Param name="strReportFile" value="Report.txt" />
+    </ReportModule>
+
+</Config>

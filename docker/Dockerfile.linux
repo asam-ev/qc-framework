@@ -8,7 +8,7 @@ FROM ubuntu:22.04 AS framework_builder
 SHELL ["/bin/bash", "-c"]
 
 RUN echo "Installing Dependencies..." && \
-    apt update && apt install -y \ 
+    apt update && apt install -y \
     g++ \
     g++-10 \
     make \
@@ -19,7 +19,7 @@ RUN echo "Installing Dependencies..." && \
     libqt5xmlpatterns5-dev \
     libxerces-c-dev \
     pkg-config && \
-    echo "Dependencies installed." 
+    echo "Dependencies installed."
 
 RUN mkdir -p /app/framework
 
@@ -50,33 +50,91 @@ RUN echo "Building framework..." && \
 FROM python:3.11.9-slim-bookworm  as runtime_test
 
 RUN echo "Installing Qt..." && \
-    apt update && apt install -y \ 
+    apt update && apt install -y \
     qtbase5-dev \
     libqt5xmlpatterns5-dev \
     libxerces-c-dev \
     pkg-config && \
-    echo "Dependencies installed."   
+    echo "Dependencies installed."
 
 RUN  mkdir -p /app
-
 COPY runtime/requirements.txt /app/
 RUN pip install -r /app/requirements.txt
-
 # For testing files
 COPY --from=framework_builder /app/framework /app/framework
 # Copy install directory in runtime image
 COPY --from=framework_builder /home/root/qc-build /app/framework/build
-
 # @NOTE this is just because DemoCheckerBundle is not installed by default
 COPY --from=framework_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/framework/build/bin/
-
 ENV PYTHONUNBUFFERED=1
-
 WORKDIR /app/framework/runtime/
-
 CMD python3 -m pytest -rA > runtime_test.log && cp /app/framework/runtime/runtime_test.log /out/runtime_test.log
+
 
 # Runtime stage
 FROM framework_builder as unit_test
-
 CMD ctest --test-dir /app/framework/build -C Release && cp /app/framework/build/Testing/Temporary/LastTest.log /out/
+
+
+FROM runtime_test as demo_pipeline
+
+
+SHELL ["/bin/bash", "-c"]
+
+RUN apt install -y git
+
+WORKDIR /app
+
+# Clone, configure venv, install by copying bash script to install dir
+RUN git clone --single-branch --branch develop https://github.com/asam-ev/qc-openscenarioxml.git && \
+    # Create a virtual environment
+    python3.11 -m venv openscenario-venv && \
+    # Activate the virtual environment and install required Python packages
+    source openscenario-venv/bin/activate && \
+    pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt
+
+# Clone, configure venv, install by copying bash script to install dir
+RUN git clone --single-branch --branch develop https://github.com/asam-ev/qc-opendrive.git && \
+    # Create a virtual environment
+    python3.11 -m venv opendrive-venv && \
+    # Activate the virtual environment and install required Python packages
+    source opendrive-venv/bin/activate && \
+    pip install --no-cache-dir -r qc-opendrive/requirements.txt
+
+COPY demo_pipeline /app/demo_pipeline
+RUN chmod +x /app/demo_pipeline/OpenscenarioChecker && cp /app/demo_pipeline/OpenscenarioChecker /app/framework/build/bin/
+RUN chmod +x /app/demo_pipeline/OpendriveChecker && cp /app/demo_pipeline/OpendriveChecker /app/framework/build/bin/
+
+RUN pip install -r /app/demo_pipeline/requirements.txt
+CMD ["python3", "/app/demo_pipeline/configurator_generator.py"]
+
+# RUN python3 /app/demo_pipeline/configurator_generator.py
+# CMD ["python3","/app/runtime/runtime.py","--config","","--install_dir", "--schema_dir", ""]
+
+
+
+
+
+# if specify file, then use the file, otherwise use the first element in passed folder
+
+# configurator_generator.py
+
+# check input file.
+# xosc OR xodr
+
+# if xosc -> generate corresponding configuration file
+
+# demo_pipeline_xodr config as template
+# demo_pipeline_xosc config as template
+# and then just change the Param tag config
+
+# Generate config
+
+# Call runtime
+
+# Save result pooling output + text report
+
+# Input
+# docker run —rm -v /user_input_path:/input_path ghcr.io/asam-ev/qc-framework:latest
+
+# PLUS: push this image to github container registry (manually)
