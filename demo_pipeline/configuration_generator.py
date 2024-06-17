@@ -5,7 +5,10 @@
 
 import sys, os, glob
 from lxml import etree
-import subprocess
+
+XODR_TEMPLATE_PATH = "/app/demo_pipeline/templates/xodr_template.xml"
+XOSC_TEMPLATE_PATH = "/app/demo_pipeline/templates/xosc_template.xml"
+GENERATED_CONFIG_PATH = "/tmp/generated_config"
 
 
 def update_param_value(xml_file, name, new_value, output_file):
@@ -13,7 +16,7 @@ def update_param_value(xml_file, name, new_value, output_file):
     tree = etree.parse(xml_file)
     root = tree.getroot()
 
-    # Find the Param element with the name attribute "config" and update its value attribute
+    # Find the Param element with the name attribute and update its value attribute
     for param in root.findall(f".//Param[@name='{name}']"):
         param.set("value", new_value)
 
@@ -22,14 +25,11 @@ def update_param_value(xml_file, name, new_value, output_file):
 
 
 def main():
-    input_path = "/input_path"
+    input_directory = "/input_directory"
     input_filename = os.getenv("INPUT_FILENAME")
 
-    full_input_path = os.path.join(input_path, input_filename)
+    full_input_path = os.path.join(input_directory, input_filename)
 
-    XODR_TEMPLATE_PATH = "/app/demo_pipeline/templates/xodr_template.xml"
-    XOSC_TEMPLATE_PATH = "/app/demo_pipeline/templates/xosc_template.xml"
-    GENERATED_CONFIG_PATH = "/app/demo_pipeline/generated_config"
     os.makedirs(GENERATED_CONFIG_PATH, exist_ok=True)
 
     if not os.path.isfile(full_input_path):

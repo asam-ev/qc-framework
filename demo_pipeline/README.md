@@ -8,11 +8,19 @@ The demo pipeline is provided as docker image uploaded to Github container regis
 
 To process a file it is needed to mount input and output folder and provide the filename to process
 
+```
+docker run \
+    -v YOUR_INPUT_FOLDER:/input_directory \
+    -v YOUR_OUTPUT_FOLDER:/out \
+    -e INPUT_FILENAME=YOUR_INPUT_FILENAME \
+    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:latest
+```
+
 E.g. To process the file at `/home/user/xodr_files/test_ramp.xosc`
 
 ```
 docker run \
-    -v /home/user/xodr_files:/input_path \
+    -v /home/user/xodr_files:/input_directory \
     -v /home/user/output:/out \
     -e INPUT_FILENAME=test_ramp.xosc \
     --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:latest
@@ -34,3 +42,17 @@ After the execution, in the specified output folder you will find:
 - Specific CheckerBundle `xqar` result file
 - ResultPooling `Result.xqar` result file
 - TextReport `Report.txt` text file
+
+### Build instructions
+
+In case of local build of demo_pipeline docker image, you can execute:
+
+```
+cd ..
+
+DOCKER_BUILDKIT=1 \
+  docker build \
+  -f docker/Dockerfile.linux \
+  --target demo_pipeline \
+  -t demo_pipeline .
+```
