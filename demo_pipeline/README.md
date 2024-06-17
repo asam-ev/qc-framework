@@ -13,7 +13,7 @@ docker run \
     -v YOUR_INPUT_FOLDER:/input_directory \
     -v YOUR_OUTPUT_FOLDER:/out \
     -e INPUT_FILENAME=YOUR_INPUT_FILENAME \
-    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:latest
+    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
 ```
 
 E.g. To process the file at `/home/user/xodr_files/test_ramp.xosc`
@@ -23,7 +23,7 @@ docker run \
     -v /home/user/xodr_files:/input_directory \
     -v /home/user/output:/out \
     -e INPUT_FILENAME=test_ramp.xosc \
-    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:latest
+    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
 ```
 
 
