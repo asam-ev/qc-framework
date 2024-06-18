@@ -7,10 +7,10 @@ python3 /app/demo_pipeline/configuration_generator.py
 
 python3 /app/framework/runtime/runtime/runtime.py \
     --config "/tmp/generated_config/config.xml" \
-    --install_dir "/app/framework/build/bin" \
+    --install_dir "/app/framework/bin" \
     --schema_dir "/app/framework/doc/schema"
 
 rm -rf /out/$INPUT_FILENAME
 mkdir -p /out/$INPUT_FILENAME
-cp /app/framework/build/bin/*.xqar /out/$INPUT_FILENAME
-cp /app/framework/build/bin/*.txt /out/$INPUT_FILENAME
+cp /app/framework/bin/*.xqar /out/$INPUT_FILENAME
+cp /app/framework/bin/*.txt /out/$INPUT_FILENAME
