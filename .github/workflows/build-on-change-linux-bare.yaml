@@ -4,8 +4,8 @@ on:
   # execute on every PR made targeting the branches bellow
   pull_request:
     branches:
-      - master
-      - develop # can be removed on master merge
+      - main
+      - develop # can be removed on main merge
     paths: # we only include paths critical for building to avoid unnecessary runs
       - src/**
       - include/**
@@ -19,8 +19,8 @@ on:
   # execute on every push made targeting the branches bellow
   push:
     branches:
-      - master
-      - develop # can be removed on master merge
+      - main
+      - develop # can be removed on main merge
     paths: # we only include paths critical for building to avoid unnecessary runs
       - src/**
       - include/**
