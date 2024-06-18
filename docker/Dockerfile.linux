@@ -18,10 +18,14 @@ RUN echo "Installing Dependencies..." && \
     qtbase5-dev \
     libqt5xmlpatterns5-dev \
     libxerces-c-dev \
-    pkg-config && \
+    pkg-config \
+    python3.10-venv \
+    git && \
     echo "Dependencies installed."
 
 RUN mkdir -p /app/framework
+
+WORKDIR /app
 
 COPY examples /app/framework/examples
 COPY include /app/framework/include
@@ -33,6 +37,7 @@ COPY CMakeLists.txt /app/framework/CMakeLists.txt
 COPY version /app/framework/version
 COPY licenses /app/framework/licenses
 COPY runtime /app/framework/runtime
+COPY demo_pipeline /app/demo_pipeline
 
 RUN echo "Building framework..." && \
     cd /app/framework && \
@@ -46,8 +51,33 @@ RUN echo "Building framework..." && \
     echo "Done."
 
 
+# Clone, configure venv, install by copying bash script to install dir
+RUN git clone --single-branch --branch develop https://github.com/asam-ev/qc-openscenarioxml.git && \
+    # Create a virtual environment
+    python3 -m venv openscenario-venv && \
+    # Activate the virtual environment and install required Python packages
+    source openscenario-venv/bin/activate && \
+    python3 -m pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt
+
+# Clone, configure venv, install by copying bash script to install dir
+RUN git clone --single-branch --branch develop https://github.com/asam-ev/qc-opendrive.git && \
+    # Create a virtual environment
+    python3 -m venv opendrive-venv && \
+    # Activate the virtual environment and install required Python packages
+    source opendrive-venv/bin/activate && \
+    python3 -m pip install --no-cache-dir -r qc-opendrive/requirements.txt
+
+RUN python3 -m venv demo-pipeline-venv && \
+    source demo-pipeline-venv/bin/activate && \
+    python3 -m pip install --no-cache-dir -r /app/demo_pipeline/requirements.txt
+
+RUN python3 -m venv runtime-venv && \
+    source runtime-venv/bin/activate && \
+    python3 -m pip install --no-cache-dir -r /app/framework/runtime/requirements.txt
+
+
 # Runtime stage
-FROM python:3.11.9-slim-bookworm  as runtime_test
+FROM ubuntu:22.04 as runtime_test
 
 RUN echo "Installing Qt..." && \
     apt update && apt install -y \
@@ -58,51 +88,60 @@ RUN echo "Installing Qt..." && \
     echo "Dependencies installed."
 
 RUN  mkdir -p /app
-COPY runtime/requirements.txt /app/
-RUN pip install -r /app/requirements.txt
+
 # For testing files
 COPY --from=framework_builder /app/framework /app/framework
 # Copy install directory in runtime image
 COPY --from=framework_builder /home/root/qc-build /app/framework/build
 # @NOTE this is just because DemoCheckerBundle is not installed by default
 COPY --from=framework_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/framework/build/bin/
-ENV PYTHONUNBUFFERED=1
-WORKDIR /app/framework/runtime/
-CMD python3 -m pytest -rA > runtime_test.log && cp /app/framework/runtime/runtime_test.log /out/runtime_test.log
+# Virtual envs
+COPY --from=framework_builder /app/runtime-venv /app/runtime-venv
 
+WORKDIR /app/framework/runtime/
+
+SHELL ["/bin/bash", "-c"]
+
+CMD source /app/runtime-venv/bin/activate && python3 -m pytest -rA > runtime_test.log && cp /app/framework/runtime/runtime_test.log /out/runtime_test.log
 
 # Runtime stage
 FROM framework_builder as unit_test
 CMD ctest --test-dir /app/framework/build -C Release && cp /app/framework/build/Testing/Temporary/LastTest.log /out/
 
 
-FROM runtime_test as demo_pipeline
+FROM ubuntu:22.04 as demo_pipeline
+
+RUN echo "Installing Qt..." && \
+    apt update && apt install -y \
+    qtbase5-dev \
+    libqt5xmlpatterns5-dev \
+    libxerces-c-dev \
+    pkg-config && \
+    echo "Dependencies installed."
+
+RUN  mkdir -p /app
+
+# Copy install directory in runtime image
+COPY --from=framework_builder /home/root/qc-build /app/framework/build
+
+# Virtual envs
+COPY --from=framework_builder /app/demo-pipeline-venv /app/demo-pipeline-venv
+COPY --from=framework_builder /app/opendrive-venv /app/opendrive-venv
+COPY --from=framework_builder /app/openscenario-venv /app/openscenario-venv
+
+# Source files
+COPY --from=framework_builder /app/demo_pipeline /app/demo_pipeline
+COPY --from=framework_builder /app/framework /app/framework
+
+# Cloned repositories
+COPY --from=framework_builder /app/qc-openscenarioxml /app/qc-openscenarioxml
+COPY --from=framework_builder /app/qc-opendrive /app/qc-opendrive
+
+RUN chmod +x /app/demo_pipeline/xoscBundle && \
+    cp app/demo_pipeline/xoscBundle /app/framework/build/bin/xoscBundle && \
+    chmod +x /app/demo_pipeline/xodrBundle && \
+    cp app/demo_pipeline/xodrBundle /app/framework/build/bin/xodrBundle
 
 SHELL ["/bin/bash", "-c"]
 
-RUN apt install -y git
-
-WORKDIR /app
-
-# Clone, configure venv, install by copying bash script to install dir
-RUN git clone --single-branch --branch develop https://github.com/asam-ev/qc-openscenarioxml.git && \
-    # Create a virtual environment
-    python3.11 -m venv openscenario-venv && \
-    # Activate the virtual environment and install required Python packages
-    source openscenario-venv/bin/activate && \
-    pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt
-
-# Clone, configure venv, install by copying bash script to install dir
-RUN git clone --single-branch --branch develop https://github.com/asam-ev/qc-opendrive.git && \
-    # Create a virtual environment
-    python3.11 -m venv opendrive-venv && \
-    # Activate the virtual environment and install required Python packages
-    source opendrive-venv/bin/activate && \
-    pip install --no-cache-dir -r qc-opendrive/requirements.txt
-
-COPY demo_pipeline /app/demo_pipeline
-RUN chmod +x /app/demo_pipeline/xoscBundle && cp /app/demo_pipeline/xoscBundle /app/framework/build/bin/
-RUN chmod +x /app/demo_pipeline/xodrBundle && cp /app/demo_pipeline/xodrBundle /app/framework/build/bin/
-
-RUN pip install -r /app/demo_pipeline/requirements.txt
-CMD /app/demo_pipeline/run_pipeline.sh
+CMD source /app/demo-pipeline-venv/bin/activate && /app/demo_pipeline/run_pipeline.sh
