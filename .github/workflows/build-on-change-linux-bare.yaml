@@ -99,8 +99,8 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           mv build out_build
-          cp -r /home/$(whoami)/qc-build build
-          cp out_build/examples/checker_bundle_example/DemoCheckerBundle build/bin/
+          cp -r /home/$(whoami)/qc-build/bin bin
+          cp out_build/examples/checker_bundle_example/DemoCheckerBundle bin/
           cd runtime
           python3 -m pip install -r requirements.txt
           python3 -m pytest -rA > runtime_test.log

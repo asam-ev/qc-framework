@@ -58,15 +58,15 @@ def check_node_exists(xml_file: str, node_name: str) -> bool:
 def test_runtime_execution():
 
     start_wd = os.getcwd()
-    install_dir = os.path.join("..", "build", "bin")
+    install_dir = os.path.join("..", "bin")
     os.chdir(install_dir)
 
     config_xml = os.path.join(
-        "..", "..", "runtime", "tests", "test_data", "DemoCheckerBundle_config.xml"
+        "..", "runtime", "tests", "test_data", "DemoCheckerBundle_config.xml"
     )
 
-    schema_dir = os.path.join("..", "..", "doc", "schema")
-    runtime_script = os.path.join("..", "..", "runtime", "runtime", "runtime.py")
+    schema_dir = os.path.join("..", "doc", "schema")
+    runtime_script = os.path.join("..", "runtime", "runtime", "runtime.py")
 
     process = subprocess.Popen(
         f"python3 {runtime_script} --config={config_xml} --install_dir={os.getcwd()} --schema_dir={schema_dir}",
@@ -101,15 +101,13 @@ def test_runtime_execution():
 def test_3steps_config():
 
     start_wd = os.getcwd()
-    install_dir = os.path.join("..", "build", "bin")
+    install_dir = os.path.join("..", "bin")
     os.chdir(install_dir)
 
-    config_xml = os.path.join(
-        "..", "..", "runtime", "tests", "test_data", "3steps_config.xml"
-    )
+    config_xml = os.path.join("..", "runtime", "tests", "test_data", "3steps_config.xml")
 
-    schema_dir = os.path.join("..", "..", "doc", "schema")
-    runtime_script = os.path.join("..", "..", "runtime", "runtime", "runtime.py")
+    schema_dir = os.path.join("..", "doc", "schema")
+    runtime_script = os.path.join("..", "runtime", "runtime", "runtime.py")
 
     process = subprocess.Popen(
         f"python3 {runtime_script} --config={config_xml} --install_dir={os.getcwd()} --schema_dir={schema_dir}",

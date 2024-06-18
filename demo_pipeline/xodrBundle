@@ -9,4 +9,4 @@ readonly CONFIG_FILE=$1
 source /app/opendrive-venv/bin/activate
 cd /app/qc-opendrive
 python main.py -c $CONFIG_FILE
-cp *.xqar /app/framework/build/bin/
+cp *.xqar /app/framework/bin/
