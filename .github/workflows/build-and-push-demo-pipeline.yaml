@@ -4,6 +4,35 @@ on:
   schedule:
     - cron: '0 2 * * *' # 2 AM UTC every day
 
+  # execute on every PR made targeting the branches bellow
+  pull_request:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - test/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
+
+  # execute on every push made targeting the branches bellow
+  push:
+    branches:
+      - master
+      - develop # can be removed on master merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - test/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
 jobs:
   build-and-push-demo:
     runs-on: ubuntu-22.04
