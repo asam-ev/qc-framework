@@ -137,6 +137,7 @@ COPY --from=framework_builder /app/framework /app/framework
 COPY --from=framework_builder /app/qc-openscenarioxml /app/qc-openscenarioxml
 COPY --from=framework_builder /app/qc-opendrive /app/qc-opendrive
 
+# Move demo pipeline executables to install directory
 RUN chmod +x /app/demo_pipeline/xoscBundle && \
     cp app/demo_pipeline/xoscBundle /app/framework/build/bin/xoscBundle && \
     chmod +x /app/demo_pipeline/xodrBundle && \
