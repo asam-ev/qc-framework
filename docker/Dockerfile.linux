@@ -53,19 +53,22 @@ RUN echo "Building framework..." && \
 
 # Clone, configure venv, install by copying bash script to install dir
 RUN git clone --single-branch --branch develop https://github.com/asam-ev/qc-openscenarioxml.git && \
-    # Create a virtual environment
     python3 -m venv openscenario-venv && \
-    # Activate the virtual environment and install required Python packages
     source openscenario-venv/bin/activate && \
-    python3 -m pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt
+    python3 -m pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt && \
+    chmod +x /app/demo_pipeline/xoscBundle && \
+    cp /app/demo_pipeline/xoscBundle /home/root/qc-build/bin/xoscBundle && \
+    rm -rf /app/qc-openscenarioxml/.git
 
 # Clone, configure venv, install by copying bash script to install dir
 RUN git clone --single-branch --branch develop https://github.com/asam-ev/qc-opendrive.git && \
-    # Create a virtual environment
     python3 -m venv opendrive-venv && \
-    # Activate the virtual environment and install required Python packages
     source opendrive-venv/bin/activate && \
-    python3 -m pip install --no-cache-dir -r qc-opendrive/requirements.txt
+    python3 -m pip install --no-cache-dir -r qc-opendrive/requirements.txt && \
+    chmod +x /app/demo_pipeline/xodrBundle && \
+    cp /app/demo_pipeline/xodrBundle /home/root/qc-build/bin/xodrBundle && \
+    rm -rf /app/qc-opendrive/.git
+
 
 RUN python3 -m venv demo-pipeline-venv && \
     source demo-pipeline-venv/bin/activate && \
@@ -79,6 +82,7 @@ RUN python3 -m venv runtime-venv && \
 # Runtime stage
 FROM ubuntu:22.04 as runtime_test
 
+# Dependancies installation currently required by ResultPooling and TextReport modules
 RUN echo "Installing Qt..." && \
     apt update && apt install -y \
     qtbase5-dev \
@@ -92,7 +96,8 @@ RUN  mkdir -p /app
 # For testing files
 COPY --from=framework_builder /app/framework /app/framework
 # Copy install directory in runtime image
-COPY --from=framework_builder /home/root/qc-build /app/framework/build
+COPY --from=framework_builder /home/root/qc-build/bin /app/framework/build/bin
+COPY --from=framework_builder /app/framework/build/test /app/framework/build/test
 # @NOTE this is just because DemoCheckerBundle is not installed by default
 COPY --from=framework_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/framework/build/bin/
 # Virtual envs
@@ -111,6 +116,7 @@ CMD ctest --test-dir /app/framework/build -C Release && cp /app/framework/build/
 
 FROM ubuntu:22.04 as demo_pipeline
 
+# Dependancies installation currently required by ResultPooling and TextReport modules
 RUN echo "Installing Qt..." && \
     apt update && apt install -y \
     qtbase5-dev \
@@ -122,7 +128,7 @@ RUN echo "Installing Qt..." && \
 RUN  mkdir -p /app
 
 # Copy install directory in runtime image
-COPY --from=framework_builder /home/root/qc-build /app/framework/build
+COPY --from=framework_builder /home/root/qc-build/bin /app/framework/build/bin
 
 # Virtual envs
 COPY --from=framework_builder /app/demo-pipeline-venv /app/demo-pipeline-venv
@@ -136,12 +142,6 @@ COPY --from=framework_builder /app/framework /app/framework
 # Cloned repositories
 COPY --from=framework_builder /app/qc-openscenarioxml /app/qc-openscenarioxml
 COPY --from=framework_builder /app/qc-opendrive /app/qc-opendrive
-
-# Move demo pipeline executables to install directory
-RUN chmod +x /app/demo_pipeline/xoscBundle && \
-    cp app/demo_pipeline/xoscBundle /app/framework/build/bin/xoscBundle && \
-    chmod +x /app/demo_pipeline/xodrBundle && \
-    cp app/demo_pipeline/xodrBundle /app/framework/build/bin/xodrBundle
 
 SHELL ["/bin/bash", "-c"]
 
