@@ -96,10 +96,10 @@ RUN  mkdir -p /app
 # For testing files
 COPY --from=framework_builder /app/framework /app/framework
 # Copy install directory in runtime image
-COPY --from=framework_builder /home/root/qc-build/bin /app/framework/build/bin
-COPY --from=framework_builder /app/framework/build/test /app/framework/build/test
+COPY --from=framework_builder /home/root/qc-build/bin /app/framework/bin
+COPY --from=framework_builder /app/framework/build/test /app/framework/test
 # @NOTE this is just because DemoCheckerBundle is not installed by default
-COPY --from=framework_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/framework/build/bin/
+COPY --from=framework_builder /app/framework/build/examples/checker_bundle_example/DemoCheckerBundle /app/framework/bin/
 # Virtual envs
 COPY --from=framework_builder /app/runtime-venv /app/runtime-venv
 
@@ -128,7 +128,7 @@ RUN echo "Installing Qt..." && \
 RUN  mkdir -p /app
 
 # Copy install directory in runtime image
-COPY --from=framework_builder /home/root/qc-build/bin /app/framework/build/bin
+COPY --from=framework_builder /home/root/qc-build/bin /app/framework/bin
 
 # Virtual envs
 COPY --from=framework_builder /app/demo-pipeline-venv /app/demo-pipeline-venv
