@@ -1,15 +1,15 @@
 # Demo pipeline
 
-The demo pipeline allow users to process OpenDRIVE and OpenSCENARIO files with respecting checkers and inspect the resulting `xqar` and `txt` files
+The demo pipeline allow users to process OpenDRIVE and OpenSCENARIO files with respecting checkers and inspect the resulting `xqar` and `txt` files.
 
 ### Download and run
 
-The demo pipeline is provided as docker image uploaded to Github container registry
+The demo pipeline is provided as a public Docker image in the Github container registry.
 
 To process a file, the `docker run` command below can be used and the following information can be specified:
-* The input folder which contains the input file.
-* The name the input file.
-* The output folder where the output files can be saved.
+- The input folder which contains the input file.
+- The name the input file.
+- The output folder where the output files can be saved.
 
 ```
 docker run \
@@ -48,9 +48,9 @@ docker run \
 ```
 
 The docker image will automatically:
-- Detect the type of file passed as input
-- Create the specific config according to [config schema](../doc/schema/config_format.xsd)
-- Execute the runtime with specific checker, result pooling and text result application
+- Detect the type of file passed as input.
+- Create the specific config according to [config schema](../doc/schema/config_format.xsd).
+- Execute the runtime with specific checker, result pooling and text result application.
 
 Currently the demo_pipeline will clone and execute:
 
@@ -59,9 +59,9 @@ Currently the demo_pipeline will clone and execute:
 
 After the execution, in the specified output folder you will find:
 
-- Specific CheckerBundle `xqar` result file
-- ResultPooling `Result.xqar` result file
-- TextReport `Report.txt` text file
+- Specific CheckerBundle `xqar` result file.
+- ResultPooling `Result.xqar` result file.
+- TextReport `Report.txt` text file.
 
 ### Local build instructions
 
