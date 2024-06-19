@@ -3,36 +3,8 @@ name: Build and push demo pipeline Image
 on:
   schedule:
     - cron: '0 4 * * *' # 4 AM UTC every day
+    - cron: '30 10 * * *' # 10:30 AM UTC every day - TEST
 
-  # execute on every PR made targeting the branches bellow
-  pull_request:
-    branches:
-      - master
-      - develop # can be removed on master merge
-    paths: # we only include paths critical for building to avoid unnecessary runs
-      - src/**
-      - include/**
-      - scripts/cmake/**
-      - test/**
-      - .github/workflows/**
-      - doc/**
-      - runtime/**
-      - docker/**
-
-  # execute on every push made targeting the branches bellow
-  push:
-    branches:
-      - master
-      - develop # can be removed on master merge
-    paths: # we only include paths critical for building to avoid unnecessary runs
-      - src/**
-      - include/**
-      - scripts/cmake/**
-      - test/**
-      - .github/workflows/**
-      - doc/**
-      - runtime/**
-      - docker/**
 jobs:
   build-and-push-demo:
     runs-on: ubuntu-22.04
@@ -44,6 +16,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: develop # @TODO remove it later
 
       - name: Get current date
         id: date
@@ -67,5 +41,5 @@ jobs:
           push: true
           target: demo_pipeline
           tags: |
-            ghcr.io/${{ github.repository_owner }}/qc-framework:demo-pipeline-${{ env.DATE }}
             ghcr.io/${{ github.repository_owner }}/qc-framework:demo-pipeline-latest
+            ghcr.io/${{ github.repository_owner }}/qc-framework:demo-pipeline-${{ env.DATE }}
