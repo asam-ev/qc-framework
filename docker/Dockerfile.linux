@@ -120,32 +120,35 @@ LABEL org.opencontainers.image.source="https://github.com/asam-ev/qc-framework"
 LABEL org.opencontainers.image.description="QC Framework demo pipeline"
 LABEL org.opencontainers.image.licenses="MPL-2.0"
 
-# Dependancies installation currently required by ResultPooling and TextReport modules
-RUN echo "Installing Qt..." && \
-    apt update && apt install -y \
-    qtbase5-dev \
+# Dependencies installation currently required by ResultPooling and TextReport modules
+RUN apt update && apt install -y \
     libqt5xmlpatterns5-dev \
-    libxerces-c-dev \
-    pkg-config && \
-    echo "Dependencies installed."
+    libxerces-c-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN  mkdir -p /app
 
-# Copy install directory in runtime image
-COPY --from=framework_builder /home/root/qc-build/bin /app/framework/bin
-
 # Virtual envs
+COPY --from=framework_builder /app/runtime-venv /app/runtime-venv
 COPY --from=framework_builder /app/demo-pipeline-venv /app/demo-pipeline-venv
 COPY --from=framework_builder /app/opendrive-venv /app/opendrive-venv
 COPY --from=framework_builder /app/openscenario-venv /app/openscenario-venv
 
-# Source files
+# Framework components
+COPY --from=framework_builder /home/root/qc-build/bin /app/framework/bin
 COPY --from=framework_builder /app/demo_pipeline /app/demo_pipeline
-COPY --from=framework_builder /app/framework /app/framework
+COPY --from=framework_builder /app/framework/runtime /app/framework/runtime
 
-# Cloned repositories
-COPY --from=framework_builder /app/qc-openscenarioxml /app/qc-openscenarioxml
-COPY --from=framework_builder /app/qc-opendrive /app/qc-opendrive
+# Framework schemas
+COPY --from=framework_builder /app/framework/doc/schema /app/framework/doc/schema
+
+# OpenScenario XML checker bundle
+COPY --from=framework_builder /app/qc-openscenarioxml/main.py /app/qc-openscenarioxml/main.py
+COPY --from=framework_builder /app/qc-openscenarioxml/qc_openscenario /app/qc-openscenarioxml/qc_openscenario
+
+# OpenDrive XML checker bundle
+COPY --from=framework_builder /app/qc-opendrive/main.py /app/qc-opendrive/main.py
+COPY --from=framework_builder /app/qc-opendrive/qc_opendrive /app/qc-opendrive/qc_opendrive
 
 SHELL ["/bin/bash", "-c"]
 
