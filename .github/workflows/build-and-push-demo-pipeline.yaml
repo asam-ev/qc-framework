@@ -1,4 +1,4 @@
-name: Build and push demo pipeline Image
+name: Build and push demo pipeline image
 
 on:
   schedule:
