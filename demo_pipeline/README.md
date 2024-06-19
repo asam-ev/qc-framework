@@ -1,6 +1,6 @@
 # Demo pipeline
 
-The demo pipeline allow users to process OpenDRIVE and OpenSCENARIO files with respecting checkers and inspect the resulting `xqar` and `txt` files.
+The demo pipeline allow users to process OpenDRIVE and OpenSCENARIO XML files with respecting checkers and inspect the resulting `xqar` and `txt` files.
 
 ### Download and run
 
@@ -55,13 +55,17 @@ The docker image will automatically:
 Currently the demo_pipeline will clone and execute:
 
 - [OpenDRIVE checker @ develop branch](https://github.com/asam-ev/qc-opendrive/tree/develop)
-- [OpenSCENARIO checker @ develop branch](https://github.com/asam-ev/qc-openscenarioxml/tree/develop)
+- [OpenSCENARIO XML checker @ develop branch](https://github.com/asam-ev/qc-openscenarioxml/tree/develop)
 
 After the execution, in the specified output folder you will find:
 
 - Specific CheckerBundle `xqar` result file.
 - ResultPooling `Result.xqar` result file.
 - TextReport `Report.txt` text file.
+
+Some OpenDrive and OpenScenario XML test files are available to try out.
+- [OpenDrive test files](https://github.com/asam-ev/qc-opendrive/tree/develop/tests/data)
+- [OpenScenario XML test files](https://github.com/asam-ev/qc-openscenarioxml/tree/develop/tests/data)
 
 ### Local build instructions
 
