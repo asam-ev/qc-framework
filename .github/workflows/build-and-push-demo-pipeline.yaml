@@ -2,7 +2,7 @@ name: Build and push demo pipeline Image
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 2 AM UTC every day
+    - cron: '0 4 * * *' # 4 AM UTC every day
 
   # execute on every PR made targeting the branches bellow
   pull_request:
@@ -41,6 +41,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Get current date
+        id: date
+        run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -58,4 +62,6 @@ jobs:
           file: docker/Dockerfile.linux
           push: true
           target: demo_pipeline
-          tags: ghcr.io/${{ github.repository_owner }}/qc-framework:demo-pipeline-latest
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/qc-framework:demo-pipeline-${{ env.DATE }}
+            ghcr.io/${{ github.repository_owner }}/qc-framework:demo-pipeline-latest

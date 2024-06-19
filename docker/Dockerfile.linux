@@ -116,6 +116,10 @@ CMD ctest --test-dir /app/framework/build -C Release && cp /app/framework/build/
 
 FROM ubuntu:22.04 as demo_pipeline
 
+LABEL org.opencontainers.image.source="https://github.com/asam-ev/qc-framework"
+LABEL org.opencontainers.image.description="QC Framework demo pipeline"
+LABEL org.opencontainers.image.licenses="MPL-2.0"
+
 # Dependancies installation currently required by ResultPooling and TextReport modules
 RUN echo "Installing Qt..." && \
     apt update && apt install -y \
