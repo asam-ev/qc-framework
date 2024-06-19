@@ -6,13 +6,18 @@ The demo pipeline allow users to process OpenDRIVE and OpenSCENARIO files with r
 
 The demo pipeline is provided as docker image uploaded to Github container registry
 
-To process a file it is needed to mount input and output folder and provide the filename to process
+To process a file, the `docker run` command below can be used and the following information can be specified:
+* The input folder which contains the input file.
+* The name the input file.
+* The output folder where the output files can be saved.
 
 ```
 docker run \
+    -e INPUT_FILENAME=YOUR_INPUT_FILENAME \
     -v YOUR_INPUT_FOLDER:/input_directory \
     -v YOUR_OUTPUT_FOLDER:/out \
-    -e INPUT_FILENAME=YOUR_INPUT_FILENAME \
+    -e USER_ID=$(id -u) \
+    -e GROUP_ID=$(id -g) \
     --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
 ```
 
@@ -20,12 +25,27 @@ E.g. To process the file at `/home/user/xodr_files/test_ramp.xosc`
 
 ```
 docker run \
+    -e INPUT_FILENAME=test_ramp.xosc \
     -v /home/user/xodr_files:/input_directory \
     -v /home/user/output:/out \
-    -e INPUT_FILENAME=test_ramp.xosc \
+    -e USER_ID=$(id -u) \
+    -e GROUP_ID=$(id -g) \
     --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
 ```
 
+Alternatively, you can go to the input folder and execute the following command, which requires only the input file name to be specified. The output will be saved in the same folder.
+
+```
+cd /home/user/xodr_files
+
+docker run \
+    -e INPUT_FILENAME=test_ramp.xosc \
+    -v $(pwd):/input_directory \
+    -v $(pwd):/out \
+    -e USER_ID=$(id -u) \
+    -e GROUP_ID=$(id -g) \
+    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
+```
 
 The docker image will automatically:
 - Detect the type of file passed as input
@@ -43,7 +63,7 @@ After the execution, in the specified output folder you will find:
 - ResultPooling `Result.xqar` result file
 - TextReport `Report.txt` text file
 
-### Build instructions
+### Local build instructions
 
 In case of local build of demo_pipeline docker image, you can execute:
 

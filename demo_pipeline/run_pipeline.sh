@@ -10,7 +10,7 @@ python3 /app/framework/runtime/runtime/runtime.py \
     --install_dir "/app/framework/bin" \
     --schema_dir "/app/framework/doc/schema"
 
-rm -rf /out/$INPUT_FILENAME
-mkdir -p /out/$INPUT_FILENAME
-cp /app/framework/bin/*.xqar /out/$INPUT_FILENAME
-cp /app/framework/bin/*.txt /out/$INPUT_FILENAME
+mkdir -p /out/qc-result-$INPUT_FILENAME
+cp /app/framework/bin/*.xqar /out/qc-result-$INPUT_FILENAME
+cp /app/framework/bin/*.txt /out/qc-result-$INPUT_FILENAME
+chown -R $USER_ID:$GROUP_ID /out/qc-result-$INPUT_FILENAME
