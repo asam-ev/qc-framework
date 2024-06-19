@@ -37,6 +37,9 @@ jobs:
   build-and-push-demo:
     runs-on: ubuntu-22.04
 
+    permissions:
+      packages: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
