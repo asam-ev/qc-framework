@@ -15,6 +15,7 @@
 #include "common/result_format/c_inertial_location.h"
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_locations_container.h"
+#include "common/result_format/c_metadata.h"
 #include "common/result_format/c_parameter_container.h"
 #include "common/result_format/c_result_container.h"
 #include "common/result_format/c_xml_location.h"
@@ -237,6 +238,7 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
     std::list<cChecker *> checkers;
     std::list<cIssue *> issues;
     std::list<cRule *> rules;
+    std::list<cMetadata *> metadata;
     std::set<std::string> violated_rules;
     std::set<std::string> addressed_rules;
 
@@ -314,6 +316,7 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                     }
                 }
 
+                // Get all issues from the current checker
                 issues = (*itChecker)->GetIssues();
                 if (issues.size() > 0)
                 {
@@ -341,19 +344,35 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                         }
                     }
                 }
-                // Get all rules and issues covered by the current checker
+                // Get all rules covered by the current checker
                 rules = (*itChecker)->GetRules();
                 if (rules.size() > 0)
                 {
-                    ss << "\n    Addressed Rules:        ";
+                    ss << "\n\n        Addressed Rules:        ";
                 }
                 for (std::list<cRule *>::const_iterator it_Rule = rules.begin(); it_Rule != rules.end(); it_Rule++)
                 {
                     if ((*it_Rule)->GetRuleUID() != "")
                     {
-                        ss << "\n    - rule:         " << (*it_Rule)->GetRuleUID();
+                        ss << "\n        - rule:        " << (*it_Rule)->GetRuleUID();
                         addressed_rules.insert((*it_Rule)->GetRuleUID());
                     }
+                }
+                // Get metadata info
+                metadata = (*itChecker)->GetMetadata();
+                if (metadata.size() > 0)
+                {
+                    ss << "\n\n        Metadata:        ";
+                }
+                for (std::list<cMetadata *>::const_iterator it_Meta = metadata.begin(); it_Meta != metadata.end();
+                     it_Meta++)
+                {
+
+                    ss << "\n        ----------------";
+                    ss << "\n        - key:          " << (*it_Meta)->GetKey();
+                    ss << "\n        - value:        " << (*it_Meta)->GetValue();
+                    ss << "\n        - description:  " << (*it_Meta)->GetDescription();
+                    ss << "\n        ----------------";
                 }
             }
 
