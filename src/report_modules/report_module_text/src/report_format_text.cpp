@@ -167,7 +167,7 @@ void RunTextReport(const cParameterContainer &inputParams)
     XMLPlatformUtils::Terminate();
 }
 
-void printDOMElement(DOMElement *element, std::stringstream &ss, int indent = 0, int startIndent = 0)
+void PrintDOMElement(DOMElement *element, std::stringstream &ss, int indent = 0, int startIndent = 0)
 {
     if (!element)
         return;
@@ -211,7 +211,7 @@ void printDOMElement(DOMElement *element, std::stringstream &ss, int indent = 0,
         {
             hasElementChildren = true;
             ss << std::endl;
-            printDOMElement(dynamic_cast<DOMElement *>(child), ss, indent + 1, startIndent);
+            PrintDOMElement(dynamic_cast<DOMElement *>(child), ss, indent + 1, startIndent);
         }
     }
 
@@ -226,18 +226,18 @@ void printDOMElement(DOMElement *element, std::stringstream &ss, int indent = 0,
     XMLString::release(&tagName);
 }
 
-bool isWhitespaceOrEmpty(const std::string &line)
+bool IsWhitespaceOrEmpty(const std::string &line)
 {
     return std::all_of(line.begin(), line.end(), [](unsigned char c) { return std::isspace(c); });
 }
 
-void removeEmptyLines(std::stringstream &ss)
+void RemoveEmptyLines(std::stringstream &ss)
 {
     std::string line;
     std::stringstream tempStream;
     while (std::getline(ss, line))
     {
-        if (!isWhitespaceOrEmpty(line))
+        if (!IsWhitespaceOrEmpty(line))
         {
             tempStream << line << std::endl;
         }
@@ -361,8 +361,8 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                             {
                                 ss << "\n        Name:       " << (*itDom)->GetName() << "\n";
                                 std::stringstream dom_ss;
-                                printDOMElement((*itDom)->GetRoot(), dom_ss, 0, 10);
-                                removeEmptyLines(dom_ss);
+                                PrintDOMElement((*itDom)->GetRoot(), dom_ss, 0, 10);
+                                RemoveEmptyLines(dom_ss);
                                 ss << dom_ss.str();
                             }
                         }
