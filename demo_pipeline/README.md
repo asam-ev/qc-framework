@@ -11,6 +11,8 @@ To process a file, the `docker run` command below can be used and the following 
 - The name the input file.
 - The output folder where the output files can be saved.
 
+### For Linux users
+
 ```
 docker run \
     -e INPUT_FILENAME=YOUR_INPUT_FILENAME \
@@ -46,6 +48,42 @@ docker run \
     -e GROUP_ID=$(id -g) \
     --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
 ```
+
+### For Windows users
+
+The only difference between Linux and Windows is that on Windows, you don't need to set the `USER_ID` and `GROUP_ID` on the `docker run` command.
+
+```
+docker run \
+    -e INPUT_FILENAME=YOUR_INPUT_FILENAME \
+    -v YOUR_INPUT_FOLDER:/input_directory \
+    -v YOUR_OUTPUT_FOLDER:/out \
+    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
+```
+
+E.g. To process the file at `/home/user/xodr_files/test_ramp.xosc`
+
+```
+docker run \
+    -e INPUT_FILENAME=test_ramp.xosc \
+    -v /home/user/xodr_files:/input_directory \
+    -v /home/user/output:/out \
+    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
+```
+
+Alternatively, you can go to the input folder and execute the following command, which requires only the input file name to be specified. The output will be saved in the same folder.
+
+```
+cd /home/user/xodr_files
+
+docker run \
+    -e INPUT_FILENAME=test_ramp.xosc \
+    -v $(pwd):/input_directory \
+    -v $(pwd):/out \
+    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
+```
+
+### Output
 
 The docker image will automatically:
 - Detect the type of file passed as input.
