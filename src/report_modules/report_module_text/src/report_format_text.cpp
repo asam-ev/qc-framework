@@ -354,7 +354,7 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                 {
                     if ((*it_Rule)->GetRuleUID() != "")
                     {
-                        ss << "\n        - rule:        " << (*it_Rule)->GetRuleUID();
+                        ss << "\n        - rule:         " << (*it_Rule)->GetRuleUID();
                         addressed_rules.insert((*it_Rule)->GetRuleUID());
                     }
                 }
