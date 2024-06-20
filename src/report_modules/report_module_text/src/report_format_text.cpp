@@ -226,6 +226,25 @@ void printDOMElement(DOMElement *element, std::stringstream &ss, int indent = 0,
     XMLString::release(&tagName);
 }
 
+bool isWhitespaceOrEmpty(const std::string &line)
+{
+    return std::all_of(line.begin(), line.end(), [](unsigned char c) { return std::isspace(c); });
+}
+
+void removeEmptyLines(std::stringstream &ss)
+{
+    std::string line;
+    std::stringstream tempStream;
+    while (std::getline(ss, line))
+    {
+        if (!isWhitespaceOrEmpty(line))
+        {
+            tempStream << line << std::endl;
+        }
+    }
+    ss.str(tempStream.str());
+}
+
 // Writes the summary to text
 void WriteResults(const char *file, cResultContainer *ptrResultContainer)
 {
@@ -341,7 +360,10 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                                  itDom != domainSpecificInfo.end(); itDom++)
                             {
                                 ss << "\n        Name:       " << (*itDom)->GetName() << "\n";
-                                printDOMElement((*itDom)->GetRoot(), ss, 0, 10);
+                                std::stringstream dom_ss;
+                                printDOMElement((*itDom)->GetRoot(), dom_ss, 0, 10);
+                                removeEmptyLines(dom_ss);
+                                ss << dom_ss.str();
                             }
                         }
                     }
