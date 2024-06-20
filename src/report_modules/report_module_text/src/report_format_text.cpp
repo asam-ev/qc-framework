@@ -166,6 +166,7 @@ void RunTextReport(const cParameterContainer &inputParams)
 
     XMLPlatformUtils::Terminate();
 }
+
 void printDOMElement(DOMElement *element, std::stringstream &ss, int indent = 0, int startIndent = 0)
 {
     if (!element)
@@ -224,6 +225,7 @@ void printDOMElement(DOMElement *element, std::stringstream &ss, int indent = 0,
     ss << "</" << tagName << ">";
     XMLString::release(&tagName);
 }
+
 // Writes the summary to text
 void WriteResults(const char *file, cResultContainer *ptrResultContainer)
 {
