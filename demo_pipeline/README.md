@@ -11,6 +11,8 @@ To process a file, the `docker run` command below can be used and the following 
 - The name the input file.
 - The output folder where the output files can be saved.
 
+### For Linux users
+
 ```
 docker run \
     -e INPUT_FILENAME=YOUR_INPUT_FILENAME \
@@ -47,6 +49,42 @@ docker run \
     --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
 ```
 
+### For Windows users
+
+The only difference between Linux and Windows is that on Windows, you don't need to set the `USER_ID` and `GROUP_ID` on the `docker run` command.
+
+```
+docker run \
+    -e INPUT_FILENAME=YOUR_INPUT_FILENAME \
+    -v YOUR_INPUT_FOLDER:/input_directory \
+    -v YOUR_OUTPUT_FOLDER:/out \
+    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
+```
+
+E.g. To process the file at `C:\Users\user\input_folder\test_ramp.xosc`
+
+```
+docker run \
+    -e INPUT_FILENAME=test_ramp.xosc \
+    -v C:\Users\user\input_folder:/input_directory \
+    -v /home/user/output:/out \
+    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
+```
+
+Alternatively, you can go to the input folder and execute the following command, which requires only the input file name to be specified. The output will be saved in the same folder.
+
+```
+cd C:\Users\user\input_folder
+
+docker run \
+    -e INPUT_FILENAME=test_ramp.xosc \
+    -v $(pwd):/input_directory \
+    -v $(pwd):/out \
+    --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
+```
+
+### Output
+
 The docker image will automatically:
 - Detect the type of file passed as input.
 - Create the specific config according to [config schema](../doc/schema/config_format.xsd).
@@ -69,7 +107,7 @@ Some OpenDrive and OpenScenario XML test files are available to try out.
 
 ### Local build instructions
 
-In case of local build of demo_pipeline docker image, you can execute:
+The image can only be built on Linux. To build the Docker image locally, you can execute:
 
 ```
 cd ..
