@@ -61,12 +61,12 @@ docker run \
     --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
 ```
 
-E.g. To process the file at `/home/user/xodr_files/test_ramp.xosc`
+E.g. To process the file at `C:\Users\user\input_folder\test_ramp.xosc`
 
 ```
 docker run \
     -e INPUT_FILENAME=test_ramp.xosc \
-    -v /home/user/xodr_files:/input_directory \
+    -v C:\Users\user\input_folder:/input_directory \
     -v /home/user/output:/out \
     --rm --name demo_pipeline ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
 ```
@@ -74,7 +74,7 @@ docker run \
 Alternatively, you can go to the input folder and execute the following command, which requires only the input file name to be specified. The output will be saved in the same folder.
 
 ```
-cd /home/user/xodr_files
+cd C:\Users\user\input_folder
 
 docker run \
     -e INPUT_FILENAME=test_ramp.xosc \
@@ -107,7 +107,7 @@ Some OpenDrive and OpenScenario XML test files are available to try out.
 
 ### Local build instructions
 
-In case of local build of demo_pipeline docker image, you can execute:
+The image can only be built on Linux. To build the Docker image locally, you can execute:
 
 ```
 cd ..
