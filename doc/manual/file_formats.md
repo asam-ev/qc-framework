@@ -64,13 +64,9 @@ or semantic flaws.
     - **XmlLocation**
       - Addressing in a XML file with help of a XPath expression
       - Example: `<XMLLocation xpath="/OpenDRIVE/road[@id=&quot;1&quot;]"/>`
-    - **RoadLocation**
-      - Position in road coordinates, the angles are calculated based on the
-        road orientation
-      - Example: `<RoadLocation roadId="502066" s="0.5" t="0.0"/>`
     - **InertialLocation**
       - Position in inertial coordinates
-      - Example: `<InertialLocation h="0.0" p="0.0" r="0.3" x="120.998703"
+      - Example: `<InertialLocation x="120.998703"
         y="0.0" z="-0.29552"/>`
   - Optional external files (e. g. Images of generated graphs such as speed
     over distance). Currently not supported.
@@ -98,7 +94,7 @@ one called SyntaxChecker and one SemanticChecker.
                 <Locations description="Road id is defined multiple times">
                     <XMLLocation xpath="/OpenDRIVE/road[@id='5']"/>
                     <FileLocation column="25" fileType="1" row="505"/>
-                    <RoadLocation roadId="5" s="0.0" t="0.0"/>
+                    <InertialLocation x="5.0" y="0.0" z="0.0"/>
                 </Locations>
             </Issue>
         </Checker>

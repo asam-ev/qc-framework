@@ -12,7 +12,9 @@
 #include "../util.h"
 #include "../xml/util_xerces.h"
 #include "c_issue.h"
+#include "c_metadata.h"
 #include "c_parameter_container.h"
+#include "c_rule.h"
 
 #include <list>
 #include <string>
@@ -20,6 +22,8 @@
 // Forward declaration to avoid problems with circular dependencies (especially under Linux)
 class cCheckerBundle;
 class cIssue;
+class cRule;
+class cMetadata;
 
 /*
  * Definition of a basic checker
@@ -28,18 +32,24 @@ class cChecker
 {
     friend class cCheckerBundle;
     friend class cIssue;
+    friend class cRule;
+    friend class cMetadata;
 
   public:
     static const XMLCh *TAG_CHECKER;
     static const XMLCh *ATTR_CHECKER_ID;
     static const XMLCh *ATTR_DESCRIPTION;
     static const XMLCh *ATTR_SUMMARY;
+    static const XMLCh *ATTR_STATUS;
 
     // Returns the checker id
     std::string GetCheckerID() const;
 
     // Returns the summary
     std::string GetSummary() const;
+
+    // Returns the status
+    std::string GetStatus() const;
 
     // Returns the description
     std::string GetDescription() const;
@@ -50,11 +60,26 @@ class cChecker
     // sets the summary
     void SetSummary(const std::string &strSummary);
 
+    // sets the status
+    void SetStatus(const std::string &eStatus);
+
     /*
      * Adds an issue to the checker results
      * \param instance if the result
      */
     cIssue *AddIssue(cIssue *const issueToAdd);
+
+    /*
+     * Adds an rule to the checker results
+     * \param instance if the result
+     */
+    cRule *AddRule(cRule *const ruleToAdd);
+
+    /*
+     * Adds an metadata info to the checker results
+     * \param instance if the result
+     */
+    cMetadata *AddMetadata(cMetadata *const metadataToAdd);
 
     // Clears all issues from the container
     void Clear();
@@ -71,11 +96,23 @@ class cChecker
     // Counts the Issues
     unsigned int GetIssueCount();
 
+    // Counts the Rules
+    unsigned int GetRuleCount();
+
+    // Counts the Rules
+    unsigned int GetMetadataCount();
+
     // Updates the summary
     void UpdateSummary();
 
     // Returns the issues
     std::list<cIssue *> GetIssues();
+
+    // Returns the rules
+    std::list<cRule *> GetRules();
+
+    // Returns the rules
+    std::list<cMetadata *> GetMetadata();
 
     // Processes every issue and does a defined processing
     void DoProcessing(void (*funcIzteratorPtr)(cIssue *));
@@ -149,13 +186,15 @@ class cChecker
 
   protected:
     // Creates a new checker instance
-    cChecker(const std::string &strCheckerId, const std::string &strDescription, const std::string &strSummary)
-        : m_Bundle(nullptr), m_CheckerId(strCheckerId), m_Description(strDescription), m_Summary(strSummary)
+    cChecker(const std::string &strCheckerId, const std::string &strDescription, const std::string &strSummary,
+             const std::string &strStatus)
+        : m_Bundle(nullptr), m_CheckerId(strCheckerId), m_Description(strDescription), m_Summary(strSummary),
+          m_Status(strStatus)
     {
     }
 
     // Creates a new checker instance
-    cChecker() : m_Bundle(nullptr), m_CheckerId(""), m_Description(""), m_Summary("")
+    cChecker() : m_Bundle(nullptr), m_CheckerId(""), m_Description(""), m_Summary(""), m_Status("completed")
     {
     }
 
@@ -170,9 +209,12 @@ class cChecker
     std::string m_CheckerId;
     std::string m_Description;
     std::string m_Summary;
+    std::string m_Status;
     cCheckerBundle *m_Bundle;
 
     std::list<cIssue *> m_Issues;
+    std::list<cRule *> m_Rules;
+    std::list<cMetadata *> m_Metadata;
     cParameterContainer m_Params;
 };
 

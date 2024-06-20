@@ -10,12 +10,18 @@
 
 #include "common/result_format/c_checker.h"
 #include "common/result_format/c_checker_bundle.h"
+#include "common/result_format/c_domain_specific_info.h"
+#include "common/result_format/c_inertial_location.h"
+#include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_parameter_container.h"
 #include "common/result_format/c_result_container.h"
+#include "common/result_format/c_rule.h"
 
 #include "common/config_format/c_configuration.h"
 #include "common/config_format/c_configuration_checker_bundle.h"
 
+#include <xercesc/framework/MemBufInputSource.hpp>
+#include <xercesc/sax/HandlerBase.hpp>
 // Main Programm
 int main(int argc, char *argv[])
 {
@@ -112,6 +118,47 @@ void ShowHelp(const std::string &toolPath)
     std::cout << "\n\n";
 }
 
+DOMElement *getRootFromString(const std::string &inputStr)
+{
+    XMLPlatformUtils::Initialize();
+
+    XercesDOMParser *parser = new XercesDOMParser();
+    ErrorHandler *errHandler = (ErrorHandler *)new XERCES_CPP_NAMESPACE::HandlerBase();
+    parser->setErrorHandler(errHandler);
+
+    XERCES_CPP_NAMESPACE::MemBufInputSource memBufIS((const XMLByte *)inputStr.c_str(), inputStr.length(), "xmlBuffer",
+                                                     false);
+
+    try
+    {
+        parser->parse(memBufIS);
+    }
+    catch (const XMLException &e)
+    {
+        char *message = XMLString::transcode(e.getMessage());
+        std::cerr << "XMLException: " << message << std::endl;
+        XMLString::release(&message);
+        return nullptr;
+    }
+    catch (const DOMException &e)
+    {
+        char *message = XMLString::transcode(e.msg);
+        std::cerr << "DOMException: " << message << std::endl;
+        XMLString::release(&message);
+        return nullptr;
+    }
+    catch (...)
+    {
+        std::cerr << "Unexpected exception" << std::endl;
+        return nullptr;
+    }
+
+    DOMDocument *doc = parser->getDocument();
+    DOMElement *rootElement = doc->getDocumentElement();
+
+    return rootElement;
+}
+
 void RunChecks(const cParameterContainer &inputParams)
 {
     // Now we define a result container which contains our results.
@@ -125,9 +172,48 @@ void RunChecks(const cParameterContainer &inputParams)
 
     // Create a checker with a factory in the checker bundle
     cChecker *pExampeChecker = pExampleCheckerBundle->CreateChecker("exampleChecker", "This is a description");
-
     // Lets add now an issue
     pExampeChecker->AddIssue(new cIssue("This is an information from the demo usecase", INFO_LVL));
+
+    // Create a test checker with an inertial location
+    cChecker *pExampleInertialChecker =
+        pExampleCheckerBundle->CreateChecker("exampleInertialChecker", "This is a description of inertial checker");
+    std::list<cLocationsContainer *> listLoc;
+    listLoc.push_back(new cLocationsContainer("inertial position", new cInertialLocation(1.0, 2.0, 3.0)));
+    pExampleInertialChecker->AddIssue(new cIssue("This is an information from the demo usecase", INFO_LVL, listLoc));
+
+    // Create a test checker with RuleUID and metadata
+    cChecker *pExampleRuleUIDChecker =
+        pExampleCheckerBundle->CreateChecker("exampleRuleUIDChecker", "This is a description of ruleUID checker");
+    pExampleRuleUIDChecker->AddRule(new cRule("test.com::qwerty.qwerty"));
+    pExampleRuleUIDChecker->AddMetadata(
+        new cMetadata("run date", "2024/06/06", "Date in which the checker was executed"));
+    pExampleRuleUIDChecker->AddMetadata(
+        new cMetadata("reference project", "project01", "Name of the project that created the checker"));
+
+    // Create a test checker with Issue and RuleUID
+    cChecker *pExampleIssueRuleChecker = pExampleCheckerBundle->CreateChecker(
+        "exampleIssueRuleChecker", "This is a description of checker with issue and the involved ruleUID");
+
+    pExampleIssueRuleChecker->AddIssue(
+        new cIssue("This is an information from the demo usecase", ERROR_LVL, "test.com::qwerty.qwerty"));
+
+    // Create a test checker with Issue and RuleUID
+    cChecker *pSkippedChecker = pExampleCheckerBundle->CreateChecker(
+        "exampleSkippedChecker", "This is a description of checker with skipped status", "Skipped execution",
+        "skipped");
+
+    // Create a test checker with an inertial location
+    cChecker *pExampleDomainChecker = pExampleCheckerBundle->CreateChecker(
+        "exampleDomainChecker", "This is a description of example domain info checker");
+    std::list<cDomainSpecificInfo *> listDomainSpecificInfo;
+
+    std::string xmlString =
+        "<DomainSpecificInfo name=\"test_domain\"><RoadLocation id=\"aa\" b=\"5.4\" c=\"0.0\"/></DomainSpecificInfo>";
+
+    listDomainSpecificInfo.push_back(new cDomainSpecificInfo(getRootFromString(xmlString), "domain info test"));
+    pExampleDomainChecker->AddIssue(
+        new cIssue("This is an information from the demo usecase", INFO_LVL, listDomainSpecificInfo));
 
     // Lets add a summary for the checker bundle
     unsigned int issueCount = pExampleCheckerBundle->GetIssueCount();

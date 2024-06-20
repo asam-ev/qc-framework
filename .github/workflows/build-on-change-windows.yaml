@@ -4,8 +4,8 @@ on:
   # execute on every PR made targeting the branches bellow
   pull_request:
     branches:
-      - master
-      - develop # can be removed on master merge
+      - main
+      - develop # can be removed on main merge
     paths: # we only include paths critical for building to avoid unnecessary runs
       - src/**
       - include/**
@@ -19,12 +19,13 @@ on:
   # execute on every push made targeting the branches bellow
   push:
     branches:
-      - master
-      - develop # can be removed on master merge
+      - main
+      - develop # can be removed on main merge
     paths: # we only include paths critical for building to avoid unnecessary runs
       - src/**
       - include/**
       - scripts/cmake/**
+      - test/**
       - .github/workflows/**
       - doc/**
       - runtime/**
@@ -124,7 +125,7 @@ jobs:
 
           Write-Output "All unit tests done."
         shell: pwsh
-      
+
       - name: Archive test results
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
@@ -138,15 +139,12 @@ jobs:
           Write-Output "Starting runtime tests..."
 
           Rename-Item -path "$env:WORKING_PATH\qc-framework\qc-framework\build" -NewName "$env:WORKING_PATH\qc-framework\qc-framework\out_build"
-          Copy-Item -Path "$env:WORKING_PATH\QC-Framework-Out" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build" -Recurse
-          Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\build\bin"
-          
+          Copy-Item -Path "$env:WORKING_PATH\QC-Framework-Out\bin" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin" -Recurse
+          Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin"
+
           cd "$env:WORKING_PATH\qc-framework\qc-framework\runtime"
           python3 -m pip install -r requirements.txt
           python3 -m pytest
 
           Write-Output "All runtime tests done."
         shell: pwsh
-
-
-

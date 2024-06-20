@@ -21,7 +21,6 @@ add_library(qc4openx-common STATIC
     src/result_format/c_extended_information.cpp
     src/result_format/c_file_location.cpp
     src/result_format/c_inertial_location.cpp
-    src/result_format/c_road_location.cpp
     src/result_format/c_xml_location.cpp
     src/result_format/c_parameter_container.cpp
     src/result_format/c_locations_container.cpp
@@ -30,6 +29,9 @@ add_library(qc4openx-common STATIC
     src/config_format/c_configuration_checker_bundle.cpp
     src/config_format/c_configuration_report_module.cpp
 	src/xml/c_x_path_evaluator.cpp
+    src/result_format/c_rule.cpp
+    src/result_format/c_metadata.cpp
+    src/result_format/c_domain_specific_info.cpp
 )
 
 target_include_directories(qc4openx-common PUBLIC ${PROJECT_SOURCE_DIR}/include

@@ -14,7 +14,6 @@
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_parameter_container.h"
 #include "common/result_format/c_result_container.h"
-#include "common/result_format/c_road_location.h"
 #include "common/result_format/c_xml_location.h"
 #include "common/xml/c_x_path_evaluator.h"
 #include "stdafx.h"
@@ -73,7 +72,6 @@ int main(int argc, char *argv[])
     }
 
     RunResultPooling(inputParams, resultsDirectory);
-
     return 0;
 }
 
@@ -94,6 +92,7 @@ void ShowHelp(const std::string &toolPath)
 
 void RunResultPooling(const cParameterContainer &inputParams, const fs::path &resultsDirectory)
 {
+    XMLPlatformUtils::Initialize();
     std::string strResultFile = inputParams.GetParam("strResultFile");
 
     pResultContainer = new cResultContainer();
@@ -141,6 +140,7 @@ void RunResultPooling(const cParameterContainer &inputParams, const fs::path &re
     std::cout << "Finished." << std::endl;
 
     delete pResultContainer;
+    XMLPlatformUtils::Terminate();
 }
 
 static void AddFileLocationsToIssues()

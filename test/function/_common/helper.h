@@ -8,12 +8,12 @@
 #ifndef _HELPER_HEADER_
 #define _HELPER_HEADER_
 
-#include <string.h>
 #include "qc4openx_filesystem.h"
 #include "gtest/gtest.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string.h>
 #include <string>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/XMLGrammarPoolImpl.hpp>
@@ -39,7 +39,8 @@
  */
 #define GTEST_PRINTF(_message)                                                                                         \
     {                                                                                                                  \
-        std::cout << COLOR_GREEN << "[          ] " << COLOR_YELLOW << _message << COLOR_YELLOW << "\n" << COLOR_RESET; \
+        std::cout << COLOR_GREEN << "[          ] " << COLOR_YELLOW << _message << COLOR_YELLOW << "\n"                \
+                  << COLOR_RESET;                                                                                      \
     }
 
 /**
@@ -80,4 +81,5 @@ TestResult CheckFileExists(std::string &strResultMessage, const std::string strF
 TestResult ValidateXmlSchema(const std::string &xmlFile, const std::string &xsdFile);
 
 TestResult XmlContainsNode(const std::string &xmlFile, const std::string &nodeName);
+
 #endif

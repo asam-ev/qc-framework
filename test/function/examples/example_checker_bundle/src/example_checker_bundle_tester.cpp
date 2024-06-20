@@ -120,3 +120,54 @@ TEST_F(cTesterExampleCheckerBundle, CmdTooMuchArguments)
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
     ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
 }
+
+TEST_F(cTesterExampleCheckerBundle, CmdConfigContainsAddressedRuleAndMetadata)
+{
+    std::string strResultMessage;
+
+    std::string strConfigFilePath = strTestFilesDir + "/" + std::string(MODULE_NAME) + "_config.xml";
+    std::string strResultFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
+
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strConfigFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+    nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+
+    nRes |= XmlContainsNode(strResultFilePath, "AddressedRule");
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+
+    nRes |= XmlContainsNode(strResultFilePath, "Metadata");
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+
+    fs::remove(strResultFilePath.c_str());
+}
+
+TEST_F(cTesterExampleCheckerBundle, TestFileWrongStatus)
+{
+    std::string strResultMessage;
+
+    std::string strFilePath = strTestFilesDir + "/result_file_wrong_status.xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../../doc/schema/xqar_report_format.xsd";
+
+    TestResult nRes = CheckFileExists(strResultMessage, strFilePath, false);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+    nRes |= CheckFileExists(strResultMessage, strXsdFilePath, false);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+    nRes |= ValidateXmlSchema(strFilePath, strXsdFilePath);
+    ASSERT_TRUE_EXT(nRes != TestResult::ERR_NOERROR, strResultMessage.c_str());
+}
+
+TEST_F(cTesterExampleCheckerBundle, TestFileOK)
+{
+    std::string strResultMessage;
+
+    std::string strFilePath = strTestFilesDir + "/result_file_ok.xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../../doc/schema/xqar_report_format.xsd";
+
+    TestResult nRes = CheckFileExists(strResultMessage, strFilePath, false);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+    nRes |= CheckFileExists(strResultMessage, strXsdFilePath, false);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+    nRes |= ValidateXmlSchema(strFilePath, strXsdFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+}
