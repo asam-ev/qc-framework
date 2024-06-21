@@ -10,10 +10,12 @@
 #include "common/config_format/c_configuration_report_module.h"
 #include "common/result_format/c_checker.h"
 #include "common/result_format/c_checker_bundle.h"
+#include "common/result_format/c_domain_specific_info.h"
 #include "common/result_format/c_file_location.h"
 #include "common/result_format/c_inertial_location.h"
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_locations_container.h"
+#include "common/result_format/c_metadata.h"
 #include "common/result_format/c_parameter_container.h"
 #include "common/result_format/c_result_container.h"
 #include "common/result_format/c_xml_location.h"
@@ -165,6 +167,84 @@ void RunTextReport(const cParameterContainer &inputParams)
     XMLPlatformUtils::Terminate();
 }
 
+void PrintDOMElement(DOMElement *element, std::stringstream &ss, int indent = 0, int startIndent = 0)
+{
+    if (!element)
+        return;
+
+    // Convert the tag name to a string
+    char *tagName = XMLString::transcode(element->getTagName());
+    for (int i = 0; i < indent + startIndent; ++i)
+        ss << "  ";
+    ss << "<" << tagName;
+
+    // Print attributes
+    DOMNamedNodeMap *attributes = element->getAttributes();
+    XMLSize_t numAttrs = attributes->getLength();
+    for (XMLSize_t i = 0; i < numAttrs; ++i)
+    {
+        DOMNode *attr = attributes->item(i);
+        char *attrName = XMLString::transcode(attr->getNodeName());
+        char *attrValue = XMLString::transcode(attr->getNodeValue());
+        ss << " " << attrName << "=\"" << attrValue << "\"";
+        XMLString::release(&attrName);
+        XMLString::release(&attrValue);
+    }
+
+    ss << ">";
+
+    // Print children elements
+    DOMNodeList *children = element->getChildNodes();
+    XMLSize_t numChildren = children->getLength();
+    bool hasElementChildren = false;
+
+    for (XMLSize_t i = 0; i < numChildren; ++i)
+    {
+        DOMNode *child = children->item(i);
+        if (child->getNodeType() == DOMNode::TEXT_NODE)
+        {
+            char *textContent = XMLString::transcode(child->getNodeValue());
+            ss << textContent;
+            XMLString::release(&textContent);
+        }
+        else if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+        {
+            hasElementChildren = true;
+            ss << std::endl;
+            PrintDOMElement(dynamic_cast<DOMElement *>(child), ss, indent + 1, startIndent);
+        }
+    }
+
+    if (hasElementChildren)
+    {
+        ss << std::endl;
+        for (int i = 0; i < indent + startIndent; ++i)
+            ss << "  ";
+    }
+
+    ss << "</" << tagName << ">";
+    XMLString::release(&tagName);
+}
+
+bool IsWhitespaceOrEmpty(const std::string &line)
+{
+    return std::all_of(line.begin(), line.end(), [](unsigned char c) { return std::isspace(c); });
+}
+
+void RemoveEmptyLines(std::stringstream &ss)
+{
+    std::string line;
+    std::stringstream tempStream;
+    while (std::getline(ss, line))
+    {
+        if (!IsWhitespaceOrEmpty(line))
+        {
+            tempStream << line << std::endl;
+        }
+    }
+    ss.str(tempStream.str());
+}
+
 // Writes the summary to text
 void WriteResults(const char *file, cResultContainer *ptrResultContainer)
 {
@@ -179,6 +259,7 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
     std::list<cChecker *> checkers;
     std::list<cIssue *> issues;
     std::list<cRule *> rules;
+    std::list<cMetadata *> metadata;
     std::set<std::string> violated_rules;
     std::set<std::string> addressed_rules;
 
@@ -227,34 +308,39 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
             }
 
             checkers = (*it_Bundle)->GetCheckers();
+
+            // Print domain specific info
+
             for (std::list<cChecker *>::const_iterator itChecker = checkers.begin(); itChecker != checkers.end();
                  itChecker++)
             {
+
+                ss << "\n\n    Checker:        " << (*itChecker)->GetCheckerID();
+                ss << "\n    Description:    " << (*itChecker)->GetDescription();
+                ss << "\n    Status:         " << (*itChecker)->GetStatus();
+                ss << "\n    Summary:        " << (*itChecker)->GetSummary();
+
+                if ((*itChecker)->HasParams())
+                {
+                    ss << "\n    Parameters:     ";
+
+                    std::vector<std::string> checkerParams = (*itChecker)->GetParams();
+                    std::vector<std::string>::const_iterator itCheckerParams = checkerParams.begin();
+
+                    ss << *itCheckerParams << " = " << (*itChecker)->GetParam(*itCheckerParams);
+                    itCheckerParams++;
+
+                    for (; itCheckerParams != checkerParams.end(); itCheckerParams++)
+                    {
+                        ss << "\n                    " << *itCheckerParams << " = "
+                           << (*itChecker)->GetParam(*itCheckerParams);
+                    }
+                }
+
+                // Get all issues from the current checker
                 issues = (*itChecker)->GetIssues();
                 if (issues.size() > 0)
                 {
-
-                    ss << "\n    Checker:        " << (*itChecker)->GetCheckerID();
-                    ss << "\n    Description:    " << (*itChecker)->GetDescription();
-                    ss << "\n    Summary:        " << (*itChecker)->GetSummary();
-
-                    if ((*itChecker)->HasParams())
-                    {
-                        ss << "\n    Parameters:     ";
-
-                        std::vector<std::string> checkerParams = (*itChecker)->GetParams();
-                        std::vector<std::string>::const_iterator itCheckerParams = checkerParams.begin();
-
-                        ss << *itCheckerParams << " = " << (*itChecker)->GetParam(*itCheckerParams);
-                        itCheckerParams++;
-
-                        for (; itCheckerParams != checkerParams.end(); itCheckerParams++)
-                        {
-                            ss << "\n                    " << *itCheckerParams << " = "
-                               << (*itChecker)->GetParam(*itCheckerParams);
-                        }
-                    }
-
                     for (std::list<cIssue *>::const_iterator it_Issue = issues.begin(); it_Issue != issues.end();
                          it_Issue++)
                     {
@@ -266,17 +352,51 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                         {
                             violated_rules.insert((*it_Issue)->GetRuleUID());
                         }
+                        if ((*it_Issue)->HasDomainSpecificInfo())
+                        {
+                            std::list<cDomainSpecificInfo *> domainSpecificInfo = (*it_Issue)->GetDomainSpecificInfo();
+
+                            for (std::list<cDomainSpecificInfo *>::const_iterator itDom = domainSpecificInfo.begin();
+                                 itDom != domainSpecificInfo.end(); itDom++)
+                            {
+                                ss << "\n        Name:       " << (*itDom)->GetName() << "\n";
+                                std::stringstream dom_ss;
+                                PrintDOMElement((*itDom)->GetRoot(), dom_ss, 0, 10);
+                                RemoveEmptyLines(dom_ss);
+                                ss << dom_ss.str();
+                            }
+                        }
                     }
-                    ss << "\n";
                 }
-                // Get all rules and issues covered by the current checker
+                // Get all rules covered by the current checker
                 rules = (*itChecker)->GetRules();
+                if (rules.size() > 0)
+                {
+                    ss << "\n\n        Addressed Rules:        ";
+                }
                 for (std::list<cRule *>::const_iterator it_Rule = rules.begin(); it_Rule != rules.end(); it_Rule++)
                 {
                     if ((*it_Rule)->GetRuleUID() != "")
                     {
+                        ss << "\n        - rule:         " << (*it_Rule)->GetRuleUID();
                         addressed_rules.insert((*it_Rule)->GetRuleUID());
                     }
+                }
+                // Get metadata info
+                metadata = (*itChecker)->GetMetadata();
+                if (metadata.size() > 0)
+                {
+                    ss << "\n\n        Metadata:        ";
+                }
+                for (std::list<cMetadata *>::const_iterator it_Meta = metadata.begin(); it_Meta != metadata.end();
+                     it_Meta++)
+                {
+
+                    ss << "\n        ----------------";
+                    ss << "\n        - key:          " << (*it_Meta)->GetKey();
+                    ss << "\n        - value:        " << (*it_Meta)->GetValue();
+                    ss << "\n        - description:  " << (*it_Meta)->GetDescription();
+                    ss << "\n        ----------------";
                 }
             }
 
