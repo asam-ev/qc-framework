@@ -141,6 +141,23 @@ cChecker *cChecker::ParseFromXML(DOMNode *pXMLNode, DOMElement *pXMLElement, cCh
                 if (issueInstance != nullptr)
                     pChecker->AddIssue(issueInstance);
             }
+
+            // Parse Metadata
+            if (Equals(currentTagName, XMLString::transcode(cMetadata::TAG_NAME)))
+            {
+                cMetadata *metadataInstance = cMetadata::ParseFromXML(currentIssueNode, currentIssueElement, pChecker);
+
+                if (metadataInstance != nullptr)
+                    pChecker->AddMetadata(metadataInstance);
+            }
+            // Parse AddressedRules
+            if (Equals(currentTagName, XMLString::transcode(cRule::TAG_NAME)))
+            {
+                cRule *ruleInstance = cRule::ParseFromXML(currentIssueNode, currentIssueElement, pChecker);
+
+                if (ruleInstance != nullptr)
+                    pChecker->AddRule(ruleInstance);
+            }
         }
     }
 
