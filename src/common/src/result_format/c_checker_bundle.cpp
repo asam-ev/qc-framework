@@ -184,6 +184,12 @@ void cCheckerBundle::Clear()
     m_Checkers.clear();
 }
 
+// Sets the name
+void cCheckerBundle::SetName(const std::string &strName)
+{
+    m_CheckerName = strName;
+}
+
 // Sets the summary
 void cCheckerBundle::SetSummary(const std::string &strSummary)
 {

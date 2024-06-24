@@ -19,6 +19,8 @@
 #include "common/result_format/c_xml_location.h"
 #include "common/xml/c_x_path_evaluator.h"
 #include "stdafx.h"
+#include <climits> // for INT_MAX and INT_MIN
+#include <unordered_map>
 
 cResultContainer *pResultContainer;
 
@@ -256,39 +258,96 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
     }
     std::cout << std::endl << std::endl;
     std::cout << "Collect results from directory: " << std::endl
-              << resultsDirectory << std::endl
+              << "> " << resultsDirectory << std::endl
               << "According to config file: " << std::endl
-              << configFile << std::endl;
+              << "> " << configFile << std::endl
+              << std::endl;
 
+    fs::path result_path = resultsDirectory;
+
+    int max_level = INT_MAX;
+    int min_level = INT_MIN;
+
+    // Get minLevel (highest value) and maxLevel (lowest value) across all bundles
     std::vector<cConfigurationCheckerBundle *> checkerBundleConfigs = configuration.GetCheckerBundles();
     for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundles = checkerBundleConfigs.cbegin();
          itCheckerBundles != checkerBundleConfigs.end(); itCheckerBundles++)
     {
-        std::cout << "----> result file " << (*itCheckerBundles)->GetParam("strResultFile") << std::endl;
         std::vector<cConfigurationChecker *> checkers = (*itCheckerBundles)->GetCheckers();
 
         for (std::vector<cConfigurationChecker *>::const_iterator itChecker = checkers.cbegin();
              itChecker != checkers.end(); itChecker++)
         {
-            std::cout << "----> checker id " << (*itChecker)->GetCheckerId() << std::endl;
+            int current_min_level = (*itChecker)->GetMinLevel();
+            int current_max_level = (*itChecker)->GetMaxLevel();
+            if (current_min_level > min_level)
+            {
+                min_level = current_min_level;
+            }
+            if (current_max_level < max_level)
+            {
+                max_level = current_max_level;
+            }
         }
     }
 
-    std::cout << "Found: " << std::endl;
-    for (auto &pFilePath : fs::directory_iterator(resultsDirectory))
+    for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundles = checkerBundleConfigs.cbegin();
+         itCheckerBundles != checkerBundleConfigs.end(); itCheckerBundles++)
     {
-        std::string strFilePath = pFilePath.path().string();
-        std::string strFileName = strFilePath;
-        GetFileName(&strFileName, false);
+        std::vector<cConfigurationChecker *> checkers = (*itCheckerBundles)->GetCheckers();
 
-        // Check if we have an result file in the resultsDirectory
-        if (ToLower(strFileName) == ToLower(strResultFile))
-            continue;
-
-        if (StringEndsWith(strFileName, "xqar"))
+        for (std::vector<cConfigurationChecker *>::const_iterator itChecker = checkers.cbegin();
+             itChecker != checkers.end(); itChecker++)
         {
-            std::cout << ">  " << strFileName << "\t\tReading..." << std::endl;
-            pResultContainer->AddResultsFromXML(strFilePath);
+            (*itChecker)->SetMinLevel(static_cast<eIssueLevel>(min_level));
+            (*itChecker)->SetMaxLevel(static_cast<eIssueLevel>(max_level));
+        }
+    }
+
+    std::vector<cConfigurationCheckerBundle *> checkerBundleConfigs3 = configuration.GetCheckerBundles();
+    for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundles = checkerBundleConfigs3.cbegin();
+         itCheckerBundles != checkerBundleConfigs3.end(); itCheckerBundles++)
+    {
+        std::string current_result_file = (*itCheckerBundles)->GetParam("strResultFile");
+        std::cout << "----> result file " << current_result_file << std::endl;
+
+        // Convert std::string to std::filesystem::path
+        fs::path current_result_path = current_result_file;
+
+        // Join paths using the / operator
+        fs::path full_path = result_path / current_result_path;
+
+        if (!fs::exists(full_path))
+        {
+            std::cerr << "Result file " << full_path << "not found. Skipping pooling step..." << std::endl;
+            continue;
+        }
+
+        // Add checker bundle result to pooled reuslts
+        pResultContainer->AddResultsFromXML(full_path);
+    }
+
+    // Handle CheckerBundle naming - if collision then append 0-indexed occurrence number (abc, abc1, abc2,...)
+    std::unordered_map<std::string, int> bundle_names_count;
+    std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
+    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundles = checkerBundles.cbegin();
+         itCheckerBundles != checkerBundles.end(); itCheckerBundles++)
+    {
+        std::string current_bundle_name = (*itCheckerBundles)->GetBundleName();
+        if (bundle_names_count.find(current_bundle_name) == bundle_names_count.end())
+        {
+            // If the string is not in the map, add it
+            bundle_names_count[current_bundle_name] = 0;
+            (*itCheckerBundles)->SetName(current_bundle_name);
+        }
+        else
+        {
+            // If the string is already in the map, increment the counter and add with number suffix
+            int count = ++bundle_names_count[current_bundle_name];
+            std::ostringstream oss;
+            oss << current_bundle_name << count; // Append the count to the string
+            std::string new_str = oss.str();
+            (*itCheckerBundles)->SetName(new_str);
         }
     }
 
