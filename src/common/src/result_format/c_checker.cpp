@@ -435,3 +435,20 @@ unsigned long long cChecker::NextFreeId() const
         }
     }
 }
+
+void cChecker::FilterIssues(eIssueLevel minLevel, eIssueLevel maxLevel)
+{
+    for (std::list<cIssue *>::const_iterator itIssues = m_Issues.cbegin(); itIssues != m_Issues.cend(); itIssues++)
+    {
+        std::cout << "PRE: " << (*itIssues)->GetIssueId() << std::endl;
+    }
+
+    m_Issues.remove_if([minLevel, maxLevel](cIssue *item) {
+        return item->GetIssueLevel() < minLevel || item->GetIssueLevel() > maxLevel;
+    });
+
+    for (std::list<cIssue *>::const_iterator itIssues = m_Issues.cbegin(); itIssues != m_Issues.cend(); itIssues++)
+    {
+        std::cout << "POST: " << (*itIssues)->GetIssueId() << std::endl;
+    }
+}

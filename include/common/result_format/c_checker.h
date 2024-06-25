@@ -184,6 +184,8 @@ class cChecker
      */
     cParameterContainer *GetParamContainer();
 
+    void FilterIssues(eIssueLevel minLevel, eIssueLevel maxLevel);
+
   protected:
     // Creates a new checker instance
     cChecker(const std::string &strCheckerId, const std::string &strDescription, const std::string &strSummary,
