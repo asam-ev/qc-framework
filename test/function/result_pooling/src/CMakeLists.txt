@@ -11,11 +11,11 @@ set_property(GLOBAL PROPERTY USE_FOLDERS true)
 
 find_package(XercesC REQUIRED)
 
-include_directories(${TEST_NAME} PRIVATE 
+include_directories(${TEST_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../../_common
     ${XercesC_INCLUDE_DIRS})
 
-add_executable(${TEST_NAME}         
+add_executable(${TEST_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../_common/helper.cpp
     ${TEST_NAME}.cpp)
 
@@ -28,13 +28,13 @@ target_link_libraries(${TEST_NAME}
     PRIVATE
     GTest::gtest_main
     $<$<PLATFORM_ID:Linux>:stdc++fs>
+    qc4openx-common
     ${XercesC_LIBRARIES}
 )
 
-target_compile_definitions(${TEST_NAME} 
+target_compile_definitions(${TEST_NAME}
     PRIVATE QC4OPENX_DBQA_BIN_DIR="${QC4OPENX_DBQA_DIR}/bin"
     PRIVATE QC4OPENX_DBQA_RESULT_POOLING_TEST_WORK_DIR="${CMAKE_CURRENT_BINARY_DIR}/../../"
     PRIVATE QC4OPENX_DBQA_RESULT_POOLING_TEST_REF_DIR="${REFERENCE_FILES_INSTALL_DIR}/function/result_pooling")
 
 set_target_properties(${TEST_NAME} PROPERTIES FOLDER test/function)
-

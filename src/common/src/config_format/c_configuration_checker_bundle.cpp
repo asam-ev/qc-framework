@@ -199,3 +199,15 @@ void cConfigurationCheckerBundle::OverwriteParams(const cParameterContainer &par
 {
     m_params.Overwrite(params);
 }
+
+std::vector<std::string> cConfigurationCheckerBundle::GetConfigurationCheckerIds()
+{
+    std::vector<std::string> result;
+    std::vector<cConfigurationChecker *>::const_iterator it = m_Checkers.cbegin();
+
+    for (; it != m_Checkers.cend(); it++)
+    {
+        result.push_back((*it)->GetCheckerId());
+    }
+    return result;
+}

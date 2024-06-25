@@ -88,16 +88,7 @@ int main(int argc, char *argv[])
         std::string arg1 = args[1];
         std::string arg2 = args[2];
 
-        if (isXmlFile(arg1) && isDirectory(arg2))
-        {
-            std::cout << "Configuration file: " << arg1 << "\n";
-            std::cout << "Results directory: " << arg2 << "\n";
-            config_file = arg1;
-            result_dir = arg2;
-            config_file_set = true;
-            result_dir_set = true;
-        }
-        else if (isDirectory(arg1) && isXmlFile(arg2))
+        if (isDirectory(arg1) && isXmlFile(arg2))
         {
             std::cout << "Results directory: " << arg1 << "\n";
             std::cout << "Configuration file: " << arg2 << "\n";
@@ -108,7 +99,8 @@ int main(int argc, char *argv[])
         }
         else
         {
-            std::cerr << "Invalid arguments: " << arg1 << " and " << arg2 << "\n";
+            std::cerr << "Invalid arguments: " << arg1 << " must be a directory and " << arg2
+                      << "must be an xml file \n";
             return 1; // Return error code
         }
     }
@@ -171,10 +163,12 @@ void ShowHelp(const std::string &toolPath)
     std::cout << "\n\nUsage of " << applicationNameWithoutExt << ":" << std::endl;
     std::cout << "\nRun the application to summarize all xqar files from current directory: \n"
               << applicationName << std::endl;
+    std::cout << "\nRun the application to summarize all xqar files from a specified directory: \n"
+              << applicationName << " ../results/ " << std::endl;
     std::cout << "\nRun the application to summarize all xqar files from current directory with given config: \n"
               << applicationName << " config.xml " << std::endl;
     std::cout << "\nRun the application to summarize all xqar files from a specified directory with given config: \n"
-              << applicationName << " config.xml ../results/" << std::endl;
+              << applicationName << " ../results/ config.xml " << std::endl;
     std::cout << "\n\n";
 }
 
@@ -240,7 +234,6 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
         std::cerr << "Could not read configuration! Abort." << std::endl;
         return;
     }
-    inputParams.Overwrite(configuration.GetParams());
 
     std::string strResultFile = inputParams.GetParam("strResultFile");
 
@@ -267,9 +260,9 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
 
     fs::path result_path = resultsDirectory;
 
-    std::vector<cConfigurationCheckerBundle *> checkerBundleConfigs3 = configuration.GetCheckerBundles();
-    for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundles = checkerBundleConfigs3.cbegin();
-         itCheckerBundles != checkerBundleConfigs3.end(); itCheckerBundles++)
+    std::vector<cConfigurationCheckerBundle *> checkerBundleConfigs = configuration.GetCheckerBundles();
+    for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundles = checkerBundleConfigs.cbegin();
+         itCheckerBundles != checkerBundleConfigs.end(); itCheckerBundles++)
     {
         std::string current_result_file = (*itCheckerBundles)->GetParam("strResultFile");
 
@@ -290,7 +283,6 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
     }
 
     // Get minLevel (highest value) and maxLevel (lowest value) of each checker
-    std::vector<cConfigurationCheckerBundle *> checkerBundleConfigs = configuration.GetCheckerBundles();
     for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundleConfig =
              checkerBundleConfigs.cbegin();
          itCheckerBundleConfig != checkerBundleConfigs.end(); itCheckerBundleConfig++)
@@ -305,34 +297,39 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
             eIssueLevel config_max_level = (*itCheckerConfig)->GetMaxLevel();
             std::string config_checker_id = (*itCheckerConfig)->GetCheckerId();
 
-            std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
-            for (std::list<cCheckerBundle *>::const_iterator itCheckerBundles = checkerBundles.cbegin();
-                 itCheckerBundles != checkerBundles.end(); itCheckerBundles++)
+            cCheckerBundle *itCheckerBundle = pResultContainer->GetCheckerBundleByName(config_checker_bundle_name);
+
+            if (itCheckerBundle == nullptr)
             {
-                if ((*itCheckerBundles)->GetBundleName() == config_checker_bundle_name)
-                {
-                    std::list<cChecker *> checkers = (*itCheckerBundles)->GetCheckers();
-                    for (std::list<cChecker *>::const_iterator itChecker = checkers.cbegin();
-                         itChecker != checkers.end(); itChecker++)
-                    {
-                        if ((*itChecker)->GetCheckerID() == config_checker_id)
-                        {
-                            unsigned int pre_size = (*itChecker)->GetIssueCount();
-                            (*itChecker)->FilterIssues(config_min_level, config_max_level);
-                            unsigned int post_size = (*itChecker)->GetIssueCount();
-                            if ((pre_size - post_size) > 0)
-                            {
-                                std::cout << "Filtering checker " << config_checker_id << " results. " << std::endl
-                                          << "Keeping issues between level " << config_min_level << " and "
-                                          << config_max_level << std::endl;
-                                std::cout << "Filtered " << (pre_size - post_size) << " issues " << std::endl
-                                          << std::endl;
-                            }
-                            break;
-                        }
-                    }
-                    break;
-                }
+                std::cerr << "Checker Bundle " << config_checker_bundle_name << " not found in result. Skipping ..."
+                          << std::endl;
+                break;
+            }
+
+            // Filter Checker Bundle results from configuration, so that the result after the pooling only
+            // contains issues from configured checks, even if the Checker Bundle reports more issues from other
+            // checks
+            std::vector<std::string> checkerIds = (*itCheckerBundleConfig)->GetConfigurationCheckerIds();
+            itCheckerBundle->KeepCheckersFrom(checkerIds);
+
+            // evaluate minimal/maximal issue level and adjust level in result
+            cChecker *itChecker = itCheckerBundle->GetCheckerById(config_checker_id);
+
+            if (itChecker == nullptr)
+            {
+                std::cerr << "Checker  " << config_checker_id << " not found among result checker bundle. Skipping ..."
+                          << std::endl;
+                break;
+            }
+            unsigned int pre_size = itChecker->GetIssueCount();
+            itChecker->FilterIssues(config_min_level, config_max_level);
+            unsigned int post_size = itChecker->GetIssueCount();
+            if ((pre_size - post_size) > 0)
+            {
+                std::cout << "Filtering checker " << config_checker_id << " results. " << std::endl
+                          << "Keeping issues between level " << config_min_level << " and " << config_max_level
+                          << std::endl;
+                std::cout << "Filtered " << (pre_size - post_size) << " issues " << std::endl << std::endl;
             }
         }
     }

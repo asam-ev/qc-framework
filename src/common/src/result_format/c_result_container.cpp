@@ -480,3 +480,17 @@ void cResultContainer::ConvertReportToConfiguration(cConfiguration *resultConfig
         }
     }
 }
+
+cCheckerBundle *cResultContainer::GetCheckerBundleByName(std::string &strBundleName) const
+{
+    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = m_Bundles.cbegin();
+         itCheckerBundle != m_Bundles.cend(); itCheckerBundle++)
+    {
+        if ((*itCheckerBundle)->GetBundleName() == strBundleName)
+        {
+            return (*itCheckerBundle);
+        }
+    }
+
+    return nullptr;
+}

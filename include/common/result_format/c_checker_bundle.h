@@ -235,6 +235,8 @@ class cCheckerBundle
      */
     cResultContainer const *GetResultContainer() const;
 
+    void KeepCheckersFrom(std::vector<std::string> checkerIds);
+
   protected:
     /*
      * Creates a new checker bundle

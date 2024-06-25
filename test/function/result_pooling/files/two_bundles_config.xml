@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Config>
+
+  <Param name="XodrFile" value="../stimuli/xodr_examples/three_connected_roads_with_steps.xodr" />
+
+  <CheckerBundle application="DemoCheckerBundle">
+    <Param name="strResultFile" value="DemoCheckerBundle.xqar" />
+    <Checker checkerId="exampleIssueRuleChecker" maxLevel="2" minLevel="2" />
+    <Checker checkerId="exampleDomainChecker" maxLevel="2" minLevel="2" />
+  </CheckerBundle>
+
+  <CheckerBundle application="DemoCheckerBundle2">
+    <Param name="strResultFile" value="DemoCheckerBundle2.xqar" />
+    <Checker checkerId="exampleChecker" maxLevel="1" minLevel="3" />
+    <Checker checkerId="exampleInertialChecker" maxLevel="1" minLevel="3" />
+  </CheckerBundle>
+
+
+  <ReportModule application="TextReport">
+    <Param name="strInputFile" value="Result.xqar" />
+    <Param name="strReportFile" value="Report.txt" />
+  </ReportModule>
+
+</Config>
