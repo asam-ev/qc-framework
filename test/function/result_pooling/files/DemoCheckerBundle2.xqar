@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<CheckerResults version="1.0.0">
+
+  <CheckerBundle build_date="" description="" name="DemoCheckerBundle2" summary="Found 4 issues"
+    version="">
+    <Checker checkerId="exampleChecker" description="This is a description" status="completed"
+      summary="">
+      <Issue description="This is an information from the demo usecase" issueId="0" level="3"
+        ruleUID="" />
+    </Checker>
+    <Checker checkerId="exampleInertialChecker"
+      description="This is a description of inertial checker" status="completed" summary="">
+      <Issue description="This is an information from the demo usecase" issueId="1" level="3"
+        ruleUID="">
+        <Locations description="inertial position">
+          <InertialLocation x="1.000000" y="2.000000" z="3.000000" />
+        </Locations>
+      </Issue>
+    </Checker>
+  </CheckerBundle>
+
+</CheckerResults>

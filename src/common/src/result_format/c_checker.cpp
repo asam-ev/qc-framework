@@ -435,3 +435,10 @@ unsigned long long cChecker::NextFreeId() const
         }
     }
 }
+
+void cChecker::FilterIssues(eIssueLevel minLevel, eIssueLevel maxLevel)
+{
+    m_Issues.remove_if([minLevel, maxLevel](cIssue *item) {
+        return item->GetIssueLevel() > minLevel || item->GetIssueLevel() < maxLevel;
+    });
+}
