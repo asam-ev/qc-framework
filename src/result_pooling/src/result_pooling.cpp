@@ -272,7 +272,6 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
          itCheckerBundles != checkerBundleConfigs3.end(); itCheckerBundles++)
     {
         std::string current_result_file = (*itCheckerBundles)->GetParam("strResultFile");
-        std::cout << "----> result file " << current_result_file << std::endl;
 
         // Convert std::string to std::filesystem::path
         fs::path current_result_path = current_result_file;
@@ -310,20 +309,25 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
             for (std::list<cCheckerBundle *>::const_iterator itCheckerBundles = checkerBundles.cbegin();
                  itCheckerBundles != checkerBundles.end(); itCheckerBundles++)
             {
-                std::cout << "(*itCheckerBundles)->GetBundleName() " << (*itCheckerBundles)->GetBundleName()
-                          << std::endl;
-                std::cout << "config_checker_bundle_name " << config_checker_bundle_name << std::endl;
                 if ((*itCheckerBundles)->GetBundleName() == config_checker_bundle_name)
                 {
                     std::list<cChecker *> checkers = (*itCheckerBundles)->GetCheckers();
                     for (std::list<cChecker *>::const_iterator itChecker = checkers.cbegin();
                          itChecker != checkers.end(); itChecker++)
                     {
-                        std::cout << "(*itChecker)->GetCheckerID() " << (*itChecker)->GetCheckerID() << std::endl;
-                        std::cout << "config_checker_id " << config_checker_id << std::endl;
                         if ((*itChecker)->GetCheckerID() == config_checker_id)
                         {
+                            unsigned int pre_size = (*itChecker)->GetIssueCount();
                             (*itChecker)->FilterIssues(config_min_level, config_max_level);
+                            unsigned int post_size = (*itChecker)->GetIssueCount();
+                            if ((pre_size - post_size) > 0)
+                            {
+                                std::cout << "Filtering checker " << config_checker_id << " results. " << std::endl
+                                          << "Keeping issues between level " << config_min_level << " and "
+                                          << config_max_level << std::endl;
+                                std::cout << "Filtered " << (pre_size - post_size) << " issues " << std::endl
+                                          << std::endl;
+                            }
                             break;
                         }
                     }
