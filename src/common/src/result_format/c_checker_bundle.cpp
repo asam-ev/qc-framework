@@ -9,6 +9,7 @@
 
 #include "common/result_format/c_checker.h"
 #include "common/result_format/c_result_container.h"
+#include <unordered_set>
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -182,6 +183,12 @@ void cCheckerBundle::Clear()
     }
 
     m_Checkers.clear();
+}
+
+// Sets the name
+void cCheckerBundle::SetName(const std::string &strName)
+{
+    m_CheckerName = strName;
 }
 
 // Sets the summary
@@ -488,4 +495,17 @@ cResultContainer const *cCheckerBundle::GetResultContainer() const
 void cCheckerBundle::AssignResultContainer(cResultContainer *container)
 {
     m_Container = container;
+}
+
+void cCheckerBundle::KeepCheckersFrom(const std::vector<std::string> &checkerIds)
+{
+    // Convert names to an unordered_set for efficient lookup
+    std::unordered_set<std::string> checkerSet(checkerIds.begin(), checkerIds.end());
+
+    // Use remove_if and erase to filter the items based on the names
+    m_Checkers.erase(std::remove_if(m_Checkers.begin(), m_Checkers.end(),
+                                    [&checkerSet](cChecker *item) {
+                                        return checkerSet.find(item->GetCheckerID()) == checkerSet.end();
+                                    }),
+                     m_Checkers.end());
 }

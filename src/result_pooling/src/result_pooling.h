@@ -36,6 +36,12 @@ void ShowHelp(const std::string &applicationName);
  */
 void RunResultPooling(const cParameterContainer &inputParams, const fs::path &pathToResults);
 
+/**
+ * Runs the result pooling with given config file
+ */
+void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path &pathToResults,
+                                const std::string &configFile);
+
 /*!
  * Loop over the issues of the checker bundles of the result container:
  * Convert the xml location of the issues in a file location

@@ -77,6 +77,9 @@ class cCheckerBundle
     // Returns the checker id
     std::string GetCheckerID() const;
 
+    // Sets the name
+    void SetName(const std::string &strName);
+
     // Sets the summary
     void SetSummary(const std::string &strSummary);
 
@@ -231,6 +234,8 @@ class cCheckerBundle
      * Returns the result container
      */
     cResultContainer const *GetResultContainer() const;
+
+    void KeepCheckersFrom(const std::vector<std::string> &checkerIds);
 
   protected:
     /*

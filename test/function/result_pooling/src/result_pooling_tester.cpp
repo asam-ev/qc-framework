@@ -6,9 +6,12 @@
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#include "gtest/gtest.h"
-
+#include "common/result_format/c_checker_bundle.h"
+#include "common/result_format/c_issue.h"
+#include "common/result_format/c_result_container.h"
 #include "helper.h"
+#include "gtest/gtest.h"
+#include <xercesc/util/PlatformUtils.hpp>
 
 #define MODULE_NAME "ResultPooling"
 
@@ -87,4 +90,40 @@ TEST_F(cTesterResultPooling, CmdTooMuchArguments)
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "a b");
     ASSERT_TRUE(nRes == TestResult::ERR_FAILED);
+}
+
+TEST_F(cTesterResultPooling, CmdWithConfig)
+{
+    std::string strResultMessage;
+
+    std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
+    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_report_format.xsd";
+    std::string strConfigFilePath = strTestFilesDir + "/" + "two_bundles_config.xml";
+    std::string strOutputPath = strTestFilesDir;
+
+    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strTestFilesDir + " " + strConfigFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+
+    nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+
+    nRes |= ValidateXmlSchema(strResultFilePath, strXsdFilePath);
+    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
+
+    cResultContainer *pResultContainer = new cResultContainer();
+    // Parse results from xml
+    pResultContainer->AddResultsFromXML(strResultFilePath);
+    // Check result contains 2 bundles
+    ASSERT_TRUE_EXT(pResultContainer->GetCheckerBundleCount() == 2, strResultMessage.c_str());
+
+    // Check first bundle contains 2 checkers
+    auto bundleIt = std::next(pResultContainer->GetCheckerBundles().begin());
+
+    ASSERT_TRUE_EXT((*bundleIt)->GetCheckerCount() == 2, strResultMessage.c_str());
+
+    // Check second bundle contains 2 checkers
+    bundleIt = std::next(pResultContainer->GetCheckerBundles().begin(), 1);
+    ASSERT_TRUE_EXT((*bundleIt)->GetCheckerCount() == 2, strResultMessage.c_str());
+
+    fs::remove(strResultFilePath.c_str());
 }
