@@ -75,9 +75,9 @@ DOMElement *cConfigurationCheckerBundle::WriteXML(DOMDocument *pResultDocument, 
     // Add parameters
     m_params.WriteXML(pResultDocument, p_dataElement);
 
-    for (std::vector<cConfigurationChecker *>::const_iterator it = m_Checkers.begin(); it != m_Checkers.end(); ++it)
+    for (const auto &it : m_Checkers)
     {
-        (*it)->WriteXML(pResultDocument, p_dataElement);
+        it->WriteXML(pResultDocument, p_dataElement);
     }
 
     p_parentElement->appendChild(p_dataElement);
@@ -105,10 +105,10 @@ std::vector<cConfigurationChecker *> cConfigurationCheckerBundle::GetConfigurati
 
 void cConfigurationCheckerBundle::Clear()
 {
-    for (std::vector<cConfigurationChecker *>::iterator it = m_Checkers.begin(); it != m_Checkers.end(); it++)
+    for (const auto &it : m_Checkers)
     {
-        (*it)->Clear();
-        delete (*it);
+        it->Clear();
+        delete it;
     }
 
     m_Checkers.clear();
@@ -147,13 +147,12 @@ cConfigurationChecker *cConfigurationCheckerBundle::AddChecker(const std::string
 
 cConfigurationChecker *cConfigurationCheckerBundle::GetCheckerById(const std::string &checkerID) const
 {
-    std::vector<cConfigurationChecker *>::const_iterator it = m_Checkers.cbegin();
 
-    for (; it != m_Checkers.cend(); it++)
+    for (const auto &it : m_Checkers)
     {
-        if ((*it)->GetCheckerId() == checkerID)
+        if (it->GetCheckerId() == checkerID)
         {
-            return (*it);
+            return it;
         }
     }
 
@@ -162,11 +161,10 @@ cConfigurationChecker *cConfigurationCheckerBundle::GetCheckerById(const std::st
 
 bool cConfigurationCheckerBundle::HasCheckerWithId(const std::string &checkerID) const
 {
-    std::vector<cConfigurationChecker *>::const_iterator it = m_Checkers.cbegin();
 
-    for (; it != m_Checkers.cend(); it++)
+    for (const auto &it : m_Checkers)
     {
-        if ((*it)->GetCheckerId() == checkerID)
+        if (it->GetCheckerId() == checkerID)
         {
             return true;
         }
@@ -205,9 +203,9 @@ std::vector<std::string> cConfigurationCheckerBundle::GetConfigurationCheckerIds
     std::vector<std::string> result;
     std::vector<cConfigurationChecker *>::const_iterator it = m_Checkers.cbegin();
 
-    for (; it != m_Checkers.cend(); it++)
+    for (const auto &it : m_Checkers)
     {
-        result.push_back((*it)->GetCheckerId());
+        result.push_back(it->GetCheckerId());
     }
     return result;
 }

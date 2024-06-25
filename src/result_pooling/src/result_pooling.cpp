@@ -394,10 +394,9 @@ static void AddFileLocationsToIssues()
             {
                 // Check for xml Location
                 std::list<cExtendedInformation *> extInformations = location->GetExtendedInformations();
-                for (std::list<cExtendedInformation *>::const_iterator extIt = extInformations.cbegin();
-                     extIt != extInformations.cend(); extIt++)
+                for (const auto &extIt : extInformations)
                 {
-                    cXMLLocation *xmlLocation = dynamic_cast<cXMLLocation *>(*extIt);
+                    cXMLLocation *xmlLocation = dynamic_cast<cXMLLocation *>(extIt);
                     if (nullptr != xmlLocation)
                     {
                         // Calculate and set file location

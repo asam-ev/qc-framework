@@ -210,11 +210,11 @@ std::list<cChecker *> cResultContainer::GetCheckers(const std::string &parentChe
 {
     std::list<cChecker *> results;
 
-    for (std::list<cCheckerBundle *>::const_iterator it = m_Bundles.cbegin(); it != m_Bundles.cend(); it++)
+    for (const auto &it : m_Bundles)
     {
-        if (parentCheckerBundleName == (*it)->GetBundleName())
+        if (parentCheckerBundleName == it->GetBundleName())
         {
-            std::list<cChecker *> items = (*it)->GetCheckers();
+            std::list<cChecker *> items = it->GetCheckers();
             results.insert(results.end(), items.begin(), items.end());
         }
     }
@@ -229,19 +229,19 @@ std::list<cChecker *> cResultContainer::GetCheckers(cCheckerBundle *parentChecke
 
     if (parentCheckerBundle == nullptr)
     {
-        for (std::list<cCheckerBundle *>::const_iterator it = m_Bundles.cbegin(); it != m_Bundles.cend(); it++)
+        for (const auto &it : m_Bundles)
         {
-            std::list<cChecker *> items = (*it)->GetCheckers();
+            std::list<cChecker *> items = it->GetCheckers();
             results.insert(results.end(), items.begin(), items.end());
         }
     }
     else
     {
-        for (std::list<cCheckerBundle *>::const_iterator it = m_Bundles.cbegin(); it != m_Bundles.cend(); it++)
+        for (const auto &it : m_Bundles)
         {
-            if (parentCheckerBundle == (*it) || parentCheckerBundle->GetBundleName() == (*it)->GetBundleName())
+            if (parentCheckerBundle == it || parentCheckerBundle->GetBundleName() == it->GetBundleName())
             {
-                std::list<cChecker *> items = (*it)->GetCheckers();
+                std::list<cChecker *> items = it->GetCheckers();
                 results.insert(results.end(), items.begin(), items.end());
             }
         }
@@ -257,15 +257,13 @@ std::list<cIssue *> cResultContainer::GetIssues(cChecker *parentChecker) const
 
     if (parentChecker == nullptr)
     {
-        for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = m_Bundles.cbegin();
-             itCheckerBundle != m_Bundles.cend(); itCheckerBundle++)
+        for (const auto &itCheckerBundle : m_Bundles)
         {
-            std::list<cChecker *> checkers = (*itCheckerBundle)->GetCheckers();
+            std::list<cChecker *> checkers = itCheckerBundle->GetCheckers();
 
-            for (std::list<cChecker *>::const_iterator itCheckers = checkers.cbegin(); itCheckers != checkers.cend();
-                 itCheckers++)
+            for (const auto &itCheckers : checkers)
             {
-                std::list<cIssue *> issues = (*itCheckers)->GetIssues();
+                std::list<cIssue *> issues = itCheckers->GetIssues();
 
                 results.insert(results.end(), issues.begin(), issues.end());
             }
@@ -273,17 +271,15 @@ std::list<cIssue *> cResultContainer::GetIssues(cChecker *parentChecker) const
     }
     else
     {
-        for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = m_Bundles.cbegin();
-             itCheckerBundle != m_Bundles.cend(); itCheckerBundle++)
+        for (const auto &itCheckerBundle : m_Bundles)
         {
-            std::list<cChecker *> checkers = (*itCheckerBundle)->GetCheckers();
+            std::list<cChecker *> checkers = itCheckerBundle->GetCheckers();
 
-            for (std::list<cChecker *>::const_iterator itCheckers = checkers.cbegin(); itCheckers != checkers.cend();
-                 itCheckers++)
+            for (const auto &itCheckers : checkers)
             {
-                if (parentChecker == (*itCheckers) || parentChecker->GetCheckerID() == (*itCheckers)->GetCheckerID())
+                if (parentChecker == itCheckers || parentChecker->GetCheckerID() == itCheckers->GetCheckerID())
                 {
-                    std::list<cIssue *> issues = (*itCheckers)->GetIssues();
+                    std::list<cIssue *> issues = itCheckers->GetIssues();
 
                     results.insert(results.end(), issues.begin(), issues.end());
                 }
@@ -299,10 +295,9 @@ std::list<cIssue *> cResultContainer::GetIssues(std::list<cChecker *> checkersIn
 {
     std::list<cIssue *> results;
 
-    for (std::list<cChecker *>::const_iterator itCheckers = checkersInput.cbegin(); itCheckers != checkersInput.cend();
-         itCheckers++)
+    for (const auto &itCheckers : checkersInput)
     {
-        std::list<cIssue *> issues = (*itCheckers)->GetIssues();
+        std::list<cIssue *> issues = itCheckers->GetIssues();
 
         results.insert(results.end(), issues.begin(), issues.end());
     }
@@ -314,16 +309,15 @@ std::list<cIssue *> cResultContainer::GetIssuesByCheckerID(const std::string &ch
 {
     std::list<cIssue *> results;
 
-    for (std::list<cCheckerBundle *>::const_iterator it = m_Bundles.cbegin(); it != m_Bundles.cend(); it++)
+    for (const auto &it : m_Bundles)
     {
-        std::list<cChecker *> checkers = (*it)->GetCheckers();
+        std::list<cChecker *> checkers = it->GetCheckers();
 
-        for (std::list<cChecker *>::const_iterator itCheckers = checkers.cbegin(); itCheckers != checkers.cend();
-             itCheckers++)
+        for (const auto &itCheckers : checkers)
         {
-            if (Equals(checkerID, (*itCheckers)->GetCheckerID()))
+            if (Equals(checkerID, itCheckers->GetCheckerID()))
             {
-                std::list<cIssue *> issues = (*itCheckers)->GetIssues();
+                std::list<cIssue *> issues = itCheckers->GetIssues();
                 results.insert(results.end(), issues.begin(), issues.end());
             }
         }
@@ -334,10 +328,9 @@ std::list<cIssue *> cResultContainer::GetIssuesByCheckerID(const std::string &ch
 
 cIssue *cResultContainer::GetIssueById(unsigned long long id) const
 {
-    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = m_Bundles.cbegin();
-         itCheckerBundle != m_Bundles.cend(); itCheckerBundle++)
+    for (const auto &itCheckerBundle : m_Bundles)
     {
-        cIssue *issue = (*itCheckerBundle)->GetIssueById(id);
+        cIssue *issue = itCheckerBundle->GetIssueById(id);
 
         if (nullptr != issue)
         {
@@ -363,10 +356,9 @@ bool cResultContainer::HasXOSCFilePath() const
 // Returns the xodr filename. Empty string if no file name is present.
 std::string cResultContainer::GetXODRFileName(const bool bRemoveExtension) const
 {
-    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = m_Bundles.cbegin();
-         itCheckerBundle != m_Bundles.cend(); itCheckerBundle++)
+    for (const auto &itCheckerBundle : m_Bundles)
     {
-        std::string xodrFilename = (*itCheckerBundle)->GetXODRFileName(bRemoveExtension);
+        std::string xodrFilename = itCheckerBundle->GetXODRFileName(bRemoveExtension);
 
         if (!xodrFilename.empty())
             return xodrFilename;
@@ -378,10 +370,9 @@ std::string cResultContainer::GetXODRFileName(const bool bRemoveExtension) const
 // Returns the xodr path of the first checkerbundle. Empty string if no file name is present.
 std::string cResultContainer::GetXODRFilePath() const
 {
-    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = m_Bundles.cbegin();
-         itCheckerBundle != m_Bundles.cend(); itCheckerBundle++)
+    for (const auto &itCheckerBundle : m_Bundles)
     {
-        std::string xodrFilepath = (*itCheckerBundle)->GetXODRFilePath();
+        std::string xodrFilepath = itCheckerBundle->GetXODRFilePath();
 
         if (!xodrFilepath.empty())
             return xodrFilepath;
@@ -393,10 +384,9 @@ std::string cResultContainer::GetXODRFilePath() const
 // Returns the xodr path of the first checkerbundle. Empty std::string if no file name is present.
 std::string cResultContainer::GetXOSCFilePath() const
 {
-    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = m_Bundles.cbegin();
-         itCheckerBundle != m_Bundles.cend(); itCheckerBundle++)
+    for (const auto &itCheckerBundle : m_Bundles)
     {
-        std::string xoscFilepath = (*itCheckerBundle)->GetXOSCFilePath();
+        std::string xoscFilepath = itCheckerBundle->GetXOSCFilePath();
 
         if (!xoscFilepath.empty())
             return xoscFilepath;
@@ -408,19 +398,17 @@ std::string cResultContainer::GetXOSCFilePath() const
 // Processes every issue on every checkerbundle, checker and does a defined processing
 void cResultContainer::DoProcessing(void (*funcIteratorPtr)(cCheckerBundle *, cChecker *, cIssue *))
 {
-    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = m_Bundles.begin();
-         itCheckerBundle != m_Bundles.end(); itCheckerBundle++)
+    for (const auto &itCheckerBundle : m_Bundles)
     {
-        std::list<cChecker *> checkers = (*itCheckerBundle)->GetCheckers();
+        std::list<cChecker *> checkers = itCheckerBundle->GetCheckers();
 
-        for (std::list<cChecker *>::const_iterator itChecker = checkers.begin(); itChecker != checkers.end();
-             itChecker++)
+        for (const auto &itChecker : checkers)
         {
-            std::list<cIssue *> issues = (*itChecker)->GetIssues();
+            std::list<cIssue *> issues = itChecker->GetIssues();
 
-            for (std::list<cIssue *>::const_iterator itIssue = issues.begin(); itIssue != issues.end(); itIssue++)
+            for (const auto &itIssue : issues)
             {
-                funcIteratorPtr(*itCheckerBundle, *itChecker, *itIssue);
+                funcIteratorPtr(itCheckerBundle, itChecker, itIssue);
             }
         }
     }
@@ -481,14 +469,13 @@ void cResultContainer::ConvertReportToConfiguration(cConfiguration *resultConfig
     }
 }
 
-cCheckerBundle *cResultContainer::GetCheckerBundleByName(std::string &strBundleName) const
+cCheckerBundle *cResultContainer::GetCheckerBundleByName(const std::string &strBundleName) const
 {
-    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = m_Bundles.cbegin();
-         itCheckerBundle != m_Bundles.cend(); itCheckerBundle++)
+    for (const auto &itCheckerBundle : m_Bundles)
     {
-        if ((*itCheckerBundle)->GetBundleName() == strBundleName)
+        if (itCheckerBundle->GetBundleName() == strBundleName)
         {
-            return (*itCheckerBundle);
+            return itCheckerBundle;
         }
     }
 

@@ -497,7 +497,7 @@ void cCheckerBundle::AssignResultContainer(cResultContainer *container)
     m_Container = container;
 }
 
-void cCheckerBundle::KeepCheckersFrom(std::vector<std::string> checkerIds)
+void cCheckerBundle::KeepCheckersFrom(const std::vector<std::string> &checkerIds)
 {
     // Convert names to an unordered_set for efficient lookup
     std::unordered_set<std::string> checkerSet(checkerIds.begin(), checkerIds.end());
