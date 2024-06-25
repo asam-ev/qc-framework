@@ -261,10 +261,9 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
     fs::path result_path = resultsDirectory;
 
     std::vector<cConfigurationCheckerBundle *> checkerBundleConfigs = configuration.GetCheckerBundles();
-    for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundles = checkerBundleConfigs.cbegin();
-         itCheckerBundles != checkerBundleConfigs.end(); itCheckerBundles++)
+    for (const auto &itCheckerBundles : checkerBundleConfigs)
     {
-        std::string current_result_file = (*itCheckerBundles)->GetParam("strResultFile");
+        std::string current_result_file = itCheckerBundles->GetParam("strResultFile");
 
         // Convert std::string to std::filesystem::path
         fs::path current_result_path = current_result_file;
@@ -283,19 +282,16 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
     }
 
     // Get minLevel (highest value) and maxLevel (lowest value) of each checker
-    for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundleConfig =
-             checkerBundleConfigs.cbegin();
-         itCheckerBundleConfig != checkerBundleConfigs.end(); itCheckerBundleConfig++)
+    for (const auto &itCheckerBundleConfig : checkerBundleConfigs)
     {
-        std::vector<cConfigurationChecker *> checkersConfigs = (*itCheckerBundleConfig)->GetCheckers();
-        std::string config_checker_bundle_name = (*itCheckerBundleConfig)->GetCheckerBundleApplication();
+        std::vector<cConfigurationChecker *> checkersConfigs = itCheckerBundleConfig->GetCheckers();
+        std::string config_checker_bundle_name = itCheckerBundleConfig->GetCheckerBundleApplication();
 
-        for (std::vector<cConfigurationChecker *>::const_iterator itCheckerConfig = checkersConfigs.cbegin();
-             itCheckerConfig != checkersConfigs.end(); itCheckerConfig++)
+        for (const auto &itCheckerConfig : checkersConfigs)
         {
-            eIssueLevel config_min_level = (*itCheckerConfig)->GetMinLevel();
-            eIssueLevel config_max_level = (*itCheckerConfig)->GetMaxLevel();
-            std::string config_checker_id = (*itCheckerConfig)->GetCheckerId();
+            eIssueLevel config_min_level = itCheckerConfig->GetMinLevel();
+            eIssueLevel config_max_level = itCheckerConfig->GetMaxLevel();
+            std::string config_checker_id = itCheckerConfig->GetCheckerId();
 
             cCheckerBundle *itCheckerBundle = pResultContainer->GetCheckerBundleByName(config_checker_bundle_name);
 
@@ -309,7 +305,7 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
             // Filter Checker Bundle results from configuration, so that the result after the pooling only
             // contains issues from configured checks, even if the Checker Bundle reports more issues from other
             // checks
-            std::vector<std::string> checkerIds = (*itCheckerBundleConfig)->GetConfigurationCheckerIds();
+            std::vector<std::string> checkerIds = itCheckerBundleConfig->GetConfigurationCheckerIds();
             itCheckerBundle->KeepCheckersFrom(checkerIds);
 
             // evaluate minimal/maximal issue level and adjust level in result
@@ -337,15 +333,14 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
     // Handle CheckerBundle naming - if collision then append 0-indexed occurrence number (abc, abc1, abc2,...)
     std::unordered_map<std::string, int> bundle_names_count;
     std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
-    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundles = checkerBundles.cbegin();
-         itCheckerBundles != checkerBundles.end(); itCheckerBundles++)
+    for (const auto &itCheckerBundles : checkerBundles)
     {
-        std::string current_bundle_name = (*itCheckerBundles)->GetBundleName();
+        std::string current_bundle_name = itCheckerBundles->GetBundleName();
         if (bundle_names_count.find(current_bundle_name) == bundle_names_count.end())
         {
             // If the string is not in the map, add it
             bundle_names_count[current_bundle_name] = 0;
-            (*itCheckerBundles)->SetName(current_bundle_name);
+            itCheckerBundles->SetName(current_bundle_name);
         }
         else
         {
@@ -354,7 +349,7 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
             std::ostringstream oss;
             oss << current_bundle_name << count; // Append the count to the string
             std::string new_str = oss.str();
-            (*itCheckerBundles)->SetName(new_str);
+            itCheckerBundles->SetName(new_str);
         }
     }
 
@@ -374,14 +369,13 @@ static void AddFileLocationsToIssues()
 {
     // Calculate and set file location for ervery xml location
     std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
-    for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = checkerBundles.cbegin();
-         itCheckerBundle != checkerBundles.cend(); itCheckerBundle++)
+    for (const auto &itCheckerBundle : checkerBundles)
     {
         cXPathEvaluator xodrXPathEvaluator;
         cXPathEvaluator xoscXPathEvaluator;
 
-        std::string xodrFilePath = (*itCheckerBundle)->GetXODRFilePath();
-        std::string xoscFilePath = (*itCheckerBundle)->GetXOSCFilePath();
+        std::string xodrFilePath = itCheckerBundle->GetXODRFilePath();
+        std::string xoscFilePath = itCheckerBundle->GetXOSCFilePath();
 
         // Init xml files on xpath evaluators
         bool successXodrContent = false;
@@ -393,10 +387,10 @@ static void AddFileLocationsToIssues()
             successXoscContent = xoscXPathEvaluator.SetXmlContent(QString::fromStdString(xoscFilePath));
 
         // Evaluate XPath for every issue and set calculated file location
-        std::list<cIssue *> issues = (*itCheckerBundle)->GetIssues();
-        for (std::list<cIssue *>::const_iterator itIssue = issues.cbegin(); itIssue != issues.cend(); itIssue++)
+        std::list<cIssue *> issues = itCheckerBundle->GetIssues();
+        for (const auto &itIssue : issues)
         {
-            for (const auto location : (*itIssue)->GetLocationsContainer())
+            for (const auto location : itIssue->GetLocationsContainer())
             {
                 // Check for xml Location
                 std::list<cExtendedInformation *> extInformations = location->GetExtendedInformations();
