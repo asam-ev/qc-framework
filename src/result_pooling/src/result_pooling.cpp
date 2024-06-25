@@ -19,7 +19,6 @@
 #include "common/result_format/c_xml_location.h"
 #include "common/xml/c_x_path_evaluator.h"
 #include "stdafx.h"
-#include <climits> // for INT_MAX and INT_MIN
 #include <unordered_map>
 
 cResultContainer *pResultContainer;
@@ -268,45 +267,6 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
 
     fs::path result_path = resultsDirectory;
 
-    int max_level = INT_MAX;
-    int min_level = INT_MIN;
-
-    // Get minLevel (highest value) and maxLevel (lowest value) across all bundles
-    std::vector<cConfigurationCheckerBundle *> checkerBundleConfigs = configuration.GetCheckerBundles();
-    for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundles = checkerBundleConfigs.cbegin();
-         itCheckerBundles != checkerBundleConfigs.end(); itCheckerBundles++)
-    {
-        std::vector<cConfigurationChecker *> checkers = (*itCheckerBundles)->GetCheckers();
-
-        for (std::vector<cConfigurationChecker *>::const_iterator itChecker = checkers.cbegin();
-             itChecker != checkers.end(); itChecker++)
-        {
-            int current_min_level = (*itChecker)->GetMinLevel();
-            int current_max_level = (*itChecker)->GetMaxLevel();
-            if (current_min_level > min_level)
-            {
-                min_level = current_min_level;
-            }
-            if (current_max_level < max_level)
-            {
-                max_level = current_max_level;
-            }
-        }
-    }
-
-    for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundles = checkerBundleConfigs.cbegin();
-         itCheckerBundles != checkerBundleConfigs.end(); itCheckerBundles++)
-    {
-        std::vector<cConfigurationChecker *> checkers = (*itCheckerBundles)->GetCheckers();
-
-        for (std::vector<cConfigurationChecker *>::const_iterator itChecker = checkers.cbegin();
-             itChecker != checkers.end(); itChecker++)
-        {
-            (*itChecker)->SetMinLevel(static_cast<eIssueLevel>(min_level));
-            (*itChecker)->SetMaxLevel(static_cast<eIssueLevel>(max_level));
-        }
-    }
-
     std::vector<cConfigurationCheckerBundle *> checkerBundleConfigs3 = configuration.GetCheckerBundles();
     for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundles = checkerBundleConfigs3.cbegin();
          itCheckerBundles != checkerBundleConfigs3.end(); itCheckerBundles++)
@@ -328,6 +288,49 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
 
         // Add checker bundle result to pooled reuslts
         pResultContainer->AddResultsFromXML(full_path.string());
+    }
+
+    // Get minLevel (highest value) and maxLevel (lowest value) of each checker
+    std::vector<cConfigurationCheckerBundle *> checkerBundleConfigs = configuration.GetCheckerBundles();
+    for (std::vector<cConfigurationCheckerBundle *>::const_iterator itCheckerBundleConfig =
+             checkerBundleConfigs.cbegin();
+         itCheckerBundleConfig != checkerBundleConfigs.end(); itCheckerBundleConfig++)
+    {
+        std::vector<cConfigurationChecker *> checkersConfigs = (*itCheckerBundleConfig)->GetCheckers();
+        std::string config_checker_bundle_name = (*itCheckerBundleConfig)->GetCheckerBundleApplication();
+
+        for (std::vector<cConfigurationChecker *>::const_iterator itCheckerConfig = checkersConfigs.cbegin();
+             itCheckerConfig != checkersConfigs.end(); itCheckerConfig++)
+        {
+            eIssueLevel config_min_level = (*itCheckerConfig)->GetMinLevel();
+            eIssueLevel config_max_level = (*itCheckerConfig)->GetMaxLevel();
+            std::string config_checker_id = (*itCheckerConfig)->GetCheckerId();
+
+            std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
+            for (std::list<cCheckerBundle *>::const_iterator itCheckerBundles = checkerBundles.cbegin();
+                 itCheckerBundles != checkerBundles.end(); itCheckerBundles++)
+            {
+                std::cout << "(*itCheckerBundles)->GetBundleName() " << (*itCheckerBundles)->GetBundleName()
+                          << std::endl;
+                std::cout << "config_checker_bundle_name " << config_checker_bundle_name << std::endl;
+                if ((*itCheckerBundles)->GetBundleName() == config_checker_bundle_name)
+                {
+                    std::list<cChecker *> checkers = (*itCheckerBundles)->GetCheckers();
+                    for (std::list<cChecker *>::const_iterator itChecker = checkers.cbegin();
+                         itChecker != checkers.end(); itChecker++)
+                    {
+                        std::cout << "(*itChecker)->GetCheckerID() " << (*itChecker)->GetCheckerID() << std::endl;
+                        std::cout << "config_checker_id " << config_checker_id << std::endl;
+                        if ((*itChecker)->GetCheckerID() == config_checker_id)
+                        {
+                            (*itChecker)->FilterIssues(config_min_level, config_max_level);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     // Handle CheckerBundle naming - if collision then append 0-indexed occurrence number (abc, abc1, abc2,...)

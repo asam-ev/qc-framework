@@ -438,15 +438,17 @@ unsigned long long cChecker::NextFreeId() const
 
 void cChecker::FilterIssues(eIssueLevel minLevel, eIssueLevel maxLevel)
 {
+    std::cout << "PRE SIZE " << m_Issues.size() << std::endl;
     for (std::list<cIssue *>::const_iterator itIssues = m_Issues.cbegin(); itIssues != m_Issues.cend(); itIssues++)
     {
         std::cout << "PRE: " << (*itIssues)->GetIssueId() << std::endl;
     }
 
     m_Issues.remove_if([minLevel, maxLevel](cIssue *item) {
-        return item->GetIssueLevel() < minLevel || item->GetIssueLevel() > maxLevel;
+        return item->GetIssueLevel() > minLevel || item->GetIssueLevel() < maxLevel;
     });
 
+    std::cout << "POST SIZE " << m_Issues.size() << std::endl;
     for (std::list<cIssue *>::const_iterator itIssues = m_Issues.cbegin(); itIssues != m_Issues.cend(); itIssues++)
     {
         std::cout << "POST: " << (*itIssues)->GetIssueId() << std::endl;
