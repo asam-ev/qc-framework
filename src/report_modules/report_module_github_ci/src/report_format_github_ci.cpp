@@ -25,9 +25,6 @@
 
 XERCES_CPP_NAMESPACE_USE
 
-const char BASIC_SEPARATOR_LINE[] =
-    "====================================================================================================\n";
-
 static std::map<eIssueLevel, std::string> mapIssueLevelToString = {{eIssueLevel::INFO_LVL, "::notice::"},
                                                                    {eIssueLevel::WARNING_LVL, "::warning::"},
                                                                    {eIssueLevel::ERROR_LVL, "::error::"}};
