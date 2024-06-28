@@ -7,3 +7,4 @@
 
 add_subdirectory(report_module_text)
 add_subdirectory(report_module_gui)
+add_subdirectory(report_module_github_ci)
