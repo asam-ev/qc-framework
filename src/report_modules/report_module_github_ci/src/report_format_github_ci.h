@@ -31,7 +31,7 @@ class cParameterContainer;
  * @param    [in] argc                Number of arguments in shell
  * @param    [in] argv                Pointer to arguments
  *
- * @return   The standard return value
+ * @return   exit with code 1 is an error was found
  */
 int main(int argc, char *argv[]);
 
@@ -43,8 +43,10 @@ void ShowHelp(const std::string &applicationName);
 
 /** Runs the GitHub CI report using the provided input parameters.
  * @param inputParams The input parameters for the GitHub CI report.
+ *
+ * @return True if an error was found in the results
  */
-void RunGithubCIReport(const cParameterContainer &inputParams);
+bool RunGithubCIReport(const cParameterContainer &inputParams);
 
 /**
  * Writes the default configuration for a report
@@ -60,8 +62,10 @@ void WriteDefaultConfig();
  *
  * @param ptrResultContainer A pointer to the `cResultContainer` object containing the
  *                           checker results.
+ *
+ * @return True if an error was found in the results
  */
-void PrintResults(cResultContainer *ptrResultContainer);
+bool PrintResults(cResultContainer *ptrResultContainer);
 
 /**
  * Adds a prefix to the description of an issue.

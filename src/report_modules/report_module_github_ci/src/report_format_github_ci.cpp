@@ -105,7 +105,10 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    RunGithubCIReport(inputParams);
+    // Exit with code 1 if an error was found to fail the GitHub pipeline
+    if(RunGithubCIReport(inputParams)) {
+        exit(1);
+    }
 }
 
 void ShowHelp(const std::string &toolPath)
@@ -124,11 +127,13 @@ void ShowHelp(const std::string &toolPath)
 }
 
 
-void RunGithubCIReport(const cParameterContainer &inputParams)
+bool RunGithubCIReport(const cParameterContainer &inputParams)
 {
     XMLPlatformUtils::Initialize();
 
     auto *pResultContainer = new cResultContainer();
+
+    bool error_found;
 
     try
     {
@@ -144,7 +149,7 @@ void RunGithubCIReport(const cParameterContainer &inputParams)
             (*itCheckerBundles)->DoProcessing(AddPrefixForDescriptionIssueProcessor);
         }
 
-        PrintResults(pResultContainer);
+        error_found = PrintResults(pResultContainer);
     }
     catch (...)
     {
@@ -154,13 +159,17 @@ void RunGithubCIReport(const cParameterContainer &inputParams)
     delete pResultContainer;
 
     XMLPlatformUtils::Terminate();
+
+    return error_found;
 }
 
 // Prints results in GitHub CI format
-void PrintResults(cResultContainer *ptrResultContainer)
+bool PrintResults(cResultContainer *ptrResultContainer)
 {
     if (!ptrResultContainer->HasCheckerBundles())
-        return;
+        return false;
+
+    bool error_found = false;
 
     std::list<cCheckerBundle *> bundles = ptrResultContainer->GetCheckerBundles();
     std::list<cChecker *> checkers;
@@ -185,10 +194,15 @@ void PrintResults(cResultContainer *ptrResultContainer)
                               << ": "
                               << issue->GetDescription()
                               << std::endl;
+                    if (issue->GetIssueLevel() == eIssueLevel::ERROR_LVL)
+                    {
+                        error_found = true;
+                    }
                 }
             }
         }
     }
+    return error_found;
 }
 
 
