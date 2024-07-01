@@ -140,8 +140,7 @@ bool RunGithubCIReport(const cParameterContainer &inputParams)
 
         // Add prefix with issue id
         std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
-        for (auto itCheckerBundles = checkerBundles.cbegin();
-             itCheckerBundles != checkerBundles.end(); itCheckerBundles++)
+        for (auto checkerBundles:  checkerBundles)
         {
             (*itCheckerBundles)->DoProcessing(AddPrefixForDescriptionIssueProcessor);
         }
