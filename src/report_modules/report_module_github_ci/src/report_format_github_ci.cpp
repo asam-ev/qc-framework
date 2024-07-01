@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
     if (StringEndsWith(ToLower(strFilepath), ".xqar"))
     {
-        if (stat(strFilepath.c_str(), &fileStatus) == -1) // ==0 ok; ==-1 error
+        if (!std::filesystem::exists(strFilepath.c_str()))
         {
             std::cerr << "Could not open file '" << strFilepath << "'!" << std::endl
                       << "Abort generating report!" << std::endl;
