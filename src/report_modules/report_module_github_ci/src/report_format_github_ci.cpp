@@ -128,7 +128,7 @@ bool RunGithubCIReport(const cParameterContainer &inputParams)
 {
     XMLPlatformUtils::Initialize();
 
-    auto *pResultContainer(new cResultContainer());
+    std::unique_ptr<cResultContainer> pResultContainer(new cResultContainer());
 
     bool error_found;
 
@@ -157,14 +157,14 @@ bool RunGithubCIReport(const cParameterContainer &inputParams)
 }
 
 // Prints results in GitHub CI format
-bool PrintResults(cResultContainer *ptrResultContainer)
+bool PrintResults(std::unique_ptr<cResultContainer> &pResultContainer)
 {
-    if (!ptrResultContainer->HasCheckerBundles())
+    if (!pResultContainer->HasCheckerBundles())
         return false;
 
     bool error_found = false;
 
-    std::list<cCheckerBundle *> bundles = ptrResultContainer->GetCheckerBundles();
+    std::list<cCheckerBundle *> bundles = pResultContainer->GetCheckerBundles();
     // Loop over all checker bundles
     for (auto & bundle : bundles)
     {

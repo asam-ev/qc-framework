@@ -9,6 +9,7 @@
 
 #include "common/util.h"
 
+#include <memory>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/AbstractDOMParser.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
@@ -60,12 +61,12 @@ void WriteDefaultConfig();
  * and for each checker, it prints the issue level, checker ID, and description for
  * all the issues found by that checker. Thr print format is according to the GitHub CI syntax.
  *
- * @param ptrResultContainer A pointer to the `cResultContainer` object containing the
- *                           checker results.
+ * @param pResultContainer A pointer to the `cResultContainer` object containing the
+ *                         checker results.
  *
  * @return True if an error was found in the results
  */
-bool PrintResults(cResultContainer *ptrResultContainer);
+bool PrintResults(std::unique_ptr<cResultContainer> &pResultContainer);
 
 /**
  * Adds a prefix to the description of an issue.
