@@ -128,7 +128,7 @@ bool RunGithubCIReport(const cParameterContainer &inputParams)
 {
     XMLPlatformUtils::Initialize();
 
-    auto *pResultContainer = new cResultContainer();
+    auto *pResultContainer(new cResultContainer());
 
     bool error_found;
 
@@ -151,9 +151,6 @@ bool RunGithubCIReport(const cParameterContainer &inputParams)
     catch (...)
     {
     }
-
-    pResultContainer->Clear();
-    delete pResultContainer;
 
     XMLPlatformUtils::Terminate();
 
