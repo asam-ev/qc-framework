@@ -139,7 +139,7 @@ bool RunGithubCIReport(const cParameterContainer &inputParams)
         pResultContainer->AddResultsFromXML(inputParams.GetParam("strInputFile"));
 
         // Add prefix with issue id
-        std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
+        const std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
         for (auto checkerBundle:  checkerBundles)
         {
             checkerBundle->DoProcessing(AddPrefixForDescriptionIssueProcessor);
