@@ -140,9 +140,9 @@ bool RunGithubCIReport(const cParameterContainer &inputParams)
 
         // Add prefix with issue id
         std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
-        for (auto checkerBundles:  checkerBundles)
+        for (auto checkerBundle:  checkerBundles)
         {
-            (*itCheckerBundles)->DoProcessing(AddPrefixForDescriptionIssueProcessor);
+            checkerBundle->DoProcessing(AddPrefixForDescriptionIssueProcessor);
         }
 
         error_found = PrintResults(pResultContainer);
