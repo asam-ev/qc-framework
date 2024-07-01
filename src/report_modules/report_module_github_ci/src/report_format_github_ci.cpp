@@ -165,19 +165,16 @@ bool PrintResults(cResultContainer *ptrResultContainer)
     bool error_found = false;
 
     std::list<cCheckerBundle *> bundles = ptrResultContainer->GetCheckerBundles();
-    std::list<cChecker *> checkers;
-    std::list<cIssue *> issues;
-
     // Loop over all checker bundles
     for (auto & bundle : bundles)
     {
-        checkers = bundle->GetCheckers();
+        const auto checkers = bundle->GetCheckers();
 
         // Iterate over all checkers
         for (auto & checker : checkers)
         {
             // Get all issues from the current checker
-            issues = checker->GetIssues();
+            const auto issues = checker->GetIssues();
             if (!issues.empty())
             {
                 for (auto & issue : issues)
