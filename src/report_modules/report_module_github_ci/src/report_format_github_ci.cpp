@@ -32,7 +32,7 @@ static std::map<eIssueLevel, std::string> mapIssueLevelToString = {{eIssueLevel:
 // Main Programm
 int main(int argc, char *argv[])
 {
-    std::string strToolpath = argv[0];
+    const std::string strToolpath(argv[0]);
 
     if (argc != 2)
     {
