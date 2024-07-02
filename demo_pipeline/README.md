@@ -142,6 +142,16 @@ Some OpenDrive and OpenScenario XML test files are available to try out.
 - [OpenDrive test files](https://github.com/asam-ev/qc-opendrive/tree/develop/tests/data)
 - [OpenScenario XML test files](https://github.com/asam-ev/qc-openscenarioxml/tree/develop/tests/data)
 
+
+### Update to the latest version
+
+The demo pipeline is built every day at 4am UTC. To update the demo pipeline on your local machine, use the following command.
+
+```
+docker pull ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
+```
+
+
 ### Local build instructions
 
 The image can only be built on Linux. To build the Docker image locally, you can execute:
