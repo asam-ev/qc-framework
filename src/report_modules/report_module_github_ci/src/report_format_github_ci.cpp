@@ -25,7 +25,7 @@
 
 XERCES_CPP_NAMESPACE_USE
 
-static std::map<eIssueLevel, std::string> mapIssueLevelToString = {{eIssueLevel::INFO_LVL, "::notice::"},
+static const std::map<eIssueLevel, std::string> mapIssueLevelToString = {{eIssueLevel::INFO_LVL, "::notice::"},
                                                                    {eIssueLevel::WARNING_LVL, "::warning::"},
                                                                    {eIssueLevel::ERROR_LVL, "::error::"}};
 
