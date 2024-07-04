@@ -14,7 +14,7 @@
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_result_container.h"
 
-#define REPORT_MODULE_NAME "TextReport"
+#define REPORT_MODULE_NAME "GithubCIReport"
 
 class cParameterContainer;
 
