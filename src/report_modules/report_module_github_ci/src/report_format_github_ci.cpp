@@ -179,14 +179,18 @@ bool PrintResults(std::unique_ptr<cResultContainer> &pResultContainer)
             {
                 for (auto & issue : issues)
                 {
-                    std::cout << mapIssueLevelToString[issue->GetIssueLevel()]
-                              << checker->GetCheckerID()
-                              << ": "
-                              << issue->GetDescription()
-                              << std::endl;
-                    if (issue->GetIssueLevel() == eIssueLevel::ERROR_LVL)
+                    auto issue_level = mapIssueLevelToString.find(issue->GetIssueLevel());
+                    if (issue_level != mapIssueLevelToString.end())
                     {
-                        error_found = true;
+                        std::cout << issue_level->second
+                                  << checker->GetCheckerID()
+                                  << ": "
+                                  << issue->GetDescription()
+                                  << std::endl;
+                        if (issue->GetIssueLevel() == eIssueLevel::ERROR_LVL)
+                        {
+                            error_found = true;
+                        }
                     }
                 }
             }
