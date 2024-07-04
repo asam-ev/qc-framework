@@ -80,6 +80,8 @@ class cConfigurationCheckerBundle
     // Overwrite parameters
     void OverwriteParams(const cParameterContainer &params);
 
+    std::vector<std::string> GetConfigurationCheckerIds();
+
   protected:
     std::string strApplication;
 

@@ -141,6 +141,23 @@ cChecker *cChecker::ParseFromXML(DOMNode *pXMLNode, DOMElement *pXMLElement, cCh
                 if (issueInstance != nullptr)
                     pChecker->AddIssue(issueInstance);
             }
+
+            // Parse Metadata
+            if (Equals(currentTagName, XMLString::transcode(cMetadata::TAG_NAME)))
+            {
+                cMetadata *metadataInstance = cMetadata::ParseFromXML(currentIssueNode, currentIssueElement, pChecker);
+
+                if (metadataInstance != nullptr)
+                    pChecker->AddMetadata(metadataInstance);
+            }
+            // Parse AddressedRules
+            if (Equals(currentTagName, XMLString::transcode(cRule::TAG_NAME)))
+            {
+                cRule *ruleInstance = cRule::ParseFromXML(currentIssueNode, currentIssueElement, pChecker);
+
+                if (ruleInstance != nullptr)
+                    pChecker->AddRule(ruleInstance);
+            }
         }
     }
 
@@ -417,4 +434,11 @@ unsigned long long cChecker::NextFreeId() const
             return newId;
         }
     }
+}
+
+void cChecker::FilterIssues(eIssueLevel minLevel, eIssueLevel maxLevel)
+{
+    m_Issues.remove_if([minLevel, maxLevel](cIssue *item) {
+        return item->GetIssueLevel() > minLevel || item->GetIssueLevel() < maxLevel;
+    });
 }

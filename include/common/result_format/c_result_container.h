@@ -129,6 +129,8 @@ class cResultContainer
      */
     void ConvertReportToConfiguration(cConfiguration *resultConfiguration);
 
+    cCheckerBundle *GetCheckerBundleByName(const std::string &strBundleName) const;
+
   protected:
     std::list<cCheckerBundle *> m_Bundles;
 
