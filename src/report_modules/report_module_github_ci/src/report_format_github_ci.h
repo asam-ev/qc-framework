@@ -10,14 +10,6 @@
 #include "common/util.h"
 
 #include <memory>
-#include <xercesc/dom/DOM.hpp>
-#include <xercesc/parsers/AbstractDOMParser.hpp>
-#include <xercesc/parsers/XercesDOMParser.hpp>
-#include <xercesc/sax/ErrorHandler.hpp>
-#include <xercesc/sax/SAXException.hpp>
-#include <xercesc/sax/SAXParseException.hpp>
-#include <xercesc/util/ParseException.hpp>
-#include <xercesc/util/XMLString.hpp>
 
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_result_container.h"
