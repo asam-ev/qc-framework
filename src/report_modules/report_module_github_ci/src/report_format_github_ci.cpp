@@ -128,7 +128,7 @@ bool RunGithubCIReport(const cParameterContainer &inputParams)
 {
     XMLPlatformUtils::Initialize();
 
-    std::unique_ptr<cResultContainer> pResultContainer(new cResultContainer());
+    auto pResultContainer = std::make_unique<cResultContainer>();
 
     bool error_found;
 
