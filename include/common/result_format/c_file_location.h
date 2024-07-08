@@ -12,13 +12,6 @@
 #include "../xml/util_xerces.h"
 #include "c_extended_information.h"
 
-enum eFileType
-{
-    NONE,
-    XODR,
-    XOSC
-};
-
 /*
  * Definition of additional Issues FileInformation (Location of the Issue in the Xodr File)
  */
@@ -27,7 +20,6 @@ class cFileLocation : public cExtendedInformation
 
   public:
     static const XMLCh *TAG_NAME;
-    static const XMLCh *ATTR_FILETYPE;
     static const XMLCh *ATTR_ROW;
     static const XMLCh *ATTR_COLUMN;
 
@@ -37,9 +29,8 @@ class cFileLocation : public cExtendedInformation
      * \param column: Column of the file location
      * \param description: Description
      */
-    cFileLocation(eFileType fileType, int row, int column) : cExtendedInformation("FileLocation")
+    cFileLocation(int row, int column) : cExtendedInformation("FileLocation")
     {
-        m_FileType = fileType;
         m_Column = column;
         m_Row = row;
     }
@@ -51,26 +42,13 @@ class cFileLocation : public cExtendedInformation
     static cFileLocation *ParseFromXML(XERCES_CPP_NAMESPACE::DOMNode *pXMLNode,
                                        XERCES_CPP_NAMESPACE::DOMElement *pXMLElement);
 
-    // Returns the file type
-    eFileType GetFileType() const;
-
-    // Returns the file type as string
-    std::string GetFileTypeStr() const;
-
     // Returns the row
     int GetRow() const;
 
     // Returns the column
     int GetColumn() const;
 
-    // Returns true if this is an Xodr file location
-    bool IsXODRFileLocation() const;
-
-    // Returns true if this is an Xosc file location
-    bool IsXOSCFileLocation() const;
-
   protected:
-    eFileType m_FileType;
     int m_Column;
     int m_Row;
 

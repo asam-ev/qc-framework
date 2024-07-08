@@ -411,7 +411,7 @@ static void AddFileLocationsToIssues()
                             if (successGetRows)
                             {
                                 for (int i = 0; i < rows.size(); ++i)
-                                    location->AddExtendedInformation(new cFileLocation(eFileType::XOSC, rows.at(i), 0));
+                                    location->AddExtendedInformation(new cFileLocation(rows.at(i), 0));
                             }
                         }
                         else if (xpathQt.startsWith("/OpenDRIVE/") && successXodrContent)
@@ -420,7 +420,7 @@ static void AddFileLocationsToIssues()
                             if (successGetRows)
                             {
                                 for (int i = 0; i < rows.size(); ++i)
-                                    location->AddExtendedInformation(new cFileLocation(eFileType::XODR, rows.at(i), 0));
+                                    location->AddExtendedInformation(new cFileLocation(rows.at(i), 0));
                             }
                         }
 
