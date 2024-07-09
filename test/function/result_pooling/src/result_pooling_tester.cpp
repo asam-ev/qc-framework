@@ -27,7 +27,7 @@ TEST_F(cTesterResultPooling, CmdBasic)
     std::string strResultMessage;
 
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_report_format.xsd";
+    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_result_format.xsd";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
@@ -62,7 +62,7 @@ TEST_F(cTesterResultPooling, CmdDirNoResults)
     std::string strResultMessage;
 
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_report_format.xsd";
+    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_result_format.xsd";
 
     TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "..");
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
@@ -97,7 +97,7 @@ TEST_F(cTesterResultPooling, CmdWithConfig)
     std::string strResultMessage;
 
     std::string strResultFilePath = strWorkingDir + "/" + "Result.xqar";
-    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_report_format.xsd";
+    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_result_format.xsd";
     std::string strConfigFilePath = strTestFilesDir + "/" + "two_bundles_config.xml";
     std::string strOutputPath = strTestFilesDir;
 
