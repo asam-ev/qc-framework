@@ -77,7 +77,6 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
     <xs:complexType name="FileLocationType">
         <xs:attribute name="column" type="xs:string" />
-        <xs:attribute name="fileType" type="xs:string" />
         <xs:attribute name="row" type="xs:string" />
     </xs:complexType>
 

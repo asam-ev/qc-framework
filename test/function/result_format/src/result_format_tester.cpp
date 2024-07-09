@@ -30,7 +30,7 @@ TEST_F(cTesterResultFormat, DomainSpecificInfoReadWrite)
     std::string strResultMessage;
     std::string strFilePath = strTestFilesDir + "/result_domain_info.xqar";
     std::string strResultFile = strWorkingDir + "/output.xqar";
-    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_report_format.xsd";
+    std::string strXsdFilePath = strTestFilesDir + "/../../doc/schema/xqar_result_format.xsd";
     // Check if xsd file exists
     TestResult nRes = CheckFileExists(strResultMessage, strXsdFilePath, false);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());

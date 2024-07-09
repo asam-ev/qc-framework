@@ -447,8 +447,7 @@ void PrintExtendedInformationIntoStream(cIssue *issue, std::stringstream *ssStre
             {
                 cFileLocation *fileLoc = (cFileLocation *)(*extIt);
                 *ssStream << "\n                    "
-                          << "   File: source=" << fileLoc->GetFileTypeStr() << " row=" << fileLoc->GetRow()
-                          << " column=" << fileLoc->GetColumn();
+                          << "   File: row=" << fileLoc->GetRow() << " column=" << fileLoc->GetColumn();
             }
             else if ((*extIt)->IsType<cXMLLocation *>())
             {

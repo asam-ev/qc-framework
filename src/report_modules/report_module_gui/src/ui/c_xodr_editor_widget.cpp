@@ -77,12 +77,8 @@ void cXODREditorWidget::ShowXODRIssue(const cIssue *const issue, const int row)
                 if (extendedItem->IsType<cFileLocation *>())
                 {
                     cFileLocation *fileLoc = (cFileLocation *)extendedItem;
-
-                    if (fileLoc->IsXODRFileLocation())
-                    {
-                        rowToSelect = fileLoc->GetRow();
-                        break;
-                    }
+                    rowToSelect = fileLoc->GetRow();
+                    break;
                 }
             }
         }
@@ -168,7 +164,7 @@ void cXODREditorWidget::LoadXODR(cResultContainer *const container)
                         {
                             cFileLocation *fileLocation = dynamic_cast<cFileLocation *>(*extIt);
 
-                            if (nullptr != fileLocation && fileLocation->IsXODRFileLocation())
+                            if (nullptr != fileLocation)
                                 HighlightIssue(*issueIt, fileLocation->GetRow(), fmt, &cursor);
                         }
                     }

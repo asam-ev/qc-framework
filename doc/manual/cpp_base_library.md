@@ -1,6 +1,6 @@
 <!---
 Copyright 2023 CARIAD SE.
- 
+
 This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -59,7 +59,7 @@ issue. Additional meta information can be added to an issue: file location (
 cFileLocation ), XML file location ( cXMLLocation ) or inertial location (
 cInertialLocation ). This information is relevant for the ReportModule, for
 example, to point out meaningful errors in a GUI. The report XML file has to
-follow the schema file doc/schema/xqar_report_format.xsd.
+follow the schema file doc/schema/xqar_result_format.xsd.
 
 ```c++
 myChecker->AddIssue(new cIssue("errorDescription", ERROR_LVL))
