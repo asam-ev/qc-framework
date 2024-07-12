@@ -35,7 +35,6 @@
 cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, const std::string &reportModuleName,
                                          QWidget *)
 {
-
     _results = resultContainer;
     _reportModuleName = QString::fromStdString(reportModuleName);
 
