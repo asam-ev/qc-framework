@@ -7,6 +7,8 @@
  */
 #pragma once
 
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <QMap>
 #include <QString>
 #include <QtWidgets/QMainWindow>
@@ -66,6 +68,8 @@ class cReportModuleWindow : public QMainWindow
 
     std::vector<std::unique_ptr<Viewer>> viewerEntries;
     Viewer *_viewerActive{nullptr};
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
   public:
     cReportModuleWindow() = delete;

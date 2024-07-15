@@ -21,6 +21,8 @@
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_result_container.h"
 
+#include <QDebug>
+#include <QMimeData>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QFileDialog>
@@ -62,6 +64,7 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     sourceTabWidget->addTab((QWidget *)_xodrEditorWidget, "OpenDRIVE");
     sourceTabWidget->addTab((QWidget *)_xoscEditorWidget, "OpenSCENARIO");
 
+    sourceTabWidget->setTabEnabled(0, false);
     sourceTabWidget->setTabEnabled(1, false);
 
     xmlReportWidgetLayout->addWidget(xmlReportWidgetLabel);
@@ -263,6 +266,8 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     // Set the size of the application of the half size of desktop
     QSize quarterDesktopSize = QDesktopWidget().availableGeometry(this).size() * 0.75f;
     resize(quarterDesktopSize);
+
+    setAcceptDrops(true);
 }
 
 // Loads the result container
@@ -447,5 +452,38 @@ void cReportModuleWindow::closeEvent(QCloseEvent *)
     for (uint32_t i = 0; i < viewerEntries.size(); i++)
     {
         viewerEntries[i]->CloseViewer_f();
+    }
+}
+
+void cReportModuleWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+
+    if (event->mimeData()->hasUrls())
+    {
+        event->acceptProposedAction();
+    }
+}
+
+void cReportModuleWindow::dropEvent(QDropEvent *event)
+{
+    const QMimeData *mimeData = event->mimeData();
+
+    if (mimeData->hasUrls())
+    {
+        QList<QUrl> urlList = mimeData->urls();
+
+        for (const QUrl &url : urlList)
+        {
+            QString filePath = url.toLocalFile();
+            if (!filePath.isNull())
+            {
+                // clear old results
+                _results->Clear();
+                // load new one
+                _results->AddResultsFromXML(filePath.toUtf8().constData());
+
+                LoadResultContainer(_results);
+            }
+        }
     }
 }
