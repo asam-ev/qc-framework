@@ -12,12 +12,12 @@
 #include <QMap>
 #include <QPlainTextEdit>
 #include <QString>
-#include <QSyntaxHighlighter>
 #include <QtWidgets/QMainWindow>
 #include <memory>
 #include <string>
 #include <vector>
 
+#include "c_line_highlighter.h"
 #include "common/result_format/c_issue.h"
 
 class cCheckerBundle;
@@ -30,34 +30,6 @@ class cLocationsContainer;
 class QActionGroup;
 class QMenu;
 class QAction;
-
-class LineHighlighter : public QSyntaxHighlighter
-{
-  public:
-    LineHighlighter(QTextDocument *document) : QSyntaxHighlighter(document), lineNumber(-1)
-    {
-    }
-
-    void setLineToHighlight(int line)
-    {
-        lineNumber = line;
-        rehighlight();
-    }
-
-  protected:
-    void highlightBlock(const QString &text) override
-    {
-        if (lineNumber != -1 && currentBlock().blockNumber() == lineNumber)
-        {
-            QTextCharFormat fmt;
-            fmt.setBackground(Qt::yellow);
-            setFormat(0, text.length(), fmt);
-        }
-    }
-
-  private:
-    int lineNumber;
-};
 
 class cReportModuleWindow : public QMainWindow
 {
