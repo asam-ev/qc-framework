@@ -73,6 +73,7 @@ class cReportModuleWindow : public QMainWindow
     void dropEvent(QDropEvent *event) override;
     LineHighlighter *highlighter;
     QPlainTextEdit *textEditArea;
+    const QFont codeFont = getCodeFont();
 
   public:
     cReportModuleWindow() = delete;
@@ -102,6 +103,9 @@ class cReportModuleWindow : public QMainWindow
     // Checks if the OpenDRIVE or OpenSCENARIO could be loaded
     void ValidateInputFile(cCheckerBundle *const bundle, QMap<QString, QString> *fileReplacementMap,
                            const std::string &parameter, const std::string &fileName, const std::string &filter) const;
+
+    QFont getCodeFont();
+
   public slots:
     void loadFileContent(cResultContainer *const container);
     void highlightRow(const cIssue *const issue, const int row);

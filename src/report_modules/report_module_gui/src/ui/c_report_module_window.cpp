@@ -102,14 +102,10 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     textEditArea = new QPlainTextEdit(xmlReportWidget);
     textEditArea->setReadOnly(true);
     textEditArea->setWordWrapMode(QTextOption::NoWrap);
-    QFont font;
-    font.setFamily("Courier");
-    font.setFixedPitch(true);
-    font.setPointSize(10);
 
-    QFontMetrics metrics(font);
+    QFontMetrics metrics(codeFont);
 
-    textEditArea->setFont(font);
+    textEditArea->setFont(codeFont);
     textEditArea->setTabStopWidth(2 * metrics.width(' '));
     textEditArea->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
 
@@ -534,4 +530,14 @@ void cReportModuleWindow::dropEvent(QDropEvent *event)
             }
         }
     }
+}
+
+// Helper function to create and initialize a QFont
+QFont cReportModuleWindow::getCodeFont()
+{
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(10);
+    return font;
 }
