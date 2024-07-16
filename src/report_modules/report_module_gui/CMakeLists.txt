@@ -14,9 +14,7 @@ add_executable(${REPORT_MODULE_GUI_PROJECT}
     src/report_format_ui.cpp
     src/ui/c_checker_widget.cpp
     src/ui/c_report_module_window.cpp
-    src/ui/c_xml_code_editor.cpp
-    src/ui/c_xodr_editor_widget.cpp
-    src/ui/c_xosc_editor_widget.cpp
+    src/ui/c_line_highlighter.cpp
     src/qrc/poc__report_module_gui__qrc.cpp
 )
 

@@ -10,13 +10,14 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMap>
+#include <QPlainTextEdit>
 #include <QString>
 #include <QtWidgets/QMainWindow>
-
 #include <memory>
 #include <string>
 #include <vector>
 
+#include "c_line_highlighter.h"
 #include "common/result_format/c_issue.h"
 
 class cCheckerBundle;
@@ -70,6 +71,9 @@ class cReportModuleWindow : public QMainWindow
     Viewer *_viewerActive{nullptr};
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
+    LineHighlighter *highlighter;
+    QPlainTextEdit *textEditArea;
+    const QFont codeFont = getCodeFont();
 
   public:
     cReportModuleWindow() = delete;
@@ -99,4 +103,10 @@ class cReportModuleWindow : public QMainWindow
     // Checks if the OpenDRIVE or OpenSCENARIO could be loaded
     void ValidateInputFile(cCheckerBundle *const bundle, QMap<QString, QString> *fileReplacementMap,
                            const std::string &parameter, const std::string &fileName, const std::string &filter) const;
+
+    QFont getCodeFont();
+
+  public slots:
+    void loadFileContent(cResultContainer *const container);
+    void highlightRow(const cIssue *const issue, const int row);
 };

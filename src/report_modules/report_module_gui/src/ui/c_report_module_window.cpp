@@ -14,8 +14,6 @@
 #include "c_report_module_window.h"
 
 #include "c_checker_widget.h"
-#include "c_xodr_editor_widget.h"
-#include "c_xosc_editor_widget.h"
 
 #include "common/result_format/c_checker_bundle.h"
 #include "common/result_format/c_locations_container.h"
@@ -23,6 +21,7 @@
 
 #include <QDebug>
 #include <QMimeData>
+#include <QVBoxLayout>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QFileDialog>
@@ -31,6 +30,49 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QSplitter>
+
+void cReportModuleWindow::highlightRow(const cIssue *const issue, const int row)
+{
+
+    if (highlighter)
+    {
+        highlighter->setLineToHighlight(row);
+        textEditArea->update();
+        // Move cursor to the highlighted row and center it
+        QTextCursor cursor = textEditArea->textCursor();
+        cursor.movePosition(QTextCursor::Start);
+        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, row);
+        textEditArea->setTextCursor(cursor);
+        textEditArea->centerCursor();
+    }
+}
+
+void cReportModuleWindow::loadFileContent(cResultContainer *const container)
+{
+
+    QString fileToOpen;
+    textEditArea->setPlainText("");
+    if (container->HasXODRFileName())
+    {
+        fileToOpen = container->GetXODRFilePath().c_str();
+    }
+    else if (container->HasXOSCFilePath())
+    {
+        fileToOpen = container->GetXOSCFilePath().c_str();
+    }
+    else
+    {
+        return;
+    }
+
+    QFile file(fileToOpen);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream in(&file);
+        textEditArea->setPlainText(in.readAll());
+        file.close();
+    }
+}
 
 cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, const std::string &reportModuleName,
                                          QWidget *)
@@ -57,18 +99,21 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     xmlReportWidgetLabel->setText("Source");
     xmlReportWidgetLabel->setStyleSheet("font-weight: bold;");
 
-    QTabWidget *sourceTabWidget = new QTabWidget(this);
-    _xodrEditorWidget = new cXODREditorWidget(sourceTabWidget, this);
-    _xoscEditorWidget = new cXOSCEditorWidget(sourceTabWidget, this);
+    textEditArea = new QPlainTextEdit(xmlReportWidget);
+    textEditArea->setReadOnly(true);
+    textEditArea->setWordWrapMode(QTextOption::NoWrap);
 
-    sourceTabWidget->addTab((QWidget *)_xodrEditorWidget, "OpenDRIVE");
-    sourceTabWidget->addTab((QWidget *)_xoscEditorWidget, "OpenSCENARIO");
+    QFontMetrics metrics(codeFont);
 
-    sourceTabWidget->setTabEnabled(0, false);
-    sourceTabWidget->setTabEnabled(1, false);
+    textEditArea->setFont(codeFont);
+    textEditArea->setTabStopWidth(2 * metrics.width(' '));
+    textEditArea->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
 
     xmlReportWidgetLayout->addWidget(xmlReportWidgetLabel);
-    xmlReportWidgetLayout->addWidget(sourceTabWidget);
+    xmlReportWidgetLayout->addWidget(textEditArea);
+
+    // Create LineHighlighter
+    highlighter = new LineHighlighter(textEditArea->document());
 
     xmlReportWidgetLayout->setContentsMargins(3, 6, 3, 3);
     xmlReportWidget->setLayout(xmlReportWidgetLayout);
@@ -77,10 +122,9 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     setCentralWidget(splitter);
     setWindowTitle(this->_reportModuleName);
 
-    connect(_checkerWidget, &cCheckerWidget::Load, _xodrEditorWidget, &cXODREditorWidget::LoadXODR);
-    connect(_checkerWidget, &cCheckerWidget::Load, _xoscEditorWidget, &cXOSCEditorWidget::LoadXOSC);
-    connect(_checkerWidget, &cCheckerWidget::ShowXODRIssue, _xodrEditorWidget, &cXODREditorWidget::ShowXODRIssue);
-    connect(_checkerWidget, &cCheckerWidget::ShowXOSCIssue, _xoscEditorWidget, &cXOSCEditorWidget::ShowXOSCIssue);
+    connect(_checkerWidget, &cCheckerWidget::Load, this, &cReportModuleWindow::loadFileContent);
+    connect(_checkerWidget, &cCheckerWidget::ShowXODRIssue, this, &cReportModuleWindow::highlightRow);
+    connect(_checkerWidget, &cCheckerWidget::ShowXOSCIssue, this, &cReportModuleWindow::highlightRow);
     connect(_checkerWidget, &cCheckerWidget::ShowIssueIn3DViewer, this, &cReportModuleWindow::ShowIssueInViewer);
 
     // Create Menu entries for all viewers in plugin
@@ -275,7 +319,7 @@ void cReportModuleWindow::LoadResultContainer(cResultContainer *const container)
 {
     QMap<QString, QString> fileReplacementMap;
     std::list<cCheckerBundle *> bundles = container->GetCheckerBundles();
-
+    textEditArea->setPlainText("");
     for (std::list<cCheckerBundle *>::const_iterator itBundle = bundles.cbegin(); itBundle != bundles.cend();
          itBundle++)
     {
@@ -486,4 +530,14 @@ void cReportModuleWindow::dropEvent(QDropEvent *event)
             }
         }
     }
+}
+
+// Helper function to create and initialize a QFont
+QFont cReportModuleWindow::getCodeFont()
+{
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(10);
+    return font;
 }
