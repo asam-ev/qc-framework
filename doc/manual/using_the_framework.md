@@ -6,6 +6,8 @@ Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 -->
 
+# **_This document is under construction. The information in this document does not reflect the current state of the framework._**
+
 # Using the ASAM Quality Checker Framework
 
 ## Configuration

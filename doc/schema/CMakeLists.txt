@@ -7,7 +7,7 @@
 
 install(FILES
         config_format.xsd
-        xqar_report_format.xsd
+        xqar_result_format.xsd
     DESTINATION
         doc/schemas
 )

@@ -1,6 +1,6 @@
 <!---
 Copyright 2023 CARIAD SE.
- 
+
 This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -59,8 +59,7 @@ or semantic flaws.
     - **FileLocation** _(typically generated automatically by the
       ResultPooling)_
       - A reference to a file with row and column
-      - Example: `<FileLocation column="0" fileType="1" row="223124"/>`, with
-        `fileType="1"` for XODR, `fileType="2"` for XOSC
+      - Example: `<FileLocation column="0" row="223124"/>`
     - **XmlLocation**
       - Addressing in a XML file with help of a XPath expression
       - Example: `<XMLLocation xpath="/OpenDRIVE/road[@id=&quot;1&quot;]"/>`
@@ -82,18 +81,18 @@ one called SyntaxChecker and one SemanticChecker.
         <Checker checkerId="xsdSchemaChecker" description="Checks the xsd validity"  summary="Found 1 issue">
             <Issue description="Row:8693 Column:12 invalid schema" issueId="1" level="1">
                 <Locations description="empty content is not valid for content model '(lane+,userData*,include*)'">
-                    <FileLocation column="12" fileType="1" row="8693"/>
+                    <FileLocation column="12" row="8693"/>
                 </Locations>
             </Issue>
         </Checker>
     </CheckerBundle>
-    <CheckerBundle name="SemanticChecker" description="Semantic checker bundle" summary="Found some incidents" build_date="23.05.2019" version="1.0">    
+    <CheckerBundle name="SemanticChecker" description="Semantic checker bundle" summary="Found some incidents" build_date="23.05.2019" version="1.0">
         <Param name="XodrFile" value="myTrack.xodr"/>
-        <Checker checkerId="roadIdChecker" description="Checks validity of the roadIds"  summary="Found 1 issue">     
+        <Checker checkerId="roadIdChecker" description="Checks validity of the roadIds"  summary="Found 1 issue">
             <Issue description="Road with id=5 invalid" issueId="2" level="1">
                 <Locations description="Road id is defined multiple times">
                     <XMLLocation xpath="/OpenDRIVE/road[@id='5']"/>
-                    <FileLocation column="25" fileType="1" row="505"/>
+                    <FileLocation column="25" row="505"/>
                     <InertialLocation x="5.0" y="0.0" z="0.0"/>
                 </Locations>
             </Issue>

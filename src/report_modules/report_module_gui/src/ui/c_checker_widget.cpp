@@ -630,11 +630,11 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
                     int row = fileLocation->GetRow();
 
                     // If issue referes to an OpenDRIVE, show it!
-                    if (hasXODRPath && fileLocation->IsXODRFileLocation())
+                    if (hasXODRPath)
                         ShowXODRIssue(itemToShow, row);
 
                     // If issue referes to an OpenSCENARIO, show it!
-                    if (hasXOSCPath && fileLocation->IsXOSCFileLocation())
+                    if (hasXOSCPath)
                         ShowXOSCIssue(itemToShow, row);
                 }
 

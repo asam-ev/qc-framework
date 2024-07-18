@@ -89,7 +89,7 @@ def test_runtime_execution():
     result_file = os.path.join("Result.xqar")
     assert os.path.isfile(result_file)
     # Check that result file follows its xsd schema
-    xsd_file = os.path.join(schema_dir, "xqar_report_format.xsd")
+    xsd_file = os.path.join(schema_dir, "xqar_result_format.xsd")
     assert is_valid_xml(result_file, xsd_file)
     # Check that at least one node called "Issue" is present in the result
     node_name = "Issue"

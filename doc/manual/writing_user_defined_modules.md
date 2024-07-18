@@ -20,13 +20,12 @@ it should print a short help how to use it.
 - The executable needs execution rights and its location should be the bin
   folder (see [File Formats](file_formats.md) for configuration details)
 
-**Note:** The [Base Library](cpp_base_library.md) helps to read and write the
+**Note:** The [Python Base Library](https://github.com/asam-ev/qc-baselib-py) and the [C++ Base Library](cpp_base_library.md) help to read and write the
 file formats.
 
 ### Run One Single CheckerBundle Based on a Configuration
 
-As mentioned in the [Base Library](cpp_base_library.md) section your
-CheckerBundle should accept a xml file containing its configuration parameters.
+Your CheckerBundle should accept a xml file containing its configuration parameters.
 All **modules which follow this convention are a part of the framework** and
 **can be executed from the runtime**.
 

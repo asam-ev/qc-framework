@@ -11,7 +11,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 The ASAM Quality Checker Framework is designed for quality assessment of the
 ASAM standards like
 [OpenDRIVE](https://www.asam.net/standards/detail/opendrive),
-[OpenSCENARIO](https://www.asam.net/standards/detail/openscenario) and others.
+[OpenSCENARIO XML](https://www.asam.net/standards/detail/openscenario-xml/) and others.
 This quality assessment is done by so called checkers that are grouped into
 checker libraries.
 
@@ -65,7 +65,7 @@ The following features are provided:
 - Report GUI to explore the results in the source code of the input file
 - Plugin system for connecting the Report GUI to any visualization engine to
   show the results directly in the map
-- C++ base library to read/write the configuration and result file format
+- Python and C++ base libraries to read/write the configuration and result file format
 - Examples
 
 An architecture overview and documentation is provided in the
