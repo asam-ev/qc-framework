@@ -85,8 +85,14 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, &QAction::triggered, this, &cReportModuleWindow::OpenResultFile);
 
+    QAction *saveAct = new QAction(tr("&Save result file..."), this);
+    saveAct->setShortcuts(QKeySequence::Save);
+    saveAct->setStatusTip(tr("Save current result file"));
+    connect(saveAct, &QAction::triggered, this, &cReportModuleWindow::SaveResultFile);
+
     _fileMenu = menuBar()->addMenu(tr("&File"));
     _fileMenu->addAction(openAct);
+    _fileMenu->addAction(saveAct);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
 
@@ -403,8 +409,53 @@ void cReportModuleWindow::ValidateInputFile(cCheckerBundle *const bundle, QMap<Q
 
 void cReportModuleWindow::OpenResultFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", "XODR checker results (*.xqar)");
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", "XQAR checker results (*.xqar)");
     LoadResultFromFilepath(filePath);
+}
+
+void cReportModuleWindow::SaveResultFile()
+{
+    if (_results->GetCheckerBundles().size() == 0)
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(this->_reportModuleName + " Error");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setText("Result file not loaded. Cannot save it!");
+        msgBox.exec();
+        return;
+    }
+    cResultContainer filteredResults;
+
+    for (const auto &itBundle : _results->GetCheckerBundles())
+    {
+        if (itBundle->GetEnabledIssuesCount() == 0)
+        {
+            continue;
+        }
+        cCheckerBundle *newBundle = new cCheckerBundle(itBundle->GetBundleName(), "", itBundle->GetDescription());
+        std::list<cChecker *> checkers = itBundle->GetCheckers();
+        for (const auto &itChecker : checkers)
+        {
+            if (itChecker->GetEnabledIssuesCount() == 0)
+            {
+                continue;
+            }
+            newBundle->CreateChecker(itChecker);
+        }
+        filteredResults.AddCheckerBundle(newBundle);
+    }
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", "XQAR checker results (*.xqar)");
+    if (!fileName.isEmpty() && !fileName.endsWith(".xqar", Qt::CaseInsensitive))
+    {
+        fileName.append(".xqar");
+    }
+    filteredResults.WriteResults(fileName.toStdString());
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(this->_reportModuleName + " Success");
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    QString saveSuccessMsg = fileName + QString(" correctly saved! ");
+    msgBox.setText(saveSuccessMsg);
+    msgBox.exec();
 }
 
 void cReportModuleWindow::StartViewer(Viewer *viewer)
@@ -529,10 +580,8 @@ void cReportModuleWindow::FilterResultsOnCheckboxes()
     std::unordered_map<eIssueLevel, bool> filterMap = {{eIssueLevel::INFO_LVL, _infoLevelEnabled},
                                                        {eIssueLevel::WARNING_LVL, _warningLevelEnabled},
                                                        {eIssueLevel::ERROR_LVL, _errorLevelEnabled}};
-    std::unordered_set<unsigned long long> filter_ids;
     std::unordered_set<std::string> found_rule_ids;
 
-    // Copy and filter elements from 'a' to 'b'
     for (const auto &itBundle : _results->GetCheckerBundles())
     {
         std::list<cChecker *> checkers = itBundle->GetCheckers();

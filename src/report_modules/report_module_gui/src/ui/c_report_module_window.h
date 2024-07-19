@@ -94,6 +94,7 @@ class cReportModuleWindow : public QMainWindow
   private slots:
     // Open result file
     void OpenResultFile();
+    void SaveResultFile();
 
     // starts the Viewer
     void StartViewer(Viewer *viewer);

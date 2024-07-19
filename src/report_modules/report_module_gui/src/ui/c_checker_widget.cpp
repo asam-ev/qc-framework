@@ -204,7 +204,7 @@ void cCheckerWidget::LoadCheckerBundles(std::list<cCheckerBundle *> checkerBundl
 
     for (std::list<cCheckerBundle *>::const_iterator it = checkerBundles.cbegin(); it != checkerBundles.cend(); it++)
     {
-        if ((*it)->GetEnabledIssueCount() <= 0)
+        if ((*it)->GetEnabledIssuesCount() <= 0)
         {
             continue;
         }

@@ -510,7 +510,7 @@ void cCheckerBundle::KeepCheckersFrom(const std::vector<std::string> &checkerIds
                      m_Checkers.end());
 }
 
-std::size_t cCheckerBundle::GetEnabledIssueCount()
+std::size_t cCheckerBundle::GetEnabledIssuesCount()
 {
     std::size_t total_enabled_issues = 0;
     for (const auto &itChecker : m_Checkers)
