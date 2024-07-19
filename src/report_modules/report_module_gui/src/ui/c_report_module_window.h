@@ -7,6 +7,7 @@
  */
 #pragma once
 
+#include <QCheckBox>
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMap>
@@ -74,6 +75,10 @@ class cReportModuleWindow : public QMainWindow
     LineHighlighter *highlighter;
     QPlainTextEdit *textEditArea;
     const QFont codeFont = getCodeFont();
+    bool _repetitiveIssueEnabled;
+    bool _infoLevelEnabled;
+    bool _warningLevelEnabled;
+    bool _errorLevelEnabled;
 
   public:
     cReportModuleWindow() = delete;
@@ -96,6 +101,11 @@ class cReportModuleWindow : public QMainWindow
     // shows a XODR Issue in a viewer if available
     void ShowIssueInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow);
 
+    void onIssueToggled(bool checked);
+    void onInfoToggled(bool checked);
+    void onWarningToggled(bool checked);
+    void onErrorToggled(bool checked);
+
   private:
     // Handle application close
     void closeEvent(QCloseEvent *bar);
@@ -105,6 +115,8 @@ class cReportModuleWindow : public QMainWindow
                            const std::string &parameter, const std::string &fileName, const std::string &filter) const;
 
     QFont getCodeFont();
+    void LoadResultFromFilepath(const QString &filePath);
+    void FilterResultsOnCheckboxes();
 
   public slots:
     void loadFileContent(cResultContainer *const container);

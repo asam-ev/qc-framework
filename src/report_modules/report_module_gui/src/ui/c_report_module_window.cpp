@@ -18,7 +18,6 @@
 #include "common/result_format/c_checker_bundle.h"
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_result_container.h"
-
 #include <QDebug>
 #include <QMimeData>
 #include <QVBoxLayout>
@@ -30,6 +29,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QSplitter>
+#include <unordered_set>
 
 void cReportModuleWindow::highlightRow(const cIssue *const issue, const int row)
 {
@@ -91,7 +91,39 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
 
     _checkerWidget = new cCheckerWidget(this);
-    splitter->addWidget(_checkerWidget);
+    _repetitiveIssueEnabled = true;
+    _infoLevelEnabled = true;
+    _warningLevelEnabled = true;
+    _errorLevelEnabled = true;
+
+    QWidget *leftWidget = new QWidget(splitter);
+
+    QVBoxLayout *leftLayout = new QVBoxLayout(leftWidget);
+
+    // Add the checkboxes
+    QCheckBox *issueCheckBox = new QCheckBox("Repetitive Issues", this);
+    QCheckBox *infoCheckBox = new QCheckBox("Level Info", this);
+    QCheckBox *warningCheckBox = new QCheckBox("Level Warning", this);
+    QCheckBox *errorCheckBox = new QCheckBox("Level Error", this);
+
+    issueCheckBox->setChecked(true);
+    infoCheckBox->setChecked(true);
+    warningCheckBox->setChecked(true);
+    errorCheckBox->setChecked(true);
+
+    // Connect the checkboxes' toggled signals to slots
+    connect(issueCheckBox, &QCheckBox::toggled, this, &cReportModuleWindow::onIssueToggled);
+    connect(infoCheckBox, &QCheckBox::toggled, this, &cReportModuleWindow::onInfoToggled);
+    connect(warningCheckBox, &QCheckBox::toggled, this, &cReportModuleWindow::onWarningToggled);
+    connect(errorCheckBox, &QCheckBox::toggled, this, &cReportModuleWindow::onErrorToggled);
+
+    leftLayout->addWidget(issueCheckBox);
+    leftLayout->addWidget(infoCheckBox);
+    leftLayout->addWidget(warningCheckBox);
+    leftLayout->addWidget(errorCheckBox);
+    leftLayout->addWidget(_checkerWidget);
+
+    splitter->addWidget(leftWidget);
 
     QWidget *xmlReportWidget = new QWidget(this);
     QVBoxLayout *xmlReportWidgetLayout = new QVBoxLayout;
@@ -327,20 +359,6 @@ void cReportModuleWindow::LoadResultContainer(cResultContainer *const container)
         ValidateInputFile(*itBundle, &fileReplacementMap, "XoscFile", "OpenSCENARIO", "OpenSCENARIO (*.xosc)");
     }
 
-    std::string xoscFilePath = container->GetXOSCFilePath();
-    std::string xodrFilePath = container->GetXODRFilePath();
-
-    // Check if we have an OpenSCENARIO and no OpenDRIVE given
-    if (container->GetCheckerBundleCount() > 0 && xoscFilePath.length() > 0 && xodrFilePath.length() == 0)
-    {
-        // Retrive OpenDRIVE file from scenario and add it to the first bundle
-        if (GetXodrFilePathFromXosc(xoscFilePath, xodrFilePath))
-        {
-            cCheckerBundle *bundle = container->GetCheckerBundles().front();
-            bundle->SetParam("XodrFile", xodrFilePath);
-        }
-    }
-
     if (_checkerWidget != nullptr)
         _checkerWidget->LoadResultContainer(container);
 }
@@ -386,15 +404,7 @@ void cReportModuleWindow::ValidateInputFile(cCheckerBundle *const bundle, QMap<Q
 void cReportModuleWindow::OpenResultFile()
 {
     QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", "XODR checker results (*.xqar)");
-    if (!filePath.isNull())
-    {
-        // clear old results
-        _results->Clear();
-        // load new one
-        _results->AddResultsFromXML(filePath.toUtf8().constData());
-
-        LoadResultContainer(_results);
-    }
+    LoadResultFromFilepath(filePath);
 }
 
 void cReportModuleWindow::StartViewer(Viewer *viewer)
@@ -508,6 +518,89 @@ void cReportModuleWindow::dragEnterEvent(QDragEnterEvent *event)
     }
 }
 
+void cReportModuleWindow::FilterResultsOnCheckboxes()
+{
+
+    qDebug() << "results issue count " << _results->GetIssues().size();
+    qDebug() << "_repetitiveIssueEnabled:" << _repetitiveIssueEnabled;
+    qDebug() << "_infoLevelEnabled:" << _infoLevelEnabled;
+    qDebug() << "_warningLevelEnabled:" << _warningLevelEnabled;
+    qDebug() << "_errorLevelEnabled:" << _errorLevelEnabled;
+
+    std::unordered_map<eIssueLevel, bool> filterMap = {{eIssueLevel::INFO_LVL, _infoLevelEnabled},
+                                                       {eIssueLevel::WARNING_LVL, _warningLevelEnabled},
+                                                       {eIssueLevel::ERROR_LVL, _errorLevelEnabled}};
+    std::unordered_set<unsigned long long> filter_ids;
+    std::unordered_set<std::string> found_rule_ids;
+
+    // Copy and filter elements from 'a' to 'b'
+    for (const auto &itBundle : _results->GetCheckerBundles())
+    {
+        std::list<cChecker *> checkers = itBundle->GetCheckers();
+        for (const auto &itChecker : checkers)
+        {
+            std::list<cIssue *> issues = itChecker->GetIssues();
+            for (const auto &itIssue : issues)
+            {
+                bool enabled_level_in_checkbox = filterMap[itIssue->GetIssueLevel()];
+                bool rule_uid_already_found = false;
+                if (itIssue->GetRuleUID() != "" && itIssue->GetRuleUID() != " ")
+                {
+                    auto result = found_rule_ids.insert(itIssue->GetRuleUID());
+                    rule_uid_already_found = !result.second;
+                }
+                bool is_visible = enabled_level_in_checkbox;
+                if (!_repetitiveIssueEnabled)
+                {
+                    is_visible = is_visible && !rule_uid_already_found;
+                }
+                itIssue->SetEnabled(is_visible);
+            }
+        }
+    }
+    // for (const auto &itCheckerBundle : _results->GetCheckerBundles())
+    // {
+    //     std::list<cChecker *> checkers = itCheckerBundle->GetCheckers();
+
+    //     for (const auto &itCheckers : checkers)
+    //     {
+    //         std::list<cIssue *> issues = itCheckers->GetIssues();
+
+    //         for (const auto &itIssue : issues)
+    //         {
+    //             if (!filterMap[itIssue->GetIssueLevel()])
+    //             {
+    //                 filter_ids.insert(itIssue->GetIssueId());
+    //                 continue;
+    //             }
+
+    //             auto result = found_rule_ids.insert(itIssue->GetRuleUID());
+    //             if (!result.second)
+    //             {
+    //                 filter_ids.insert(itIssue->GetIssueId());
+    //                 continue;
+    //             }
+    //         }
+    //     }
+    // }
+
+    // qDebug() << "filteredResults issue count " << filteredResults->GetIssues().size();
+    // return filteredResults;
+}
+void cReportModuleWindow::LoadResultFromFilepath(const QString &filePath)
+{
+    if (!filePath.isNull())
+    {
+        // clear old results
+        _results->Clear();
+        // load new one
+        _results->AddResultsFromXML(filePath.toUtf8().constData());
+
+        FilterResultsOnCheckboxes();
+        LoadResultContainer(_results);
+    }
+}
+
 void cReportModuleWindow::dropEvent(QDropEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
@@ -519,15 +612,7 @@ void cReportModuleWindow::dropEvent(QDropEvent *event)
         for (const QUrl &url : urlList)
         {
             QString filePath = url.toLocalFile();
-            if (!filePath.isNull())
-            {
-                // clear old results
-                _results->Clear();
-                // load new one
-                _results->AddResultsFromXML(filePath.toUtf8().constData());
-
-                LoadResultContainer(_results);
-            }
+            LoadResultFromFilepath(filePath);
         }
     }
 }
@@ -540,4 +625,29 @@ QFont cReportModuleWindow::getCodeFont()
     font.setFixedPitch(true);
     font.setPointSize(10);
     return font;
+}
+
+void cReportModuleWindow::onIssueToggled(bool checked)
+{
+    _repetitiveIssueEnabled = checked;
+    FilterResultsOnCheckboxes();
+    LoadResultContainer(_results);
+}
+void cReportModuleWindow::onInfoToggled(bool checked)
+{
+    _infoLevelEnabled = checked;
+    FilterResultsOnCheckboxes();
+    LoadResultContainer(_results);
+}
+void cReportModuleWindow::onWarningToggled(bool checked)
+{
+    _warningLevelEnabled = checked;
+    FilterResultsOnCheckboxes();
+    LoadResultContainer(_results);
+}
+void cReportModuleWindow::onErrorToggled(bool checked)
+{
+    _errorLevelEnabled = checked;
+    FilterResultsOnCheckboxes();
+    LoadResultContainer(_results);
 }

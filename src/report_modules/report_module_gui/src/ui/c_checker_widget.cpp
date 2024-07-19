@@ -234,6 +234,10 @@ void cCheckerWidget::LoadIssues(std::list<cIssue *> issues) const
 
     for (std::list<cIssue *>::const_iterator it = issues.cbegin(); it != issues.cend(); it++)
     {
+        if (!(*it)->IsEnabled())
+        {
+            continue;
+        }
         QTreeWidgetItem *newItem = new QTreeWidgetItem(_issueBox);
 
         FillIssueTreeItem(newItem, *it);
