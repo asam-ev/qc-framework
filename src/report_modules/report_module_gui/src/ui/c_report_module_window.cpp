@@ -521,7 +521,6 @@ void cReportModuleWindow::dragEnterEvent(QDragEnterEvent *event)
 void cReportModuleWindow::FilterResultsOnCheckboxes()
 {
 
-    qDebug() << "results issue count " << _results->GetIssues().size();
     qDebug() << "_repetitiveIssueEnabled:" << _repetitiveIssueEnabled;
     qDebug() << "_infoLevelEnabled:" << _infoLevelEnabled;
     qDebug() << "_warningLevelEnabled:" << _warningLevelEnabled;
@@ -558,34 +557,6 @@ void cReportModuleWindow::FilterResultsOnCheckboxes()
             }
         }
     }
-    // for (const auto &itCheckerBundle : _results->GetCheckerBundles())
-    // {
-    //     std::list<cChecker *> checkers = itCheckerBundle->GetCheckers();
-
-    //     for (const auto &itCheckers : checkers)
-    //     {
-    //         std::list<cIssue *> issues = itCheckers->GetIssues();
-
-    //         for (const auto &itIssue : issues)
-    //         {
-    //             if (!filterMap[itIssue->GetIssueLevel()])
-    //             {
-    //                 filter_ids.insert(itIssue->GetIssueId());
-    //                 continue;
-    //             }
-
-    //             auto result = found_rule_ids.insert(itIssue->GetRuleUID());
-    //             if (!result.second)
-    //             {
-    //                 filter_ids.insert(itIssue->GetIssueId());
-    //                 continue;
-    //             }
-    //         }
-    //     }
-    // }
-
-    // qDebug() << "filteredResults issue count " << filteredResults->GetIssues().size();
-    // return filteredResults;
 }
 void cReportModuleWindow::LoadResultFromFilepath(const QString &filePath)
 {

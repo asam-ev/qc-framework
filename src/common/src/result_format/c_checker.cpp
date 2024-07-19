@@ -442,3 +442,16 @@ void cChecker::FilterIssues(eIssueLevel minLevel, eIssueLevel maxLevel)
         return item->GetIssueLevel() > minLevel || item->GetIssueLevel() < maxLevel;
     });
 }
+
+std::size_t cChecker::GetEnabledIssuesCount()
+{
+    std::size_t enabled_issues_count = 0;
+    for (const auto &itIssue : m_Issues)
+    {
+        if (itIssue->IsEnabled())
+        {
+            enabled_issues_count++;
+        }
+    }
+    return enabled_issues_count;
+}

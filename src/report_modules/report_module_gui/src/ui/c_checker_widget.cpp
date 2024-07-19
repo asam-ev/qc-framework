@@ -204,6 +204,10 @@ void cCheckerWidget::LoadCheckerBundles(std::list<cCheckerBundle *> checkerBundl
 
     for (std::list<cCheckerBundle *>::const_iterator it = checkerBundles.cbegin(); it != checkerBundles.cend(); it++)
     {
+        if ((*it)->GetEnabledIssueCount() <= 0)
+        {
+            continue;
+        }
         QTreeWidgetItem *newBundleItem = new QTreeWidgetItem(_checkerBundleBox);
 
         FillCheckerBundleTreeItem(newBundleItem, *it);
@@ -218,7 +222,7 @@ void cCheckerWidget::LoadCheckers(std::list<cChecker *> checkers) const
     for (std::list<cChecker *>::const_iterator it = checkers.cbegin(); it != checkers.cend(); it++)
     {
         // Display checkers only if there are more then 0 issues.
-        if ((*it)->GetIssueCount() > 0)
+        if ((*it)->GetIssueCount() > 0 && (*it)->GetEnabledIssuesCount() > 0)
         {
             QTreeWidgetItem *newItem = new QTreeWidgetItem(_checkerBox);
 

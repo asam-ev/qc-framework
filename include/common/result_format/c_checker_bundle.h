@@ -237,6 +237,8 @@ class cCheckerBundle
 
     void KeepCheckersFrom(const std::vector<std::string> &checkerIds);
 
+    std::size_t GetEnabledIssueCount();
+
   protected:
     /*
      * Creates a new checker bundle

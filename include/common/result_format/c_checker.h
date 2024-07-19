@@ -186,6 +186,8 @@ class cChecker
 
     void FilterIssues(eIssueLevel minLevel, eIssueLevel maxLevel);
 
+    std::size_t GetEnabledIssuesCount();
+
   protected:
     // Creates a new checker instance
     cChecker(const std::string &strCheckerId, const std::string &strDescription, const std::string &strSummary,
