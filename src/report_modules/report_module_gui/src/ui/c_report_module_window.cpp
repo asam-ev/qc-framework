@@ -19,6 +19,7 @@
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_result_container.h"
 #include <QDebug>
+#include <QHBoxLayout>
 #include <QMimeData>
 #include <QVBoxLayout>
 #include <QtWidgets/QApplication>
@@ -104,7 +105,10 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
     QWidget *leftWidget = new QWidget(splitter);
 
+    QWidget *checkboxWidget = new QWidget();
+
     QVBoxLayout *leftLayout = new QVBoxLayout(leftWidget);
+    QHBoxLayout *checkboxLayout = new QHBoxLayout(checkboxWidget);
 
     // Add the checkboxes
     QCheckBox *issueCheckBox = new QCheckBox("Repetitive Issues", this);
@@ -123,10 +127,12 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     connect(warningCheckBox, &QCheckBox::toggled, this, &cReportModuleWindow::onWarningToggled);
     connect(errorCheckBox, &QCheckBox::toggled, this, &cReportModuleWindow::onErrorToggled);
 
-    leftLayout->addWidget(issueCheckBox);
-    leftLayout->addWidget(infoCheckBox);
-    leftLayout->addWidget(warningCheckBox);
-    leftLayout->addWidget(errorCheckBox);
+    checkboxLayout->addWidget(issueCheckBox);
+    checkboxLayout->addWidget(infoCheckBox);
+    checkboxLayout->addWidget(warningCheckBox);
+    checkboxLayout->addWidget(errorCheckBox);
+
+    leftLayout->addWidget(checkboxWidget);
     leftLayout->addWidget(_checkerWidget);
 
     splitter->addWidget(leftWidget);
@@ -424,32 +430,15 @@ void cReportModuleWindow::SaveResultFile()
         msgBox.exec();
         return;
     }
-    cResultContainer filteredResults;
 
-    for (const auto &itBundle : _results->GetCheckerBundles())
-    {
-        if (itBundle->GetEnabledIssuesCount() == 0)
-        {
-            continue;
-        }
-        cCheckerBundle *newBundle = new cCheckerBundle(itBundle->GetBundleName(), "", itBundle->GetDescription());
-        std::list<cChecker *> checkers = itBundle->GetCheckers();
-        for (const auto &itChecker : checkers)
-        {
-            if (itChecker->GetEnabledIssuesCount() == 0)
-            {
-                continue;
-            }
-            newBundle->CreateChecker(itChecker);
-        }
-        filteredResults.AddCheckerBundle(newBundle);
-    }
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", "XQAR checker results (*.xqar)");
     if (!fileName.isEmpty() && !fileName.endsWith(".xqar", Qt::CaseInsensitive))
     {
         fileName.append(".xqar");
     }
-    filteredResults.WriteResults(fileName.toStdString());
+
+    _results->WriteResults(fileName.toStdString());
+
     QMessageBox msgBox;
     msgBox.setWindowTitle(this->_reportModuleName + " Success");
     msgBox.setStandardButtons(QMessageBox::Ok);
@@ -571,11 +560,6 @@ void cReportModuleWindow::dragEnterEvent(QDragEnterEvent *event)
 
 void cReportModuleWindow::FilterResultsOnCheckboxes()
 {
-
-    qDebug() << "_repetitiveIssueEnabled:" << _repetitiveIssueEnabled;
-    qDebug() << "_infoLevelEnabled:" << _infoLevelEnabled;
-    qDebug() << "_warningLevelEnabled:" << _warningLevelEnabled;
-    qDebug() << "_errorLevelEnabled:" << _errorLevelEnabled;
 
     std::unordered_map<eIssueLevel, bool> filterMap = {{eIssueLevel::INFO_LVL, _infoLevelEnabled},
                                                        {eIssueLevel::WARNING_LVL, _warningLevelEnabled},

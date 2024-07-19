@@ -70,6 +70,10 @@ DOMElement *cChecker::WriteXML(DOMDocument *pResultDocument)
     // Add Issues und cCheckerSummaries
     for (std::list<cIssue *>::const_iterator it = m_Issues.begin(); it != m_Issues.end(); ++it)
     {
+        if (!(*it)->IsEnabled())
+        {
+            continue;
+        }
         DOMElement *p_DataElement = (*it)->WriteXML(pResultDocument);
 
         if (nullptr != p_DataElement)
