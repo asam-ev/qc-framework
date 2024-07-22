@@ -69,7 +69,7 @@ DOMElement *cCheckerBundle::WriteXML(DOMDocument *pResultDocument)
     // Add checkers
     for (std::list<cChecker *>::const_iterator it = m_Checkers.begin(); it != m_Checkers.end(); ++it)
     {
-        if ((*it)->GetEnabledIssuesCount() == 0)
+        if ((*it)->GetIssueCount() > 0 && (*it)->GetEnabledIssuesCount() == 0)
         {
             continue;
         }

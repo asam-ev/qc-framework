@@ -76,7 +76,7 @@ void cResultContainer::WriteResults(const std::string &path) const
     // Write all Summaries to XML
     for (std::list<cCheckerBundle *>::const_iterator it = m_Bundles.begin(); it != m_Bundles.end(); ++it)
     {
-        if ((*it)->GetEnabledIssuesCount() == 0)
+        if ((*it)->GetIssueCount() > 0 && (*it)->GetEnabledIssuesCount() == 0)
         {
             continue;
         }
