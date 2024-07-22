@@ -8,6 +8,7 @@ from lxml import etree
 
 XODR_TEMPLATE_PATH = "/app/demo_pipeline/templates/xodr_template.xml"
 XOSC_TEMPLATE_PATH = "/app/demo_pipeline/templates/xosc_template.xml"
+OTX_TEMPLATE_PATH = "/app/demo_pipeline/templates/otx_template.xml"
 GENERATED_CONFIG_PATH = "/tmp/generated_config"
 
 
@@ -33,7 +34,9 @@ def main():
     os.makedirs(GENERATED_CONFIG_PATH, exist_ok=True)
 
     if not os.path.isfile(full_input_path):
-        print("No file specified as input. Please provide xosc or xodr file. Exiting...")
+        print(
+            "No file specified as input. Please provide xosc, xodr or otx file. Exiting..."
+        )
         return
 
     print("Input file: ", full_input_path)
@@ -52,6 +55,14 @@ def main():
         update_param_value(
             XODR_TEMPLATE_PATH,
             "XodrFile",
+            full_input_path,
+            os.path.join(GENERATED_CONFIG_PATH, "config.xml"),
+        )
+    elif input_file_extension == ".otx":
+        print("OTX selected")
+        update_param_value(
+            OTX_TEMPLATE_PATH,
+            "OtxFile",
             full_input_path,
             os.path.join(GENERATED_CONFIG_PATH, "config.xml"),
         )
