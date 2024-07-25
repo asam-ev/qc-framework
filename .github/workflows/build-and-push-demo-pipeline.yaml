@@ -1,9 +1,37 @@
 name: Build and push demo pipeline image
 
 on:
-  schedule:
+  # execute on every PR made targeting the branches bellow
+  pull_request:
+    branches:
+      - main
+      - develop # can be removed on main merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - test/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
+
+  # execute on every push made targeting the branches bellow
+  push:
+    branches:
+      - main
+      - develop # can be removed on main merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - test/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
+  #schedule:
     #- cron: '0 4 * * *' # 04:00 AM UTC every day
-    - cron: '*/5 * * * *' # TEST every 5 min
 
 jobs:
   build-and-push-demo:
