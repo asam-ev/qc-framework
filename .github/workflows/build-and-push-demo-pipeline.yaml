@@ -6,6 +6,7 @@ on:
 
 jobs:
   build-and-push-demo:
+    if: github.repository_owner == 'asam-ev'
     runs-on: ubuntu-22.04
 
     permissions:
