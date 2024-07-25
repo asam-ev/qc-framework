@@ -70,6 +70,10 @@ DOMElement *cChecker::WriteXML(DOMDocument *pResultDocument)
     // Add Issues und cCheckerSummaries
     for (std::list<cIssue *>::const_iterator it = m_Issues.begin(); it != m_Issues.end(); ++it)
     {
+        if (!(*it)->IsEnabled())
+        {
+            continue;
+        }
         DOMElement *p_DataElement = (*it)->WriteXML(pResultDocument);
 
         if (nullptr != p_DataElement)
@@ -441,4 +445,17 @@ void cChecker::FilterIssues(eIssueLevel minLevel, eIssueLevel maxLevel)
     m_Issues.remove_if([minLevel, maxLevel](cIssue *item) {
         return item->GetIssueLevel() > minLevel || item->GetIssueLevel() < maxLevel;
     });
+}
+
+std::size_t cChecker::GetEnabledIssuesCount()
+{
+    std::size_t enabled_issues_count = 0;
+    for (const auto &itIssue : m_Issues)
+    {
+        if (itIssue->IsEnabled())
+        {
+            enabled_issues_count++;
+        }
+    }
+    return enabled_issues_count;
 }

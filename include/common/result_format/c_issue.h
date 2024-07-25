@@ -153,12 +153,17 @@ class cIssue : public IResult
     // Returns the next free ID
     unsigned long long NextFreeId() const;
 
+    bool IsEnabled() const;
+
+    void SetEnabled(bool inValue);
+
   protected:
     unsigned long long m_Id;
     std::string m_Description;
     eIssueLevel m_IssueLevel;
     std::string m_RuleUID;
     cChecker *m_Checker;
+    bool m_Enabled;
 
     std::list<cLocationsContainer *> m_Locations;
     std::list<cDomainSpecificInfo *> m_DomainSpecificInfo;
