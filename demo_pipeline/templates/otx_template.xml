@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Config>
+
+    <Param name="OtxFile" value="test.otx" />
+
+    <CheckerBundle application="otxBundle">
+        <Param name="resultFile" value="otx_bundle_report.xqar" />
+        <Checker checkerId="basic_otx" maxLevel="1" minLevel="3" />
+    </CheckerBundle>
+
+    <ReportModule application="TextReport">
+        <Param name="strInputFile" value="Result.xqar" />
+        <Param name="strReportFile" value="Report.txt" />
+    </ReportModule>
+
+</Config>
