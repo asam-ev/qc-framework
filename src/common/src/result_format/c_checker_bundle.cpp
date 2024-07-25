@@ -69,6 +69,10 @@ DOMElement *cCheckerBundle::WriteXML(DOMDocument *pResultDocument)
     // Add checkers
     for (std::list<cChecker *>::const_iterator it = m_Checkers.begin(); it != m_Checkers.end(); ++it)
     {
+        if ((*it)->GetIssueCount() > 0 && (*it)->GetEnabledIssuesCount() == 0)
+        {
+            continue;
+        }
         DOMElement *pChildElement = (*it)->WriteXML(pResultDocument);
 
         if (nullptr != pChildElement)
@@ -508,4 +512,14 @@ void cCheckerBundle::KeepCheckersFrom(const std::vector<std::string> &checkerIds
                                         return checkerSet.find(item->GetCheckerID()) == checkerSet.end();
                                     }),
                      m_Checkers.end());
+}
+
+std::size_t cCheckerBundle::GetEnabledIssuesCount()
+{
+    std::size_t total_enabled_issues = 0;
+    for (const auto &itChecker : m_Checkers)
+    {
+        total_enabled_issues += itChecker->GetEnabledIssuesCount();
+    }
+    return total_enabled_issues;
 }

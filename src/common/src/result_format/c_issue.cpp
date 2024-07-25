@@ -31,6 +31,7 @@ cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, const std::s
     m_IssueLevel = infoLvl;
     m_RuleUID = ruleUID;
     m_Checker = nullptr;
+    m_Enabled = true;
     AddLocationsContainer(locationsContainer);
     AddDomainSpecificInfo(domainSpecificInfo);
 }
@@ -360,4 +361,14 @@ std::string PrintIssueLevel(const eIssueLevel level)
         retval = "Error";
     }
     return retval;
+}
+
+bool cIssue::IsEnabled() const
+{
+    return m_Enabled;
+}
+
+void cIssue::SetEnabled(bool inValue)
+{
+    m_Enabled = inValue;
 }
