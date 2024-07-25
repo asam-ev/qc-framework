@@ -734,6 +734,27 @@ void cCheckerWidget::ShowDetails(cIssue *const itemToShow) const
         }
 
         ssDetails << itemToShow->GetIssueLevelStr().c_str() << " | " << itemToShow->GetDescription().c_str();
+        // Add extended informations to description if present
+        std::stringstream extended_info_stream;
+        if (itemToShow->HasLocations())
+        {
+            extended_info_stream << "\n - Extended information:";
+            for (const auto location : itemToShow->GetLocationsContainer())
+            {
+
+                if (location->HasExtendedInformations())
+                {
+                    for (auto xItem : location->GetExtendedInformations())
+                    {
+                        PrintExtendedInformationIntoStream(xItem, &extended_info_stream);
+                    }
+                }
+            }
+        }
+        if (!extended_info_stream.tellp() == std::streampos(0))
+        {
+            ssDetails << extended_info_stream.str().c_str();
+        }
         _issueDetailsTextWidget->setText(result);
     }
 }
