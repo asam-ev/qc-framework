@@ -6,85 +6,27 @@ Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 -->
 
-# **_This document is under construction. The information in this document does not reflect the current state of the framework._**
-
 # Using the ASAM Quality Checker Framework
 
-## Configuration
+## Create Configuration File
 
-### Introduction
+Create a [configuration file](file_formats.md) to use the framework, following [the predefined configuration file schema](https://github.com/asam-ev/qc-framework/blob/develop/doc/schema/config_format.xsd).
 
-The following documentation refers to the Windows installation. The ASAM
-Quality Checker Framework core is available for other platforms as well. See
-[the Linux paragraph](#linux) for usage instructions under Linux.
+Example configuration files for running the official Checker Bundles for ASAM OpenDrive, OpenScenario XML and OTX can be found in [the templates folder](https://github.com/asam-ev/qc-framework/tree/develop/demo_pipeline/templates).
 
-For starting the configuration GUI and the framework just start
+## Run the Checker Bundles
 
-- `ConfigGUI.exe`
+The Checker Bundles can be run using the [runtime component](../../runtime/README.md).
 
-in the `bin` directory of your installation. Per default,
-`DefaultXodrConfiguration.xml` is loaded by the application. You are free to
-replace this configuration by a different one. Depending on your use case, you
-will find the following pre defined configurations:
+```bash
+source runtime-venv/bin/activate
+python3 runtime/runtime/runtime.py \
+    --config "PATH_TO_YOUR_CONFIG_FILE" \
+    --install_dir "qc-build/bin" \
+    --schema_dir "doc/schema"
+```
 
-- `DefaultXodrConfiguration.xml` which can be used to check OpenDRIVE
-- `DefaultXoscConfiguration.xml` which can be used to check OpenSCENARIO
-
-You can open a configuration, by simply dropping the XML on the executable.
-
-![Config GUI](images/config_gui.png)
-
-From there the CheckerBundle and ReportModuls can be selected and their
-parameter can be set. Special parameters are the global parameters
-
-- `XodrFile`
-- `XoscFile`
-
-on the top of the configuration GUI. These parameters define the OpenDRIVE file
-and/or the OpenSCENARIO file which should be checked. All global parameters are
-passed to all CheckerBundles. When defining a XoscFile the XodrFile will be
-automatically retrieved, if an OpenDRIVE file reference is defined in the
-scenario. Both parameters are stored as absolute file paths currently.
-
-### Loading/Executing Configurations
-
-The loaded configuration is shown on the left side of the GUI. The right side
-shows the output of each executable in sequence.
-
-To open an existing configuration, use the menu **File→Open** or start the
-ConfigGUI.exe with the configuration as a command line argument.
-
-The configuration can be started with the big arrow button. The first step in
-the execution is a **CleanUp**, where the old temporary files are deleted.
-After that, all configured CheckerBundles are executed as configured. The shown
-order in the configuration is also the order of it's execution. As a final step
-before calling the report modules, the result pooling is called automatically
-to store the checker results in one result file.
-
-### Changing/Saving Configurations
-
-The configuration can be modified in the GUI with the context menu. Just press
-the right mouse button to add, remove or change the order of the modules. It's
-also possible to modify the parameters of the CheckerBundles. Within the menu
-**File → Save** or **File → SaveAs** can be used to write the configuration to
-a file. This is necessary before executing the CheckerBundles for the first
-time.
-
-If you want to create a configuration from scratch use the menu **File →New**.
-
-Own CheckerBundles and the ReportModules have to follow the specification in
-[CheckerBundle/ReportModule Meta Model](writing_user_defined_modules.md). If
-they use this mechanisms then the framework is able to include their output in
-the toolchain.
-
-### Export Log Files
-
-To export the log from the right side of the GUI, you can use the menu entry
-**Console->Save** to store the output in one file.
-
-## Available Checker Bundles
-
-- [SchemaChecker](schema_checker.md)
+The output of the runtime components are the `.xqar` [result files](file_formats.md) and any other output files from the specified report modules in the configuration file, such as `.txt` files for the text report module. If the ReportGUI is specified, the Report GUI will open.
 
 ## Reporting
 
@@ -96,7 +38,7 @@ specification can be found on the page [File formats](file_formats.md).
 The ASAM Quality Checker Framework contains the following report modules:
 
 - TextReport - generating a human readable text file with all issues
-- ReportGUI (Windows only)
+- ReportGUI
 
 ### Using the ReportGUI
 
@@ -119,52 +61,13 @@ documentation](viewer_interface.md) for details.
 
 ## Add Self Implemented CheckerBundles and ReportModules
 
-You can add your own CheckerBundles and ReportModules to the configuration.
-Just add the executables with the graphical user interface.
+You can add your own CheckerBundles and ReportModules to the framework.
+Just add the executables to the folder where the framework executables are installed.
+This will make the executables available to the runtime component.
+In our example above, the folder is `qc-build/bin`.
 
-![Add CheckerBundle](images/add_checker_bundle.png)
-
-This will call the executable, which generates a file in the defined Result
-Format (XQAR) without any issues. The Config GUI extracts the included Checkers
-and their parameters from there.
+Executables for Checker Bundles written in any programming languages can be created using 
+bash script, even for intepreted languages like Python.
 
 Requirements for your own CheckerBundle can be found in the [User defined
 modules](writing_user_defined_modules.md) documentation.
-
-## Automation and Deployment
-
-There are several ways for automating the checking process
-
-Open user interface and load the `DefaultConfiguration.xml`
-
-    > ConfigGUI.exe
-
-Open user interface and load a specified configuration
-
-    > ConfigGUI.exe myConfiguration.xml
-
-Open user interface, load the specified configuration and run the process
-without user input
-
-    > ConfigGUI.exe myConfiguration.xml -autostart
-
-Open the application with `myConfiguration.xml` and a given XODR, which is
-under test. Autostart enables the automatic mode
-
-    > ConfigGUI.exe -config myConfiguration.xml -xodr myTrack.xodr [-autostart]
-
-Open the application with `myConfiguration.xml` and a given XOSC, which is
-under test. Autostart enables the automatic mode
-
-    > ConfigGUI.exe -config myConfiguration.xml -xosc myScenario.xosc -autostart
-
-The easiest way is to adapt and use the two delivered batch scripts
-`CheckXodr.bat` and `CheckXosc.bat`. They automate the complete process and
-execute all delivered CheckerBundles, create a text based report and open the
-ReportGUI for filtering the results.
-
-## Linux
-
-You can use the shell scripts `CheckXodr.sh` and `CheckXosc.sh` in combination
-with a self-written configuration file for execution and generation of a
-textual report.

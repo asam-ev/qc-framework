@@ -23,6 +23,11 @@ it should print a short help how to use it.
 **Note:** The [Python Base Library](https://github.com/asam-ev/qc-baselib-py) and the [C++ Base Library](cpp_base_library.md) help to read and write the
 file formats.
 
+Example Checker Bundles using the Python Base Library can be found on the following repositories:
+* https://github.com/asam-ev/qc-openscenarioxml
+* https://github.com/asam-ev/qc-opendrive
+* https://github.com/asam-ev/qc-otx
+
 ### Run One Single CheckerBundle Based on a Configuration
 
 Your CheckerBundle should accept a xml file containing its configuration parameters.
@@ -31,7 +36,10 @@ All **modules which follow this convention are a part of the framework** and
 
     > checker_bundle_exe configuration.xml
 
-### Determine Checkers and Parameters
+**Note:** Any Checker Bundle can have an executable using Bash script, even if the Checker Bundle is implemented in intepreted languages like Python.
+
+<!-- TODO: Decide whether to support this feature. -->
+<!-- ### Determine Checkers and Parameters
 
 If the CheckerBundle executable is called with the command line argument
 `--defaultConfig`, it should write a report file (.xqar, see Base library for
@@ -40,19 +48,18 @@ parameter should contain default values. The name of the file has to
 corresponds to the executable name (myCheckerBundle.exe should write
 myCheckerBundle.xqar).
 
-    > checker_bundle_exe --defaultConfig
+    > checker_bundle_exe --defaultConfig -->
 
 ### Check a Single File With One Single CheckerBundle
 
-A CheckerBundle can be called with one command line parameter and optional
-parameter settings. The first parameter defines the file which should be
-checked. The additional options are specific for the CheckerBundle and not
-defined here. As in the previous cases the CheckerBundle should write in the
-current directory an (.xqar) file with the same name as the executable.
+A CheckerBundle can be called with one command line parameter. 
+The first parameter defines the configuration file. 
+The CheckerBundle should write in the current directory an (.xqar) 
+file with the same name as the executable.
 
 This approach is used when testing only one CheckerBundle.
 
-    > checker_bundle_exe track.xodr [-o1 -o2 ...]
+    > checker_bundle_exe config.xml
 
 ## ReportModules
 
@@ -67,7 +74,10 @@ This approach is used when testing only one CheckerBundle.
 - The executable needs execution rights and its location should be the bin
   folder (see [File Formats](file_formats.md) for configuration details)
 
-### Determine Configurations for ReportModules
+Here is [an example ReportModule implemented in Python](https://github.com/asam-ev/qc-baselib-py/tree/develop/examples/report_module_text).
+
+<!-- TODO: Decide whether to support this feature. -->
+<!-- ### Determine Configurations for ReportModules
 
 If a ReportModule executable is called with the command line argument
 `--defaultConfig`, it should write a configuration file (.xml) containing all
@@ -75,4 +85,4 @@ the parameters. Each parameter should contain default values. The name of the
 file has to corresponds to the executable name (myReportModule.exe should write
 myReportModule.xml).
 
-    > report_module_exe --defaultConfig
+    > report_module_exe --defaultConfig -->
