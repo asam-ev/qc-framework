@@ -26,6 +26,8 @@ python3 runtime/runtime/runtime.py \
     --schema_dir "doc/schema"
 ```
 
+**_Note: The above runtime execution will change after Manifest file is supported. E.g., schema_dir, install_dir will be removed._**
+
 The output of the runtime components are the `.xqar` [result files](file_formats.md) and any other output files from the specified report modules in the configuration file, such as `.txt` files for the text report module. If the ReportGUI is specified, the Report GUI will open.
 
 ## Reporting
@@ -65,6 +67,8 @@ You can add your own CheckerBundles and ReportModules to the framework.
 Just add the executables to the folder where the framework executables are installed.
 This will make the executables available to the runtime component.
 In our example above, the folder is `qc-build/bin`.
+
+**_Note: The above instruction will change after the Manifest file is supported._**
 
 Executables for Checker Bundles written in any programming languages can be created using 
 bash script, even for intepreted languages like Python.

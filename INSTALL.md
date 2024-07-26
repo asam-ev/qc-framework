@@ -15,7 +15,7 @@ The ASAM Quality Checker Framework runs on Linux and Windows. The framework cons
 - GCC 7.5 or newer compiler under Linux or Visual Studio 16 2019 or newer
   compiler under Windows
 - CMake 3.16 or newer
-- Python 3.10 or newer
+- Python 3.10 or newer (otherwise, Conda can be used to install Python 3.10 or newer)
 
 ## 3rd Party Dependencies for C++ Components
 
@@ -26,7 +26,7 @@ The ASAM Quality Checker Framework runs on Linux and Windows. The framework cons
 Links to download the sources and the tested versions can be found in the
 [license information appendix](licenses/readme.md).
 
-On Linux, toolchain and 3rd party dependencies can be installed as follows.
+On Linux, toolchain and 3rd party dependencies can be installed as follows (example for Ubuntu 22.04).
 
 ```bash
 apt update && apt install -y \
@@ -103,40 +103,88 @@ With the following CMake values:
 
 ## Setup Virtual Environment for Python Components
 
+Virtual environment for Python components can be setup with both [virtualenv](https://docs.python.org/3/library/venv.html) (if Python 3.10 or newer is available on your computer) and [Conda](https://docs.anaconda.com/miniconda/) (if Python 3.10 or newer is not available on your computer).
+
+Using Virtualenv:
+
 ```bash
 python3 -m venv runtime-venv
 source runtime-venv/bin/activate
-python3 -m pip install --no-cache-dir -r /app/framework/runtime/requirements.txt
+python3 -m pip install --no-cache-dir -r runtime/requirements.txt
+```
+
+Using Conda:
+
+```bash
+conda create -y -n runtime-venv python=3.10 
+conda activate runtime-venv
+python3 -m pip install --no-cache-dir -r runtime/requirements.txt
 ```
 
 ## Install ASAM Checker Libraries
 
-### ASAM OpenDrive Checker Library
+Standard ASAM Checker Libraries are implemented in Python. It is recommended to use virtual environment to setup standard ASAM Checker Libraries. Both [virtualenv](https://docs.python.org/3/library/venv.html) and [Conda](https://docs.anaconda.com/miniconda/) can be used to setup the virtual environment.
+
+### Using virtualenv
+
+#### ASAM OpenDrive Checker Library
 
 ```bash
-git clone https://github.com/asam-ev/qc-opendrive.git
+git clone --single-branch --branch develop https://github.com/asam-ev/qc-opendrive.git
 python3 -m venv opendrive-venv
 source opendrive-venv/bin/activate
 python3 -m pip install --no-cache-dir -r qc-opendrive/requirements.txt
-cp qc-opendrive/xodrBundle qc-build/bin/xodrBundle
 ```
 
-### ASAM OpenScenario XML Checker Library
+#### ASAM OpenScenario XML Checker Library
 
 ```bash
-git clone https://github.com/asam-ev/qc-openscenarioxml.git
+git clone --single-branch --branch develop https://github.com/asam-ev/qc-openscenarioxml.git
 python3 -m venv openscenario-venv
 source openscenario-venv/bin/activate
 python3 -m pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt
-cp qc-openscenarioxml/xoscBundle qc-build/bin/xoscBundle
 ```
 
-### ASAM OTX Checker Library
+#### ASAM OTX Checker Library
 
 ```bash
-git clone https://github.com/asam-ev/qc-otx.git
+git clone --single-branch --branch develop https://github.com/asam-ev/qc-otx.git
 python3 -m venv otx-venv
 source otx-venv/bin/activate
 python3 -m pip install --no-cache-dir -r qc-otx/requirements.txt
-cp qc-otx/otxBundle qc-build/bin/otxBundle
 ```
+
+### Using Conda
+
+#### ASAM OpenDrive Checker Library
+
+```bash
+git clone --single-branch --branch develop https://github.com/asam-ev/qc-opendrive.git
+conda create -y -n opendrive-venv python=3.10 
+conda activate opendrive-venv
+python3 -m pip install --no-cache-dir -r qc-opendrive/requirements.txt
+```
+
+#### ASAM OpenScenario XML Checker Library
+
+```bash
+git clone --single-branch --branch develop https://github.com/asam-ev/qc-openscenarioxml.git
+conda create -y -n openscenario-venv python=3.10 
+conda activate openscenario-venv
+python3 -m pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt
+```
+
+#### ASAM OTX Checker Library
+
+```bash
+git clone --single-branch --branch develop https://github.com/asam-ev/qc-otx.git
+conda create -y -n otx-venv python=3.10 
+conda activate otx-venv
+python3 -m pip install --no-cache-dir -r qc-otx/requirements.txt
+```
+
+## Register ASAM Checker Libraries
+
+Both standard ASAM Checker Libraries and custom Checker Libraries must be registered with the framework before they can be used.
+
+**_Placeholder explaining how to register checker libraries with the framework using the manifest file_**.

@@ -57,6 +57,8 @@ The first parameter defines the configuration file.
 The CheckerBundle should write in the current directory an (.xqar) 
 file with the same name as the executable.
 
+**_Note: The above instruction will change after the Manifest file is supported._**
+
 This approach is used when testing only one CheckerBundle.
 
     > checker_bundle_exe config.xml
