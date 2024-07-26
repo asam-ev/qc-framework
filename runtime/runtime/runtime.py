@@ -131,7 +131,8 @@ def run_commands_from_xml(xml_file: str, install_folder: str) -> None:
     print("#" * 50)
     app_name = "ResultPooling"
     os_command = get_os_command_from_app_name(app_name)
-    run_command([os_command])
+    cmd_list = [os_command, xml_file]
+    run_command(cmd_list)
 
     # 3. Execute Report Modules
     print("#" * 50)
@@ -144,15 +145,12 @@ def run_commands_from_xml(xml_file: str, install_folder: str) -> None:
         run_command(cmd_list)
 
 
-def execute_runtime(xml_file: str, install_folder: str, schema_folder: str):
+def execute_runtime(xml_file: str, install_folder: str):
     """Execute all runtime operations on input xml file
-
-    Before executing all the steps, the xml_file is validated using the schema_folde/config_format.xsd schema file
 
     Args:
         xml_file (str): input configuration xml file
         install_folder (str):  folder where executables specified in the input xml files are installed
-        schema_folder (str):  folder where schema files are located to load the config_format.xsd file used in validation
     """
     os.chdir(install_folder)
 
