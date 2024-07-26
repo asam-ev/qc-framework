@@ -31,33 +31,6 @@ def check_executable_exists(executable: str) -> bool:
     return executable in list_files_in_cwd()
 
 
-def is_valid_xml(xml_file: str, schema_file: str) -> bool:
-    """Check if input xml file (.xml) is valid against the input schema file (.xsd)
-
-    Args:
-        xml_file (str): XML file path to test
-        schema_file (str): XSD file path containing the schema for the validation
-
-    Returns:
-        bool: True if file pointed by xml_file is valid w.r.t. input schema file. False otherwise
-    """
-    with open(schema_file, "rb") as schema_f:
-        schema_doc = etree.parse(schema_f)
-        schema = etree.XMLSchema(schema_doc)
-
-    with open(xml_file, "rb") as xml_f:
-        xml_doc = etree.parse(xml_f)
-
-    if schema.validate(xml_doc):
-        print("XML is valid.")
-        return True
-    else:
-        print("XML is invalid!")
-        for error in schema.error_log:
-            print(error.message)
-        return False
-
-
 def run_command(cmd_list: List[str]) -> None:
     """Execute command specified in cmd_list list parameter
 
@@ -183,11 +156,6 @@ def execute_runtime(xml_file: str, install_folder: str, schema_folder: str):
     """
     os.chdir(install_folder)
 
-    schema_file = os.path.join(schema_folder, "config_format.xsd")
-    if not is_valid_xml(xml_file, schema_file):
-        print("Aborting due to invalid XML.")
-        sys.exit()
-
     run_commands_from_xml(xml_file, install_folder)
 
 
@@ -205,16 +173,10 @@ def main():
         help="Path where compiled binaries are installed",
         required=True,
     )
-    parser.add_argument(
-        "--schema_dir",
-        type=str,
-        help="Path to the XSD schema for validation",
-        required=True,
-    )
 
     args = parser.parse_args()
 
-    execute_runtime(args.config, args.install_dir, args.schema_dir)
+    execute_runtime(args.config, args.install_dir)
 
 
 if __name__ == "__main__":

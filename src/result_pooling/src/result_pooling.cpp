@@ -263,7 +263,7 @@ void RunResultPoolingWithConfig(cParameterContainer &inputParams, const fs::path
     std::vector<cConfigurationCheckerBundle *> checkerBundleConfigs = configuration.GetCheckerBundles();
     for (const auto &itCheckerBundles : checkerBundleConfigs)
     {
-        std::string current_result_file = itCheckerBundles->GetParam("strResultFile");
+        std::string current_result_file = itCheckerBundles->GetParam("resultFile");
 
         // Convert std::string to std::filesystem::path
         fs::path current_result_path = current_result_file;
