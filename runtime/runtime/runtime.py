@@ -177,13 +177,13 @@ def execute_runtime(xml_file: str, install_folder: str):
         xml_file (str): input configuration xml file
         install_folder (str):  folder where executables specified in the input xml files are installed
     """
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    schema_file = os.path.join("..", "..", "doc", "schema", "config_format.xsd")
+    os.chdir(install_folder)
+
+    schema_file = os.path.join("..", "doc", "schema", "config_format.xsd")
 
     if not is_valid_xml(xml_file, schema_file):
         print("Aborting due to invalid XML.")
         sys.exit()
-    os.chdir(install_folder)
     run_commands_from_xml(xml_file, install_folder)
 
 
