@@ -38,18 +38,6 @@ All **modules which follow this convention are a part of the framework** and
 
 **Note:** Any Checker Bundle can have an executable using Bash script, even if the Checker Bundle is implemented in intepreted languages like Python.
 
-<!-- TODO: Decide whether to support this feature. -->
-<!-- ### Determine Checkers and Parameters
-
-If the CheckerBundle executable is called with the command line argument
-`--defaultConfig`, it should write a report file (.xqar, see Base library for
-details) containing all checkers with their parameters and no issues. Each
-parameter should contain default values. The name of the file has to
-corresponds to the executable name (myCheckerBundle.exe should write
-myCheckerBundle.xqar).
-
-    > checker_bundle_exe --defaultConfig -->
-
 ### Check a Single File With One Single CheckerBundle
 
 A CheckerBundle can be called with one command line parameter. 
@@ -71,20 +59,7 @@ This approach is used when testing only one CheckerBundle.
 - Your own module shall visualize the results based on the result format
 - Your module shall take a module configuration, based on the configuration
   format.
-- Your module shall provide a default configuration by the parameter
-  {{--defaultConfig}}
 - The executable needs execution rights and its location should be the bin
   folder (see [File Formats](file_formats.md) for configuration details)
 
 Here is [an example ReportModule implemented in Python](https://github.com/asam-ev/qc-baselib-py/tree/develop/examples/report_module_text).
-
-<!-- TODO: Decide whether to support this feature. -->
-<!-- ### Determine Configurations for ReportModules
-
-If a ReportModule executable is called with the command line argument
-`--defaultConfig`, it should write a configuration file (.xml) containing all
-the parameters. Each parameter should contain default values. The name of the
-file has to corresponds to the executable name (myReportModule.exe should write
-myReportModule.xml).
-
-    > report_module_exe --defaultConfig -->
