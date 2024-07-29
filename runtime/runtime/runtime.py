@@ -33,11 +33,9 @@ def check_executable_exists(executable: str) -> bool:
 
 def is_valid_xml(xml_file: str, schema_file: str) -> bool:
     """Check if input xml file (.xml) is valid against the input schema file (.xsd)
-
     Args:
         xml_file (str): XML file path to test
         schema_file (str): XSD file path containing the schema for the validation
-
     Returns:
         bool: True if file pointed by xml_file is valid w.r.t. input schema file. False otherwise
     """
@@ -158,7 +156,8 @@ def run_commands_from_xml(xml_file: str, install_folder: str) -> None:
     print("#" * 50)
     app_name = "ResultPooling"
     os_command = get_os_command_from_app_name(app_name)
-    run_command([os_command])
+    cmd_list = [os_command, xml_file]
+    run_command(cmd_list)
 
     # 3. Execute Report Modules
     print("#" * 50)
@@ -171,23 +170,20 @@ def run_commands_from_xml(xml_file: str, install_folder: str) -> None:
         run_command(cmd_list)
 
 
-def execute_runtime(xml_file: str, install_folder: str, schema_folder: str):
+def execute_runtime(xml_file: str, install_folder: str):
     """Execute all runtime operations on input xml file
-
-    Before executing all the steps, the xml_file is validated using the schema_folde/config_format.xsd schema file
 
     Args:
         xml_file (str): input configuration xml file
         install_folder (str):  folder where executables specified in the input xml files are installed
-        schema_folder (str):  folder where schema files are located to load the config_format.xsd file used in validation
     """
     os.chdir(install_folder)
 
-    schema_file = os.path.join(schema_folder, "config_format.xsd")
+    schema_file = os.path.join("..", "doc", "schema", "config_format.xsd")
+
     if not is_valid_xml(xml_file, schema_file):
         print("Aborting due to invalid XML.")
         sys.exit()
-
     run_commands_from_xml(xml_file, install_folder)
 
 
@@ -205,16 +201,10 @@ def main():
         help="Path where compiled binaries are installed",
         required=True,
     )
-    parser.add_argument(
-        "--schema_dir",
-        type=str,
-        help="Path to the XSD schema for validation",
-        required=True,
-    )
 
     args = parser.parse_args()
 
-    execute_runtime(args.config, args.install_dir, args.schema_dir)
+    execute_runtime(args.config, args.install_dir)
 
 
 if __name__ == "__main__":

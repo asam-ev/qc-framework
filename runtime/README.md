@@ -32,16 +32,14 @@ pip3 install -r requirements.txt
 Then from the same terminal you can execute the runtime:
 
 ```
-python3 runtime/runtime.py --config=$PATH_TO_CONFIG_XML --install_dir=$PATH_TO_EXE --schema_dir=$PATH_TO_XSD 
+python3 runtime/runtime.py --config=$PATH_TO_CONFIG_XML --install_dir=$PATH_TO_EXE
 ```
 
-where 
+where
 
 - `$PATH_TO_CONFIG_XML` points to an xml file following the [config xsd schema](../doc/schema/config_format.xsd)
 - `$PATH_TO_EXE` points to the folder where framework executables are installed
-- `$PATH_TO_XSD` points to a folder containig the config_format.xsd file
 
 #### Note
 
-- `$PATH_TO_EXE` and `$PATH_TO_XSD` args are temporarily supported until better handling of external directory will be implemented
-
+- `$PATH_TO_EXE` arg is temporarily supported until better handling of external directory will be implemented
