@@ -80,15 +80,11 @@ A [Docker-based demo pipeline](demo_pipeline/README.md) is provided to help user
 of the framework, as well as the [OpenDrive](https://github.com/asam-ev/qc-opendrive/tree/develop) 
 and [OpenScenario XML](https://github.com/asam-ev/qc-openscenarioxml/tree/develop) checker bundles.
 
-## Build the framework locally
+## Build and run the framework locally
 
-As the framework is still under development, it is not recommended to build 
-it locally. A complete build instruction will be available in the near future.
+Follow the [build instructions](INSTALL.md) to install the framework on your machine.
 
-The software can be build for Windows and Linux. Currently there are no
-pre-built binaries available for the framework. Follow the [build
-instructions](INSTALL.md) to create a runnable binary on your machine.
-[Examples](examples) are provided in this repository.
+Follow the [run instructions](doc/manual/using_the_framework.md) to run the Checker Bundles using the framework on your machine.
 
 # How to Contribute
 
