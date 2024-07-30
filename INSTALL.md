@@ -121,13 +121,13 @@ conda activate runtime-venv
 python3 -m pip install --no-cache-dir -r runtime/requirements.txt
 ```
 
-## Install ASAM Checker Libraries
+## Install ASAM Checker Bundles
 
-Standard ASAM Checker Libraries are implemented in Python. It is recommended to use virtual environment to setup standard ASAM Checker Libraries. Both [virtualenv](https://docs.python.org/3/library/venv.html) and [Conda](https://docs.anaconda.com/miniconda/) can be used to setup the virtual environment.
+Standard ASAM Checker Bundles are implemented in Python. It is recommended to use virtual environment to setup standard ASAM Checker Bundles. Both [virtualenv](https://docs.python.org/3/library/venv.html) and [Conda](https://docs.anaconda.com/miniconda/) can be used to setup the virtual environment.
 
 ### Using virtualenv
 
-#### ASAM OpenDrive Checker Library
+#### ASAM OpenDrive Checker Bundle
 
 ```bash
 git clone --single-branch --branch develop https://github.com/asam-ev/qc-opendrive.git
@@ -136,7 +136,7 @@ source opendrive-venv/bin/activate
 python3 -m pip install --no-cache-dir -r qc-opendrive/requirements.txt
 ```
 
-#### ASAM OpenScenario XML Checker Library
+#### ASAM OpenScenario XML Checker Bundle
 
 ```bash
 git clone --single-branch --branch develop https://github.com/asam-ev/qc-openscenarioxml.git
@@ -145,7 +145,7 @@ source openscenario-venv/bin/activate
 python3 -m pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt
 ```
 
-#### ASAM OTX Checker Library
+#### ASAM OTX Checker Bundle
 
 ```bash
 git clone --single-branch --branch develop https://github.com/asam-ev/qc-otx.git
@@ -156,7 +156,7 @@ python3 -m pip install --no-cache-dir -r qc-otx/requirements.txt
 
 ### Using Conda
 
-#### ASAM OpenDrive Checker Library
+#### ASAM OpenDrive Checker Bundle
 
 ```bash
 git clone --single-branch --branch develop https://github.com/asam-ev/qc-opendrive.git
@@ -165,7 +165,7 @@ conda activate opendrive-venv
 python3 -m pip install --no-cache-dir -r qc-opendrive/requirements.txt
 ```
 
-#### ASAM OpenScenario XML Checker Library
+#### ASAM OpenScenario XML Checker Bundle
 
 ```bash
 git clone --single-branch --branch develop https://github.com/asam-ev/qc-openscenarioxml.git
@@ -174,7 +174,7 @@ conda activate openscenario-venv
 python3 -m pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt
 ```
 
-#### ASAM OTX Checker Library
+#### ASAM OTX Checker Bundle
 
 ```bash
 git clone --single-branch --branch develop https://github.com/asam-ev/qc-otx.git
@@ -183,8 +183,8 @@ conda activate otx-venv
 python3 -m pip install --no-cache-dir -r qc-otx/requirements.txt
 ```
 
-## Register ASAM Checker Libraries
+## Register ASAM Checker Bundles
 
-Both standard ASAM Checker Libraries and custom Checker Libraries must be registered with the framework before they can be used.
+Both standard ASAM Checker Bundles and custom Checker Bundles must be registered with the framework before they can be used.
 
-**_Placeholder explaining how to register checker libraries with the framework using the manifest file_**.
+**_Placeholder explaining how to register checker bundles with the framework using the manifest file_**.
