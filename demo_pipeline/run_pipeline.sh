@@ -7,8 +7,7 @@ python3 /app/demo_pipeline/configuration_generator.py
 
 python3 /app/framework/runtime/runtime/runtime.py \
     --config "/tmp/generated_config/config.xml" \
-    --install_dir "/app/framework/bin" \
-    --schema_dir "/app/framework/doc/schema"
+    --install_dir "/app/framework/bin"
 
 mkdir -p /out/qc-result-$INPUT_FILENAME
 cp /app/framework/bin/*.xqar /out/qc-result-$INPUT_FILENAME

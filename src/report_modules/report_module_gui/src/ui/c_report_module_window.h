@@ -7,14 +7,18 @@
  */
 #pragma once
 
+#include <QCheckBox>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <QMap>
+#include <QPlainTextEdit>
 #include <QString>
 #include <QtWidgets/QMainWindow>
-
 #include <memory>
 #include <string>
 #include <vector>
 
+#include "c_line_highlighter.h"
 #include "common/result_format/c_issue.h"
 
 class cCheckerBundle;
@@ -66,6 +70,15 @@ class cReportModuleWindow : public QMainWindow
 
     std::vector<std::unique_ptr<Viewer>> viewerEntries;
     Viewer *_viewerActive{nullptr};
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
+    LineHighlighter *highlighter;
+    QPlainTextEdit *textEditArea;
+    const QFont codeFont = getCodeFont();
+    bool _repetitiveIssueEnabled;
+    bool _infoLevelEnabled;
+    bool _warningLevelEnabled;
+    bool _errorLevelEnabled;
 
   public:
     cReportModuleWindow() = delete;
@@ -81,12 +94,18 @@ class cReportModuleWindow : public QMainWindow
   private slots:
     // Open result file
     void OpenResultFile();
+    void SaveResultFile();
 
     // starts the Viewer
     void StartViewer(Viewer *viewer);
 
     // shows a XODR Issue in a viewer if available
     void ShowIssueInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow);
+
+    void onIssueToggled(bool checked);
+    void onInfoToggled(bool checked);
+    void onWarningToggled(bool checked);
+    void onErrorToggled(bool checked);
 
   private:
     // Handle application close
@@ -95,4 +114,12 @@ class cReportModuleWindow : public QMainWindow
     // Checks if the OpenDRIVE or OpenSCENARIO could be loaded
     void ValidateInputFile(cCheckerBundle *const bundle, QMap<QString, QString> *fileReplacementMap,
                            const std::string &parameter, const std::string &fileName, const std::string &filter) const;
+
+    QFont getCodeFont();
+    void LoadResultFromFilepath(const QString &filePath);
+    void FilterResultsOnCheckboxes();
+
+  public slots:
+    void loadFileContent(cResultContainer *const container);
+    void highlightRow(const cIssue *const issue, const int row);
 };

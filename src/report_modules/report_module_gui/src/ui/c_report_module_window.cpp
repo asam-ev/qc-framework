@@ -14,13 +14,14 @@
 #include "c_report_module_window.h"
 
 #include "c_checker_widget.h"
-#include "c_xodr_editor_widget.h"
-#include "c_xosc_editor_widget.h"
 
 #include "common/result_format/c_checker_bundle.h"
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_result_container.h"
-
+#include <QDebug>
+#include <QHBoxLayout>
+#include <QMimeData>
+#include <QVBoxLayout>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QFileDialog>
@@ -29,6 +30,50 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QSplitter>
+#include <unordered_set>
+
+void cReportModuleWindow::highlightRow(const cIssue *const issue, const int row)
+{
+
+    if (highlighter)
+    {
+        highlighter->setLineToHighlight(row);
+        textEditArea->update();
+        // Move cursor to the highlighted row and center it
+        QTextCursor cursor = textEditArea->textCursor();
+        cursor.movePosition(QTextCursor::Start);
+        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, row);
+        textEditArea->setTextCursor(cursor);
+        textEditArea->centerCursor();
+    }
+}
+
+void cReportModuleWindow::loadFileContent(cResultContainer *const container)
+{
+
+    QString fileToOpen;
+    textEditArea->setPlainText("");
+    if (container->HasXODRFileName())
+    {
+        fileToOpen = container->GetXODRFilePath().c_str();
+    }
+    else if (container->HasXOSCFilePath())
+    {
+        fileToOpen = container->GetXOSCFilePath().c_str();
+    }
+    else
+    {
+        return;
+    }
+
+    QFile file(fileToOpen);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream in(&file);
+        textEditArea->setPlainText(in.readAll());
+        file.close();
+    }
+}
 
 cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, const std::string &reportModuleName,
                                          QWidget *)
@@ -41,13 +86,56 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, &QAction::triggered, this, &cReportModuleWindow::OpenResultFile);
 
+    QAction *saveAct = new QAction(tr("&Save result file..."), this);
+    saveAct->setShortcuts(QKeySequence::Save);
+    saveAct->setStatusTip(tr("Save current result file"));
+    connect(saveAct, &QAction::triggered, this, &cReportModuleWindow::SaveResultFile);
+
     _fileMenu = menuBar()->addMenu(tr("&File"));
     _fileMenu->addAction(openAct);
+    _fileMenu->addAction(saveAct);
 
     QSplitter *splitter = new QSplitter(Qt::Horizontal);
 
     _checkerWidget = new cCheckerWidget(this);
-    splitter->addWidget(_checkerWidget);
+    _repetitiveIssueEnabled = true;
+    _infoLevelEnabled = true;
+    _warningLevelEnabled = true;
+    _errorLevelEnabled = true;
+
+    QWidget *leftWidget = new QWidget(splitter);
+
+    QWidget *checkboxWidget = new QWidget();
+
+    QVBoxLayout *leftLayout = new QVBoxLayout(leftWidget);
+    QHBoxLayout *checkboxLayout = new QHBoxLayout(checkboxWidget);
+
+    // Add the checkboxes
+    QCheckBox *issueCheckBox = new QCheckBox("Repetitive Issues", this);
+    QCheckBox *infoCheckBox = new QCheckBox("Level Info", this);
+    QCheckBox *warningCheckBox = new QCheckBox("Level Warning", this);
+    QCheckBox *errorCheckBox = new QCheckBox("Level Error", this);
+
+    issueCheckBox->setChecked(true);
+    infoCheckBox->setChecked(true);
+    warningCheckBox->setChecked(true);
+    errorCheckBox->setChecked(true);
+
+    // Connect the checkboxes' toggled signals to slots
+    connect(issueCheckBox, &QCheckBox::toggled, this, &cReportModuleWindow::onIssueToggled);
+    connect(infoCheckBox, &QCheckBox::toggled, this, &cReportModuleWindow::onInfoToggled);
+    connect(warningCheckBox, &QCheckBox::toggled, this, &cReportModuleWindow::onWarningToggled);
+    connect(errorCheckBox, &QCheckBox::toggled, this, &cReportModuleWindow::onErrorToggled);
+
+    checkboxLayout->addWidget(issueCheckBox);
+    checkboxLayout->addWidget(infoCheckBox);
+    checkboxLayout->addWidget(warningCheckBox);
+    checkboxLayout->addWidget(errorCheckBox);
+
+    leftLayout->addWidget(checkboxWidget);
+    leftLayout->addWidget(_checkerWidget);
+
+    splitter->addWidget(leftWidget);
 
     QWidget *xmlReportWidget = new QWidget(this);
     QVBoxLayout *xmlReportWidgetLayout = new QVBoxLayout;
@@ -55,17 +143,21 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     xmlReportWidgetLabel->setText("Source");
     xmlReportWidgetLabel->setStyleSheet("font-weight: bold;");
 
-    QTabWidget *sourceTabWidget = new QTabWidget(this);
-    _xodrEditorWidget = new cXODREditorWidget(sourceTabWidget, this);
-    _xoscEditorWidget = new cXOSCEditorWidget(sourceTabWidget, this);
+    textEditArea = new QPlainTextEdit(xmlReportWidget);
+    textEditArea->setReadOnly(true);
+    textEditArea->setWordWrapMode(QTextOption::NoWrap);
 
-    sourceTabWidget->addTab((QWidget *)_xodrEditorWidget, "OpenDRIVE");
-    sourceTabWidget->addTab((QWidget *)_xoscEditorWidget, "OpenSCENARIO");
+    QFontMetrics metrics(codeFont);
 
-    sourceTabWidget->setTabEnabled(1, false);
+    textEditArea->setFont(codeFont);
+    textEditArea->setTabStopWidth(2 * metrics.width(' '));
+    textEditArea->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
 
     xmlReportWidgetLayout->addWidget(xmlReportWidgetLabel);
-    xmlReportWidgetLayout->addWidget(sourceTabWidget);
+    xmlReportWidgetLayout->addWidget(textEditArea);
+
+    // Create LineHighlighter
+    highlighter = new LineHighlighter(textEditArea->document());
 
     xmlReportWidgetLayout->setContentsMargins(3, 6, 3, 3);
     xmlReportWidget->setLayout(xmlReportWidgetLayout);
@@ -74,10 +166,9 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     setCentralWidget(splitter);
     setWindowTitle(this->_reportModuleName);
 
-    connect(_checkerWidget, &cCheckerWidget::Load, _xodrEditorWidget, &cXODREditorWidget::LoadXODR);
-    connect(_checkerWidget, &cCheckerWidget::Load, _xoscEditorWidget, &cXOSCEditorWidget::LoadXOSC);
-    connect(_checkerWidget, &cCheckerWidget::ShowXODRIssue, _xodrEditorWidget, &cXODREditorWidget::ShowXODRIssue);
-    connect(_checkerWidget, &cCheckerWidget::ShowXOSCIssue, _xoscEditorWidget, &cXOSCEditorWidget::ShowXOSCIssue);
+    connect(_checkerWidget, &cCheckerWidget::Load, this, &cReportModuleWindow::loadFileContent);
+    connect(_checkerWidget, &cCheckerWidget::ShowXODRIssue, this, &cReportModuleWindow::highlightRow);
+    connect(_checkerWidget, &cCheckerWidget::ShowXOSCIssue, this, &cReportModuleWindow::highlightRow);
     connect(_checkerWidget, &cCheckerWidget::ShowIssueIn3DViewer, this, &cReportModuleWindow::ShowIssueInViewer);
 
     // Create Menu entries for all viewers in plugin
@@ -263,6 +354,8 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     // Set the size of the application of the half size of desktop
     QSize quarterDesktopSize = QDesktopWidget().availableGeometry(this).size() * 0.75f;
     resize(quarterDesktopSize);
+
+    setAcceptDrops(true);
 }
 
 // Loads the result container
@@ -270,26 +363,12 @@ void cReportModuleWindow::LoadResultContainer(cResultContainer *const container)
 {
     QMap<QString, QString> fileReplacementMap;
     std::list<cCheckerBundle *> bundles = container->GetCheckerBundles();
-
+    textEditArea->setPlainText("");
     for (std::list<cCheckerBundle *>::const_iterator itBundle = bundles.cbegin(); itBundle != bundles.cend();
          itBundle++)
     {
         ValidateInputFile(*itBundle, &fileReplacementMap, "XodrFile", "OpenDRIVE", "OpenDRIVE (*.xodr)");
         ValidateInputFile(*itBundle, &fileReplacementMap, "XoscFile", "OpenSCENARIO", "OpenSCENARIO (*.xosc)");
-    }
-
-    std::string xoscFilePath = container->GetXOSCFilePath();
-    std::string xodrFilePath = container->GetXODRFilePath();
-
-    // Check if we have an OpenSCENARIO and no OpenDRIVE given
-    if (container->GetCheckerBundleCount() > 0 && xoscFilePath.length() > 0 && xodrFilePath.length() == 0)
-    {
-        // Retrive OpenDRIVE file from scenario and add it to the first bundle
-        if (GetXodrFilePathFromXosc(xoscFilePath, xodrFilePath))
-        {
-            cCheckerBundle *bundle = container->GetCheckerBundles().front();
-            bundle->SetParam("XodrFile", xodrFilePath);
-        }
     }
 
     if (_checkerWidget != nullptr)
@@ -336,16 +415,36 @@ void cReportModuleWindow::ValidateInputFile(cCheckerBundle *const bundle, QMap<Q
 
 void cReportModuleWindow::OpenResultFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", "XODR checker results (*.xqar)");
-    if (!filePath.isNull())
-    {
-        // clear old results
-        _results->Clear();
-        // load new one
-        _results->AddResultsFromXML(filePath.toUtf8().constData());
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", "XQAR checker results (*.xqar)");
+    LoadResultFromFilepath(filePath);
+}
 
-        LoadResultContainer(_results);
+void cReportModuleWindow::SaveResultFile()
+{
+    if (_results->GetCheckerBundles().size() == 0)
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(this->_reportModuleName + " Error");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setText("Result file not loaded. Cannot save it!");
+        msgBox.exec();
+        return;
     }
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", "XQAR checker results (*.xqar)");
+    if (!fileName.isEmpty() && !fileName.endsWith(".xqar", Qt::CaseInsensitive))
+    {
+        fileName.append(".xqar");
+    }
+
+    _results->WriteResults(fileName.toStdString());
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(this->_reportModuleName + " Success");
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    QString saveSuccessMsg = fileName + QString(" correctly saved! ");
+    msgBox.setText(saveSuccessMsg);
+    msgBox.exec();
 }
 
 void cReportModuleWindow::StartViewer(Viewer *viewer)
@@ -448,4 +547,111 @@ void cReportModuleWindow::closeEvent(QCloseEvent *)
     {
         viewerEntries[i]->CloseViewer_f();
     }
+}
+
+void cReportModuleWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+
+    if (event->mimeData()->hasUrls())
+    {
+        event->acceptProposedAction();
+    }
+}
+
+void cReportModuleWindow::FilterResultsOnCheckboxes()
+{
+
+    std::unordered_map<eIssueLevel, bool> filterMap = {{eIssueLevel::INFO_LVL, _infoLevelEnabled},
+                                                       {eIssueLevel::WARNING_LVL, _warningLevelEnabled},
+                                                       {eIssueLevel::ERROR_LVL, _errorLevelEnabled}};
+    std::unordered_set<std::string> found_rule_ids;
+
+    for (const auto &itBundle : _results->GetCheckerBundles())
+    {
+        std::list<cChecker *> checkers = itBundle->GetCheckers();
+        for (const auto &itChecker : checkers)
+        {
+            std::list<cIssue *> issues = itChecker->GetIssues();
+            for (const auto &itIssue : issues)
+            {
+                bool enabled_level_in_checkbox = filterMap[itIssue->GetIssueLevel()];
+                bool rule_uid_already_found = false;
+                if (itIssue->GetRuleUID() != "" && itIssue->GetRuleUID() != " ")
+                {
+                    auto result = found_rule_ids.insert(itIssue->GetRuleUID());
+                    rule_uid_already_found = !result.second;
+                }
+                bool is_visible = enabled_level_in_checkbox;
+                if (!_repetitiveIssueEnabled)
+                {
+                    is_visible = is_visible && !rule_uid_already_found;
+                }
+                itIssue->SetEnabled(is_visible);
+            }
+        }
+    }
+}
+void cReportModuleWindow::LoadResultFromFilepath(const QString &filePath)
+{
+    if (!filePath.isNull())
+    {
+        // clear old results
+        _results->Clear();
+        // load new one
+        _results->AddResultsFromXML(filePath.toUtf8().constData());
+
+        FilterResultsOnCheckboxes();
+        LoadResultContainer(_results);
+    }
+}
+
+void cReportModuleWindow::dropEvent(QDropEvent *event)
+{
+    const QMimeData *mimeData = event->mimeData();
+
+    if (mimeData->hasUrls())
+    {
+        QList<QUrl> urlList = mimeData->urls();
+
+        for (const QUrl &url : urlList)
+        {
+            QString filePath = url.toLocalFile();
+            LoadResultFromFilepath(filePath);
+        }
+    }
+}
+
+// Helper function to create and initialize a QFont
+QFont cReportModuleWindow::getCodeFont()
+{
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(10);
+    return font;
+}
+
+void cReportModuleWindow::onIssueToggled(bool checked)
+{
+    _repetitiveIssueEnabled = checked;
+    FilterResultsOnCheckboxes();
+    LoadResultContainer(_results);
+}
+void cReportModuleWindow::onInfoToggled(bool checked)
+{
+    _infoLevelEnabled = checked;
+    FilterResultsOnCheckboxes();
+    LoadResultContainer(_results);
+}
+void cReportModuleWindow::onWarningToggled(bool checked)
+{
+    _warningLevelEnabled = checked;
+    FilterResultsOnCheckboxes();
+    LoadResultContainer(_results);
+}
+void cReportModuleWindow::onErrorToggled(bool checked)
+{
+    _errorLevelEnabled = checked;
+    FilterResultsOnCheckboxes();
+    LoadResultContainer(_results);
 }
