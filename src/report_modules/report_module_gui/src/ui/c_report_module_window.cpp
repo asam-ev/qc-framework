@@ -50,7 +50,6 @@ void cReportModuleWindow::highlightRow(const cIssue *const issue, const int row)
 
 void cReportModuleWindow::loadFileContent(cResultContainer *const container)
 {
-
     QString fileToOpen;
     textEditArea->setPlainText("");
     if (container->HasXODRFileName())
@@ -635,23 +634,28 @@ void cReportModuleWindow::onIssueToggled(bool checked)
 {
     _repetitiveIssueEnabled = checked;
     FilterResultsOnCheckboxes();
-    LoadResultContainer(_results);
+    if (_checkerWidget != nullptr)
+        _checkerWidget->UpdateResultContainer(_results);
 }
 void cReportModuleWindow::onInfoToggled(bool checked)
 {
     _infoLevelEnabled = checked;
     FilterResultsOnCheckboxes();
-    LoadResultContainer(_results);
+    if (_checkerWidget != nullptr)
+        _checkerWidget->UpdateResultContainer(_results);
 }
 void cReportModuleWindow::onWarningToggled(bool checked)
 {
     _warningLevelEnabled = checked;
     FilterResultsOnCheckboxes();
-    LoadResultContainer(_results);
+    if (_checkerWidget != nullptr)
+        _checkerWidget->UpdateResultContainer(_results);
 }
 void cReportModuleWindow::onErrorToggled(bool checked)
 {
     _errorLevelEnabled = checked;
     FilterResultsOnCheckboxes();
-    LoadResultContainer(_results);
+
+    if (_checkerWidget != nullptr)
+        _checkerWidget->UpdateResultContainer(_results);
 }
