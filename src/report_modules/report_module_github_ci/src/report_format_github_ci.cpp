@@ -26,8 +26,8 @@
 XERCES_CPP_NAMESPACE_USE
 
 static const std::map<eIssueLevel, std::string> mapIssueLevelToString = {{eIssueLevel::INFO_LVL, "::notice::"},
-                                                                   {eIssueLevel::WARNING_LVL, "::warning::"},
-                                                                   {eIssueLevel::ERROR_LVL, "::error::"}};
+                                                                         {eIssueLevel::WARNING_LVL, "::warning::"},
+                                                                         {eIssueLevel::ERROR_LVL, "::error::"}};
 
 // Main Programm
 int main(int argc, char *argv[])
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
     if (StringEndsWith(ToLower(strFilepath), ".xqar"))
     {
-        if (!std::filesystem::exists(strFilepath.c_str()))
+        if (!fs::exists(strFilepath.c_str()))
         {
             std::cerr << "Could not open file '" << strFilepath << "'!" << std::endl
                       << "Abort generating report!" << std::endl;
@@ -103,7 +103,8 @@ int main(int argc, char *argv[])
     }
 
     // Exit with code 1 if an error was found to fail the GitHub pipeline
-    if(RunGithubCIReport(inputParams)) {
+    if (RunGithubCIReport(inputParams))
+    {
         exit(1);
     }
 }
@@ -123,7 +124,6 @@ void ShowHelp(const std::string &toolPath)
     std::cout << "\n\n";
 }
 
-
 bool RunGithubCIReport(const cParameterContainer &inputParams)
 {
     XMLPlatformUtils::Initialize();
@@ -140,7 +140,7 @@ bool RunGithubCIReport(const cParameterContainer &inputParams)
 
         // Add prefix with issue id
         const std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
-        for (auto checkerBundle:  checkerBundles)
+        for (auto checkerBundle : checkerBundles)
         {
             checkerBundle->DoProcessing(AddPrefixForDescriptionIssueProcessor);
         }
@@ -166,26 +166,23 @@ bool PrintResults(std::unique_ptr<cResultContainer> &pResultContainer)
 
     std::list<cCheckerBundle *> bundles = pResultContainer->GetCheckerBundles();
     // Loop over all checker bundles
-    for (auto & bundle : bundles)
+    for (auto &bundle : bundles)
     {
         const auto checkers = bundle->GetCheckers();
 
         // Iterate over all checkers
-        for (auto & checker : checkers)
+        for (auto &checker : checkers)
         {
             // Get all issues from the current checker
             const auto issues = checker->GetIssues();
             if (!issues.empty())
             {
-                for (auto & issue : issues)
+                for (auto &issue : issues)
                 {
                     auto issue_level = mapIssueLevelToString.find(issue->GetIssueLevel());
                     if (issue_level != mapIssueLevelToString.end())
                     {
-                        std::cout << issue_level->second
-                                  << checker->GetCheckerID()
-                                  << ": "
-                                  << issue->GetDescription()
+                        std::cout << issue_level->second << checker->GetCheckerID() << ": " << issue->GetDescription()
                                   << std::endl;
                         if (issue->GetIssueLevel() == eIssueLevel::ERROR_LVL)
                         {
@@ -199,7 +196,6 @@ bool PrintResults(std::unique_ptr<cResultContainer> &pResultContainer)
     return error_found;
 }
 
-
 void AddPrefixForDescriptionIssueProcessor(cChecker *, cIssue *issueToProcess)
 {
     std::stringstream ssDescription;
@@ -207,7 +203,6 @@ void AddPrefixForDescriptionIssueProcessor(cChecker *, cIssue *issueToProcess)
 
     issueToProcess->SetDescription(ssDescription.str());
 }
-
 
 void WriteDefaultConfig()
 {
