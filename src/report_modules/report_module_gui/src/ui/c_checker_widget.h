@@ -48,6 +48,7 @@ class cCheckerWidget : public QWidget
     cCheckerWidget(QWidget *parent = 0);
 
     void LoadResultContainer(cResultContainer *const container);
+    void UpdateResultContainer(cResultContainer *const container);
 
   protected:
     // Loads a list of cCheckerBundles to the widget view.

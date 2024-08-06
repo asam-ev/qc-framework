@@ -159,11 +159,16 @@ cCheckerWidget::cCheckerWidget(QWidget *parent) : QWidget(parent)
     _currentResultContainer = nullptr;
 }
 
-void cCheckerWidget::LoadResultContainer(cResultContainer *const container)
+void cCheckerWidget::UpdateResultContainer(cResultContainer *const container)
 {
     _currentResultContainer = container;
 
     LoadAllItems();
+}
+
+void cCheckerWidget::LoadResultContainer(cResultContainer *const container)
+{
+    UpdateResultContainer(container);
 
     // Show XODR and highlight issues
     if (container->HasCheckerBundles())

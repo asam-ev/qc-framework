@@ -419,6 +419,38 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
 
         ss << "\n" << BASIC_SEPARATOR_LINE << "\n";
 
+        ss << BASIC_SEPARATOR_LINE << "\n";
+
+        ss << "Note"
+           << "\n\n";
+        ss << "Rule UID format:"
+           << "\n";
+        ss << "    <emanating-entity>:<standard>:x.y.z:rule_set.for_rules.rule_name"
+           << "\n\n";
+        ss << "where    "
+           << "\n";
+        ss << "    Emanating Entity: a domain name for the entity (organization or company) that declares the rule UID"
+           << "\n";
+        ss << "    Standard: a short string that represents the standard or the domain to which the rule is applied"
+           << "\n";
+        ss << "    Definition Setting: the version of the standard or the domain to which the rule appears or is "
+              "applied for the first time"
+           << "\n";
+        ss << "    Rule Full Name: the full name of the rule, as dot separated, snake lower case string. "
+           << "\n";
+        ss << "        The full name of a rule is composed by the rule set, a categorization for the rule, "
+           << "\n";
+        ss << "        and the rule name, a unique string inside the categorization. "
+           << "\n";
+        ss << "        The rule set can be nested (meaning that can be defined as an "
+           << "\n";
+        ss << "        arbitrary sequence of dot separated names, while the name is the snake "
+           << "\n";
+        ss << "        case string after the last dot of the full name)"
+           << "\n";
+
+        ss << "\n" << BASIC_SEPARATOR_LINE << "\n";
+
         outFile << ss.rdbuf();
         outFile.close();
     }
