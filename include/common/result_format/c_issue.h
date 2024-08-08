@@ -144,11 +144,11 @@ class cIssue : public IResult
     // Returns the checker this issue belongs to
     cChecker *GetChecker() const;
 
-    // Returns the xodr file name
-    std::string GetXODRFilename() const;
+    // Returns the input file name
+    std::string GetInputFilename() const;
 
-    // Returns the xodr file path
-    std::string GetXODRFilepath() const;
+    // Returns the input file path
+    std::string GetInputFilepath() const;
 
     // Returns the next free ID
     unsigned long long NextFreeId() const;

@@ -31,8 +31,7 @@ class cRuntimeWindow : public QMainWindow
     bool _configurationChanged{false};
 
   public:
-    cRuntimeWindow(const std::string &configurationFilePath, const std::string &xodrFile, const std::string &xoscFile,
-                   QWidget *parent = 0);
+    cRuntimeWindow(const std::string &configurationFilePath, const std::string &inputFile, QWidget *parent = 0);
 
     /*
      * Loads a configuration from file to datastructure
@@ -49,7 +48,6 @@ class cRuntimeWindow : public QMainWindow
     // Updates the internal configuration
     void UpdateConfiguration();
 
-
   private slots:
     // Open result file
     void OpenConfigurationFile();
@@ -57,7 +55,7 @@ class cRuntimeWindow : public QMainWindow
     // SaveAs configuration file
     bool SaveAsConfigurationFile();
 
-    bool ValidateAndWrite(cConfiguration& , const std::string&);
+    bool ValidateAndWrite(cConfiguration &, const std::string &);
 
     // Save configuration file
     bool SaveConfigurationFile();
@@ -82,11 +80,8 @@ class cRuntimeWindow : public QMainWindow
     void Log(QString log);
 
   private:
-    // Filename of the default xodr configuration
-    static const QString DEFAULT_XODR_CONFIG;
-
-    // Filename of the default xosc configuration
-    static const QString DEFAULT_XOSC_CONFIG;
+    // Filename of the default configuration
+    static const QString DEFAULT_CONFIG;
 
     /**
      * Get application directory
@@ -101,7 +96,6 @@ class cRuntimeWindow : public QMainWindow
      * @return   directory, from where the application is started
      */
     const QString GetWorkingDir();
-
 
     // Changes the window title of the application
     void SetupWindowTitle();

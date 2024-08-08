@@ -113,7 +113,7 @@ class cReportModuleWindow : public QMainWindow
 
     // Checks if the OpenDRIVE or OpenSCENARIO could be loaded
     void ValidateInputFile(cCheckerBundle *const bundle, QMap<QString, QString> *fileReplacementMap,
-                           const std::string &parameter, const std::string &fileName, const std::string &filter) const;
+                           const std::string &parameter, const std::string &fileName) const;
 
     QFont getCodeFont();
     void LoadResultFromFilepath(const QString &filePath);

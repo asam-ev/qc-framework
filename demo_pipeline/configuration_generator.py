@@ -46,7 +46,7 @@ def main():
         print("XOSC selected")
         update_param_value(
             XOSC_TEMPLATE_PATH,
-            "XoscFile",
+            "InputFile",
             full_input_path,
             os.path.join(GENERATED_CONFIG_PATH, "config.xml"),
         )
@@ -54,7 +54,7 @@ def main():
         print("XODR selected")
         update_param_value(
             XODR_TEMPLATE_PATH,
-            "XodrFile",
+            "InputFile",
             full_input_path,
             os.path.join(GENERATED_CONFIG_PATH, "config.xml"),
         )
@@ -62,7 +62,7 @@ def main():
         print("OTX selected")
         update_param_value(
             OTX_TEMPLATE_PATH,
-            "OtxFile",
+            "InputFile",
             full_input_path,
             os.path.join(GENERATED_CONFIG_PATH, "config.xml"),
         )

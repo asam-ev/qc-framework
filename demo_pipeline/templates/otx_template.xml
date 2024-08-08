@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Config>
 
-    <Param name="OtxFile" value="test.otx" />
+    <Param name="InputFile" value="test.otx" />
 
     <CheckerBundle application="otxBundle">
         <Param name="resultFile" value="otx_bundle_report.xqar" />

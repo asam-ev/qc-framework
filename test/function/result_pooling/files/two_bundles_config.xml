@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Config>
 
-  <Param name="XodrFile" value="../stimuli/xodr_examples/three_connected_roads_with_steps.xodr" />
+  <Param name="InputFile" value="../stimuli/xodr_examples/three_connected_roads_with_steps.xodr" />
 
   <CheckerBundle application="DemoCheckerBundle">
     <Param name="strResultFile" value="DemoCheckerBundle.xqar" />

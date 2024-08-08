@@ -345,55 +345,35 @@ cIssue *cResultContainer::GetIssueById(unsigned long long id) const
     return nullptr;
 }
 
-// Returns true if a xodr filename is available
-bool cResultContainer::HasXODRFileName() const
+// Returns true if a input filename is available
+bool cResultContainer::HasInputFileName() const
 {
-    return !GetXODRFileName().empty();
+    return !GetInputFileName().empty();
 }
 
-// Returns true if a xosc filename is available
-bool cResultContainer::HasXOSCFilePath() const
-{
-    return !GetXOSCFilePath().empty();
-}
-
-// Returns the xodr filename. Empty string if no file name is present.
-std::string cResultContainer::GetXODRFileName(const bool bRemoveExtension) const
+// Returns the input filename. Empty string if no file name is present.
+std::string cResultContainer::GetInputFileName(const bool bRemoveExtension) const
 {
     for (const auto &itCheckerBundle : m_Bundles)
     {
-        std::string xodrFilename = itCheckerBundle->GetXODRFileName(bRemoveExtension);
+        std::string inputFilename = itCheckerBundle->GetInputFileName(bRemoveExtension);
 
-        if (!xodrFilename.empty())
-            return xodrFilename;
+        if (!inputFilename.empty())
+            return inputFilename;
     }
 
     return "";
 }
 
-// Returns the xodr path of the first checkerbundle. Empty string if no file name is present.
-std::string cResultContainer::GetXODRFilePath() const
+// Returns the input path of the first checkerbundle. Empty string if no file name is present.
+std::string cResultContainer::GetInputFilePath() const
 {
     for (const auto &itCheckerBundle : m_Bundles)
     {
-        std::string xodrFilepath = itCheckerBundle->GetXODRFilePath();
+        std::string inputFilepath = itCheckerBundle->GetInputFilePath();
 
-        if (!xodrFilepath.empty())
-            return xodrFilepath;
-    }
-
-    return "";
-}
-
-// Returns the xodr path of the first checkerbundle. Empty std::string if no file name is present.
-std::string cResultContainer::GetXOSCFilePath() const
-{
-    for (const auto &itCheckerBundle : m_Bundles)
-    {
-        std::string xoscFilepath = itCheckerBundle->GetXOSCFilePath();
-
-        if (!xoscFilepath.empty())
-            return xoscFilepath;
+        if (!inputFilepath.empty())
+            return inputFilepath;
     }
 
     return "";

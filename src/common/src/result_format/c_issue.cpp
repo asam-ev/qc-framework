@@ -310,7 +310,7 @@ std::string cIssue::GetIssueLevelStr() const
 }
 
 // Returns the xodr file name
-std::string cIssue::GetXODRFilename() const
+std::string cIssue::GetInputFilename() const
 {
     cChecker *checker = GetChecker();
 
@@ -320,7 +320,7 @@ std::string cIssue::GetXODRFilename() const
 
         if (nullptr != bundle)
         {
-            return bundle->GetXODRFileName();
+            return bundle->GetInputFileName();
         }
         return "";
     }
@@ -328,7 +328,7 @@ std::string cIssue::GetXODRFilename() const
 }
 
 // Returns the xodr file path
-std::string cIssue::GetXODRFilepath() const
+std::string cIssue::GetInputFilepath() const
 {
     cChecker *checker = GetChecker();
 
@@ -338,7 +338,7 @@ std::string cIssue::GetXODRFilepath() const
 
         if (nullptr != bundle)
         {
-            return bundle->GetXODRFilePath();
+            return bundle->GetInputFilePath();
         }
         return "";
     }

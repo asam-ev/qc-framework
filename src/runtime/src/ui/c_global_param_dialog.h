@@ -38,8 +38,7 @@ class cGlobalParamDialog : public cParamDialog
   public slots:
     void SwitchCall(const QString &paramName);
     void SaveAndClose();
-    void OpenXODRFile();
-    void OpenXOSCFile();
+    void OpenInputFile();
 };
 
 #endif

@@ -93,8 +93,6 @@ class cProcessView : public QTreeWidget
 
     void GetConfigurationFromView(cConfiguration *newConfiguration);
 
-    void SetGlobalParamXodrFile(const std::string &xodrFilePath);
-
   private:
     // Add checker bundle item to invisible root item
     void AddCheckerBundleItemToRoot(cConfigurationCheckerBundle *const checkerBundle, const bool expand = false);

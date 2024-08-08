@@ -610,8 +610,7 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
 {
     if (nullptr != itemToShow)
     {
-        bool hasXODRPath = false;
-        bool hasXOSCPath = false;
+        bool hasInputPath = false;
         cChecker *checker = itemToShow->GetChecker();
 
         ShowDetails(itemToShow);
@@ -623,11 +622,8 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
             cCheckerBundle *checkerBundle = checker->GetCheckerBundle();
             SelectCheckerBundle(checkerBundle);
 
-            if (checkerBundle->GetXODRFilePath() != "")
-                hasXODRPath = true;
-
-            if (checkerBundle->GetXOSCFilePath() != "")
-                hasXOSCPath = true;
+            if (checkerBundle->GetInputFilePath() != "")
+                hasInputPath = true;
         }
 
         // Evaluate extended information groups for more sophisticated reports
@@ -642,13 +638,9 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
 
                     int row = fileLocation->GetRow();
 
-                    // If issue referes to an OpenDRIVE, show it!
-                    if (hasXODRPath)
-                        ShowXODRIssue(itemToShow, row);
-
-                    // If issue referes to an OpenSCENARIO, show it!
-                    if (hasXOSCPath)
-                        ShowXOSCIssue(itemToShow, row);
+                    // If issue referes to a file, show it!
+                    if (hasInputPath)
+                        ShowInputIssue(itemToShow, row);
                 }
 
                 // Show InertialLocations in Viewer
@@ -664,12 +656,8 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
             // xodr or xosc file, it should have a FileLocation
 
             // If issue referes to an OpenDRIVE, show it!
-            if (hasXODRPath)
-                ShowXODRIssue(itemToShow, -1);
-
-            // If issue referes to an OpenSCENARIO, show it!
-            if (hasXOSCPath)
-                ShowXOSCIssue(itemToShow, -1);
+            if (hasInputPath)
+                ShowInputIssue(itemToShow, -1);
         }
     }
 }
