@@ -374,20 +374,14 @@ static void AddFileLocationsToIssues()
     std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
     for (const auto &itCheckerBundle : checkerBundles)
     {
-        cXPathEvaluator xodrXPathEvaluator;
-        cXPathEvaluator xoscXPathEvaluator;
+        cXPathEvaluator inputXPathEvaluator;
 
-        std::string xodrFilePath = itCheckerBundle->GetXODRFilePath();
-        std::string xoscFilePath = itCheckerBundle->GetXOSCFilePath();
+        std::string inputFilePath = itCheckerBundle->GetInputFilePath();
 
         // Init xml files on xpath evaluators
-        bool successXodrContent = false;
-        if (!xodrFilePath.empty())
-            successXodrContent = xodrXPathEvaluator.SetXmlContent(QString::fromStdString(xodrFilePath));
-
-        bool successXoscContent = false;
-        if (!xoscFilePath.empty())
-            successXoscContent = xoscXPathEvaluator.SetXmlContent(QString::fromStdString(xoscFilePath));
+        bool successInputContent = false;
+        if (!inputFilePath.empty())
+            successInputContent = inputXPathEvaluator.SetXmlContent(QString::fromStdString(inputFilePath));
 
         // Evaluate XPath for every issue and set calculated file location
         std::list<cIssue *> issues = itCheckerBundle->GetIssues();
@@ -408,23 +402,12 @@ static void AddFileLocationsToIssues()
                         QVector<int> rows;
 
                         bool successGetRows = false;
-                        if (xpathQt.startsWith("/OpenSCENARIO/") && successXoscContent)
+
+                        successGetRows = inputXPathEvaluator.GetAffectedRowsOfXPath(xpathQt, rows);
+                        if (successGetRows)
                         {
-                            successGetRows = xoscXPathEvaluator.GetAffectedRowsOfXPath(xpathQt, rows);
-                            if (successGetRows)
-                            {
-                                for (int i = 0; i < rows.size(); ++i)
-                                    location->AddExtendedInformation(new cFileLocation(rows.at(i), 0));
-                            }
-                        }
-                        else if (xpathQt.startsWith("/OpenDRIVE/") && successXodrContent)
-                        {
-                            successGetRows = xodrXPathEvaluator.GetAffectedRowsOfXPath(xpathQt, rows);
-                            if (successGetRows)
-                            {
-                                for (int i = 0; i < rows.size(); ++i)
-                                    location->AddExtendedInformation(new cFileLocation(rows.at(i), 0));
-                            }
+                            for (int i = 0; i < rows.size(); ++i)
+                                location->AddExtendedInformation(new cFileLocation(rows.at(i), 0));
                         }
 
                         if (!successGetRows)

@@ -28,5 +28,5 @@ void ShowHelp(const std::string &applicationName);
 /**
  * Runs the config gui
  */
-void RunConfigGUI(const std::string &strConfigurationFilepath, const std::string &strXODRFilepath,
-                  const std::string &strXOSCFilePath, const QApplication &app);
+void RunConfigGUI(const std::string &strConfigurationFilepath, const std::string &strInputFilepath,
+                  const QApplication &app);

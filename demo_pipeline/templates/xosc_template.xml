@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Config>
 
-    <Param name="XoscFile" value="template.xosc" />
+    <Param name="InputFile" value="template.xosc" />
 
     <CheckerBundle application="xoscBundle">
         <Param name="resultFile" value="xosc_bundle_report.xqar" />

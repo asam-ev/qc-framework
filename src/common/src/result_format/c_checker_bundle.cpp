@@ -202,21 +202,15 @@ void cCheckerBundle::SetSummary(const std::string &strSummary)
 }
 
 // Sets the file name
-void cCheckerBundle::SetXODRFileName(const std::string &strFileName)
+void cCheckerBundle::SetInputFileName(const std::string &strFileName)
 {
     m_FileName = strFileName;
 }
 
 // Sets the file name
-void cCheckerBundle::SetXODRFilePath(const std::string &strXodrFilePath)
+void cCheckerBundle::SetInputFilePath(const std::string &strInputFilePath)
 {
-    SetParam("XodrFile", strXodrFilePath);
-}
-
-// Sets the file name
-void cCheckerBundle::SetXOSCFilePath(const std::string &strXoscFilePath)
-{
-    SetParam("XoscFile", strXoscFilePath);
+    SetParam("InputFile", strInputFilePath);
 }
 
 // Sets the file name
@@ -242,34 +236,19 @@ std::string cCheckerBundle::GetSummary() const
 }
 
 // Gets the file name
-std::string cCheckerBundle::GetXODRFileName(const bool bRemoveExtension) const
+std::string cCheckerBundle::GetInputFileName(const bool bRemoveExtension) const
 {
-    std::string xodrPath = GetParam("XodrFile");
+    std::string inputPath = GetParam("InputFile");
 
-    GetFileName(&xodrPath, bRemoveExtension);
+    GetFileName(&inputPath, bRemoveExtension);
 
-    return xodrPath;
-}
-
-std::string cCheckerBundle::GetXOSCFileName(const bool bRemoveExtension) const
-{
-    std::string xoscPath = GetParam("XoscFile");
-
-    GetFileName(&xoscPath, bRemoveExtension);
-
-    return xoscPath;
+    return inputPath;
 }
 
 // Gets the file path
-std::string cCheckerBundle::GetXODRFilePath() const
+std::string cCheckerBundle::GetInputFilePath() const
 {
-    return GetParam("XodrFile");
-}
-
-// Gets the file path
-std::string cCheckerBundle::GetXOSCFilePath() const
-{
-    return GetParam("XoscFile");
+    return GetParam("InputFile");
 }
 
 std::string cCheckerBundle::GetBundleName() const

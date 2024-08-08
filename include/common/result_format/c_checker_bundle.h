@@ -84,17 +84,12 @@ class cCheckerBundle
     void SetSummary(const std::string &strSummary);
 
     // Sets the file name
-    void SetXODRFileName(const std::string &strFileName);
+    void SetInputFileName(const std::string &strFileName);
 
-    /* Sets the file path to an XODR file which is checked.
-     * \param strXodrFilePath : The file path can be an absolute or relative path.
+    /* Sets the file path to an input file which is checked.
+     * \param strInputFilePath : The file path can be an absolute or relative path.
      */
-    void SetXODRFilePath(const std::string &strXodrFilePath);
-
-    /* Sets the file path to an XOSC file which is checked.
-     * \param strXoscFilePath : The file path can be an absolute or relative path.
-     */
-    void SetXOSCFilePath(const std::string &strXoscFilePath);
+    void SetInputFilePath(const std::string &strInputFilePath);
 
     // Sets the file name
     void SetDescription(const std::string &strDescription);
@@ -108,21 +103,13 @@ class cCheckerBundle
     // Gets the summary
     std::string GetSummary() const;
 
-    /* Gets the file name of the stored XODR file
+    /* Gets the file name of the stored input file
      *\param bRemoveExtension : True if no extension should be returned
      */
-    std::string GetXODRFileName(const bool bRemoveExtension = true) const;
+    std::string GetInputFileName(const bool bRemoveExtension = true) const;
 
-    /* Gets the file name of the stored XOSC file
-     *\param bRemoveExtension : True if no extension should be returned
-     */
-    std::string GetXOSCFileName(const bool bRemoveExtension = true) const;
-
-    // Returns the file path an XODR file which is relative or absolute to the result file itself
-    std::string GetXODRFilePath() const;
-
-    // Returns the file path an XODR file which is relative or absolute to the result file itself
-    std::string GetXOSCFilePath() const;
+    // Returns the file path an input file which is relative or absolute to the result file itself
+    std::string GetInputFilePath() const;
 
     // Gets the file name
     std::string GetDescription() const;

@@ -1,11 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <CheckerResults version="1.0.0">
 
-  <CheckerBundle build_date="" description="Checks validity of the xml schema of a given xosc file." name="XoscSchemaChecker" summary="Found 1 issue" version="">
-    <Param name="XoscFile" value="../stimuli/xosc_examples/Einscherer_with_errors.xosc"/>
-    <Checker checkerId="xoscSchemaChecker" description="Checks the xsd validity of an OpenSCENARIO. Found xosc version: 0.9. Used schema file OpenSCENARIO_TypeDefs.xsd, OpenSCENARIO_v0.9.1.xsd for validation." summary="Found 1 issue">
+  <CheckerBundle build_date="" description="Checks validity of the xml schema of a given xosc file."
+    name="XoscSchemaChecker" summary="Found 1 issue" version="">
+    <Param name="InputFile" value="../stimuli/xosc_examples/Einscherer_with_errors.xosc" />
+    <Checker checkerId="xoscSchemaChecker"
+      description="Checks the xsd validity of an OpenSCENARIO. Found xosc version: 0.9. Used schema file OpenSCENARIO_TypeDefs.xsd, OpenSCENARIO_v0.9.1.xsd for validation."
+      summary="Found 1 issue">
       <Issue description="Row:4 Column:121 Message: invalid dateTime value ''" issueId="0" level="1">
-        <FileLocation column="121" description="invalid dateTime value ''" row="4"/>
+        <FileLocation column="121" description="invalid dateTime value ''" row="4" />
       </Issue>
     </Checker>
   </CheckerBundle>

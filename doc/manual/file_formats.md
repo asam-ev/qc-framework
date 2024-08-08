@@ -20,7 +20,7 @@ all CheckerBundles finish execution.
 
 ```xml
 <Config>
-<Param name="XodrFile" value="myTrack.xodr">
+<Param name="InputFile" value="myTrack.xodr">
 <CheckerBundle application="SemanticChecker">
     <Param name="GlobalAngleTolerance" value="0.1"/>
     <Checker checkerId="elevationChecker" minLevel="1" maxLevel="3">
@@ -76,7 +76,7 @@ one called SyntaxChecker and one SemanticChecker.
 ```xml
 <CheckerResults version="1.0.0">
     <CheckerBundle name="SyntaxChecker" description="Syntax checker bundle" summary="Found 1 incident" build_date="23.05.2019" version="1.0">
-        <Param name="XodrFile" value="myTrack.xodr"/>
+        <Param name="InputFile" value="myTrack.xodr"/>
         <Param name="globalParameter" value="0.1"/>
         <Checker checkerId="xsdSchemaChecker" description="Checks the xsd validity"  summary="Found 1 issue">
             <Issue description="Row:8693 Column:12 invalid schema" issueId="1" level="1">
@@ -87,7 +87,7 @@ one called SyntaxChecker and one SemanticChecker.
         </Checker>
     </CheckerBundle>
     <CheckerBundle name="SemanticChecker" description="Semantic checker bundle" summary="Found some incidents" build_date="23.05.2019" version="1.0">
-        <Param name="XodrFile" value="myTrack.xodr"/>
+        <Param name="InputFile" value="myTrack.xodr"/>
         <Checker checkerId="roadIdChecker" description="Checks validity of the roadIds"  summary="Found 1 issue">
             <Issue description="Road with id=5 invalid" issueId="2" level="1">
                 <Locations description="Road id is defined multiple times">
