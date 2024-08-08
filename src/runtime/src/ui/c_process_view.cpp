@@ -446,7 +446,7 @@ void cProcessView::AddGlobalParam()
     cConfiguration currentConfig;
     GetConfigurationFromView(&currentConfig);
 
-    cGlobalParamDialog newDlg("XodrFile", "", true, this, &currentConfig);
+    cGlobalParamDialog newDlg("InputFile", "", true, this, &currentConfig);
 
     if (newDlg.exec() == QDialog::Accepted)
     {
@@ -473,33 +473,6 @@ void cProcessView::AddGlobalParam()
             AddParamItemToRoot(paramName, paramValue, true);
             emit ChangeConfiguration();
         }
-    }
-}
-
-void cProcessView::SetGlobalParamXodrFile(const std::string &xodrFilePath)
-{
-    std::string paramName = PARAM_XODR_FILE;
-    std::string paramValue = xodrFilePath;
-
-    QTreeWidgetItem *existingItem = HasParamItem(invisibleRootItem(), paramName);
-    if (existingItem)
-    {
-        QMessageBox::StandardButton reply =
-            QMessageBox::question(this, "Overwrite Parameter",
-                                  "\nShould be the parameter '" + QString::fromStdString(paramName) +
-                                      "' overwritten with:\n\n" + QString::fromStdString(paramValue),
-                                  QMessageBox::Yes | QMessageBox::No);
-
-        if (reply == QMessageBox::Yes)
-        {
-            SetParamDataOnItem(existingItem, paramName, paramValue);
-            emit ChangeConfiguration();
-        }
-    }
-    else
-    {
-        AddParamItemToRoot(paramName, paramValue, true);
-        emit ChangeConfiguration();
     }
 }
 

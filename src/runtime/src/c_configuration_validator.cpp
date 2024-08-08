@@ -19,10 +19,7 @@ bool cConfigurationValidator::ValidateConfiguration(cConfiguration *const config
     if (!success)
         return false;
 
-    success = CheckParameterNotEmptyAndCorrectExtension(configuration, PARAM_XODR_FILE, "xodr", message);
-    if (!success)
-        return false;
-    success = CheckParameterNotEmptyAndCorrectExtension(configuration, PARAM_XOSC_FILE, "xosc", message);
+    success = CheckParameterNotEmpty(configuration, PARAM_INPUT_FILE, message);
     if (!success)
         return false;
 
@@ -31,19 +28,17 @@ bool cConfigurationValidator::ValidateConfiguration(cConfiguration *const config
 
 bool cConfigurationValidator::CheckNecessaryParametersExist(cConfiguration *const configuration, std::string &message)
 {
-    if (!configuration->HasParam(PARAM_XODR_FILE) && !configuration->HasParam(PARAM_XOSC_FILE))
+    if (!configuration->HasParam(PARAM_INPUT_FILE))
     {
-        message = "Configuration needs a parameter '" + PARAM_XODR_FILE + "' or '" + PARAM_XOSC_FILE + "' for running.";
+        message = "Configuration needs a parameter '" + PARAM_INPUT_FILE + "' for running.";
         return false;
     }
 
     return true;
 }
 
-bool cConfigurationValidator::CheckParameterNotEmptyAndCorrectExtension(cConfiguration *const configuration,
-                                                                        const std::string &paramName,
-                                                                        const std::string &extension,
-                                                                        std::string &message)
+bool cConfigurationValidator::CheckParameterNotEmpty(cConfiguration *const configuration, const std::string &paramName,
+                                                     std::string &message)
 {
     if (configuration->HasParam(paramName))
     {
@@ -52,12 +47,6 @@ bool cConfigurationValidator::CheckParameterNotEmptyAndCorrectExtension(cConfigu
         if (paramValue.empty())
         {
             message = "Parameter '" + paramName + "' is empty. Please specify a value.";
-            return false;
-        }
-
-        if (!StringEndsWith(ToLower(paramValue), "." + extension))
-        {
-            message = "Parameter '" + paramName + "' needs to be a path to a valid " + extension + " file.";
             return false;
         }
     }

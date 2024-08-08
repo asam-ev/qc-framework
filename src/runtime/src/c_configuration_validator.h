@@ -24,10 +24,9 @@ class cConfigurationValidator
     // Check if at least one of the necessary parameters exists
     static bool CheckNecessaryParametersExist(cConfiguration *const configuration, std::string &message);
 
-    // Check if parameter is valid (is not empty and has the expected file extension)
-    static bool CheckParameterNotEmptyAndCorrectExtension(cConfiguration *const configuration,
-                                                          const std::string &paramName, const std::string &extension,
-                                                          std::string &message);
+    // Check if parameter is valid (is not empty)
+    static bool CheckParameterNotEmpty(cConfiguration *const configuration, const std::string &paramName,
+                                       std::string &message);
 };
 
 #endif

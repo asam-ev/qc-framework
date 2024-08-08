@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <CheckerResults version="1.0.0">
 
-  <CheckerBundle build_date="" description="Checks the content of an OpenSCENARIO file." name="ScenarioChecker" summary="Found 1 issue" version="">
-    <Param name="XoscFile" value="../stimuli/xosc_examples/Einscherer_with_errors.xosc"/>
-    <Checker checkerId="XoscXodrLinking" description="Checks the OpenDRIVE reference in the OpenSCENARIO file." summary="Found 1 issue">
+  <CheckerBundle build_date="" description="Checks the content of an OpenSCENARIO file."
+    name="ScenarioChecker" summary="Found 1 issue" version="">
+    <Param name="InputFile" value="../stimuli/xosc_examples/Einscherer_with_errors.xosc" />
+    <Checker checkerId="XoscXodrLinking"
+      description="Checks the OpenDRIVE reference in the OpenSCENARIO file." summary="Found 1 issue">
       <Issue description="OpenDRIVE file does not exist" issueId="0" level="1">
-        <XMLLocation description="XodrLinking" xpath="/OpenSCENARIO/RoadNetwork/Logics"/>
+        <XMLLocation description="XodrLinking" xpath="/OpenSCENARIO/RoadNetwork/Logics" />
       </Issue>
     </Checker>
   </CheckerBundle>

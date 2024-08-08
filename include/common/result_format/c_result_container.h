@@ -101,23 +101,17 @@ class cResultContainer
     // Returns an issue by its id
     cIssue *GetIssueById(unsigned long long id) const;
 
-    // Returns true if a xodr filename is available
-    bool HasXODRFileName() const;
-
-    // Returns true if a xosc filename is available
-    bool HasXOSCFilePath() const;
+    // Returns true if a input filename is available
+    bool HasInputFileName() const;
 
     /*
-    Returns the xodr filename of the first checkerbundle. Empty string if no file name is present.
+    Returns the input filename of the first checkerbundle. Empty string if no file name is present.
     \param bRemoveExtension : True if no extension should be returned
     */
-    std::string GetXODRFileName(const bool bRemoveExtension = true) const;
+    std::string GetInputFileName(const bool bRemoveExtension = true) const;
 
-    // Returns the xodr path of the first checkerbundle. Empty string if no file name is present.
-    std::string GetXODRFilePath() const;
-
-    // Returns the xosc path of the first checkerbundle. Empty string if no file name is present.
-    std::string GetXOSCFilePath() const;
+    // Returns the input path of the first checkerbundle. Empty string if no file name is present.
+    std::string GetInputFilePath() const;
 
     // Processes every issue on every checkerbundle, checker and does a defined processing
     void DoProcessing(void (*funcIteratorPtr)(cCheckerBundle *, cChecker *, cIssue *));

@@ -271,11 +271,8 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
         ss << BASIC_SEPARATOR_LINE;
         ss << std::endl;
 
-        if ((*bundles.begin())->GetXODRFileName().size() > 0)
-            ss << "XodrFile: " << (*bundles.begin())->GetXODRFileName(false) << std::endl;
-
-        if ((*bundles.begin())->GetXOSCFileName().size() > 0)
-            ss << "XoscFile: " << (*bundles.begin())->GetXOSCFileName(false) << std::endl;
+        if ((*bundles.begin())->GetInputFileName().size() > 0)
+            ss << "InputFile: " << (*bundles.begin())->GetInputFileName(false) << std::endl;
 
         ss << std::endl;
 
