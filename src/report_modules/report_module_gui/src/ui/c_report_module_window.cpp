@@ -37,12 +37,12 @@ void cReportModuleWindow::highlightRow(const cIssue *const issue, const int row)
 
     if (highlighter)
     {
-        highlighter->setLineToHighlight(row);
+        highlighter->setLineToHighlight(row - 1);
         textEditArea->update();
         // Move cursor to the highlighted row and center it
         QTextCursor cursor = textEditArea->textCursor();
         cursor.movePosition(QTextCursor::Start);
-        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, row);
+        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, row - 1);
         textEditArea->setTextCursor(cursor);
         textEditArea->centerCursor();
     }

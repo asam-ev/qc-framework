@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 {
     XMLPlatformUtils::Initialize();
 
+    QCoreApplication app(argc, argv);
     std::vector<std::string> args(argv, argv + argc);
     std::string strToolpath = args[0];
 
