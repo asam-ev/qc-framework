@@ -59,7 +59,6 @@ The following features are provided:
 
 - Modular framework specification that allow users to create their own checkers
   to support the use cases described above
-- Configuration GUI to select and parameterize checker rules
 - Runtime to call the checker rule sets and merge all results
 - Text report module to generate a human readable result file
 - Report GUI to explore the results in the source code of the input file
@@ -76,7 +75,7 @@ An architecture overview and documentation is provided in the
 
 ## Using Docker-based demo pipeline
 
-A [Docker-based demo pipeline](demo_pipeline/README.md) is provided to help users try out the latest development
+A [Docker-based demo pipeline](doc/manual/demo_pipeline.md) is provided to help users try out the latest development
 of the framework, as well as the [OpenDrive](https://github.com/asam-ev/qc-opendrive/tree/develop) 
 and [OpenScenario XML](https://github.com/asam-ev/qc-openscenarioxml/tree/develop) checker bundles.
 
