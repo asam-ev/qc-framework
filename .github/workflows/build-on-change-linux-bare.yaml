@@ -70,7 +70,7 @@ jobs:
           echo Building framework...
           cmake -G "Unix Makefiles" -B./build -S . \
             -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
-            -DENABLE_FUNCTIONAL_TESTS=$TEST_ENABLED  -DXERCES_ROOT="/usr" \
+            -DENABLE_FUNCTIONAL_TESTS=$TEST_ENABLED \
             -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
             -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/"
           cmake --build ./build --target install --config Release -j4

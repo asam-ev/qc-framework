@@ -74,8 +74,7 @@ $ cmake -G "Visual Studio 16 2019" -A "x64" -T "v142" -B../build -S. ^
     -DENABLE_FUNCTIONAL_TESTS=ON ^
     -DGTest_ROOT="<gtest_root>" ^ 
     -DASAM_OPENDRIVE_XSD_DIR="<asam_opendrive_xsd_dir>" ^
-    -DASAM_OPENSCENARIO_XSD_DIR="<asam_openscenario_xsd_dir>" ^ 
-    -DXERCES_ROOT="<xerces_c_root>" ^
+    -DASAM_OPENSCENARIO_XSD_DIR="<asam_openscenario_xsd_dir>" ^
     -DQt5_ROOT="<qt5_root>"
 $ cmake --build ../build --target ALL_BUILD --config Release
 $ ctest --test-dir ../build -C Release
