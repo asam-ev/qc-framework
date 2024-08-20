@@ -8,6 +8,8 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 # Using the C++ Base Library
 
+It is recommended to use the Python Base Library if possible as it contains the most advanced development. The C++ Base Library is complete in terms of functionality, but it is not as easy to use as the Python Base Library.
+
 ## Installation
 
 To install the base library it is necessary to clone the qc-framework repository
@@ -50,6 +52,20 @@ Then in the main `examples/CMakeLists.txt` you can add the new folder created
 add_subdirectory(tutorial_example)
 ```
 
+Then from the `qc-framework` folder you can build the new tutorial with the command:
+
+```
+cmake -G "Unix Makefiles" -B./build -S . -DCMAKE_INSTALL_PREFIX="/home/$USER/qc-build" \
+    -DENABLE_FUNCTIONAL_TESTS=ON  \
+    -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
+    -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/"
+
+cmake --build ./build --target install --config Release -j4
+
+cmake --install ./build
+```
+
+After these commands you will find your executable in `/home/$USER/qc-build/examples/tutorial_example/bin/TutorialExample`
 
 ## Examples
 
