@@ -57,7 +57,7 @@ looks like this (call from the repository root):
 ```bash
 cmake -G "Unix Makefiles" -B./build -S . \
     -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
-    -DENABLE_FUNCTIONAL_TESTS=ON \
+    -DENABLE_FUNCTIONAL_TESTS=ON  -DXERCES_ROOT="/usr" \
     -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
     -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/"
 cmake --build ./build --target install --config Release -j4
@@ -75,6 +75,7 @@ $ cmake -G "Visual Studio 16 2019" -A "x64" -T "v142" -B../build -S. ^
     -DGTest_ROOT="<gtest_root>" ^
     -DASAM_OPENDRIVE_XSD_DIR="<asam_opendrive_xsd_dir>" ^
     -DASAM_OPENSCENARIO_XSD_DIR="<asam_openscenario_xsd_dir>" ^
+    -DXERCES_ROOT="<xerces_c_root>" ^
     -DQt5_ROOT="<qt5_root>"
 $ cmake --build ../build --target ALL_BUILD --config Release
 $ ctest --test-dir ../build -C Release
