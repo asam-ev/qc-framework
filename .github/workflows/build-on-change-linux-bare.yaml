@@ -84,6 +84,7 @@ jobs:
           name: linux-build-artifacts
           path: |
             $(find /home/$(whoami)/qc-build/ -type f -executable)
+        shell: bash
 
       - name: Unit test execution
         if: github.event_name == 'pull_request'
