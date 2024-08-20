@@ -7,6 +7,7 @@
         <Param name="resultFile" value="xodr_bundle_report.xqar" />
         <Checker checkerId="semantic_xodr" maxLevel="1" minLevel="3" />
         <Checker checkerId="geometry_xodr" maxLevel="1" minLevel="3" />
+        <Checker checkerId="performance_xodr" maxLevel="1" minLevel="3" />
     </CheckerBundle>
 
     <ReportModule application="TextReport">
