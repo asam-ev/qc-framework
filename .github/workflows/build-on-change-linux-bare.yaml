@@ -78,6 +78,12 @@ jobs:
           echo Done.
         shell: bash
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build-artifacts
+          path: $(find /home/$(whoami)/qc-build/ -type f -executable)
+
       - name: Unit test execution
         if: github.event_name == 'pull_request'
         run: |
@@ -111,9 +117,3 @@ jobs:
         with:
           name: runtime-test-report
           path: ${{ github.workspace }}/runtime/runtime_test.log
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-build-artifacts
-          path: $(find bin/ -type f -executable)
