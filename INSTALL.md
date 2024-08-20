@@ -1,6 +1,6 @@
 <!---
 Copyright 2023 CARIAD SE.
- 
+
 This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -57,7 +57,7 @@ looks like this (call from the repository root):
 ```bash
 cmake -G "Unix Makefiles" -B./build -S . \
     -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
-    -DENABLE_FUNCTIONAL_TESTS=ON  -DXERCES_ROOT="/usr" \
+    -DENABLE_FUNCTIONAL_TESTS=ON \
     -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
     -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/"
 cmake --build ./build --target install --config Release -j4
@@ -72,10 +72,9 @@ $ mkdir ../build
 $ cmake -G "Visual Studio 16 2019" -A "x64" -T "v142" -B../build -S. ^
     -DCMAKE_INSTALL_PREFIX="<prefix>" ^
     -DENABLE_FUNCTIONAL_TESTS=ON ^
-    -DGTest_ROOT="<gtest_root>" ^ 
+    -DGTest_ROOT="<gtest_root>" ^
     -DASAM_OPENDRIVE_XSD_DIR="<asam_opendrive_xsd_dir>" ^
-    -DASAM_OPENSCENARIO_XSD_DIR="<asam_openscenario_xsd_dir>" ^ 
-    -DXERCES_ROOT="<xerces_c_root>" ^
+    -DASAM_OPENSCENARIO_XSD_DIR="<asam_openscenario_xsd_dir>" ^
     -DQt5_ROOT="<qt5_root>"
 $ cmake --build ../build --target ALL_BUILD --config Release
 $ ctest --test-dir ../build -C Release
@@ -116,7 +115,7 @@ python3 -m pip install --no-cache-dir -r runtime/requirements.txt
 Using Conda:
 
 ```bash
-conda create -y -n runtime-venv python=3.10 
+conda create -y -n runtime-venv python=3.10
 conda activate runtime-venv
 python3 -m pip install --no-cache-dir -r runtime/requirements.txt
 ```
@@ -160,7 +159,7 @@ python3 -m pip install --no-cache-dir -r qc-otx/requirements.txt
 
 ```bash
 git clone --single-branch --branch develop https://github.com/asam-ev/qc-opendrive.git
-conda create -y -n opendrive-venv python=3.10 
+conda create -y -n opendrive-venv python=3.10
 conda activate opendrive-venv
 python3 -m pip install --no-cache-dir -r qc-opendrive/requirements.txt
 ```
@@ -169,7 +168,7 @@ python3 -m pip install --no-cache-dir -r qc-opendrive/requirements.txt
 
 ```bash
 git clone --single-branch --branch develop https://github.com/asam-ev/qc-openscenarioxml.git
-conda create -y -n openscenario-venv python=3.10 
+conda create -y -n openscenario-venv python=3.10
 conda activate openscenario-venv
 python3 -m pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt
 ```
@@ -178,7 +177,7 @@ python3 -m pip install --no-cache-dir -r qc-openscenarioxml/requirements.txt
 
 ```bash
 git clone --single-branch --branch develop https://github.com/asam-ev/qc-otx.git
-conda create -y -n otx-venv python=3.10 
+conda create -y -n otx-venv python=3.10
 conda activate otx-venv
 python3 -m pip install --no-cache-dir -r qc-otx/requirements.txt
 ```

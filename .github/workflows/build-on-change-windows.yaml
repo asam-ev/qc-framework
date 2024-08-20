@@ -103,8 +103,7 @@ jobs:
             -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\QC-Framework-Out" `
             -DENABLE_FUNCTIONAL_TESTS="$env:TEST_ENABLED" `
             -DGTest_ROOT="$env:WORKING_PATH\gtest-Out" `
-            -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
-            -DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out"
+            -DQt5_ROOT="$env:Qt5_DIR\Qt5\"
 
           cmake --build build --target ALL_BUILD --config Release
 
