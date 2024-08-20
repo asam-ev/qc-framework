@@ -1,6 +1,6 @@
 <!---
 Copyright 2023 CARIAD SE.
- 
+
 This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -22,5 +22,6 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 - [File Formats Reference](file_formats.md)
 - [Python Base Library for Writing Own Modules](https://github.com/asam-ev/qc-baselib-py)
 - [C++ Base Library for Writing Own Modules](cpp_base_library.md)
+- [Using the C++ Base Library](using_the_cpp_base_library.md)
 - [Viewer Interface for Remote Controlling a 3D Viewer from the
   GUI](viewer_interface.md)
