@@ -28,4 +28,4 @@ qc_runtime --config=$PATH_TO_CONFIG_FILE --manifest=$PATH_TO_MANIFEST_FILE
 where
 
 - `$PATH_TO_CONFIG_FILE` points to an xml file following the [config xsd schema](../doc/schema/config_format.xsd)
-- `$PATH_TO_MANIFEST_FILE` points to the manifest file of the framework.
+- `$PATH_TO_MANIFEST_FILE` points to the [manifest file](manifest_file.md) of the framework.
