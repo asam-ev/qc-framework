@@ -43,7 +43,7 @@ RUN echo "Building framework..." && \
     cd /app/framework && \
     cmake -G "Unix Makefiles" -B./build -S . \
     -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
-    -DENABLE_FUNCTIONAL_TESTS=ON  -DXERCES_ROOT="/usr" \
+    -DENABLE_FUNCTIONAL_TESTS=ON \
     -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
     -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/" && \
     cmake --build ./build --target install --config Release -j4 && \
