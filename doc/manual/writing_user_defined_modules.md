@@ -32,10 +32,10 @@ Here are some other advanced example Checker Bundles using the Python Base Libra
 
 ### Run Checker Bundle Based on a Configuration
 
-Your Checker Bundle should provide an executable command that accept the XML configuration file and output the result file in a predefined directory. For example:
+Your Checker Bundle should provide an executable command that accept the XML configuration file at `$ASAM_QC_FRAMEWORK_CONFIG_FILE` and output the result file at `$ASAM_QC_FRAMEWORK_WORKING_DIR`. For example:
 
 ```bash
-/home/user/.venv/bin/python -m qc_opendrive.main -c $ASAM_QC_FRAMEWORK_CONFIG_FILE -o $ASAM_QC_FRAMEWORK_OUTPUT_DIR
+cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/user/.venv/bin/python -m qc_opendrive.main -c $ASAM_QC_FRAMEWORK_CONFIG_FILE
 ```
 
 Your Checker Bundle should also provide manifest files or manifest file templates for users to register it with the framework in different environments (e.g., Linux and Windows). [Details about manifest files can be found here](manifest_file.md).
@@ -71,10 +71,10 @@ Here are some other advanced example Report Modules using the C++ Base Library:
 
 ### Run Report Module Based on a Configuration
 
-Your Report Module should provide an executable command that accept the XML configuration file and, optionally, output the result file in a predefined directory. For example:
+Your Report Module should provide an executable command that accept the XML configuration file at `$ASAM_QC_FRAMEWORK_CONFIG_FILE` and output any result file at `$ASAM_QC_FRAMEWORK_WORKING_DIR`. For example:
 
 ```bash
-cd /home/user/qc-framework/bin && TextReport $ASAM_QC_FRAMEWORK_RESULT_FILE $ASAM_QC_FRAMEWORK_OUTPUT_DIR
+cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/user/qc-framework/bin/TextReport $ASAM_QC_FRAMEWORK_RESULT_FILE
 ```
 
 Your Report Module should also provide manifest files or manifest file templates for users to register it with the framework in different environments (e.g., Linux and Windows). [Details about manifest files can be found here](manifest_file.md).

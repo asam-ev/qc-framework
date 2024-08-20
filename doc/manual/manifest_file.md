@@ -15,14 +15,14 @@ The framework manifest file must follow the JSON format as in the example below.
 **manifest.json**
 ```json
 {
-    "manifest_file_path": [
-        "/home/user/qc-opendrive/manifest.json",
-        "/home/user/qc-openscenarioxml/manifest.json",
-        "/home/user/qc-otx/manifest.json",
-        "/home/user/qc-osi/manifest.json"
-        "/home/user/text-report/manifest.json",
-        "/home/user/report-gui/manifest.json",
-    ]
+  "manifest_file_path": [
+    "/home/user/qc-opendrive/manifest.json",
+    "/home/user/qc-openscenarioxml/manifest.json",
+    "/home/user/qc-otx/manifest.json",
+    "/home/user/qc-osi/manifest.json"
+    "/home/user/text-report/manifest.json",
+    "/home/user/report-gui/manifest.json",
+  ]
 }
 ```
 
@@ -40,7 +40,7 @@ Below are an example manifest files for a Checker Bundle and a Report Module
       "name": "qc-opendrive",
       "exec_type": "executable",
       "module_type": "checker_bundle",
-      "exec_command": "/home/user/.venv/bin/python -m qc_opendrive.main -c $ASAM_QC_FRAMEWORK_CONFIG_FILE -o $ASAM_QC_FRAMEWORK_OUTPUT_DIR"
+      "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/user/.venv/bin/python -m qc_opendrive.main -c $ASAM_QC_FRAMEWORK_CONFIG_FILE"
     }
   ]
 }
@@ -55,7 +55,7 @@ Below are an example manifest files for a Checker Bundle and a Report Module
       "name": "TextReport",
       "exec_type": "executable",
       "module_type": "report_module",
-      "exec_command": "cd /home/user/qc-framework/bin && TextReport $ASAM_QC_FRAMEWORK_RESULT_FILE $ASAM_QC_FRAMEWORK_OUTPUT_DIR"
+      "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/user/qc-framework/bin/TextReport $ASAM_QC_FRAMEWORK_CONFIG_FILE"
     }
   ]
 }
@@ -70,13 +70,13 @@ Note that, it is possible to specify the manifest of multiple modules in one fil
       "name": "qc-opendrive",
       "exec_type": "executable",
       "module_type": "checker_bundle",
-      "exec_command": "/home/user/.venv/bin/python -m qc_opendrive.main -c $ASAM_QC_FRAMEWORK_CONFIG_FILE -o $ASAM_QC_FRAMEWORK_OUTPUT_DIR"
+      "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/user/.venv/bin/python -m qc_opendrive.main -c $ASAM_QC_FRAMEWORK_CONFIG_FILE"
     },
     {
       "name": "TextReport",
       "exec_type": "executable",
       "module_type": "report_module",
-      "exec_command": "cd /home/user/qc-framework/bin && TextReport $ASAM_QC_FRAMEWORK_RESULT_FILE $ASAM_QC_FRAMEWORK_OUTPUT_DIR"
+      "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/user/qc-framework/bin/TextReport $ASAM_QC_FRAMEWORK_CONFIG_FILE"
     }
   ]
 }
@@ -87,7 +87,16 @@ The manifest of each module must contain the following information.
 * `name`: The name of the module. This name will be used in the [configuration file](file_formats.md).
 * `exec_type`: The type of module execution. Currently, only `executable` is supported as `exec_type`. The `executable` type supports the execution of any command in the `exec_command`.
 * `module_type`: The type of the module. It must be either a `checker_bundle` or a `report_module`.
-* `exec_command`: The command to be executed when the corresponding Checker Bundle or Report Module is invoked by the framework.
+* `exec_command`: The command to be executed when the corresponding Checker Bundle or Report Module is invoked by the framework. The `exec_command` have access to the environment variables defined by the framework (see the next section: Framework Environment Variables). The `exec_command` must accept the configuration file defined in `ASAM_QC_FRAMEWORK_CONFIG_FILE` and output any files to the directory defined in `ASAM_QC_FRAMEWORK_WORKING_DIR`.
+
+## Framework Environment Variables
+
+The Quality Checker Framework provides the following environment variables to be used in the `exec_command` in module manifest files.
+
+| Environment variable | Meaning |
+| --- | --- |
+| `ASAM_QC_FRAMEWORK_CONFIG_FILE` | Path to the configuration file |
+| `ASAM_QC_FRAMEWORK_WORKING_DIR` | Path to the working directory of the framework, where all the output files should be generated |
 
 ## Register a Checker Bundle or Report Module to the Framework
 

@@ -123,7 +123,7 @@ conda activate runtime-venv
 Python modules can be installed using `pip`.
 
 ```bash
-pip install asam-qc-runtime @ git+https://github.com/asam-ev/qc-framework#subdirectory=runtime
+pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework#subdirectory=runtime
 ```
 
 ## Install ASAM Checker Bundles
