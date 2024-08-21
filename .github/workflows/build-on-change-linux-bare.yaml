@@ -82,7 +82,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-build-artifacts
-          path: ${{ github.workspace }}/build/bin/TextReport
+          path: /home/$(whoami)/qc-build/bin/*
 
       - name: Unit test execution
         if: github.event_name == 'pull_request'
