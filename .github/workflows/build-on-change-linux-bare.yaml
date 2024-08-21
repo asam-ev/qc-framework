@@ -31,6 +31,8 @@ on:
       - runtime/**
       - docker/**
 
+  workflow_dispatch: # Allows manual triggering of the workflow
+
 jobs:
   build-linux:
     runs-on: ${{ matrix.os }}
