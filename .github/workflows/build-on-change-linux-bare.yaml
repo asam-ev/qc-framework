@@ -82,7 +82,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-build-artifacts
-          path: ./build/*
+          path: $(find ./build/ -type f -executable)
+          #path: ./build/*
 
       - name: Unit test execution
         if: github.event_name == 'pull_request'
