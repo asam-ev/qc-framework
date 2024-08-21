@@ -82,12 +82,30 @@ Note that, it is possible to specify the manifest of multiple modules in one fil
 }
 ```
 
+The manifest file is also used internally by the framework to specify the [Result Pooling](https://github.com/asam-ev/qc-framework/blob/main/doc/manual/architecture.md#workflow-asam-quality-checker-framework) module. The Result Pooling module is provided by the framework. Standard users are not expected to implement a result pooling module.
+
+```json
+{
+  "module": [
+    {
+      "name": "ResultPooling",
+      "exec_type": "executable",
+      "module_type": "result_pooling",
+      "exec_command": "/home/user/qc-framework/bin/ResultPooling $ASAM_QC_FRAMEWORK_WORKING_DIR $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+    }
+  ]
+}
+```
+
 The manifest of each module must contain the following information.
 
 * `name`: The name of the module. This name will be used in the [configuration file](file_formats.md).
-* `exec_type`: The type of module execution. Currently, only `executable` is supported as `exec_type`. The `executable` type supports the execution of any command in the `exec_command`.
-* `module_type`: The type of the module. It must be either a `checker_bundle` or a `report_module`.
-* `exec_command`: The command to be executed when the corresponding Checker Bundle or Report Module is invoked by the framework. The `exec_command` have access to the environment variables defined by the framework (see the next section: Framework Environment Variables). The `exec_command` must accept the configuration file defined in `ASAM_QC_FRAMEWORK_CONFIG_FILE` and output any files to the directory defined in `ASAM_QC_FRAMEWORK_WORKING_DIR`.
+* `exec_type`: The type of module execution. Currently, only `executable` is supported as `exec_type`. This type supports the execution of any command in the `exec_command`.
+* `module_type`: The type of the module. It must have one of the following value.
+  * `checker_bundle`
+  * `report_module`
+  * `result_pooling`
+* `exec_command`: The command to be executed when the corresponding Checker Bundle or Report Module is invoked by the framework. The command has access to the environment variables defined by the framework (see the next section: Framework Environment Variables). The `exec_command` must accept the configuration file defined in `ASAM_QC_FRAMEWORK_CONFIG_FILE` and output any files to the directory defined in `ASAM_QC_FRAMEWORK_WORKING_DIR`.
 
 ## Framework Environment Variables
 
