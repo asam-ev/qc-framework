@@ -22,7 +22,7 @@ def launch_main(monkeypatch, config_file_path: str, manifest_file_path: str):
 
 def test_3steps_manifest(monkeypatch):
     cwd = os.getcwd()
-    config_xml = os.path.join(cwd, "tests", "test_data", "DemoCheckerBundle_config.xml")
+    config_xml = os.path.join(cwd, "tests", "test_data", "3step_config.xml")
 
     manifest_json = os.path.join(cwd, "tests", "test_data", "framework_manifest.json")
 

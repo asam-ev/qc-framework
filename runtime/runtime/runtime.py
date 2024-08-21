@@ -8,7 +8,7 @@ import datetime
 import os
 import subprocess
 
-from typing import List
+from typing import Dict
 
 from qc_baselib import Configuration
 
@@ -60,11 +60,35 @@ def run_module_command(
 
 def execute_modules(
     config_file_path: str,
-    checker_bundles: List[models.Module],
-    result_pooling: models.Module,
-    report_modules: List[models.Module],
+    available_checker_bundles: Dict[str, models.Module],
+    available_result_pooling: models.Module,
+    available_report_modules: Dict[str, models.Module],
     output_path: str,
 ) -> None:
+    config = Configuration()
+    config.load_from_file(config_file_path)
+
+    checker_bundles = []
+    report_modules = []
+
+    for bundle in config._configuration.checker_bundles:
+        name = bundle.application
+        if name not in available_checker_bundles:
+            raise RuntimeError(
+                f"Checker bundle {name} not available in the framework manifest."
+            )
+
+        checker_bundles.append(available_checker_bundles[name])
+
+    for report in config._configuration.reports:
+        name = report.application
+        if name not in available_report_modules:
+            raise RuntimeError(
+                f"Report module {name} not available in the framework manifest."
+            )
+
+        report_modules.append(available_report_modules[name])
+
     # Checker bundles
     print(f"Executing checker bundles")
     for checker_bundle in checker_bundles:
@@ -72,8 +96,8 @@ def execute_modules(
         run_module_command(checker_bundle, config_file_path, output_path)
 
     # Result pooling
-    print(f"Executing result pooling:  {result_pooling.name}")
-    run_module_command(result_pooling, config_file_path, output_path)
+    print(f"Executing result pooling:  {available_result_pooling.name}")
+    run_module_command(available_result_pooling, config_file_path, output_path)
 
     # Report modules
     print(f"Executing report modules")
@@ -91,11 +115,8 @@ def execute_runtime(config_file_path: str, manifest_file_path: str) -> None:
         manifest_file_path (str): input manifest json file path
     """
 
-    config = Configuration()
-    config.load_from_file(config_file_path)
-
-    checker_bundles = []
-    report_modules = []
+    checker_bundles = {}
+    report_modules = {}
     result_pooling = None
 
     with open(manifest_file_path, "rb") as framework_manifest_file:
@@ -109,10 +130,14 @@ def execute_runtime(config_file_path: str, manifest_file_path: str) -> None:
 
                 for module in module_manifest.module:
                     if module.module_type == models.ModuleType.CHECKER_BUNDLE:
-                        checker_bundles.append(module)
+                        checker_bundles[module.name] = module
                     elif module.module_type == models.ModuleType.REPORT_MODULE:
-                        report_modules.append(module)
+                        report_modules[module.name] = module
                     elif module.module_type == models.ModuleType.RESULT_POOLING:
+                        if result_pooling is not None:
+                            raise RuntimeError(
+                                "Multiple result poling modules defined on framework manifest."
+                            )
                         result_pooling = module
                     else:
                         raise RuntimeError(
