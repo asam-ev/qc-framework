@@ -88,13 +88,13 @@ jobs:
 
       - name: Archive release binaries
         shell: bash
-        run: 7z a qc-framework-executables-ubuntu.zip ./build/src/result_pooling/ResultPooling ./build/src/report_modules/report_module_text/TextReport ./build/src/report_modules/report_module_github_ci/GithubCIReport ./build/src/report_modules/report_module_gui/ReportGUI
+        run: mkdir artifacts && cp ./build/src/result_pooling/ResultPooling ./build/src/report_modules/report_module_text/TextReport ./build/src/report_modules/report_module_github_ci/GithubCIReport ./build/src/report_modules/report_module_gui/ReportGUI artifacts/
 
       - name: Upload release artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: qc-framework-executables-ubuntu
-          path: qc-framework-executables-ubuntu.zip
+          path: artifacts
 
       # - name: Upload build artifacts
       #   uses: actions/upload-artifact@v4
