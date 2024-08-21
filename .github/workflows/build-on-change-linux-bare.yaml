@@ -78,11 +78,17 @@ jobs:
           echo Done.
         shell: bash
 
+      - name: Find and list executables
+        run: |
+          cd build
+          find . -type f -executable > executables.txt
+          cat executables.txt  # Optional: To see the list of found executables in the logs
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: linux-build-artifacts
-          path: $(find ./build/ -type f -executable)
+          path: $(cat build/executables.txt)
           #path: ./build/*
 
       - name: Unit test execution
