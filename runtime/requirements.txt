@@ -1,2 +1,3 @@
 pydantic>=2.7.2
 pytest>=8.2.1
+asam-qc-baselib @ git+https://github.com/asam-ev/qc-baselib-py@develop
