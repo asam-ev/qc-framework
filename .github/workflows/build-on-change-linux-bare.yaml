@@ -102,8 +102,9 @@ jobs:
           cp -r /home/$(whoami)/qc-build/bin bin
           cp out_build/examples/checker_bundle_example/DemoCheckerBundle bin/
           cd runtime
-          python3 -m pip install -e .
-          python3 -m pytest -rA > runtime_test.log
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install
+          poetry run pytest -rA > runtime_test.log
 
       - name: Archive runtime test results
         if: github.event_name == 'pull_request' && (success() || failure())
