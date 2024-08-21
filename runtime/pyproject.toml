@@ -13,7 +13,6 @@ packages = [
 python = "^3.10"
 asam-qc-baselib = {git = "https://github.com/asam-ev/qc-baselib-py.git", rev = "develop"}
 pydantic = "^2.7.2"
-lxml = "^5.2.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.1"
