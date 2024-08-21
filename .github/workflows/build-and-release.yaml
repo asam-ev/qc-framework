@@ -7,8 +7,21 @@ on:
 
 jobs:
 
+  trigger-build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger Build Workflow
+      uses: benc-uk/workflow-dispatch@v1
+      with:
+        workflow: Build framework on Linux Bare
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Wait for Workflow to Complete
+      run: sleep 120  # Wait time; 2 minutes
+
   create-release:
     runs-on: ubuntu-latest
+    needs: trigger-build-linux
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -18,16 +31,15 @@ jobs:
       with:
         name: qc-framework-executables-ubuntu
 
-    - name: Download Windows Artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: qc-framework-executables-windows
+    # - name: Download Windows Artifact
+    #   uses: actions/download-artifact@v3
+    #   with:
+    #     name: qc-framework-executables-windows
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
           qc-framework-executables-ubuntu.zip
-          qc-framework-executables-windows.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
