@@ -18,15 +18,6 @@ FRAMEWORK_WORKING_DIR_VAR_NAME = "ASAM_QC_FRAMEWORK_WORKING_DIR"
 FRAMEWORK_CONFIG_PATH_VAR_NAME = "ASAM_QC_FRAMEWORK_CONFIG_FILE"
 
 
-def on_windows() -> bool:
-    """Check if script is executed in Windows OS
-
-    Returns:
-        bool: True if executing the script on Windows
-    """
-    return os.name == "nt"
-
-
 def run_module_command(module: models.Module, config_file_path: str) -> None:
     """Execute command specified in module configured with information in the
     provided configuration.
@@ -39,20 +30,27 @@ def run_module_command(module: models.Module, config_file_path: str) -> None:
         print(f"Executing command: {module.exec_command}")
 
         cmd_env = os.environ.copy()
-        cmd_env[FRAMEWORK_WORKING_DIR_VAR_NAME] = os.getcwd()
+        cmd_env[FRAMEWORK_WORKING_DIR_VAR_NAME] = os.getcwd() + "/execution"
         cmd_env[FRAMEWORK_CONFIG_PATH_VAR_NAME] = config_file_path
 
-        process = subprocess.run(module.exec_command, capture_output=True, env=cmd_env)
+        process = subprocess.run(
+            module.exec_command,
+            env=cmd_env,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        )
 
         exit_code = process.returncode
         if exit_code == 0:
             print("Command executed successfully.")
             print("Output:")
-            print(process.stdout.decode())
         else:
             print("Error occurred while executing the command.")
             print("Error message:")
-            print(process.stderr.decode())
+
+        print(process.stdout.decode())
+
     except Exception as e:
         print(f"Error: {str(e)}")
 
@@ -64,14 +62,19 @@ def execute_modules(
     report_modules: List[models.Module],
 ) -> None:
     # Checker bundles
+    print(f"Executing checker bundles")
     for checker_bundle in checker_bundles:
+        print(f"Executing checker module:  {checker_bundle.name}")
         run_module_command(checker_bundle, config_file_path)
 
     # Result pooling
+    print(f"Executing result pooling:  {result_pooling.name}")
     run_module_command(result_pooling, config_file_path)
 
     # Report modules
+    print(f"Executing report modules")
     for report_module in report_modules:
+        print(f"Executing report module:  {report_module.name}")
         run_module_command(report_module, config_file_path)
 
 
