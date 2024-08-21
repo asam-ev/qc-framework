@@ -22,6 +22,7 @@ on:
         default: 'false'
 
 jobs:
+
   trigger-builds:
     runs-on: ubuntu-latest
     steps:
@@ -36,11 +37,25 @@ jobs:
     runs-on: ubuntu-latest
     needs: trigger-builds
     steps:
-    - name: Wait for Linux Build
+    - name: Download Ubuntu 20.04 Artifact
       uses: actions/download-artifact@v2
       with:
-        name: linux-build-artifacts
-        path: /home/$(whoami)/qc-build/bin/*
+        name: qc-framework-executables-ubuntu-20.04
+        path: |
+          ./build/src/result_pooling/ResultPooling
+          ./build/src/report_modules/report_module_text/TextReport
+          ./build/src/report_modules/report_module_github_ci/GithubCIReport
+          ./build/src/report_modules/report_module_gui/ReportGUI
+
+    - name: Download Ubuntu 22.04 Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: qc-framework-executables-ubuntu-22.04
+        path: |
+          ./build/src/result_pooling/ResultPooling
+          ./build/src/report_modules/report_module_text/TextReport
+          ./build/src/report_modules/report_module_github_ci/GithubCIReport
+          ./build/src/report_modules/report_module_gui/ReportGUI
 
   create-release:
     runs-on: ubuntu-latest
@@ -48,10 +63,9 @@ jobs:
     steps:
     - name: Package and create release
       run: |
-        cd build
-        # Now you have access to the files from the previous job in the ./build directory
         # Package the artifacts or prepare them for release
-        tar -czvf qc-framework-executables-linux.tar.gz *
+        tar -czvf qc-framework-executables-ubuntu-20.04.tar.gz qc-framework-executables-ubuntu-20.04
+        tar -czvf qc-framework-executables-ubuntu-22.04.tar.gz qc-framework-executables-ubuntu-22.04
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
@@ -61,6 +75,7 @@ jobs:
         body: "Release for ${{ github.ref_name }}"
         prerelease: false
         files: |
-          qc-framework-executables-linux.tar.gz
+          qc-framework-executables-ubuntu-20.04.tar.gz
+          qc-framework-executables-ubuntu-22.04.tar.gz
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

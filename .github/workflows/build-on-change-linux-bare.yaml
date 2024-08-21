@@ -36,7 +36,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-20.04, ubuntu-22.04]
 
     env:
       TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
@@ -80,6 +80,14 @@ jobs:
           cmake --build ./build --target install --config Release -j4
           cmake --install ./build
           echo Done.
+        shell: bash
+
+      - name: Prepare build artifacts
+        run: |
+          chmod +x ./build/src/result_pooling/ResultPooling
+          chmod +x ./build/src/report_modules/report_module_text/TextReport
+          chmod +x ./build/src/report_modules/report_module_github_ci/GithubCIReport
+          chmod +x ./build/src/report_modules/report_module_gui/ReportGUI
         shell: bash
 
       - name: Upload build artifacts
