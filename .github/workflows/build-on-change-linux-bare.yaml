@@ -33,7 +33,11 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04, ubuntu-22.04]
+
     env:
       TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
     steps:
@@ -81,10 +85,10 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: linux-build-artifacts
+          name: qc-framework-executables-${{ matrix.os }}
           path: |
-            ./build/src/report_modules/report_module_text/TextReport
             ./build/src/result_pooling/ResultPooling
+            ./build/src/report_modules/report_module_text/TextReport
             ./build/src/report_modules/report_module_github_ci/GithubCIReport
             ./build/src/report_modules/report_module_gui/ReportGUI
 
