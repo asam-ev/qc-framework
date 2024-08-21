@@ -80,16 +80,16 @@ jobs:
 
       - name: Find and list executables
         run: |
-          cd build
+          cd /home/$(whoami)/qc-build
           find . -type f -executable > executables.txt
           cat executables.txt  # Optional: To see the list of found executables in the logs
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-build-artifacts
-          path: $(cat build/executables.txt)
-          #path: ./build/*
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: linux-build-artifacts
+      #     path: $(cat /home/$(whoami)/qc-build/executables.txt)
+      #     #path: ./build/*
 
       - name: Unit test execution
         if: github.event_name == 'pull_request'
