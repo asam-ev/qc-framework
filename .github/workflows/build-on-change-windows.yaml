@@ -114,11 +114,10 @@ jobs:
           Write-Output "All installations and setups are complete!"
         shell: pwsh
 
-      - name: Find and list executables
-      run: |
-        cd build
-        find . -type f -executable > executables.txt
-        cat executables.txt  # Optional: To see the list of found executables in the logs
+      - name: List executables in build directory
+        run: |
+          dir /b /s .\build\*.exe
+        shell: pwsh  # PowerShell shell is recommended for better formatting
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
