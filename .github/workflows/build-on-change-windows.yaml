@@ -114,20 +114,15 @@ jobs:
           Write-Output "All installations and setups are complete!"
         shell: pwsh
 
-      - name: List executables in build directory
-        run: |
-          Get-ChildItem -Path .\build\ -Filter *.exe -Recurse | ForEach-Object { $_.FullName }
-        shell: pwsh  # PowerShell shell is recommended for better formatting
-
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: qc-framework-executables-windows
           path: |
-            ./build/src/result_pooling/ResultPooling.exe
-            ./build/src/report_modules/report_module_text/TextReport.exe
-            ./build/src/report_modules/report_module_github_ci/GithubCIReport.exe
-            ./build/src/report_modules/report_module_gui/ReportGUI.exe
+            .\build\src\result_pooling\Release\ResultPooling.exe
+            .\build\src\report_modules\report_module_text\Release\TextReport.exe
+            .\build\src\report_modules\report_module_github_ci\Release\GithubCIReport.exe
+            .\build\src\report_modules\report_module_gui\Release\ReportGUI.exe
 
       - name: Unit test execution
         if: github.event_name == 'pull_request'
