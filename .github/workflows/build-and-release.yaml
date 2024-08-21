@@ -7,63 +7,24 @@ on:
 
 jobs:
 
-  trigger-builds-and-wait:
+  create-release:
     runs-on: ubuntu-latest
     steps:
-    - name: Trigger Linux Build
-      uses: benc-uk/workflow-dispatch@v1
-      with:
-        workflow: build-on-change-linux-bare.yaml
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Wait for Linux Build to Complete
-      id: wait-for-build
-      run: |
-        run_id=$(curl -s \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/${{ github.repository }}/actions/runs \
-          | jq -r ".workflow_runs[] | select(.name==\"Build framework on Linux Bare\") | .id" | head -n 1)
-
-        while [[ "$(curl -s \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id \
-          | jq -r '.status')" != "completed" ]]; do
-          echo "Waiting for the build to complete..."
-          sleep 30
-        done
-
-        conclusion=$(curl -s \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id \
-          | jq -r '.conclusion')
-
-        if [[ "$conclusion" != "success" ]]; then
-          echo "The build did not complete successfully"
-          exit 1
-        else
-          echo "The build completed successfully"
-        fi
-
     - name: Download Ubuntu Artifact
       uses: actions/download-artifact@v2
       with:
         name: qc-framework-executables-ubuntu
 
-  # create-release:
-  #   runs-on: ubuntu-latest
-  #   needs: trigger-builds-and-wait
-  #   steps:
-  #   - name: Create GitHub Release
-  #     uses: softprops/action-gh-release@v1
-  #     with:
-  #       tag_name: ${{ github.ref_name }}  # Use the tag name that triggered the workflow
-  #       release_name: ${{ github.ref_name }}
-  #       body: "Release for ${{ github.ref_name }}"
-  #       prerelease: false
-  #       files: |
-  #         qc-framework-executables-ubuntu-20.04
-  #         qc-framework-executables-ubuntu-22.04
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Download Windows Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: qc-framework-executables-windows
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          qc-framework-executables-ubuntu
+          qc-framework-executables-windows
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
