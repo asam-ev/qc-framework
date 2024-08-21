@@ -10,6 +10,9 @@ jobs:
   trigger-build-linux:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Trigger Build Workflow
       uses: benc-uk/workflow-dispatch@v1
       with:
@@ -18,13 +21,6 @@ jobs:
 
     - name: Wait for Workflow to Complete
       run: sleep 120  # Wait time; 2 minutes
-
-  create-release:
-    runs-on: ubuntu-latest
-    needs: trigger-build-linux
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
 
     - name: Download Ubuntu Artifact
       uses: actions/download-artifact@v3
