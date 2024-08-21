@@ -10,13 +10,16 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Download Ubuntu Artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: qc-framework-executables-ubuntu
 
     - name: Download Windows Artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: qc-framework-executables-windows
 
@@ -24,7 +27,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          qc-framework-executables-ubuntu
-          qc-framework-executables-windows
+          qc-framework-executables-ubuntu.zip
+          qc-framework-executables-windows.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
