@@ -4,9 +4,9 @@
 # with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import argparse
+import datetime
 import os
 import subprocess
-import time
 
 from typing import List
 
@@ -124,7 +124,7 @@ def execute_runtime(config_file_path: str, manifest_file_path: str) -> None:
             f"No result pooling module found in the provided framework manifest."
         )
 
-    formatted_now = time.strftime("%Y_%m_%d_%H_%M_%S")
+    formatted_now = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")
     execution_output_path = os.path.join(os.getcwd(), formatted_now)
     os.makedirs(execution_output_path, exist_ok=True)
 
