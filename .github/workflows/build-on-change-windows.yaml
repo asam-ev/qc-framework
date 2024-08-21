@@ -114,15 +114,20 @@ jobs:
           Write-Output "All installations and setups are complete!"
         shell: pwsh
 
+      - name: Archive release binaries
+        run: |
+          mkdir artifacts
+          copy .\build\src\result_pooling\Release\ResultPooling.exe .\artifacts\
+          copy .\build\src\report_modules\report_module_text\Release\TextReport.exe .\artifacts\
+          copy .\build\src\report_modules\report_module_github_ci\Release\GithubCIReport.exe .\artifacts\
+          copy .\build\src\report_modules\report_module_gui\Release\ReportGUI.exe .\artifacts\
+        shell: cmd
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: qc-framework-executables-windows
-          path: |
-            .\build\src\result_pooling\Release\ResultPooling.exe
-            .\build\src\report_modules\report_module_text\Release\TextReport.exe
-            .\build\src\report_modules\report_module_github_ci\Release\GithubCIReport.exe
-            .\build\src\report_modules\report_module_gui\Release\ReportGUI.exe
+          path: artifacts
 
       - name: Unit test execution
         if: github.event_name == 'pull_request'

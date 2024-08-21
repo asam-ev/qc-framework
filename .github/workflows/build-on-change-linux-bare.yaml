@@ -91,20 +91,10 @@ jobs:
         run: mkdir artifacts && cp ./build/src/result_pooling/ResultPooling ./build/src/report_modules/report_module_text/TextReport ./build/src/report_modules/report_module_github_ci/GithubCIReport ./build/src/report_modules/report_module_gui/ReportGUI artifacts/
 
       - name: Upload release artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: qc-framework-executables-ubuntu
           path: artifacts
-
-      # - name: Upload build artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: qc-framework-executables-ubuntu
-      #     path: |
-      #       ./build/src/result_pooling/ResultPooling
-      #       ./build/src/report_modules/report_module_text/TextReport
-      #       ./build/src/report_modules/report_module_github_ci/GithubCIReport
-      #       ./build/src/report_modules/report_module_gui/ReportGUI
 
       - name: Unit test execution
         if: github.event_name == 'pull_request'

@@ -46,15 +46,10 @@ jobs:
           echo "The build completed successfully"
         fi
 
-    - name: Download Ubuntu 20.04 Artifact
+    - name: Download Ubuntu Artifact
       uses: actions/download-artifact@v2
       with:
-        name: qc-framework-executables-ubuntu-20.04
-
-    - name: Download Ubuntu 22.04 Artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: qc-framework-executables-ubuntu-22.04
+        name: qc-framework-executables-ubuntu
 
   # create-release:
   #   runs-on: ubuntu-latest
