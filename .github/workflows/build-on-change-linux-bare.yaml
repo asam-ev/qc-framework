@@ -82,7 +82,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-build-artifacts
-          path: /home/$(whoami)/qc-build/bin/*
+          path: ./build/*
 
       - name: Unit test execution
         if: github.event_name == 'pull_request'

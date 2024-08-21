@@ -40,18 +40,18 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: linux-build-artifacts
-        path: $(find bin/ -type f -executable)
+        path: /home/$(whoami)/qc-build/bin/*
 
   create-release:
     runs-on: ubuntu-latest
     needs: wait-for-builds
     steps:
     - name: Package and create release
-    run: |
-      cd build
-      # Now you have access to the files from the previous job in the ./build directory
-      # Package the artifacts or prepare them for release
-      tar -czvf qc-framework-executables-linux.tar.gz *
+      run: |
+        cd build
+        # Now you have access to the files from the previous job in the ./build directory
+        # Package the artifacts or prepare them for release
+        tar -czvf qc-framework-executables-linux.tar.gz *
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
