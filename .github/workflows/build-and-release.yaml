@@ -23,7 +23,7 @@ on:
 
 jobs:
 
-  trigger-builds:
+  trigger-builds-and-wait:
     runs-on: ubuntu-latest
     steps:
     - name: Trigger Linux Build
@@ -31,42 +31,56 @@ jobs:
       with:
         workflow: build-on-change-linux-bare.yaml
         token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Wait for Linux Build to Complete
+      id: wait-for-build
+      run: |
+        run_id=$(curl -s \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/actions/runs \
+          | jq -r ".workflow_runs[] | select(.name==\"Build framework on Linux Bare\") | .id" | head -n 1)
+
+        while [[ "$(curl -s \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id \
+          | jq -r '.status')" != "completed" ]]; do
+          echo "Waiting for the build to complete..."
+          sleep 30
+        done
+
+        conclusion=$(curl -s \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id \
+          | jq -r '.conclusion')
+
+        if [[ "$conclusion" != "success" ]]; then
+          echo "The build did not complete successfully"
+          exit 1
+        else
+          echo "The build completed successfully"
+        fi
 
 
-  wait-for-builds:
+  download-artifacts:
     runs-on: ubuntu-latest
-    needs: trigger-builds
+    needs: trigger-builds-and-wait
     steps:
     - name: Download Ubuntu 20.04 Artifact
       uses: actions/download-artifact@v2
       with:
         name: qc-framework-executables-ubuntu-20.04
-        path: |
-          ./build/src/result_pooling/ResultPooling
-          ./build/src/report_modules/report_module_text/TextReport
-          ./build/src/report_modules/report_module_github_ci/GithubCIReport
-          ./build/src/report_modules/report_module_gui/ReportGUI
 
     - name: Download Ubuntu 22.04 Artifact
       uses: actions/download-artifact@v2
       with:
         name: qc-framework-executables-ubuntu-22.04
-        path: |
-          ./build/src/result_pooling/ResultPooling
-          ./build/src/report_modules/report_module_text/TextReport
-          ./build/src/report_modules/report_module_github_ci/GithubCIReport
-          ./build/src/report_modules/report_module_gui/ReportGUI
 
   create-release:
     runs-on: ubuntu-latest
     needs: wait-for-builds
     steps:
-    - name: Package and create release
-      run: |
-        # Package the artifacts or prepare them for release
-        tar -czvf qc-framework-executables-ubuntu-20.04.tar.gz qc-framework-executables-ubuntu-20.04
-        tar -czvf qc-framework-executables-ubuntu-22.04.tar.gz qc-framework-executables-ubuntu-22.04
-
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
@@ -75,7 +89,7 @@ jobs:
         body: "Release for ${{ github.ref_name }}"
         prerelease: false
         files: |
-          qc-framework-executables-ubuntu-20.04.tar.gz
-          qc-framework-executables-ubuntu-22.04.tar.gz
+          qc-framework-executables-ubuntu-20.04
+          qc-framework-executables-ubuntu-22.04
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
