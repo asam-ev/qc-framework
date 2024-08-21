@@ -114,6 +114,17 @@ jobs:
           Write-Output "All installations and setups are complete!"
         shell: pwsh
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: qc-framework-executables-windows
+          path: |
+            ./build/src/result_pooling/ResultPooling.exe
+            ./build/src/report_modules/report_module_text/TextReport.exe
+            ./build/src/report_modules/report_module_github_ci/GithubCIReport.exe
+            ./build/src/report_modules/report_module_gui/ReportGUI.exe
+        shell: pwsh
+
       - name: Unit test execution
         if: github.event_name == 'pull_request'
         run: |
