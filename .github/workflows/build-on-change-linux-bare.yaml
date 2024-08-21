@@ -35,10 +35,7 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+    runs-on: ubuntu-20.04
 
     env:
       TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
@@ -86,21 +83,28 @@ jobs:
 
       - name: Prepare build artifacts
         run: |
-          chmod +x ./build/src/result_pooling/ResultPooling
-          chmod +x ./build/src/report_modules/report_module_text/TextReport
-          chmod +x ./build/src/report_modules/report_module_github_ci/GithubCIReport
-          chmod +x ./build/src/report_modules/report_module_gui/ReportGUI
+          sudo chmod -R +x ./build/src/
         shell: bash
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - name: Archive release binaries
+        shell: bash
+        run: 7z a qc-framework-executables-ubuntu.zip ./build/src/*
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v3.1.2
         with:
-          name: qc-framework-executables-${{ matrix.os }}
-          path: |
-            ./build/src/result_pooling/ResultPooling
-            ./build/src/report_modules/report_module_text/TextReport
-            ./build/src/report_modules/report_module_github_ci/GithubCIReport
-            ./build/src/report_modules/report_module_gui/ReportGUI
+          name: qc-framework-executables-ubuntu
+          path: qc-framework-executables-ubuntu.zip
+
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: qc-framework-executables-ubuntu
+      #     path: |
+      #       ./build/src/result_pooling/ResultPooling
+      #       ./build/src/report_modules/report_module_text/TextReport
+      #       ./build/src/report_modules/report_module_github_ci/GithubCIReport
+      #       ./build/src/report_modules/report_module_gui/ReportGUI
 
       - name: Unit test execution
         if: github.event_name == 'pull_request'
@@ -116,7 +120,7 @@ jobs:
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
-          name: unit-test-report-${{ matrix.os }}
+          name: unit-test-report-ubuntu
           path: ${{ github.workspace }}/build/Testing/Temporary/LastTest.log
 
       - name: Runtime test execution
@@ -133,5 +137,5 @@ jobs:
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
-          name: runtime-test-report-${{ matrix.os }}
+          name: runtime-test-report-ubuntu
           path: ${{ github.workspace }}/runtime/runtime_test.log
