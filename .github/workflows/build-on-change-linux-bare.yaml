@@ -103,7 +103,7 @@ jobs:
           cp out_build/examples/checker_bundle_example/DemoCheckerBundle bin/
           cd runtime
           curl -sSL https://install.python-poetry.org | python3 -
-          poetry install
+          poetry install --with dev
           poetry run pytest -rA > runtime_test.log
 
       - name: Archive runtime test results
