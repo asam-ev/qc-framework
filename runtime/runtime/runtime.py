@@ -3,11 +3,19 @@
 # Public License, v. 2.0. If a copy of the MPL was not distributed
 # with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-import subprocess
-from lxml import etree
-import sys, os
 import argparse
+import os
+import subprocess
+
 from typing import List
+
+from qc_baselib import Configuration
+
+from runtime import models
+
+
+FRAMEWORK_WORKING_DIR_VAR_NAME = "ASAM_QC_FRAMEWORK_WORKING_DIR"
+FRAMEWORK_CONFIG_PATH_VAR_NAME = "ASAM_QC_FRAMEWORK_CONFIG_FILE"
 
 
 def on_windows() -> bool:
@@ -19,172 +27,97 @@ def on_windows() -> bool:
     return os.name == "nt"
 
 
-def check_executable_exists(executable: str) -> bool:
-    """Check if specified executable exists in current working directory
+def run_module_command(module: models.Module, config_file_path: str) -> None:
+    """Execute command specified in module configured with information in the
+    provided configuration.
 
     Args:
-        executable (str): executable name to find
-
-    Returns:
-        bool: True if executable exists
-    """
-    return executable in list_files_in_cwd()
-
-
-def is_valid_xml(xml_file: str, schema_file: str) -> bool:
-    """Check if input xml file (.xml) is valid against the input schema file (.xsd)
-    Args:
-        xml_file (str): XML file path to test
-        schema_file (str): XSD file path containing the schema for the validation
-    Returns:
-        bool: True if file pointed by xml_file is valid w.r.t. input schema file. False otherwise
-    """
-    with open(schema_file, "rb") as schema_f:
-        schema_doc = etree.parse(schema_f)
-        schema = etree.XMLSchema(schema_doc)
-
-    with open(xml_file, "rb") as xml_f:
-        xml_doc = etree.parse(xml_f)
-
-    if schema.validate(xml_doc):
-        print("XML is valid.")
-        return True
-    else:
-        print("XML is invalid!")
-        for error in schema.error_log:
-            print(error.message)
-        return False
-
-
-def run_command(cmd_list: List[str]) -> None:
-    """Execute command specified in cmd_list list parameter
-
-    Args:
-        cmd_list (List): A list containing all the strings that constitutes the command to execute
-                         E.g. cmd_list = ["python3", "script.py", "--help"]
-
+        module (models.Module): module to be executed
+        config (Configuration): xml configuration containing information for execution.
     """
     try:
-        print(f"Executing command: {' '.join(cmd_list)}")
-        process = subprocess.Popen(
-            cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=os.getcwd()
-        )
-        stdout, stderr = process.communicate()
+        print(f"Executing command: {module.exec_command}")
+
+        cmd_env = os.environ.copy()
+        cmd_env[FRAMEWORK_WORKING_DIR_VAR_NAME] = os.getcwd()
+        cmd_env[FRAMEWORK_CONFIG_PATH_VAR_NAME] = config_file_path
+
+        process = subprocess.run(module.exec_command, capture_output=True, env=cmd_env)
+
         exit_code = process.returncode
         if exit_code == 0:
             print("Command executed successfully.")
             print("Output:")
-            print(stdout.decode())
+            print(process.stdout.decode())
         else:
             print("Error occurred while executing the command.")
             print("Error message:")
-            print(stderr.decode())
+            print(process.stderr.decode())
     except Exception as e:
         print(f"Error: {str(e)}")
 
 
-def list_files_in_cwd() -> List[str]:
-    """List all files in current working directory
+def execute_modules(
+    config_file_path: str,
+    checker_bundles: List[models.Module],
+    result_pooling: models.Module,
+    report_modules: List[models.Module],
+) -> None:
+    # Checker bundles
+    for checker_bundle in checker_bundles:
+        run_module_command(checker_bundle, config_file_path)
 
-    Returns:
-        List: List with all the executables found in working directory
-    """
-    cwd = os.getcwd()
-    files = os.listdir(cwd)
-    files = [f for f in files if os.path.isfile(os.path.join(cwd, f))]
-    return files
+    # Result pooling
+    run_module_command(result_pooling, config_file_path)
 
-
-def get_os_command_from_app_name(app_name: str) -> str:
-    """Get command to execute the specified app_name as input
-
-    The function checks the operating system and build the returning command needed
-    e.g. app_name: HelloWorld
-    if the script is executed on Linux the result is "./HelloWorld"
-    if on Windows the result is HelloWorld.exe
-
-    Args:
-        app_name (str): The executable name that needs to be decorated with required chars
-
-    Returns:
-        str: A ready to execute string representation of app_name considering the current OS requirements.
-    """
-    os_command = None
-
-    if on_windows():
-        app_name = app_name + ".exe"
-        os_command = app_name
-    else:
-        os_command = "./" + app_name
-
-    if not check_executable_exists(app_name):
-        print(f"Executable {app_name} does not exist!\nAbort...")
-        sys.exit()
-
-    return os_command
+    # Report modules
+    for report_module in report_modules:
+        run_module_command(report_module, config_file_path)
 
 
-def run_commands_from_xml(xml_file: str, install_folder: str) -> None:
-    """Execute the qc-framework runtime steps specified in the input xml file
-
-        The function:
-        - For each checker bundle specified in configuration, execute its process
-        - Execute result pooling for collect results from all checker bundle executed in step 2
-        - For each report module specified in configuration, execute its process
-    Args:
-        xml_file (str): input configuration xml file
-        install_folder (str): folder where executables specified in the input xml files are installed
-    """
-
-    root = etree.parse(xml_file)
-
-    print("Executable found in install directory: ", list_files_in_cwd())
-
-    # 1. Execute all CheckerBundle
-    print("#" * 50)
-    print("1. Execute all CheckerBundle")
-    print("#" * 50)
-    for element in root.findall(".//CheckerBundle"):
-        app_name = element.get("application")
-        os_command = get_os_command_from_app_name(app_name)
-        cmd_list = [os_command, xml_file]
-        run_command(cmd_list)
-
-    # 2. Execute ResultPooling
-    print("#" * 50)
-    print("2. Execute ResultPooling")
-    print("#" * 50)
-    app_name = "ResultPooling"
-    os_command = get_os_command_from_app_name(app_name)
-    cmd_list = [os_command, xml_file]
-    run_command(cmd_list)
-
-    # 3. Execute Report Modules
-    print("#" * 50)
-    print("3. Execute Report Modules")
-    print("#" * 50)
-    for element in root.findall(".//ReportModule"):
-        app_name = element.get("application")
-        os_command = get_os_command_from_app_name(app_name)
-        cmd_list = [os_command, xml_file]
-        run_command(cmd_list)
-
-
-def execute_runtime(xml_file: str, install_folder: str):
-    """Execute all runtime operations on input xml file
+def execute_runtime(config_file_path: str, manifest_file_path: str) -> None:
+    """Execute all runtime operations defined in the input manifest over the
+    defined configuration.
 
     Args:
-        xml_file (str): input configuration xml file
-        install_folder (str):  folder where executables specified in the input xml files are installed
+        config_file_path (str): input configuration xml file path
+        manifest_file_path (str): input manifest json file path
     """
-    os.chdir(install_folder)
 
-    schema_file = os.path.join("..", "doc", "schema", "config_format.xsd")
+    config = Configuration()
+    config.load_from_file(config_file_path)
 
-    if not is_valid_xml(xml_file, schema_file):
-        print("Aborting due to invalid XML.")
-        sys.exit()
-    run_commands_from_xml(xml_file, install_folder)
+    checker_bundles = []
+    report_modules = []
+    result_pooling = None
+
+    with open(manifest_file_path, "rb") as framework_manifest_file:
+        json_data = framework_manifest_file.read().decode()
+        framework_manifest = models.FrameworkManifest.model_validate_json(json_data)
+
+        for module_manifest_path in framework_manifest.manifest_file_path:
+            with open(module_manifest_path, "rb") as module_manifest_file:
+                json_data = module_manifest_file.read().decode()
+                module_manifest = models.ModuleManifest.model_validate_json(json_data)
+
+                for module in module_manifest.module:
+                    if module.module_type == models.ModuleType.CHECKER_BUNDLE:
+                        checker_bundles.append(module)
+                    elif module.module_type == models.ModuleType.REPORT_MODULE:
+                        report_modules.append(module)
+                    elif module.module_type == models.ModuleType.RESULT_POOLING:
+                        result_pooling = module
+                    else:
+                        raise RuntimeError(
+                            f"Module of type {module.module_type.name} not supported."
+                        )
+
+    if result_pooling is None:
+        raise RuntimeError(
+            f"No result pooling module found in the provided framework manifest."
+        )
+
+    execute_modules(config_file_path, checker_bundles, result_pooling, report_modules)
 
 
 def main():
@@ -196,15 +129,15 @@ def main():
         required=True,
     )
     parser.add_argument(
-        "--install_dir",
+        "--manifest",
         type=str,
-        help="Path where compiled binaries are installed",
+        help="Path to the JSON manifest file",
         required=True,
     )
 
     args = parser.parse_args()
 
-    execute_runtime(args.config, args.install_dir)
+    execute_runtime(args.config, args.manifest)
 
 
 if __name__ == "__main__":

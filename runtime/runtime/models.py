@@ -12,6 +12,7 @@ class ExecType(str, enum.Enum):
 class ModuleType(str, enum.Enum):
     CHECKER_BUNDLE = "checker_bundle"
     REPORT_MODULE = "report_module"
+    RESULT_POOLING = "result_pooling"
 
 
 class FrameworkManifest(BaseModel):
