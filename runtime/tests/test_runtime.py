@@ -20,6 +20,9 @@ def launch_main(monkeypatch, config_file_path: str, manifest_file_path: str):
     runtime.main()
 
 
+# The test expects the binaries configured in the `3step_config.xml` are present
+# in the `../bin` relative path as configured in the
+# `test_data/framework_manifest.json`
 def test_3steps_manifest(monkeypatch):
     cwd = os.getcwd()
     config_xml = os.path.join(cwd, "tests", "test_data", "3step_config.xml")

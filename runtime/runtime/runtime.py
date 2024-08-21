@@ -71,7 +71,7 @@ def execute_modules(
     checker_bundles = []
     report_modules = []
 
-    for bundle in config._configuration.checker_bundles:
+    for bundle in config.get_all_checker_bundles():
         name = bundle.application
         if name not in available_checker_bundles:
             raise RuntimeError(
@@ -80,7 +80,7 @@ def execute_modules(
 
         checker_bundles.append(available_checker_bundles[name])
 
-    for report in config._configuration.reports:
+    for report in config.get_all_report_modules():
         name = report.application
         if name not in available_report_modules:
             raise RuntimeError(
