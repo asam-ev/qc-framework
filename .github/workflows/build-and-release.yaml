@@ -79,7 +79,7 @@ jobs:
 
   create-release:
     runs-on: ubuntu-latest
-    needs: wait-for-builds
+    needs: download-artifacts
     steps:
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
