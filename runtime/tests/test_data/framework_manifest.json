@@ -1,0 +1,7 @@
+{
+    "manifest_file_path": [
+        "tests/test_data/demo_checker_bundle_manifest.json",
+        "tests/test_data/result_pooling_manifest.json",
+        "tests/test_data/text_report_manifest.json"
+    ]
+}
