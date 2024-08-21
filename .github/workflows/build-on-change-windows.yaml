@@ -116,7 +116,7 @@ jobs:
 
       - name: List executables in build directory
         run: |
-          dir /b /s .\build\*.exe
+          Get-ChildItem -Path .\build\ -Filter *.exe -Recurse | ForEach-Object { $_.FullName }
         shell: pwsh  # PowerShell shell is recommended for better formatting
 
       - name: Upload build artifacts
