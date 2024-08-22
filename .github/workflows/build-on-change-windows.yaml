@@ -160,9 +160,8 @@ jobs:
           Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin"
 
           cd "$env:WORKING_PATH\qc-framework\qc-framework\runtime"
-          (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python3 -
-          Start-Process -FilePath ("$env:APPDATA" + "\Roaming\Python\Scripts\poetry") install --with dev
-          Start-Process -FilePath ("$env:APPDATA" + "\Roaming\Python\Scripts\poetry") run pytest
-
+          python3 -m pip install poetry
+          python3 -m poetry install
+          python3 -m poetry run pytest
           Write-Output "All runtime tests done."
         shell: pwsh
