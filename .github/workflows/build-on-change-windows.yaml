@@ -161,8 +161,8 @@ jobs:
 
           cd "$env:WORKING_PATH\qc-framework\qc-framework\runtime"
           (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python3 -
-          poetry install --with dev
-          poetry run pytest
+          %APPDATA%\Roaming\Python\Scripts\poetry install --with dev
+          %APPDATA%\Roaming\Python\Scripts\poetry run pytest
 
           Write-Output "All runtime tests done."
         shell: pwsh
