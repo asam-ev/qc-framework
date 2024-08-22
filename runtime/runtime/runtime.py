@@ -130,8 +130,16 @@ def execute_runtime(config_file_path: str, manifest_file_path: str) -> None:
 
                 for module in module_manifest.module:
                     if module.module_type == models.ModuleType.CHECKER_BUNDLE:
+                        if module.name in checker_bundles:
+                            raise RuntimeError(
+                                f"Checker bundle {module.name} already present on framework manifest."
+                            )
                         checker_bundles[module.name] = module
                     elif module.module_type == models.ModuleType.REPORT_MODULE:
+                        if module.name in report_modules:
+                            raise RuntimeError(
+                                f"Report module {module.name} already present on framework manifest."
+                            )
                         report_modules[module.name] = module
                     elif module.module_type == models.ModuleType.RESULT_POOLING:
                         if result_pooling is not None:
