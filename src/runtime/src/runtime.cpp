@@ -18,8 +18,7 @@ int main(int argc, char *argv[])
     std::string strToolpath = argv[0];
 
     std::string strConfigurationFilepath = "";
-    std::string strXODRFilepath = "";
-    std::string strXOSCFilePath = "";
+    std::string strInputFilepath = "";
 
     std::cout << std::endl << std::endl;
 
@@ -33,20 +32,12 @@ int main(int argc, char *argv[])
                 std::cout << "Configuration: " << strConfigurationFilepath << std::endl;
             }
         }
-        else if (strcmp(argv[i], "-xodr") == 0)
+        else if (strcmp(argv[i], "-input") == 0)
         {
             if (argc >= i + 1)
             {
-                strXODRFilepath = argv[i + 1];
-                std::cout << "XODR: " << strXODRFilepath << std::endl;
-            }
-        }
-        else if (strcmp(argv[i], "-xosc") == 0)
-        {
-            if (argc >= i + 1)
-            {
-                strXOSCFilePath = argv[i + 1];
-                std::cout << "XOSC: " << strXOSCFilePath << std::endl;
+                strInputFilepath = argv[i + 1];
+                std::cout << "Input: " << strInputFilepath << std::endl;
             }
         }
         else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
@@ -61,7 +52,7 @@ int main(int argc, char *argv[])
         strConfigurationFilepath = argv[1];
 
     QApplication app(argc, argv);
-    RunConfigGUI(strConfigurationFilepath, strXODRFilepath, strXOSCFilePath, app);
+    RunConfigGUI(strConfigurationFilepath, strInputFilepath, app);
     return 0;
 }
 
@@ -73,21 +64,18 @@ void ShowHelp(const std::string &toolPath)
     GetFileName(&applicationNameWithoutExt, true);
 
     std::cout << "\nUsage of " << applicationNameWithoutExt << ":" << std::endl;
-    std::cout << "\nOpen the application with DefaultXodrConfiguration.xml: \n"
+    std::cout << "\nOpen the application with DefaultConfiguration.xml: \n"
               << applicationName << " myConfiguration.xml" << std::endl;
-    std::cout << "\nOpen the application with myConfiguration.xml and a given xodr which is under "
+    std::cout << "\nOpen the application with myConfiguration.xml and a given input file which is under "
                  "test. \n"
-              << applicationName << " -config myConfiguration.xml -xodr myTrack.xodr " << std::endl;
-    std::cout << "\nOpen the application with myConfiguration.xml and a given xosc which is under "
-                 "test.  \n"
-              << applicationName << " -config myConfiguration.xml -xosc myTrack.xosc " << std::endl;
+              << applicationName << " -config myConfiguration.xml -input myTrack.xodr " << std::endl;
     std::cout << "\n\n";
 }
 
-void RunConfigGUI(const std::string &strConfigurationFilepath, const std::string &strXODRFilepath,
-                  const std::string &strXOSCFilePath, const QApplication &app)
+void RunConfigGUI(const std::string &strConfigurationFilepath, const std::string &strInputFilepath,
+                  const QApplication &app)
 {
-    cRuntimeWindow mainWindow(strConfigurationFilepath, strXODRFilepath, strXOSCFilePath);
+    cRuntimeWindow mainWindow(strConfigurationFilepath, strInputFilepath);
     mainWindow.show();
 
     app.processEvents();

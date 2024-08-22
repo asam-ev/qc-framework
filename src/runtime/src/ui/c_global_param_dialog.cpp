@@ -31,7 +31,7 @@ void cGlobalParamDialog::InitUIElements(const QString &initalParamName, const QS
     QStringList items;
 
     // Add default parameters
-    items << QString::fromStdString(PARAM_XODR_FILE) << QString::fromStdString(PARAM_XOSC_FILE);
+    items << QString::fromStdString(PARAM_INPUT_FILE);
 
     // Add parameters, which are in current config
     std::vector<std::string> params = currentConfig->GetParams().GetParams();
@@ -63,10 +63,8 @@ void cGlobalParamDialog::SwitchCall(const QString &paramName)
 {
     RemoveFileOpenButton();
 
-    if (paramName.toLower() == QString::fromStdString(PARAM_XODR_FILE).toLower())
-        AddFileOpenButton(SLOT(OpenXODRFile()));
-    else if (paramName.toLower() == QString::fromStdString(PARAM_XOSC_FILE).toLower())
-        AddFileOpenButton(SLOT(OpenXOSCFile()));
+    if (paramName.toLower() == QString::fromStdString(PARAM_INPUT_FILE).toLower())
+        AddFileOpenButton(SLOT(OpenInputFile()));
 }
 
 void cGlobalParamDialog::AddFileOpenButton(const char *slot)
@@ -93,34 +91,12 @@ void cGlobalParamDialog::SaveAndClose()
     _paramName = _paramNameComboBox->currentText();
     _paramValue = _paramValueEdit->text();
 
-    if (_paramName.toLower() == QString::fromStdString(PARAM_XOSC_FILE).toLower())
-    {
-        std::string xoscFilePath = _paramValue.toStdString();
-        std::string xodrFilePath = "";
-
-        // When we could retrieve a path, set it
-        if (GetXodrFilePathFromXosc(xoscFilePath, xodrFilePath))
-            _processView->SetGlobalParamXodrFile(xodrFilePath);
-    }
-    else if (_paramName.toLower() == QString::fromStdString(PARAM_XODR_FILE).toLower())
-    {
-        // TODO: warn xodr not matching
-    }
-
     accept();
 }
 
-void cGlobalParamDialog::OpenXODRFile()
+void cGlobalParamDialog::OpenInputFile()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("OpenDRIVE (*.xodr)"));
-
-    if (!filePath.isEmpty())
-        _paramValueEdit->setText(filePath);
-}
-
-void cGlobalParamDialog::OpenXOSCFile()
-{
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("OpenSCENARIO (*.xosc)"));
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Open File"), "", "");
 
     if (!filePath.isEmpty())
         _paramValueEdit->setText(filePath);

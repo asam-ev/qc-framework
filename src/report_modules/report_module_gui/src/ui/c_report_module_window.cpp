@@ -37,12 +37,12 @@ void cReportModuleWindow::highlightRow(const cIssue *const issue, const int row)
 
     if (highlighter)
     {
-        highlighter->setLineToHighlight(row);
+        highlighter->setLineToHighlight(row - 1);
         textEditArea->update();
         // Move cursor to the highlighted row and center it
         QTextCursor cursor = textEditArea->textCursor();
         cursor.movePosition(QTextCursor::Start);
-        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, row);
+        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, row - 1);
         textEditArea->setTextCursor(cursor);
         textEditArea->centerCursor();
     }
@@ -50,16 +50,11 @@ void cReportModuleWindow::highlightRow(const cIssue *const issue, const int row)
 
 void cReportModuleWindow::loadFileContent(cResultContainer *const container)
 {
-
     QString fileToOpen;
     textEditArea->setPlainText("");
-    if (container->HasXODRFileName())
+    if (container->HasInputFileName())
     {
-        fileToOpen = container->GetXODRFilePath().c_str();
-    }
-    else if (container->HasXOSCFilePath())
-    {
-        fileToOpen = container->GetXOSCFilePath().c_str();
+        fileToOpen = container->GetInputFilePath().c_str();
     }
     else
     {
@@ -167,8 +162,7 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
     setWindowTitle(this->_reportModuleName);
 
     connect(_checkerWidget, &cCheckerWidget::Load, this, &cReportModuleWindow::loadFileContent);
-    connect(_checkerWidget, &cCheckerWidget::ShowXODRIssue, this, &cReportModuleWindow::highlightRow);
-    connect(_checkerWidget, &cCheckerWidget::ShowXOSCIssue, this, &cReportModuleWindow::highlightRow);
+    connect(_checkerWidget, &cCheckerWidget::ShowInputIssue, this, &cReportModuleWindow::highlightRow);
     connect(_checkerWidget, &cCheckerWidget::ShowIssueIn3DViewer, this, &cReportModuleWindow::ShowIssueInViewer);
 
     // Create Menu entries for all viewers in plugin
@@ -367,8 +361,7 @@ void cReportModuleWindow::LoadResultContainer(cResultContainer *const container)
     for (std::list<cCheckerBundle *>::const_iterator itBundle = bundles.cbegin(); itBundle != bundles.cend();
          itBundle++)
     {
-        ValidateInputFile(*itBundle, &fileReplacementMap, "XodrFile", "OpenDRIVE", "OpenDRIVE (*.xodr)");
-        ValidateInputFile(*itBundle, &fileReplacementMap, "XoscFile", "OpenSCENARIO", "OpenSCENARIO (*.xosc)");
+        ValidateInputFile(*itBundle, &fileReplacementMap, "InputFile", "Input file");
     }
 
     if (_checkerWidget != nullptr)
@@ -376,8 +369,7 @@ void cReportModuleWindow::LoadResultContainer(cResultContainer *const container)
 }
 
 void cReportModuleWindow::ValidateInputFile(cCheckerBundle *const bundle, QMap<QString, QString> *fileReplacementMap,
-                                            const std::string &parameter, const std::string &fileName,
-                                            const std::string &filter) const
+                                            const std::string &parameter, const std::string &fileName) const
 {
     std::string filePath = bundle->GetParam(parameter);
 
@@ -402,7 +394,7 @@ void cReportModuleWindow::ValidateInputFile(cCheckerBundle *const bundle, QMap<Q
 
         if (messageBoxReturn == QMessageBox::Yes)
         {
-            QString xodrFilePath = QFileDialog::getOpenFileName(nullptr, fileName.c_str(), "", filter.c_str());
+            QString xodrFilePath = QFileDialog::getOpenFileName(nullptr, fileName.c_str(), "", "");
 
             if (!xodrFilePath.isEmpty())
             {
@@ -467,7 +459,7 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
     msgBox.setStandardButtons(QMessageBox::Ok);
 
     // Start viewer when we have an OpenDRIVE or an OpenSCENARIO
-    if (_results != nullptr && (_results->HasXODRFileName() || _results->HasXOSCFilePath()))
+    if (_results != nullptr && _results->HasInputFileName())
     {
         setCursor(Qt::WaitCursor);
         QApplication::processEvents();
@@ -484,7 +476,7 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
         }
 
         // Initilialize with xosc and xodr file
-        result = viewer->Initialize_f(_results->GetXOSCFilePath().c_str(), _results->GetXODRFilePath().c_str());
+        result = viewer->Initialize_f(_results->GetInputFilePath().c_str(), _results->GetInputFilePath().c_str());
 
         if (!result)
         {
@@ -635,23 +627,28 @@ void cReportModuleWindow::onIssueToggled(bool checked)
 {
     _repetitiveIssueEnabled = checked;
     FilterResultsOnCheckboxes();
-    LoadResultContainer(_results);
+    if (_checkerWidget != nullptr)
+        _checkerWidget->UpdateResultContainer(_results);
 }
 void cReportModuleWindow::onInfoToggled(bool checked)
 {
     _infoLevelEnabled = checked;
     FilterResultsOnCheckboxes();
-    LoadResultContainer(_results);
+    if (_checkerWidget != nullptr)
+        _checkerWidget->UpdateResultContainer(_results);
 }
 void cReportModuleWindow::onWarningToggled(bool checked)
 {
     _warningLevelEnabled = checked;
     FilterResultsOnCheckboxes();
-    LoadResultContainer(_results);
+    if (_checkerWidget != nullptr)
+        _checkerWidget->UpdateResultContainer(_results);
 }
 void cReportModuleWindow::onErrorToggled(bool checked)
 {
     _errorLevelEnabled = checked;
     FilterResultsOnCheckboxes();
-    LoadResultContainer(_results);
+
+    if (_checkerWidget != nullptr)
+        _checkerWidget->UpdateResultContainer(_results);
 }

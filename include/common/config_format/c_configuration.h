@@ -24,10 +24,7 @@ class cConfigurationReportModule;
 class cConfigurationCheckerBundle;
 
 // name of the global parameter xodr file
-const std::string PARAM_XODR_FILE = "XodrFile";
-
-// name of the global parameter xosc file
-const std::string PARAM_XOSC_FILE = "XoscFile";
+const std::string PARAM_INPUT_FILE = "InputFile";
 
 // This class stores all settings of a configuration file (used to parameterize the framework). The
 // configuration can be parsed and written.

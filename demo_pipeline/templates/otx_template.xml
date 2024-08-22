@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Config>
 
-    <Param name="OtxFile" value="test.otx" />
+    <Param name="InputFile" value="test.otx" />
 
     <CheckerBundle application="otxBundle">
         <Param name="resultFile" value="otx_bundle_report.xqar" />
-        <Checker checkerId="basic_otx" maxLevel="1" minLevel="3" />
+        <Checker checkerId="core_otx" maxLevel="1" minLevel="3" />
         <Checker checkerId="data_type_otx" maxLevel="1" minLevel="3" />
+        <Checker checkerId="zip_file_otx" maxLevel="1" minLevel="3" />
+        <Checker checkerId="state_machine_otx" maxLevel="1" minLevel="3" />
     </CheckerBundle>
 
     <ReportModule application="TextReport">

@@ -48,6 +48,7 @@ class cCheckerWidget : public QWidget
     cCheckerWidget(QWidget *parent = 0);
 
     void LoadResultContainer(cResultContainer *const container);
+    void UpdateResultContainer(cResultContainer *const container);
 
   protected:
     // Loads a list of cCheckerBundles to the widget view.
@@ -122,13 +123,7 @@ class cCheckerWidget : public QWidget
      * Invoked if an issue will be showed.
      * \param row: Row which should be displayed. -1 for no specific row.
      */
-    void ShowXODRIssue(const cIssue *const issue, const int row) const;
-
-    /*
-     * Invoked if an issue will be showed.
-     * \param row: Row which should be displayed. -1 for no specific row.
-     */
-    void ShowXOSCIssue(const cIssue *const issue, const int row) const;
+    void ShowInputIssue(const cIssue *const issue, const int row) const;
 
     /*
      * Invoked if an issue should be showed in 3DViewer.

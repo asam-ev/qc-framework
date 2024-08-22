@@ -22,11 +22,10 @@
 #include "../c_configuration_validator.h"
 #include "c_process_view.h"
 
-const QString cRuntimeWindow::DEFAULT_XODR_CONFIG = "DefaultXodrConfiguration.xml";
-const QString cRuntimeWindow::DEFAULT_XOSC_CONFIG = "DefaultXoscConfiguration.xml";
+const QString cRuntimeWindow::DEFAULT_CONFIG = "DefaultConfiguration.xml";
 
-cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, const std::string &xodrFile,
-                               const std::string &xoscFile, QWidget *parent)
+cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, const std::string &inputFile,
+                               QWidget *parent)
     : QMainWindow(parent)
 {
 
@@ -119,10 +118,10 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
     else
     {
         // Standardkonfiguration laden
-        QString defaultXODRConfigPath = GetApplicationDir() + "/" + DEFAULT_XODR_CONFIG;
-        if (CheckIfFileExists(defaultXODRConfigPath.toStdString()))
+        QString defaultConfigPath = GetApplicationDir() + "/" + DEFAULT_CONFIG;
+        if (CheckIfFileExists(defaultConfigPath.toStdString()))
         {
-            LoadConfiguration(&_currentConfiguration, defaultXODRConfigPath);
+            LoadConfiguration(&_currentConfiguration, defaultConfigPath);
         }
         // Neue Konfiguration erstellen
         else
@@ -131,16 +130,10 @@ cRuntimeWindow::cRuntimeWindow(const std::string &strConfigurationFilepath, cons
         }
     }
 
-    // Apply Xodr and Xosc settings from command line
-    if (!xodrFile.empty())
+    // Apply input file settings from command line
+    if (!inputFile.empty())
     {
-        _currentConfiguration.SetParam(PARAM_XODR_FILE, xodrFile);
-        OnChangeConfiguration();
-    }
-
-    if (!xoscFile.empty())
-    {
-        _currentConfiguration.SetParam(PARAM_XOSC_FILE, xoscFile);
+        _currentConfiguration.SetParam(PARAM_INPUT_FILE, inputFile);
         OnChangeConfiguration();
     }
 
@@ -157,11 +150,11 @@ const QString cRuntimeWindow::GetWorkingDir()
     return QString::fromStdString(fs::current_path().string());
 }
 
-
-bool cRuntimeWindow::ValidateAndWrite(cConfiguration& configuration, const std::string& filePath){
+bool cRuntimeWindow::ValidateAndWrite(cConfiguration &configuration, const std::string &filePath)
+{
     std::string message = "";
-    if (!cConfigurationValidator::ValidateConfiguration(&configuration,
-                                                        message)) {
+    if (!cConfigurationValidator::ValidateConfiguration(&configuration, message))
+    {
         std::stringstream ssDetails;
 
         ssDetails << "Configuration is invalid." << std::endl << std::endl;
@@ -170,8 +163,7 @@ bool cRuntimeWindow::ValidateAndWrite(cConfiguration& configuration, const std::
         ssDetails << std::endl << std::endl;
         ssDetails << "Please fix it before saving configuration file";
 
-        QMessageBox::warning(this, tr("Error"), tr(ssDetails.str().c_str()),
-                            QMessageBox::Ok);
+        QMessageBox::warning(this, tr("Error"), tr(ssDetails.str().c_str()), QMessageBox::Ok);
         return false;
     }
     configuration.WriteConfigurationToFile(filePath);
@@ -196,8 +188,7 @@ bool cRuntimeWindow::SaveConfigurationFile()
             QFileInfo fileInfo(_currentConfigurationPath);
 
             // If we opened a default configuration the user cannot overwrite this
-            if (fileInfo.fileName().toLower() == DEFAULT_XODR_CONFIG.toLower() ||
-                fileInfo.fileName().toLower() == DEFAULT_XOSC_CONFIG.toLower())
+            if (fileInfo.fileName().toLower() == DEFAULT_CONFIG.toLower())
             {
                 // Open Dialog
                 return SaveAsConfigurationFile();
@@ -213,8 +204,10 @@ bool cRuntimeWindow::SaveConfigurationFile()
                 {
                     UpdateConfiguration();
                     bool validation_result = false;
-                    validation_result = ValidateAndWrite(_currentConfiguration, _currentConfigurationPath.toLocal8Bit().data());
-                    if (!validation_result){
+                    validation_result =
+                        ValidateAndWrite(_currentConfiguration, _currentConfigurationPath.toLocal8Bit().data());
+                    if (!validation_result)
+                    {
                         return false;
                     }
                     _configurationChanged = false;
@@ -235,7 +228,6 @@ bool cRuntimeWindow::SaveConfigurationFile()
     return SaveAsConfigurationFile();
 }
 
-
 bool cRuntimeWindow::SaveAsConfigurationFile()
 {
     QString filePath =
@@ -245,8 +237,7 @@ bool cRuntimeWindow::SaveAsConfigurationFile()
     {
         QFileInfo fileInfo(filePath);
 
-        if (fileInfo.fileName().toLower() == DEFAULT_XODR_CONFIG.toLower() ||
-            fileInfo.fileName().toLower() == DEFAULT_XOSC_CONFIG.toLower())
+        if (fileInfo.fileName().toLower() == DEFAULT_CONFIG.toLower())
         {
             QMessageBox::information(
                 this, "Save Configuration",
@@ -263,7 +254,8 @@ bool cRuntimeWindow::SaveAsConfigurationFile()
         _currentConfigurationPath = filePath;
         bool validation_result = false;
         validation_result = ValidateAndWrite(_currentConfiguration, filePath.toLocal8Bit().data());
-        if (!validation_result){ 
+        if (!validation_result)
+        {
             return false;
         }
 
@@ -327,8 +319,7 @@ void cRuntimeWindow::CreateNewConfiguration(cConfiguration *const configuration)
     _currentConfigurationPath = "";
 
     configuration->Clear();
-    configuration->SetParam(PARAM_XODR_FILE, "");
-    configuration->SetParam(PARAM_XOSC_FILE, "");
+    configuration->SetParam(PARAM_INPUT_FILE, "");
 
     OnChangeConfiguration();
 }
@@ -347,14 +338,12 @@ void cRuntimeWindow::NewConfiguration()
     ShowConfiguration(&_currentConfiguration);
 }
 
-
 void cRuntimeWindow::OnChangeConfiguration()
 {
     _configurationChanged = true;
 
     SetupWindowTitle();
 }
-
 
 int cRuntimeWindow::ExecuteProcessAndAddConfiguration(const QString &processPath)
 {

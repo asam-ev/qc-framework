@@ -127,10 +127,10 @@ The docker image will automatically:
 - Create the specific config according to [config schema](../doc/schema/config_format.xsd).
 - Execute the runtime with specific checker, result pooling and text result application.
 
-Currently the demo_pipeline will clone and execute:
+Currently the demo_pipeline will install and execute:
 
-- [OpenDRIVE checker @ develop branch](https://github.com/asam-ev/qc-opendrive/tree/develop)
-- [OpenSCENARIO XML checker @ develop branch](https://github.com/asam-ev/qc-openscenarioxml/tree/develop)
+- [ASAM OpenDRIVE checker](https://github.com/asam-ev/qc-opendrive)
+- [ASAM OpenSCENARIO XML checker](https://github.com/asam-ev/qc-openscenarioxml)
 
 After the execution, in the specified output folder you will find:
 
@@ -139,8 +139,8 @@ After the execution, in the specified output folder you will find:
 - TextReport `Report.txt` text file.
 
 Some OpenDrive and OpenScenario XML test files are available to try out.
-- [OpenDrive test files](https://github.com/asam-ev/qc-opendrive/tree/develop/tests/data)
-- [OpenScenario XML test files](https://github.com/asam-ev/qc-openscenarioxml/tree/develop/tests/data)
+- [OpenDrive test files](https://github.com/asam-ev/qc-opendrive/tree/main/tests/data)
+- [OpenScenario XML test files](https://github.com/asam-ev/qc-openscenarioxml/tree/main/tests/data)
 
 
 ### Update to the latest version
@@ -154,11 +154,9 @@ docker pull ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
 
 ### Local build instructions
 
-The image can only be built on Linux. To build the Docker image locally, you can execute:
+The image can only be built on Linux. To build the Docker image locally, you can execute the following command from the root folder of the repository.
 
-```
-cd ..
-
+```bash
 DOCKER_BUILDKIT=1 \
   docker build \
   -f docker/Dockerfile.linux \

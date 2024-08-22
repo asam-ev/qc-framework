@@ -72,7 +72,6 @@ int main(int argc, char *argv[])
         }
 
         // We simply use the global parameters from the configuration
-        // This should be XoscFile or XodrFile
         inputParams.Overwrite(configuration.GetParams());
 
         // We search for parameters applied to our configuration.

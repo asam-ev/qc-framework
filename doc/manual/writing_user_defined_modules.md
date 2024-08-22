@@ -1,5 +1,6 @@
 <!---
 Copyright 2023 CARIAD SE.
+Copyright 2024 ASAM e.V.
  
 This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -8,58 +9,72 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 # User Defined Modules
 
-If an own module is called without any command line arguments or options, then
-it should print a short help how to use it.
+## Checker Bundles
 
-## CheckerBundles
+### Checker Bundle Requirements
 
-### CheckerBundle Requirements
+A Checker Bundle should accept a configuration file and output a result file (see [File Formats](file_formats.md) for configuration and result file details)
 
-- You should provide an executable
-- Your own module should adhere to the following rules.
-- The executable needs execution rights and its location should be the bin
-  folder (see [File Formats](file_formats.md) for configuration details)
+**Note:** The [Python Base Library](https://github.com/asam-ev/qc-baselib-py) and the [C++ Base Library](cpp_base_library.md) help to read and write the file formats. 
 
-**Note:** The [Python Base Library](https://github.com/asam-ev/qc-baselib-py) and the [C++ Base Library](cpp_base_library.md) help to read and write the
-file formats.
+It is recommended to use the Python Base Library if possible as it contains the most advanced development. The C++ Base Library is complete in terms of functionality, but it is not as easy to use as the Python Base Library.
 
-Example Checker Bundles using the Python Base Library can be found on the following repositories:
+A minimal example of using the Python Base Library to implement a Checker Bundle:
+* https://github.com/asam-ev/qc-baselib-py/tree/develop/examples/json_validator
+
+A minimal example of using the C++ Base Library to implement a Checker Bundle:
+* https://github.com/asam-ev/qc-framework/tree/main/examples/checker_bundle_example
+
+Here are some other advanced example Checker Bundles using the Python Base Library:
 * https://github.com/asam-ev/qc-openscenarioxml
 * https://github.com/asam-ev/qc-opendrive
 * https://github.com/asam-ev/qc-otx
 
-### Run One Single CheckerBundle Based on a Configuration
+### Run Checker Bundle Based on a Configuration
 
-Your CheckerBundle should accept a xml file containing its configuration parameters.
-All **modules which follow this convention are a part of the framework** and
-**can be executed from the runtime**.
+Your Checker Bundle should provide an executable command that accept the XML configuration file at `$ASAM_QC_FRAMEWORK_CONFIG_FILE` and output the result file at `$ASAM_QC_FRAMEWORK_WORKING_DIR`. For example:
 
-    > checker_bundle_exe configuration.xml
+```bash
+cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/user/.venv/bin/python -m qc_opendrive.main -c $ASAM_QC_FRAMEWORK_CONFIG_FILE
+```
 
-**Note:** Any Checker Bundle can have an executable using Bash script, even if the Checker Bundle is implemented in intepreted languages like Python.
+Your Checker Bundle should also provide manifest files or manifest file templates for users to register it with the framework in different environments (e.g., Linux and Windows). [Details about manifest files can be found here](manifest_file.md).
 
-### Check a Single File With One Single CheckerBundle
+## Report Modules
 
-A CheckerBundle can be called with one command line parameter. 
-The first parameter defines the configuration file. 
-The CheckerBundle should write in the current directory an (.xqar) 
-file with the same name as the executable.
+### Report Module Requirements
 
-**_Note: The above instruction will change after the Manifest file is supported._**
+A Report Module read a result file in `.xqar` format (see [File Formats](file_formats.md)) and convert it to any other desired formats, such as:
+* A more human-readable text file.
+* A specific file format to be integrated into other applications, such as GitHub WorkFlow Command format.
 
-This approach is used when testing only one CheckerBundle.
+A Report Module can also be a GUI application, which visualizes the result file.
 
-    > checker_bundle_exe config.xml
+A Report Module should accept a configuration file which define the result xqar file to be read. For example:
 
-## ReportModules
+**configuration.xml**
+```xml
+  <ReportModule application="TextReport">
+    <Param name="strInputFile" value="Result.xqar"/>
+  </ReportModule>
+```
 
-### ReportModule Requirements
+Similar to Checker Bundle, it is recommended to use the [Python Base Library](https://github.com/asam-ev/qc-baselib-py) to implement a Report Module.
 
-- You have to provide an executable
-- Your own module shall visualize the results based on the result format
-- Your module shall take a module configuration, based on the configuration
-  format.
-- The executable needs execution rights and its location should be the bin
-  folder (see [File Formats](file_formats.md) for configuration details)
+A minimal example of using the Python Base Library to implement a Report Module:
+* https://github.com/asam-ev/qc-baselib-py/tree/develop/examples/report_module_text
 
-Here is [an example ReportModule implemented in Python](https://github.com/asam-ev/qc-baselib-py/tree/develop/examples/report_module_text).
+Here are some other advanced example Report Modules using the C++ Base Library:
+* https://github.com/asam-ev/qc-framework/tree/main/src/report_modules/report_module_text
+* https://github.com/asam-ev/qc-framework/tree/main/src/report_modules/report_module_gui
+* https://github.com/asam-ev/qc-framework/tree/main/src/report_modules/report_module_github_ci
+
+### Run Report Module Based on a Configuration
+
+Your Report Module should provide an executable command that accept the XML configuration file at `$ASAM_QC_FRAMEWORK_CONFIG_FILE` and output any result file at `$ASAM_QC_FRAMEWORK_WORKING_DIR`. For example:
+
+```bash
+cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/user/qc-framework/bin/TextReport $ASAM_QC_FRAMEWORK_RESULT_FILE
+```
+
+Your Report Module should also provide manifest files or manifest file templates for users to register it with the framework in different environments (e.g., Linux and Windows). [Details about manifest files can be found here](manifest_file.md).

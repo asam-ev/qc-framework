@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Config>
 
-    <Param name="XodrFile" value="test.xodr" />
+    <Param name="InputFile" value="test.xodr" />
 
     <CheckerBundle application="xodrBundle">
         <Param name="resultFile" value="xodr_bundle_report.xqar" />
         <Checker checkerId="semantic_xodr" maxLevel="1" minLevel="3" />
         <Checker checkerId="geometry_xodr" maxLevel="1" minLevel="3" />
+        <Checker checkerId="performance_xodr" maxLevel="1" minLevel="3" />
     </CheckerBundle>
 
     <ReportModule application="TextReport">
