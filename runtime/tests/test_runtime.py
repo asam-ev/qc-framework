@@ -11,6 +11,15 @@ import sys
 import runtime.runtime as runtime
 
 
+def on_windows() -> bool:
+    """Check if script is executed in Windows OS
+
+    Returns:
+        bool: True if executing the script on Windows
+    """
+    return os.name == "nt"
+
+
 def launch_main(monkeypatch, config_file_path: str, manifest_file_path: str):
     monkeypatch.setattr(
         sys,
@@ -27,7 +36,13 @@ def test_3steps_manifest(monkeypatch):
     cwd = os.getcwd()
     config_xml = os.path.join(cwd, "tests", "test_data", "3step_config.xml")
 
-    manifest_json = os.path.join(cwd, "tests", "test_data", "framework_manifest.json")
+    os_path = "linux"
+    if on_windows():
+        os_path = "windows"
+
+    manifest_json = os.path.join(
+        cwd, "tests", "test_data", os_path, "framework_manifest.json"
+    )
 
     launch_main(monkeypatch, config_xml, manifest_json)
 

@@ -1,0 +1,10 @@
+{
+  "module": [
+    {
+      "name": "DemoCheckerBundle",
+      "exec_type": "executable",
+      "module_type": "checker_bundle",
+      "exec_command": "cd '$env:ASAM_QC_FRAMEWORK_WORKING_DIR' -and ..\\..\\bin\\DemoCheckerBundle.exe $env:ASAM_QC_FRAMEWORK_CONFIG_FILE"
+    }
+  ]
+}
