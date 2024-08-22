@@ -154,11 +154,9 @@ docker pull ghcr.io/asam-ev/qc-framework:demo-pipeline-latest
 
 ### Local build instructions
 
-The image can only be built on Linux. To build the Docker image locally, you can execute:
+The image can only be built on Linux. To build the Docker image locally, you can execute the following command from the root folder of the repository.
 
-```
-cd ..
-
+```bash
 DOCKER_BUILDKIT=1 \
   docker build \
   -f docker/Dockerfile.linux \

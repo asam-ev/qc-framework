@@ -31,9 +31,12 @@ on:
       - runtime/**
       - docker/**
 
+  workflow_dispatch: # Allows manual triggering of the workflow
+
 jobs:
   build-linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
+
     env:
       TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
     steps:
@@ -78,6 +81,21 @@ jobs:
           echo Done.
         shell: bash
 
+      - name: Prepare build artifacts
+        run: |
+          sudo chmod -R +x ./build/src/
+        shell: bash
+
+      - name: Archive release binaries
+        shell: bash
+        run: mkdir artifacts && cp ./build/src/result_pooling/ResultPooling ./build/src/report_modules/report_module_text/TextReport ./build/src/report_modules/report_module_github_ci/GithubCIReport ./build/src/report_modules/report_module_gui/ReportGUI artifacts/
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qc-framework-executables-ubuntu
+          path: artifacts
+
       - name: Unit test execution
         if: github.event_name == 'pull_request'
         run: |
@@ -92,7 +110,7 @@ jobs:
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
-          name: unit-test-report
+          name: unit-test-report-ubuntu
           path: ${{ github.workspace }}/build/Testing/Temporary/LastTest.log
 
       - name: Runtime test execution
@@ -110,5 +128,5 @@ jobs:
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
-          name: runtime-test-report
+          name: runtime-test-report-ubuntu
           path: ${{ github.workspace }}/runtime/runtime_test.log

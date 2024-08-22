@@ -141,7 +141,6 @@ flowchart LR
 - Checker Bundle
   - Runs probably only on certain platforms, because a third party product
     is not available for all platforms
-  - Must be able to print out to the command line which Checkers are included
 - Result Pooling
   - Summarizes all results (overview and detailed view possible)
   - Gives each incident a unique Id → assignment results in different report
