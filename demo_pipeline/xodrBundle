@@ -6,7 +6,5 @@
 # with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 readonly CONFIG_FILE=$1
 
-source /app/opendrive-venv/bin/activate
-cd /app/qc-opendrive
-python main.py -c $CONFIG_FILE
+qc_opendrive -c $CONFIG_FILE
 cp *.xqar /app/framework/bin/
