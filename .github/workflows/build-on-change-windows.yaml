@@ -151,7 +151,7 @@ jobs:
           path: ${{ github.workspace }}\build\Testing\Temporary\LastTest.log
 
       - name: Runtime test execution
-        if: github.event_name == 'pull_request'
+        # if: github.event_name == 'pull_request'
         run: |
           Write-Output "Starting runtime tests..."
 
@@ -160,8 +160,9 @@ jobs:
           Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin"
 
           cd "$env:WORKING_PATH\qc-framework\qc-framework\runtime"
-          python3 -m pip install -r requirements.txt
-          python3 -m pytest
+          (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python3 -
+          poetry install --with dev
+          poetry run pytest
 
           Write-Output "All runtime tests done."
         shell: pwsh
