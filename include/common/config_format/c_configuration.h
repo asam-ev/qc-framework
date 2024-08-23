@@ -23,7 +23,7 @@
 class cConfigurationReportModule;
 class cConfigurationCheckerBundle;
 
-// name of the global parameter xodr file
+// name of the global parameter input file
 const std::string PARAM_INPUT_FILE = "InputFile";
 
 // This class stores all settings of a configuration file (used to parameterize the framework). The

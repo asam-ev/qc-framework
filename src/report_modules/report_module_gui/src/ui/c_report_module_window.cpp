@@ -476,7 +476,7 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
         }
 
         // Initilialize with xosc and xodr file
-        result = viewer->Initialize_f(_results->GetInputFilePath().c_str(), _results->GetInputFilePath().c_str());
+        result = viewer->Initialize_f(_results->GetInputFilePath().c_str());
 
         if (!result)
         {

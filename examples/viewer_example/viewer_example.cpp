@@ -20,15 +20,14 @@ bool StartViewer()
     return true;
 }
 
-bool Initialize(const char *xoscPath, const char *xodrPath)
+bool Initialize(const char *inputPath)
 {
-    if (std::strcmp(xoscPath, "") == 0 && std::strcmp(xodrPath, "") == 0)
+    if (std::strcmp(inputPath, "") == 0)
     {
-        lasterrormsg = "ERROR: No valid xosc or xodr file found.";
+        lasterrormsg = "ERROR: No valid input file found.";
         return false;
     }
-    std::cout << "INITILAIZE VIEWER WITH XOSC FILE: " << xoscPath << std::endl;
-    std::cout << "INITILAIZE VIEWER WITH XODR FILE: " << xodrPath << std::endl;
+    std::cout << "INITILAIZE VIEWER WITH INPUPT FILE: " << inputPath << std::endl;
     return true;
 }
 
