@@ -22,7 +22,7 @@ add_library(${ESMINI_VIEWER} SHARED esmini_viewer.cpp helper.cpp)
 target_link_libraries(${ESMINI_VIEWER} PRIVATE qc4openx-common $<$<PLATFORM_ID:Linux>:stdc++fs>)
 
 install(
-    TARGETS ${ESMINI_VIEWER}
+    TARGETS ${CMAKE_CURRENT_BINARY_DIR}/plugin/${ESMINI_VIEWER}
     DESTINATION bin/plugin
 )
 
