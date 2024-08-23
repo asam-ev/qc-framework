@@ -68,7 +68,7 @@ bool Initialize(const char *inputPath)
     else if (inputFileExtension == "xosc")
     {
         bool result = GetXodrFilePathFromXosc(inputPath, odrToShow);
-        if (not result)
+        if (!result)
         {
             lasterrormsg = "ERROR: Cannot retrieve odr from input xosc";
             return false;

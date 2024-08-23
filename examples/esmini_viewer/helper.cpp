@@ -7,6 +7,7 @@
  */
 
 #include "helper.h"
+#include <string>
 
 bool IsExecutableAvailable(const std::string &executable)
 {
