@@ -106,13 +106,14 @@ def execute_modules(
         run_module_command(report_module, config_file_path, output_path)
 
 
-def execute_runtime(config_file_path: str, manifest_file_path: str) -> None:
+def execute_runtime(config_file_path: str, manifest_file_path: str, working_dir: str) -> None:
     """Execute all runtime operations defined in the input manifest over the
     defined configuration.
 
     Args:
         config_file_path (str): input configuration xml file path
         manifest_file_path (str): input manifest json file path
+        working_dir (str): working directory
     """
 
     checker_bundles = {}
@@ -157,16 +158,12 @@ def execute_runtime(config_file_path: str, manifest_file_path: str) -> None:
             f"No result pooling module found in the provided framework manifest. There must be exactly one result pooling module defined."
         )
 
-    formatted_now = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")
-    execution_output_path = os.path.join(os.getcwd(), formatted_now)
-    os.makedirs(execution_output_path, exist_ok=True)
-
     execute_modules(
         config_file_path,
         checker_bundles,
         result_pooling,
         report_modules,
-        execution_output_path,
+        working_dir,
     )
 
 
@@ -185,9 +182,25 @@ def main():
         required=True,
     )
 
+    parser.add_argument(
+        "--working_dir",
+        type=str,
+        help="Working directory where all the output files are generated.",
+        required=False,
+    )
+
     args = parser.parse_args()
 
-    execute_runtime(args.config, args.manifest)
+    working_dir = None
+    if args.working_dir is None:
+        formatted_now = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")
+        working_dir = os.path.join(os.getcwd(), f"qc-output-{formatted_now}")
+    else:
+        working_dir = os.path.abspath(args.working_dir)
+
+    os.makedirs(working_dir, exist_ok=True)
+
+    execute_runtime(args.config, args.manifest, working_dir)
 
 
 if __name__ == "__main__":
