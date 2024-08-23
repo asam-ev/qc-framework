@@ -24,7 +24,7 @@ target_link_libraries(${ESMINI_VIEWER} PRIVATE qc4openx-common $<$<PLATFORM_ID:L
 if(WIN32)
 install(
     FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/${ESMINI_VIEWER}.dll
+    ${CMAKE_CURRENT_BINARY_DIR}/Release/${ESMINI_VIEWER}.dll
     DESTINATION bin/plugin
 )
 else(WIN32)
