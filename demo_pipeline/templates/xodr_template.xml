@@ -12,7 +12,7 @@
 
     <ReportModule application="TextReport">
         <Param name="strInputFile" value="Result.xqar" />
-        <Param name="strReportFile" value="Report.txt" />
+        <Param name="strReportFile" value="/app/framework/bin/Report.txt" />
     </ReportModule>
 
 </Config>

@@ -1,0 +1,10 @@
+{
+    "module": [
+      {
+        "name": "otxBundle",
+        "exec_type": "executable",
+        "module_type": "checker_bundle",
+        "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /app/demo_pipeline/otxBundle $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+      }
+    ]
+  }
