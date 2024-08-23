@@ -114,7 +114,7 @@ jobs:
           path: ${{ github.workspace }}/build/Testing/Temporary/LastTest.log
 
       - name: Runtime test execution
-        # if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request'
         run: |
           mv build out_build
           cp -r /home/$(whoami)/qc-build/bin bin
