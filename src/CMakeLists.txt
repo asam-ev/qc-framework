@@ -9,7 +9,6 @@ set(CMAKE_INSTALL_RPATH $ORIGIN/../lib)
 add_subdirectory(common)
 add_subdirectory(report_modules)
 add_subdirectory(result_pooling)
-add_subdirectory(runtime)
 
 # FIXME: install()?
 ## copy common lib
