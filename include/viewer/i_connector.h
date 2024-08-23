@@ -31,7 +31,7 @@ extern "C"
      * Does the initialization with xosc file of an viewer
      * \param xoscPath Path to an xosc file
      **/
-    VIEWER bool Initialize(const char *xoscPath, const char *xodrPath);
+    VIEWER bool Initialize(const char *inputPath);
 
     /**
      * Is called if an issues has to be added.

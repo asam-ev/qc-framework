@@ -309,7 +309,7 @@ std::string cIssue::GetIssueLevelStr() const
     return std::string("Unknown");
 }
 
-// Returns the xodr file name
+// Returns the input file name
 std::string cIssue::GetInputFilename() const
 {
     cChecker *checker = GetChecker();
@@ -327,7 +327,7 @@ std::string cIssue::GetInputFilename() const
     return "";
 }
 
-// Returns the xodr file path
+// Returns the input file path
 std::string cIssue::GetInputFilepath() const
 {
     cChecker *checker = GetChecker();

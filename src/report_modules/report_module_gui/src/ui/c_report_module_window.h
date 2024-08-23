@@ -49,7 +49,7 @@ class cReportModuleWindow : public QMainWindow
 
     // Function pointers for functions of IConnector.h
     typedef bool (*StartViewer_ptr)();
-    typedef bool (*Initialize_ptr)(const char *, const char *);
+    typedef bool (*Initialize_ptr)(const char *);
     typedef bool (*AddIssue_ptr)(const void *);
     typedef bool (*ShowIssue_ptr)(const void *, const void *);
     typedef const char *(*GetName_ptr)();
