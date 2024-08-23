@@ -160,8 +160,8 @@ jobs:
           Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin"
 
           cd "$env:WORKING_PATH\qc-framework\qc-framework\runtime"
-          python3 -m pip install -r requirements.txt
-          python3 -m pytest
-
+          python3 -m pip install poetry
+          python3 -m poetry install
+          python3 -m poetry run pytest
           Write-Output "All runtime tests done."
         shell: pwsh

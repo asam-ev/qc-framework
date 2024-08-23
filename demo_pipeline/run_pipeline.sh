@@ -5,9 +5,9 @@
 
 python3 /app/demo_pipeline/configuration_generator.py
 
-python3 /app/framework/runtime/runtime/runtime.py \
+qc_runtime \
     --config "/tmp/generated_config/config.xml" \
-    --install_dir "/app/framework/bin"
+    --manifest "/app/demo_pipeline/manifests/framework_manifest.json"
 
 mkdir -p /out/qc-result-$INPUT_FILENAME
 cp /app/framework/bin/*.xqar /out/qc-result-$INPUT_FILENAME
