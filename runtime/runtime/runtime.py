@@ -75,7 +75,7 @@ def execute_modules(
         name = bundle.application
         if name not in available_checker_bundles:
             raise RuntimeError(
-                f"Checker bundle {name} not available in the framework manifest."
+                f"Checker bundle {name} is not available in the framework manifest."
             )
 
         checker_bundles.append(available_checker_bundles[name])
@@ -84,7 +84,7 @@ def execute_modules(
         name = report.application
         if name not in available_report_modules:
             raise RuntimeError(
-                f"Report module {name} not available in the framework manifest."
+                f"Report module {name} is not available in the framework manifest."
             )
 
         report_modules.append(available_report_modules[name])
@@ -132,19 +132,19 @@ def execute_runtime(config_file_path: str, manifest_file_path: str) -> None:
                     if module.module_type == models.ModuleType.CHECKER_BUNDLE:
                         if module.name in checker_bundles:
                             raise RuntimeError(
-                                f"Checker bundle {module.name} already present on framework manifest."
+                                f"{module.name} is used by multiple checker bundles on framework manifest."
                             )
                         checker_bundles[module.name] = module
                     elif module.module_type == models.ModuleType.REPORT_MODULE:
                         if module.name in report_modules:
                             raise RuntimeError(
-                                f"Report module {module.name} already present on framework manifest."
+                                f"{module.name} is used by multiple report modules on framework manifest."
                             )
                         report_modules[module.name] = module
                     elif module.module_type == models.ModuleType.RESULT_POOLING:
                         if result_pooling is not None:
                             raise RuntimeError(
-                                "Multiple result poling modules defined on framework manifest."
+                                "Multiple result pooling modules defined on framework manifest. There must be exactly one result pooling module defined."
                             )
                         result_pooling = module
                     else:
@@ -154,7 +154,7 @@ def execute_runtime(config_file_path: str, manifest_file_path: str) -> None:
 
     if result_pooling is None:
         raise RuntimeError(
-            f"No result pooling module found in the provided framework manifest."
+            f"No result pooling module found in the provided framework manifest. There must be exactly one result pooling module defined."
         )
 
     formatted_now = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%f")
