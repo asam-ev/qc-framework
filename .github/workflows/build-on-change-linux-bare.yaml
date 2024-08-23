@@ -35,7 +35,7 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     env:
       TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
@@ -120,8 +120,9 @@ jobs:
           cp -r /home/$(whoami)/qc-build/bin bin
           cp out_build/examples/checker_bundle_example/DemoCheckerBundle bin/
           cd runtime
-          python3 -m pip install -r requirements.txt
-          python3 -m pytest -rA > runtime_test.log
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install --with dev
+          poetry run pytest -rA > runtime_test.log
 
       - name: Archive runtime test results
         if: github.event_name == 'pull_request' && (success() || failure())

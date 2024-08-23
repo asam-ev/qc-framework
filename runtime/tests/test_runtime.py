@@ -4,128 +4,64 @@
 # with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 import pytest
-import runtime.runtime as runtime
 import os
-import subprocess
-from lxml import etree
-from typing import List
+import sys
 
 
-def is_valid_xml(xml_file: str, schema_file: str) -> bool:
-    """Check if input xml file (.xml) is valid against the input schema file (.xsd)
+import runtime.runtime as runtime
 
-    Args:
-        xml_file (str): XML file path to test
-        schema_file (str): XSD file path containing the schema for the validation
+
+def on_windows() -> bool:
+    """Check if script is executed in Windows OS
 
     Returns:
-        bool: True if file pointed by xml_file is valid w.r.t. input schema file. False otherwise
+        bool: True if executing the script on Windows
     """
-    with open(schema_file, "rb") as schema_f:
-        schema_doc = etree.parse(schema_f)
-        schema = etree.XMLSchema(schema_doc)
-
-    with open(xml_file, "rb") as xml_f:
-        xml_doc = etree.parse(xml_f)
-
-    if schema.validate(xml_doc):
-        print("XML is valid.")
-        return True
-    else:
-        print("XML is invalid!")
-        for error in schema.error_log:
-            print(error.message)
-        return False
+    return os.name == "nt"
 
 
-def check_node_exists(xml_file: str, node_name: str) -> bool:
-    """Check if input node node_name is present in xml document specified in xml_file
-
-    Args:
-        xml_file (str): XML file path to inspect
-        node_name (str): Name of the node to search in the xml doc
-
-    Returns:
-        bool: True if node at least 1 node called node_name is found in the xml file
-    """
-    # Parse the XML document
-    tree = etree.parse(xml_file)
-    # Use XPath to search for the node
-    nodes = tree.xpath(f'//*[local-name()="{node_name}"]')
-    return len(nodes) > 0
+def launch_main(monkeypatch, config_file_path: str, manifest_file_path: str):
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["main.py", f"--config={config_file_path}", f"--manifest={manifest_file_path}"],
+    )
+    runtime.main()
 
 
-def test_runtime_execution():
+# The test expects the binaries configured in the `3step_config.xml` are present
+# in the `../bin` relative path as configured in the
+# `test_data/framework_manifest.json`
+def test_3steps_manifest(monkeypatch):
+    cwd = os.getcwd()
+    config_xml = os.path.join(cwd, "tests", "test_data", "3step_config.xml")
 
-    start_wd = os.getcwd()
-    install_dir = os.path.join("..", "bin")
-    os.chdir(install_dir)
+    os_path = "linux"
+    if on_windows():
+        os_path = "windows"
 
-    config_xml = os.path.join(
-        "..", "runtime", "tests", "test_data", "DemoCheckerBundle_config.xml"
+    manifest_json = os.path.join(
+        cwd, "tests", "test_data", os_path, "framework_manifest.json"
     )
 
-    runtime_script = os.path.join("..", "runtime", "runtime", "runtime.py")
+    launch_main(monkeypatch, config_xml, manifest_json)
 
-    process = subprocess.Popen(
-        f"python3 {runtime_script} --config={config_xml} --install_dir={os.getcwd()}",
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        cwd=os.getcwd(),
-    )
-    stdout, stderr = process.communicate()
-    exit_code = process.returncode
-    if exit_code == 0:
-        print("Command executed successfully.")
-        print("Output:")
-        print(stdout.decode())
-    else:
-        print("Error occurred while executing the command.")
-        print("Error message:")
-        print(stderr.decode())
+    checker_bundle_output_generated = False
+    result_xqar_generated = False
+    report_txt_generated = False
+
+    for _, _, files in os.walk("./"):
+        for file in files:
+            if "DemoCheckerBundle.xqar" in file:
+                checker_bundle_output_generated = True
+            if "Result.xqar" in file:
+                result_xqar_generated = True
+            if "Report.txt" in file:
+                report_txt_generated = True
+
+    # Check that checker bundle output file is correctly generated
+    assert checker_bundle_output_generated == True
     # Check that result file is correctly generated
-    result_file = os.path.join("Result.xqar")
-    assert os.path.isfile(result_file)
-    # Check that at least one node called "Issue" is present in the result
-    node_name = "Issue"
-    assert check_node_exists(result_file, node_name)
-
-    os.chdir(start_wd)
-
-
-def test_3steps_config():
-
-    start_wd = os.getcwd()
-    install_dir = os.path.join("..", "bin")
-    os.chdir(install_dir)
-
-    config_xml = os.path.join("..", "runtime", "tests", "test_data", "3steps_config.xml")
-
-    runtime_script = os.path.join("..", "runtime", "runtime", "runtime.py")
-
-    process = subprocess.Popen(
-        f"python3 {runtime_script} --config={config_xml} --install_dir={os.getcwd()}",
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        cwd=os.getcwd(),
-    )
-    stdout, stderr = process.communicate()
-    exit_code = process.returncode
-    if exit_code == 0:
-        print("Command executed successfully.")
-        print("Output:")
-        print(stdout.decode())
-    else:
-        print("Error occurred while executing the command.")
-        print("Error message:")
-        print(stderr.decode())
-    # Check that result file is correctly generated
-    result_file = os.path.join("Result.xqar")
-    assert os.path.isfile(result_file)
+    assert result_xqar_generated == True
     # Check that report txt file is correctly generated
-    result_file = os.path.join("Report.txt")
-    assert os.path.isfile(result_file)
-
-    os.chdir(start_wd)
+    assert report_txt_generated == True

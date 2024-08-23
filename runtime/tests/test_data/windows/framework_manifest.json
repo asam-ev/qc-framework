@@ -1,0 +1,7 @@
+{
+    "manifest_file_path": [
+        "tests\\test_data\\windows\\demo_checker_bundle_manifest.json",
+        "tests\\test_data\\windows\\result_pooling_manifest.json",
+        "tests\\test_data\\windows\\text_report_manifest.json"
+    ]
+}
