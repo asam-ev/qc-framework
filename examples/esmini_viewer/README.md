@@ -15,7 +15,20 @@ odrviewer --density 0 --window 100 100 800 800 --odr YOUR_ODR
 So in order to execute this you need to
 
 1. Download esmini-demo from [esmini release page](https://github.com/esmini/esmini/releases)
-2. Copy the `odrviewer` executable from the `esmini-demo/bin` directory to your install directory, where the ReportGUI executable is also generated
+2. Install `odrviewer` in your system path
+
+    - Linux install
+        Long term installation:
+
+        ```
+        sudo mv esmini-demo/bin/odrviewer /usr/local/bin/
+        ```
+
+        Short term installation:
+
+        ```
+        export PATH=$PATH:esmini-demo/bin/
+        ```
 
 ## Usage
 

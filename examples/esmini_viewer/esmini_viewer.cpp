@@ -45,6 +45,16 @@ bool Initialize(const char *inputPath)
         lasterrormsg = "ERROR: No valid xosc or xodr file found.";
         return false;
     }
+
+    bool viewerAvailable = IsExecutableAvailable("odrviewer");
+
+    if (!viewerAvailable)
+    {
+        lasterrormsg = "ERROR: Odrivewer executable not found in system path. Please follow "
+                       "qc-framework/examples/esmini_viewer/README.md for install instructions";
+        return false;
+    }
+
     std::cout << "INITILAIZE VIEWER WITH INPUT FILE: " << inputPath << std::endl;
     std::string strResultMessage;
     std::string inputFileExtension = getFileExtension(inputPath);
@@ -77,28 +87,21 @@ bool Initialize(const char *inputPath)
 
 bool AddIssue(void *issueToAdd)
 {
-    auto issue = static_cast<cIssue *>(issueToAdd);
-    std::cout << "ADD ISSUE: " << issue->GetDescription() << std::endl;
     return true;
 }
 
 bool ShowIssue(void *itemToShow, void *locationToShow)
 {
-    auto issue = static_cast<cIssue *>(itemToShow);
-    auto location = static_cast<cLocationsContainer *>(locationToShow);
-    std::cout << "SHOW ISSUE: " << issue->GetDescription() << std::endl;
-    std::cout << "LOCATION: " << location->GetDescription() << std::endl;
     return true;
 }
 
 const char *GetName()
 {
-    return "Odr Viewer based on esmini-odrviewer";
+    return "Esmini Viewer";
 }
 
 bool CloseViewer()
 {
-    std::cout << "CLOSE VIEWER EXAMPLE" << std::endl;
     return true;
 }
 

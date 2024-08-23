@@ -8,18 +8,27 @@
 
 #include "helper.h"
 
+bool IsExecutableAvailable(const std::string &executable)
+{
+#ifdef _WIN32
+    std::string command = "where " + executable + " > nul 2>&1";
+#else
+    std::string command = "which " + executable + " > /dev/null 2>&1";
+#endif
+
+    return std::system(command.c_str()) == 0;
+}
+
 bool ExecuteCommand(std::string &strResultMessage, std::string strCommand, const std::string strArgument)
 {
-    std::string strInstallDir = std::string(INSTALL_NAME_DIR_BIN_DIR);
-    strInstallDir.append("/");
-    std::string strTotalCommand = strInstallDir;
+    std::string strTotalCommand = "";
 
 #ifdef WIN32
     strCommand.append(".exe");
 #endif
     strTotalCommand.append(strCommand.c_str());
 
-    if (fs::exists(strTotalCommand))
+    if (IsExecutableAvailable(strCommand))
     {
         if (!strArgument.empty())
         {

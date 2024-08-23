@@ -33,8 +33,5 @@ install(
         examples/esmini_viewer/src
 )
 
-target_compile_definitions(${VIEWER}
-    PRIVATE INSTALL_NAME_DIR_BIN_DIR="${CMAKE_INSTALL_PREFIX}/bin"
-)
 
 set_target_properties(${VIEWER} PROPERTIES FOLDER examples/viewer)

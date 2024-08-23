@@ -10,6 +10,7 @@
 
 #include "qc4openx_filesystem.h"
 
+bool IsExecutableAvailable(const std::string &executable);
 bool ExecuteCommand(std::string &strResultMessage, std::string strCommand, const std::string strArgument = "");
 
 #endif
