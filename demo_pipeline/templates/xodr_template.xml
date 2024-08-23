@@ -4,7 +4,7 @@
     <Param name="InputFile" value="test.xodr" />
 
     <CheckerBundle application="xodrBundle">
-        <Param name="resultFile" value="/app/framework/bin/xodr_bundle_report.xqar" />
+        <Param name="resultFile" value="xodr_bundle_report.xqar" />
         <Checker checkerId="semantic_xodr" maxLevel="1" minLevel="3" />
         <Checker checkerId="geometry_xodr" maxLevel="1" minLevel="3" />
         <Checker checkerId="performance_xodr" maxLevel="1" minLevel="3" />
@@ -12,7 +12,7 @@
 
     <ReportModule application="TextReport">
         <Param name="strInputFile" value="Result.xqar" />
-        <Param name="strReportFile" value="/app/framework/bin/Report.txt" />
+        <Param name="strReportFile" value="Report.txt" />
     </ReportModule>
 
 </Config>
