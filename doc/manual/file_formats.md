@@ -38,9 +38,6 @@ to be used.
 
 Notes for the paths:
 
-- "application" should contain the path of your executable relative to the path
-  of the ConfigGUI binary - it is recommended to place all executables in the
-  `./bin` directory.
 - Results will be stored in the directory from which the call is made.
 
 ## Result File (`*.xqar`)
