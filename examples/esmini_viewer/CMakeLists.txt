@@ -26,12 +26,5 @@ install(
     DESTINATION bin/plugin
 )
 
-install(
-    FILES
-    esmini_viewer.cpp
-    DESTINATION
-        examples/esmini_viewer/src
-)
-
 
 set_target_properties(${VIEWER} PROPERTIES FOLDER examples/viewer)
