@@ -21,19 +21,10 @@ include_directories(${ESMINI_VIEWER} PRIVATE
 add_library(${ESMINI_VIEWER} SHARED esmini_viewer.cpp helper.cpp)
 target_link_libraries(${ESMINI_VIEWER} PRIVATE qc4openx-common $<$<PLATFORM_ID:Linux>:stdc++fs>)
 
-if(WIN32)
 install(
-    FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/Release/${ESMINI_VIEWER}.dll
+    TARGETS ${ESMINI_VIEWER}
     DESTINATION bin/plugin
 )
-else(WIN32)
-install(
-    FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/lib${ESMINI_VIEWER}.so
-    DESTINATION bin/plugin
-)
-endif(WIN32)
 
 install(
     FILES
