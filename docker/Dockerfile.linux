@@ -50,15 +50,6 @@ RUN echo "Building framework..." && \
     cmake --install ./build && \
     echo "Done."
 
-
-# Copy bash script to install dir - OpenSCENARIO + OpenDRIVE + OTX
-RUN chmod +x /app/demo_pipeline/xoscBundle && \
-    cp /app/demo_pipeline/xoscBundle /home/root/qc-build/bin/xoscBundle && \
-    chmod +x /app/demo_pipeline/xodrBundle && \
-    cp /app/demo_pipeline/xodrBundle /home/root/qc-build/bin/xodrBundle && \
-    chmod +x /app/demo_pipeline/otxBundle && \
-    cp /app/demo_pipeline/otxBundle /home/root/qc-build/bin/otxBundle
-
 RUN python3 -m pip install --no-cache-dir -r /app/demo_pipeline/requirements.txt && \
     python3 -m pip install --no-cache-dir /app/framework/runtime && \
     python3 -m pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop && \
