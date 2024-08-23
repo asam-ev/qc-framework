@@ -1,9 +1,0 @@
-{
-    "manifest_file_path": [
-        "/app/demo_pipeline/manifests/docker/otx_manifest.json",
-        "/app/demo_pipeline/manifests/docker/osc_manifest.json",
-        "/app/demo_pipeline/manifests/docker/odr_manifest.json",
-        "/app/demo_pipeline/manifests/docker/result_pooling.json",
-        "/app/demo_pipeline/manifests/docker/text_report.json"
-    ]
-}

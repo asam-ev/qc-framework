@@ -4,7 +4,7 @@
     <Param name="InputFile" value="template.xosc" />
 
     <CheckerBundle application="xoscBundle">
-        <Param name="resultFile" value="xosc_bundle_report.xqar" />
+        <Param name="resultFile" value="/app/framework/bin/xosc_bundle_report.xqar" />
         <Checker checkerId="basic_xosc" maxLevel="1" minLevel="3" />
         <Checker checkerId="schema_xosc" maxLevel="1" minLevel="3" />
         <Checker checkerId="data_type_xosc" maxLevel="1" minLevel="3" />

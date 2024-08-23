@@ -7,7 +7,7 @@ python3 /app/demo_pipeline/configuration_generator.py
 
 qc_runtime \
     --config "/tmp/generated_config/config.xml" \
-    --manifest "/app/demo_pipeline/manifests/docker/framework_manifest.json"
+    --manifest "/app/demo_pipeline/manifests/framework_manifest.json"
 
 mkdir -p /out/qc-result-$INPUT_FILENAME
 cp /app/framework/bin/*.xqar /out/qc-result-$INPUT_FILENAME
