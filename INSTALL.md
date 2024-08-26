@@ -1,6 +1,6 @@
 <!---
 Copyright 2023 CARIAD SE.
- 
+
 This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -71,6 +71,7 @@ cmake --install ./build
 On Windows, an example build for the the dependency XercesC looks like this:
 
 ```bash
+$env:WORKING_PATH=C:\Users\user\test
 $xercesZip = "$env:WORKING_PATH\xerces-c-3.2.5.zip"
 Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
 Expand-Archive -Path $xercesZip -DestinationPath "$env:WORKING_PATH"
@@ -87,10 +88,10 @@ looks like this (call from the repository root):
 
 ```bash
 $ mkdir ../build
-$ cmake -G "Visual Studio 16 2019" -A "x64" -T "v142" -B../build -S. ^
+$ cmake -G "Visual Studio 16 2019" -A "x64" -B../build -S. ^
     -DCMAKE_INSTALL_PREFIX="<prefix>" ^
     -DENABLE_FUNCTIONAL_TESTS=ON ^
-    -DGTest_ROOT="<gtest_root>" ^ 
+    -DGTest_ROOT="<gtest_root>" ^
     -DQt5_ROOT="<qt5_root>" ^
     -DXercesC_ROOT="<xerces_c_root>"
 $ cmake --build ../build --target ALL_BUILD --config Release
@@ -104,6 +105,13 @@ With the following CMake values:
 - _\<GTest_ROOT\>_: The root dir of the pre-built GoogleTest package
 - _\<xerces_c_root\>_: The root dir of the pre-built Xerces-C++ package
 - _\<Qt5_ROOT\>_: The root dir of the pre-built qt5 package
+
+After builds complete, you may need to manually copy the xerces.dll library to the framework build bin folder:
+
+```
+Move-Item $env:WORKING_PATH\xerces-c-3.2.5\*.dll $env:INSTAL_PREFIX\bin\
+```
+
 
 ### Options
 
@@ -125,7 +133,7 @@ source runtime-venv/bin/activate
 Using Conda:
 
 ```bash
-conda create -y -n runtime-venv python=3.10 
+conda create -y -n runtime-venv python=3.10
 conda activate runtime-venv
 ```
 
@@ -159,7 +167,7 @@ qc_opendrive --help
 pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml
 ```
 
-To test the installation: 
+To test the installation:
 
 ```bash
 qc_openscenario --help
@@ -171,7 +179,7 @@ qc_openscenario --help
 pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx
 ```
 
-To test the installation: 
+To test the installation:
 
 ```bash
 qc_otx --help
