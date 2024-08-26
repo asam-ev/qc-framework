@@ -84,8 +84,8 @@ jobs:
           mkdir build
           cd build
           cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\Xerces-Out" ..
-          cmake --build . --config Debug
-          cmake --build . --config Debug --target install
+          cmake --build . --config Release
+          cmake --build . --config Release --target install
 
           Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\bin\xerces-c_3_2D.dll"
           Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\Xerces-Out\include"

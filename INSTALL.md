@@ -78,8 +78,8 @@ cd "$env:WORKING_PATH\xerces-c-3.2.5"
 mkdir build
 cd build
 cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\Xerces-Out" ..
-cmake --build . --config Debug
-cmake --build . --config Debug --target install
+cmake --build . --config Release
+cmake --build . --config Release --target install
 ```
 
 For Windows Visual Studio 16 2019 an example CMake call to build the framework
