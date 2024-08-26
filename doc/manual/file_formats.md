@@ -11,34 +11,46 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 ## Configuration File (`*.xml`)
 
 The runtime configuration settings are stored in a configuration file. This
-file defines which CheckerBundles and what checkers are used, how they are
+file defines which Checker Bundles and what checkers are used, how they are
 parameterized and whether the issues are warnings or errors. If a CheckerBundle
 outputs errors that are not configured in this file, the result pooling removes
 them later on. This way only the relevant results are included in the overall
-result. Furthermore, it can be configured which ReportModules are started after
-all CheckerBundles finish execution.
+result. Furthermore, it can be configured which Report Modules are started after
+all Checker Bundles finish execution.
 
 ```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Config>
-<Param name="InputFile" value="myTrack.xodr">
-<CheckerBundle application="SemanticChecker">
-    <Param name="GlobalAngleTolerance" value="0.1"/>
-    <Checker checkerId="elevationChecker" minLevel="1" maxLevel="3">
-        <Param name="LocalAngleTolerance" value="0.2"/>
-    </Checker>
-</CheckerBundle>
-<ReportModule application="TextReport">
+
+    <Param name="InputFile" value="test.xodr" />
+
+    <CheckerBundle application="xodrBundle">
+        <Param name="resultFile" value="xodr_bundle_report.xqar" />
+        <Checker checkerId="semantic_xodr" maxLevel="1" minLevel="3" />
+        <Checker checkerId="geometry_xodr" maxLevel="1" minLevel="3" />
+        <Checker checkerId="performance_xodr" maxLevel="1" minLevel="3" />
+    </CheckerBundle>
+
+    <ReportModule application="TextReport">
+        <Param name="strInputFile" value="Result.xqar" />
+        <Param name="strReportFile" value="Report.txt" />
+    </ReportModule>
+
 </Config>
 ```
 
-The runtime parses this file, then executes the configured CheckerBundles, and
+The runtime parses this file, then executes the configured Checker Bundles, and
 hands them the configuration file. The parameter "application" to the XML tags
 `<CheckerBundle/>` and `<ReportModule/>` specifies the name of the executable
 to be used.
 
-Notes for the paths:
+**NOTE ABOUT FILE NAMES IN CONFIGURATION FILE** 
 
-- Results will be stored in the directory from which the call is made.
+The name `Result.xqar` is reserved for the output of the Result Pooling module. The framework automatically created the `Result.xqar` file in each execution. Therefore:
+* The name `Result.xqar` **MUST NOT** be used as the name of the result `.xqar` file for any Checker Bundle.
+* The file `Result.xqar` can be used as the input file for Report Modules.
+* The result file of each checker bundle must have the postfix `.xqar`. It must be a file name (e.g., `my-bundle-result.xqar`) and must not contain any path (both asolute path and relative path are not allowed).
+* All the result files and the automatically generated `Result.xqar` will be stored in the in the output folder `qc-output-YYYY-MM-DD-HH-MM-SS-*`. It is also possible to configure the output folder path. For more details see the [Runtime Module documentation](runtime_module.md).
 
 ## Result File (`*.xqar`)
 
@@ -67,7 +79,7 @@ or semantic flaws.
   - Optional external files (e. g. Images of generated graphs such as speed
     over distance). Currently not supported.
 
-The following example shows the results obtained by running two CheckerBundles,
+The following example shows the results obtained by running two Checker Bundles,
 one called SyntaxChecker and one SemanticChecker.
 
 ```xml
@@ -119,6 +131,6 @@ where the default parameters are shown:
         </Checker>
         (... more Checkers...)
     </CheckerBundle>
-    (... more CheckerBundles...)
+    (... more Checker Bundles...)
 </CheckerResults>
 ```
