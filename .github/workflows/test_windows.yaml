@@ -59,8 +59,9 @@ jobs:
 
       - name: Execute checker bundles runtime
         run: |
+          $env:ASAM_QC_FRAMEWORK_WORKING_DIR = "$env:WORKING_PATH\test_output"
           qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\odr_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json"
-          Test-Path "$env:WORKING_PATH\xodr_bundle_report.xqar"
+          Test-Path "$env:ASAM_QC_FRAMEWORK_WORKING_DIR\xodr_bundle_report.xqar"
 
 
         shell: pwsh
