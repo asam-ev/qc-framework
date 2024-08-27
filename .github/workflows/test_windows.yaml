@@ -66,9 +66,9 @@ jobs:
           qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\osc_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\osc_out"
           qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\otx_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\otx_out"
 
-          if (-not (Test-Path "$env:WORKING_PATH\odr_out\Report.txt")) { Throw "Error: Odr output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\osc_out\Report.txt")) { Throw "Error: Osc output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\otx_out\Report.txt")) { Throw "Error: Otx output does not exist." }
+          if (-not (Test-Path "$env:WORKING_PATH\odr_out\xodr_bundle_report.xqar")) { Throw "Error: Odr output does not exist." }
+          if (-not (Test-Path "$env:WORKING_PATH\osc_out\xosc_bundle_report.xqar")) { Throw "Error: Osc output does not exist." }
+          if (-not (Test-Path "$env:WORKING_PATH\otx_out\otx_bundle_report.xqar")) { Throw "Error: Otx output does not exist." }
 
 
 
