@@ -1,0 +1,10 @@
+{
+  "module": [
+    {
+      "name": "ReportGUI",
+      "exec_type": "executable",
+      "module_type": "report_module",
+      "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/asam/qc-build/bin/ReportGUI $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+    }
+  ]
+}

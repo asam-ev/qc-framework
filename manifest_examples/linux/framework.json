@@ -1,0 +1,10 @@
+{
+    "manifest_file_path": [
+        "/home/asam/qc_openscenarioxml.json",
+        "/home/asam/qc_opendrive.json",
+        "/home/asam/qc_otx.json",
+        "/home/asam/result_pooling.json",
+        "/home/asam/text_report.json",
+        "/home/asam/report_gui.json"
+    ]
+}
