@@ -1,0 +1,10 @@
+{
+  "module": [
+    {
+      "name": "xoscBundle",
+      "exec_type": "executable",
+      "module_type": "checker_bundle",
+      "exec_command": "cd %ASAM_QC_FRAMEWORK_WORKING_DIR% && qc_openscenario -c %ASAM_QC_FRAMEWORK_CONFIG_FILE%"
+    }
+  ]
+}
