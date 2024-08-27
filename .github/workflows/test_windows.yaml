@@ -65,8 +65,23 @@ jobs:
           Get-ChildItem "$env:ASAM_QC_FRAMEWORK_WORKING_DIR"
           #Test-Path "$env:ASAM_QC_FRAMEWORK_WORKING_DIR\xodr_bundle_report.xqar"
           if (Get-ChildItem "D:\\a\\*.xqar" -Recurse -ErrorAction SilentlyContinue) { Write-Host "Matching files exist." } else { Write-Host "No matching files found." }
+          if (Get-ChildItem "D:\\a\\*.txt" -Recurse -ErrorAction SilentlyContinue) { Write-Host "Matching files exist." } else { Write-Host "No matching files found." }
 
+          # Use Get-ChildItem with -Recurse to search for files matching the patterns
+          $pattern1 = "*.xqar"
+          $pattern2 = "*.txt"
+          $filesPattern1 = Get-ChildItem -Path "D:\\a\\" -Filter $pattern1 -Recurse -ErrorAction SilentlyContinue
+          $filesPattern2 = Get-ChildItem -Path "D:\\a\\" -Filter $pattern2 -Recurse -ErrorAction SilentlyContinue
+          $foundPattern1 = $filesPattern1.Count -gt 0
+          $foundPattern2 = $filesPattern2.Count -gt 0
 
+          # Check if neither pattern was found
+          if (-not ($foundPattern1 -and $foundPattern2)) {
+              Write-Host "Failure: Neither .xqar nor .txt files were found."
+              exit 1  # Set a non-zero exit code to indicate failure
+          } else {
+              Write-Host "Success: .xqar and .txt found"
+          }
 
 
         shell: pwsh
