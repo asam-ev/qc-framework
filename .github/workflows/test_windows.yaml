@@ -59,7 +59,7 @@ jobs:
 
       - name: Execute checker bundles runtime
         run: |
-          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\odr_config.xml" --manifest=/home/danivex/GIT/asam/qc-openscenarioxml/manifest_templates/framework_test.json
+          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\odr_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json"
 
 
         shell: pwsh
