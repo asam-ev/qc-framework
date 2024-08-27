@@ -50,6 +50,8 @@ jobs:
 
       - name: Execute checker bundles runtime
         run: |
+          git config --system core.longpaths true
+
           pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
 
           mkdir "$env:WORKING_PATH\odr_out"
