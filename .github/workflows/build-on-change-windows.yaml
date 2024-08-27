@@ -161,3 +161,42 @@ jobs:
           python3 -m poetry run pytest
           Write-Output "All runtime tests done."
         shell: pwsh
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Setup runtime
+        run: |
+          pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+          pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
+          pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@develop
+          pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@develop
+
+        shell: pwsh
+
+      - name: Execute checker bundles runtime
+        run: |
+          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\odr_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json"
+          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\osc_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json"
+          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\otx_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json"
+
+          # Use Get-ChildItem with -Recurse to search for files matching the patterns
+          $pattern1 = "*.xqar"
+          $pattern2 = "*.txt"
+          $filesPattern1 = Get-ChildItem -Path "D:\\a\\" -Filter $pattern1 -Recurse -ErrorAction SilentlyContinue
+          $filesPattern2 = Get-ChildItem -Path "D:\\a\\" -Filter $pattern2 -Recurse -ErrorAction SilentlyContinue
+          $foundPattern1 = $filesPattern1.Count -gt 0
+          $foundPattern2 = $filesPattern2.Count -gt 0
+
+          # Check if neither pattern was found
+          if (-not ($foundPattern1 -and $foundPattern2)) {
+              Write-Host "Failure: Neither .xqar nor .txt files were found."
+              exit 1  # Set a non-zero exit code to indicate failure
+          } else {
+              Write-Host "Success: .xqar and .txt found"
+          }
+
+
+        shell: pwsh
