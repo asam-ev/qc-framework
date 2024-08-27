@@ -64,7 +64,7 @@ jobs:
           qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\odr_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json"
           Get-ChildItem "$env:ASAM_QC_FRAMEWORK_WORKING_DIR"
           #Test-Path "$env:ASAM_QC_FRAMEWORK_WORKING_DIR\xodr_bundle_report.xqar"
-          #if (Get-ChildItem "C:\path\to\your\*.txt" -ErrorAction SilentlyContinue) { Write-Host "Matching files exist." } else { Write-Host "No matching files found." }
+          if (Get-ChildItem "$env:ASAM_QC_FRAMEWORK_WORKING_DIR\*.xqar" -ErrorAction SilentlyContinue) { Write-Host "Matching files exist." } else { Write-Host "No matching files found." }
 
 
 
