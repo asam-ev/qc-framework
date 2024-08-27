@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<otx id="2"
+  name="Core_Chk005_positive"
+  package="Core_Chk005"
+  version="1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  timestamp="2010-11-11T14:40:10">
+
+  <imports>
+    <import package="Core_Chk005" document="contexts" prefix="context" />
+  </imports>
+
+  <declarations>
+    <constant name="PI" visibility="PUBLIC" id="3-d1">
+      <specification>This defines global constant</specification>
+      <realisation>
+        <dataType xsi:type="Float">
+          <init value="3.14159265" />
+        </dataType>
+      </realisation>
+    </constant>
+  </declarations>
+
+  <validities>
+    <validity name="Workshop" id="4-v1">
+      <specification>Valid if executed in a workshop environment</specification>
+      <realisation xsi:type="IsEqual">
+        <term xsi:type="StringValue" valueOf="context:LOCATION" />
+        <term xsi:type="StringLiteral" value="DealershopWorkshop" />
+      </realisation>
+    </validity>
+    <validity name="Assembly" id="4-v2">
+      <specification>Valid if executed at an assembly line</specification>
+      <realisation xsi:type="IsEqual">
+        <term xsi:type="StringValue" valueOf="context:LOCATION" />
+        <term xsi:type="StringLiteral" value="AssemblyLine" />
+      </realisation>
+    </validity>
+  </validities>
+
+  <action id="a1">
+    <realisation xsi:type="Assignment">
+      <result xsi:type="FloatVariable" name="foo" />
+      <term xsi:type="FloatValue" valueOf="PI" />
+    </realisation>
+  </action>
+
+</otx>
