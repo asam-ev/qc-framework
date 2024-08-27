@@ -55,7 +55,6 @@ jobs:
           arch: win64_msvc2019_64
 
       - name: Install gtest
-        if: github.event_name == 'pull_request'
         env:
           CXX: g++-10
         run: |
@@ -132,7 +131,6 @@ jobs:
           path: artifacts
 
       - name: Unit test execution
-        if: github.event_name == 'pull_request'
         run: |
           Write-Output "Starting unit tests..."
 
@@ -144,14 +142,12 @@ jobs:
         shell: pwsh
 
       - name: Archive test results
-        if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: ${{ github.workspace }}\build\Testing\Temporary\LastTest.log
 
       - name: Runtime test execution
-        if: github.event_name == 'pull_request'
         run: |
           Write-Output "Starting runtime tests..."
 
@@ -164,4 +160,38 @@ jobs:
           python3 -m poetry install
           python3 -m poetry run pytest
           Write-Output "All runtime tests done."
+        shell: pwsh
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Execute checker bundles runtime
+        run: |
+          git config --system core.longpaths true
+
+          pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+
+          mkdir "$env:WORKING_PATH\odr_out"
+          pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
+          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\odr_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\odr_out"
+          if (-not (Test-Path "$env:WORKING_PATH\odr_out\xodr_bundle_report.xqar")) { Throw "Error: Odr output does not exist." }
+          if (-not (Test-Path "$env:WORKING_PATH\odr_out\Result.xqar")) { Throw "Error: Odr output does not exist." }
+          if (-not (Test-Path "$env:WORKING_PATH\odr_out\Report.txt")) { Throw "Error: Odr output does not exist." }
+
+          mkdir "$env:WORKING_PATH\osc_out"
+          pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@develop
+          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\osc_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\osc_out"
+          if (-not (Test-Path "$env:WORKING_PATH\osc_out\xosc_bundle_report.xqar")) { Throw "Error: Osc output does not exist." }
+          if (-not (Test-Path "$env:WORKING_PATH\osc_out\Result.xqar")) { Throw "Error: Osc output does not exist." }
+          if (-not (Test-Path "$env:WORKING_PATH\osc_out\Report.txt")) { Throw "Error: Odr output does not exist." }
+
+          mkdir "$env:WORKING_PATH\otx_out"
+          pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@develop
+          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\otx_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\otx_out"
+          if (-not (Test-Path "$env:WORKING_PATH\otx_out\otx_bundle_report.xqar")) { Throw "Error: Otx output does not exist." }
+          if (-not (Test-Path "$env:WORKING_PATH\otx_out\Result.xqar")) { Throw "Error: Otx output does not exist." }
+          if (-not (Test-Path "$env:WORKING_PATH\otx_out\Report.txt")) { Throw "Error: Odr output does not exist." }
+
         shell: pwsh
