@@ -46,9 +46,9 @@ jobs:
       - name: Execute pre built windows exe
         run: |
 
-          Start-Process -FilePath "D:\\a\qc-framework\qc-framework\.github\workflows\windows-pre-built/bin/TextReport.exe"
+          Start-Process -FilePath "D:\\a\qc-framework\qc-framework\.github\workflows\windows-pre-built/bin/TextReport.exe" -ArgumentList "--help"
 
-          Start-Process -FilePath "D:\\a\qc-framework\qc-framework\.github\workflows\windows-pre-built/bin/ResultPooling.exe"
+          Start-Process -FilePath "D:\\a\qc-framework\qc-framework\.github\workflows\windows-pre-built/bin/ResultPooling.exe" -ArgumentList "--help"
 
 
         shell: pwsh
