@@ -45,5 +45,5 @@ jobs:
 
       - name: Execute pre built windows exe
         run: |
-          cd D:\\a\qc-framework\qc-framework\.github\workflows\windows-pre-built/bin
+          cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
           .\ResultPooling.exe --help
