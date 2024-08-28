@@ -47,7 +47,5 @@ jobs:
         run: |
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
           dir
-          attrib .\ResultPooling.exe
-          icacls .\ResultPooling.exe
 
-          ResultPooling.exe --help
+          .\ResultPooling.exe --help
