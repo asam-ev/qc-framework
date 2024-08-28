@@ -52,18 +52,18 @@ jobs:
         run: |
           echo "Installing Dependencies..."
           sudo apt update
-          sudo apt install /
-            g++ /
-            g++-10 /
-            make /
-            build-essential /
-            cmake /
-            libgtest-dev /
-            qtbase5-dev /
-            libqt5xmlpatterns5-dev /
-            libxerces-c-dev /
+          sudo apt install \
+            g++ \
+            g++-10 \
+            make \
+            build-essential \
+            cmake \
+            libgtest-dev \
+            qtbase5-dev \
+            libqt5xmlpatterns5-dev \
+            libxerces-c-dev \
             pkg-config
-          echo "Dependencies installed."
+            echo "Dependencies installed."
         shell: bash
 
       - name: Build framework
@@ -71,10 +71,10 @@ jobs:
         # the build artifact after, we might as well need to add the XSD file.
         run: |
           echo Building framework...
-          cmake -G "Unix Makefiles" -B./build -S . /
-            -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" /
-            -DENABLE_FUNCTIONAL_TESTS=$TEST_ENABLED /
-            -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" /
+          cmake -G "Unix Makefiles" -B./build -S . \
+            -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
+            -DENABLE_FUNCTIONAL_TESTS=$TEST_ENABLED \
+            -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
             -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/"
           cmake --build ./build --target install --config Release -j4
           cmake --install ./build
