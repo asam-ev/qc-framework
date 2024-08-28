@@ -47,20 +47,31 @@ jobs:
         run: |
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
           dir
-
           .\TextReport.exe
 
-      - name: Execute pre built TextReport2 exe
+      - name: Execute pre built ResultPooling exe
         run: |
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
 
-          $process = Start-Process -FilePath ".\TextReport.exe" -ArgumentList "--help" -RedirectStandardOutput "output.txt" -Wait -PassThru
-          Get-Content "output.txt"
+          $process = Start-Process -FilePath ".\ResultPooling.exe" -ArgumentList "--help" -RedirectStandardOutput "output.txt" -Wait -PassThru
+
+          # Read the output from the file
+          $output = Get-Content "output.txt"
+
+          # Print the content of the output file
+          Write-Output "Process Output:"
+          Write-Output $output
+
+          # Print all information about the process
+          Write-Output "Process ID: $($process.Id)"
+          Write-Output "Process Name: $($process.ProcessName)"
+          Write-Output "Process Path: $($process.MainModule.FileName)"
+          Write-Output "Start Time: $($process.StartTime)"
+          Write-Output "Exit Time: $($process.ExitTime)"
+          Write-Output "Has Exited: $($process.HasExited)"
+          Write-Output "Exit Code: $($process.ExitCode)"
+          Write-Output "CPU Time: $($process.TotalProcessorTime)"
+          Write-Output "Working Set (Memory): $($process.WorkingSet)"
+          Write-Output "Responding: $($process.Responding)"
 
         shell: pwsh
-
-      - name: Upload output
-        uses: actions/upload-artifact@v4
-        with:
-          name: output
-          path: D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin\\output.txt
