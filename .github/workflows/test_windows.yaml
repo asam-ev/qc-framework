@@ -55,4 +55,6 @@ jobs:
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
           dir
 
-          .\ResultPooling.exe D:\\a\qc-framework\\qc-framework\\ D:\\a\qc-framework\\qc-framework\\
+          .\ResultPooling.exe > output.log 2>&1
+
+          type output.log
