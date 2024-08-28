@@ -135,7 +135,7 @@ Attached to each qc-framework release, pre-built binaries for windows OS are als
 
 They are in release page in the Assets section, with the name `qc-framework-executables-windows-2022.zip`
 
-Binaries are tested on windows 2022, with Visual Studio 17 2022 installed.
+Binaries are tested on windows 2022.
 
 
 ### Options
