@@ -48,4 +48,4 @@ jobs:
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
           dir
 
-          .\ResultPooling.exe --help
+          .\TextReport.exe
