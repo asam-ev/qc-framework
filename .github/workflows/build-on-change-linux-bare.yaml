@@ -96,44 +96,6 @@ jobs:
           name: qc-framework-executables-linux_x64
           path: artifacts
 
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Example step
-        run: cat ${{ github.workspace }}/.github/workflows/linux-manifest/osc.json
-        shell: bash
-
-      - name: Execute checker bundles runtime
-        run: |
-
-          pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
-
-          mkdir "/home/$(whoami)/odr_out"
-          pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
-          qc_runtime --config="${{ github.workspace }}/.github/workflows/linux-files/odr_config.xml" --manifest="${{ github.workspace }}/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/odr_out"
-          if [ ! -f "/home/$(whoami)/odr_out/xodr_bundle_report.xqar" ]; then echo "Error: Odr output does not exist."; exit 1; fi
-          if [ ! -f "/home/$(whoami)/odr_out/Result.xqar" ]; then echo "Error: Odr output does not exist."; exit 1; fi
-          if [ ! -f "/home/$(whoami)/odr_out/Report.txt" ]; then echo "Error: Odr output does not exist."; exit 1; fi
-
-          mkdir "/home/$(whoami)/osc_out"
-          pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@develop
-          qc_runtime --config="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/osc_config.xml" --manifest="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/osc_out"
-          if [ ! -f "/home/$(whoami)/osc_out/xosc_bundle_report.xqar" ]; then echo "Error: Osc output does not exist."; exit 1; fi
-          if [ ! -f "/home/$(whoami)/osc_out/Result.xqar" ]; then echo "Error: Osc output does not exist."; exit 1; fi
-          if [ ! -f "/home/$(whoami)/osc_out/Report.txt" ]; then echo "Error: Osc output does not exist."; exit 1; fi
-
-          mkdir "/home/$(whoami)/otx_out"
-          pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@develop
-          qc_runtime --config="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/otx_config.xml" --manifest="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/otx_out"
-          if [ ! -f "/home/$(whoami)/otx_out/otx_bundle_report.xqar" ]; then echo "Error: Otx output does not exist."; exit 1; fi
-          if [ ! -f "/home/$(whoami)/otx_out/Result.xqar" ]; then echo "Error: Otx output does not exist."; exit 1; fi
-          if [ ! -f "/home/$(whoami)/otx_out/Report.txt" ]; then echo "Error: Otx output does not exist."; exit 1; fi
-        shell: bash
-
-
       - name: Unit test execution
         run: |
           echo Starting tests...
@@ -164,3 +126,35 @@ jobs:
         with:
           name: runtime-test-report-ubuntu
           path: ${{ github.workspace }}/runtime/runtime_test.log
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Execute checker bundles runtime
+        run: |
+
+          pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+
+          mkdir "/home/$(whoami)/odr_out"
+          pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
+          qc_runtime --config="${{ github.workspace }}/.github/workflows/linux-files/odr_config.xml" --manifest="${{ github.workspace }}/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/odr_out"
+          if [ ! -f "/home/$(whoami)/odr_out/xodr_bundle_report.xqar" ]; then echo "Error: Odr output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/odr_out/Result.xqar" ]; then echo "Error: Odr output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/odr_out/Report.txt" ]; then echo "Error: Odr output does not exist."; exit 1; fi
+
+          mkdir "/home/$(whoami)/osc_out"
+          pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@develop
+          qc_runtime --config="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/osc_config.xml" --manifest="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/osc_out"
+          if [ ! -f "/home/$(whoami)/osc_out/xosc_bundle_report.xqar" ]; then echo "Error: Osc output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/osc_out/Result.xqar" ]; then echo "Error: Osc output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/osc_out/Report.txt" ]; then echo "Error: Osc output does not exist."; exit 1; fi
+
+          mkdir "/home/$(whoami)/otx_out"
+          pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@develop
+          qc_runtime --config="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/otx_config.xml" --manifest="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/otx_out"
+          if [ ! -f "/home/$(whoami)/otx_out/otx_bundle_report.xqar" ]; then echo "Error: Otx output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/otx_out/Result.xqar" ]; then echo "Error: Otx output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/otx_out/Report.txt" ]; then echo "Error: Otx output does not exist."; exit 1; fi
+        shell: bash

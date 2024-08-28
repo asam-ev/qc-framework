@@ -2,7 +2,7 @@
 <Config>
 
     <Param name="InputFile"
-        value="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/UC_Motorway-Exit-Entry.xodr" />
+        value="/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-files/UC_Motorway-Exit-Entry.xodr" />
 
     <CheckerBundle application="xodrBundle">
         <Param name="resultFile" value="xodr_bundle_report.xqar" />

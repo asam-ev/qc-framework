@@ -2,7 +2,7 @@
 <Config>
 
     <Param name="InputFile"
-        value="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/Core_Chk005_positive.otx" />
+        value="/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-files/Core_Chk005_positive.otx" />
 
     <CheckerBundle application="otxBundle">
         <Param name="resultFile" value="otx_bundle_report.xqar" />

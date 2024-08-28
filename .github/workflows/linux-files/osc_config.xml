@@ -2,7 +2,7 @@
 <Config>
 
     <Param name="InputFile"
-        value="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/CutIn.xosc" />
+        value="/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-files/CutIn.xosc" />
 
     <CheckerBundle application="xoscBundle">
         <Param name="resultFile" value="xosc_bundle_report.xqar" />
