@@ -127,6 +127,11 @@ jobs:
           name: runtime-test-report-ubuntu
           path: ${{ github.workspace }}/runtime/runtime_test.log
 
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
       - name: Execute checker bundles runtime
         run: |
 
