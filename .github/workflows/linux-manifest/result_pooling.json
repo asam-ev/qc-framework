@@ -4,7 +4,7 @@
       "name": "ResultPooling",
       "exec_type": "executable",
       "module_type": "result_pooling",
-      "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/danivex/qc-build/bin/ResultPooling $ASAM_QC_FRAMEWORK_WORKING_DIR $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+      "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/$(whoami)/qc-build/bin/ResultPooling $ASAM_QC_FRAMEWORK_WORKING_DIR $ASAM_QC_FRAMEWORK_CONFIG_FILE"
     }
   ]
 }
