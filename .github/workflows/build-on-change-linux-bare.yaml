@@ -104,7 +104,7 @@ jobs:
 
       - name: Example step
         run: cat /home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-manifest/osc.json
-        shell: cmd
+        shell: bash
 
       - name: Execute checker bundles runtime
         run: |
