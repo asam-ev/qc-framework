@@ -43,19 +43,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
-
       - name: Execute pre built TextReport exe
         run: |
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
           dir
 
           .\TextReport.exe
-
-      - name: Execute pre built ResultPooling exe
-        run: |
-          cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
-          dir
-
-          .\ResultPooling.exe
