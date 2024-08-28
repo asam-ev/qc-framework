@@ -1,9 +1,9 @@
 {
     "manifest_file_path": [
-        "${{ github.workspace }}/.github/workflows/linux-manifest/osc.json",
-        "${{ github.workspace }}/.github/workflows/linux-manifest/odr.json",
-        "${{ github.workspace }}/.github/workflows/linux-manifest/otx.json",
-        "${{ github.workspace }}/.github/workflows/linux-manifest/result_pooling.json",
-        "${{ github.workspace }}/.github/workflows/linux-manifest/text_report.json"
+        "/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-manifest/osc.json",
+        "/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-manifest/odr.json",
+        "/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-manifest/otx.json",
+        "/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-manifest/result_pooling.json",
+        "/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-manifest/text_report.json"
     ]
 }
