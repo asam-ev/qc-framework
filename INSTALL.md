@@ -66,6 +66,23 @@ cmake --build ./build --target install --config Release -j4
 cmake --install ./build
 ```
 
+#### Pre built binaries
+
+Attached to each qc-framework release, pre-built binaries for ubuntu OS are also provided.
+
+They are in release page in the Assets section, with the name `qc-framework-executables-linux_x64.zip`
+
+After downloading and extracting, in order to use the executables, you may need to install few libraries.
+
+This can be done with the following command:
+
+```
+apt-get update && apt-get install -y libxerces-c-dev qtbase5-dev libqt5xmlpatterns5-dev
+```
+
+Binaries are tested on ubuntu 20.04 and ubuntu 22.04
+
+
 ### Build on Windows
 
 On Windows, an example build for the the dependency XercesC looks like this:
@@ -111,6 +128,14 @@ After builds complete, you may need to manually copy the xerces.dll library to t
 ```
 Move-Item $env:WORKING_PATH\xerces-c-3.2.5\*.dll $env:INSTAL_PREFIX\bin\
 ```
+
+#### Pre built binaries
+
+Attached to each qc-framework release, pre-built binaries for windows OS are also provided.
+
+They are in release page in the Assets section, with the name `qc-framework-executables-windows-2022.zip`
+
+Binaries are tested on windows 2022.
 
 
 ### Options
