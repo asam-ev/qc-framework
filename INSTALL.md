@@ -28,6 +28,8 @@ Links to download the sources and the tested versions can be found in the
 
 ## Build and install C++ modules
 
+For some operating systems, prebuilt binaries are available from the [release page](https://github.com/asam-ev/qc-framework/releases). If you cannot use the prebuilt binaries, follow the instructions below to build and install the C++ modules from source.
+
 - Use CMakeLists.txt within the main directory as source directory
 - Do not forget to set `CMAKE_INSTALL_PREFIX`
 - Do not forget to set `CMAKE_BUILD_TYPE` if using CMake generator `Unix
@@ -66,21 +68,15 @@ cmake --build ./build --target install --config Release -j4
 cmake --install ./build
 ```
 
-#### Pre built binaries
+**Prebuilt binaries**
 
-Attached to each qc-framework release, pre-built binaries for ubuntu OS are also provided.
+Prebuilt binaries for Ubuntu OS are available on the [release page](https://github.com/asam-ev/qc-framework/releases) in the Assets section, with the name `qc-framework-executables-linux_x64.zip`. To use the prebuilt binaries, you need to install few libraries.
 
-They are in release page in the Assets section, with the name `qc-framework-executables-linux_x64.zip`
-
-After downloading and extracting, in order to use the executables, you may need to install few libraries.
-
-This can be done with the following command:
-
-```
+```bash
 apt-get update && apt-get install -y libxerces-c-dev qtbase5-dev libqt5xmlpatterns5-dev
 ```
 
-Binaries are tested on ubuntu 20.04 and ubuntu 22.04
+Binaries are tested on Ubuntu 20.04 and Ubuntu 22.04
 
 
 ### Build on Windows
@@ -129,13 +125,11 @@ After builds complete, you may need to manually copy the xerces.dll library to t
 Move-Item $env:WORKING_PATH\xerces-c-3.2.5\*.dll $env:INSTAL_PREFIX\bin\
 ```
 
-#### Pre built binaries
+**Prebuilt binaries**
 
-Attached to each qc-framework release, pre-built binaries for windows OS are also provided.
+Prebuilt binaries for Windows OS are available on the [release page](https://github.com/asam-ev/qc-framework/releases) in the Assets section, with the name `qc-framework-executables-windows-2022.zip`.
 
-They are in release page in the Assets section, with the name `qc-framework-executables-windows-2022.zip`
-
-Binaries are tested on windows 2022.
+Prebuilt binaries are tested on windows 2022.
 
 
 ### Options
