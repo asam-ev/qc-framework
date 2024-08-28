@@ -54,6 +54,7 @@ jobs:
         run: |
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
 
-          .\ResultPooling.exe > output.log 2>&1
+          $process = Start-Process -FilePath ".\ResultPooling.exe" -ArgumentList "--help" -RedirectStandardOutput "output.txt" -Wait -PassThru
+          Get-Content "output.txt"
 
-          cat output.log
+        shell: pwsh
