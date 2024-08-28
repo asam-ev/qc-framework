@@ -53,8 +53,7 @@ jobs:
       - name: Execute pre built ResultPooling exe
         run: |
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
-          dir
 
           .\ResultPooling.exe > output.log 2>&1
 
-          type output.log
+          cat output.log
