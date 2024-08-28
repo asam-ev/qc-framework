@@ -87,8 +87,7 @@ Follow the [run instructions](doc/manual/using_the_framework.md) to run the Chec
 
 # How to Contribute
 
-A C++ base library is provided, so users can provide their own user defined
-modules. Since checker bundles are executables, it is also possible to write
+A Python base library and a C++ base library are provided, so users can provide their own user defined modules. Since checker bundles are executables, it is also possible to write
 checker bundles in any other programming language. Check out the
 [documentation](doc/manual/readme.md) for details on how to extend the
 framework and write your own checks. Contributions to the project in the form
