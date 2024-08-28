@@ -50,11 +50,11 @@ jobs:
 
           .\TextReport.exe
 
-      - name: Execute pre built ResultPooling exe
+      - name: Execute pre built TextReport2 exe
         run: |
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
 
-          $process = Start-Process -FilePath ".\ResultPooling.exe" -ArgumentList "--help" -RedirectStandardOutput "output.txt" -Wait -PassThru
+          $process = Start-Process -FilePath ".\TextReport.exe" -ArgumentList "--help" -RedirectStandardOutput "output.txt" -Wait -PassThru
           Get-Content "output.txt"
 
         shell: pwsh
