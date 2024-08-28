@@ -1,0 +1,53 @@
+name: Test runtime on Windows
+
+on:
+  # execute on every PR made targeting the branches bellow
+  pull_request:
+    branches:
+      - main
+      - develop # can be removed on main merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - test/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
+
+  # execute on every push made targeting the branches bellow
+  push:
+    branches:
+      - main
+      - develop # can be removed on main merge
+    paths: # we only include paths critical for building to avoid unnecessary runs
+      - src/**
+      - include/**
+      - scripts/cmake/**
+      - test/**
+      - .github/workflows/**
+      - doc/**
+      - runtime/**
+      - docker/**
+
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  build-windows:
+    runs-on: windows-2019
+    env:
+      WORKING_PATH: "D:\\a"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Execute pre built windows exe
+        run: |
+
+          $env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-pre-built/bin/TextReport.exe
+          $env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-pre-built/bin/ResultPooling.exe
+
+
+        shell: pwsh
