@@ -48,11 +48,11 @@ jobs:
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
           dir
 
-          .\TextReport.exe --help
+          .\TextReport.exe
 
       - name: Execute pre built ResultPooling exe
         run: |
           cd D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin
           dir
 
-          .\ResultPooling.exe --help
+          .\ResultPooling.exe
