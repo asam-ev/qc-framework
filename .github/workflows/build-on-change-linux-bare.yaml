@@ -52,16 +52,16 @@ jobs:
         run: |
           echo "Installing Dependencies..."
           sudo apt update
-          sudo apt install \
-            g++ \
-            g++-10 \
-            make \
-            build-essential \
-            cmake \
-            libgtest-dev \
-            qtbase5-dev \
-            libqt5xmlpatterns5-dev \
-            libxerces-c-dev \
+          sudo apt install /
+            g++ /
+            g++-10 /
+            make /
+            build-essential /
+            cmake /
+            libgtest-dev /
+            qtbase5-dev /
+            libqt5xmlpatterns5-dev /
+            libxerces-c-dev /
             pkg-config
           echo "Dependencies installed."
         shell: bash
@@ -71,10 +71,10 @@ jobs:
         # the build artifact after, we might as well need to add the XSD file.
         run: |
           echo Building framework...
-          cmake -G "Unix Makefiles" -B./build -S . \
-            -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" \
-            -DENABLE_FUNCTIONAL_TESTS=$TEST_ENABLED \
-            -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" \
+          cmake -G "Unix Makefiles" -B./build -S . /
+            -DCMAKE_INSTALL_PREFIX="/home/$(whoami)/qc-build" /
+            -DENABLE_FUNCTIONAL_TESTS=$TEST_ENABLED /
+            -DQt5_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5/" /
             -DQt5XmlPatterns_DIR="/usr/lib/x86_64-linux-gnu/cmake/Qt5XmlPatterns/"
           cmake --build ./build --target install --config Release -j4
           cmake --install ./build
@@ -97,7 +97,6 @@ jobs:
           path: artifacts
 
       - name: Unit test execution
-        if: github.event_name == 'pull_request'
         run: |
           echo Starting tests...
 
@@ -107,14 +106,12 @@ jobs:
         shell: bash
 
       - name: Archive test results
-        if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-report-ubuntu
           path: ${{ github.workspace }}/build/Testing/Temporary/LastTest.log
 
       - name: Runtime test execution
-        if: github.event_name == 'pull_request'
         run: |
           mv build out_build
           cp -r /home/$(whoami)/qc-build/bin bin
@@ -125,8 +122,33 @@ jobs:
           poetry run pytest -rA > runtime_test.log
 
       - name: Archive runtime test results
-        if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
           name: runtime-test-report-ubuntu
           path: ${{ github.workspace }}/runtime/runtime_test.log
+
+      - name: Execute checker bundles runtime
+        run: |
+
+          pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+
+          mkdir "/home/$(whoami)/odr_out"
+          pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
+          qc_runtime --config="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/odr_config.xml" --manifest="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/odr_out"
+          if [ ! -f "/home/$(whoami)/odr_out/xodr_bundle_report.xqar" ]; then echo "Error: Odr output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/odr_out/Result.xqar" ]; then echo "Error: Odr output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/odr_out/Report.txt" ]; then echo "Error: Odr output does not exist."; exit 1; fi
+
+          mkdir "/home/$(whoami)/osc_out"
+          pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@develop
+          qc_runtime --config="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/osc_config.xml" --manifest="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/osc_out"
+          if [ ! -f "/home/$(whoami)/osc_out/xosc_bundle_report.xqar" ]; then echo "Error: Osc output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/osc_out/Result.xqar" ]; then echo "Error: Osc output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/osc_out/Report.txt" ]; then echo "Error: Osc output does not exist."; exit 1; fi
+
+          mkdir "/home/$(whoami)/otx_out"
+          pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@develop
+          qc_runtime --config="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/otx_config.xml" --manifest="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/otx_out"
+          if [ ! -f "/home/$(whoami)/otx_out/otx_bundle_report.xqar" ]; then echo "Error: Otx output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/otx_out/Result.xqar" ]; then echo "Error: Otx output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/otx_out/Report.txt" ]; then echo "Error: Otx output does not exist."; exit 1; fi

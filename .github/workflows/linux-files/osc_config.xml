@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Config>
+
+    <Param name="InputFile"
+        value="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/CutIn.xosc" />
+
+    <CheckerBundle application="xoscBundle">
+        <Param name="resultFile" value="xosc_bundle_report.xqar" />
+        <Checker checkerId="basic_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="schema_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="data_type_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="parameters_xosc" maxLevel="1" minLevel="3" />
+        <Checker checkerId="reference_xosc" maxLevel="1" minLevel="3" />
+    </CheckerBundle>
+
+    <ReportModule application="TextReport">
+        <Param name="strInputFile" value="Result.xqar" />
+        <Param name="strReportFile" value="Report.txt" />
+    </ReportModule>
+
+
+</Config>

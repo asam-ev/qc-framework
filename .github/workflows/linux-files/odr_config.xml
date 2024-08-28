@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Config>
+
+    <Param name="InputFile"
+        value="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/UC_Motorway-Exit-Entry.xodr" />
+
+    <CheckerBundle application="xodrBundle">
+        <Param name="resultFile" value="xodr_bundle_report.xqar" />
+        <Checker checkerId="semantic_xodr" maxLevel="1" minLevel="3" />
+        <Checker checkerId="geometry_xodr" maxLevel="1" minLevel="3" />
+        <Checker checkerId="performance_xodr" maxLevel="1" minLevel="3" />
+    </CheckerBundle>
+
+    <ReportModule application="TextReport">
+        <Param name="strInputFile" value="Result.xqar" />
+        <Param name="strReportFile" value="Report.txt" />
+    </ReportModule>
+
+
+</Config>

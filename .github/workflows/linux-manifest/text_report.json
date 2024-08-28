@@ -1,0 +1,10 @@
+{
+  "module": [
+    {
+      "name": "TextReport",
+      "exec_type": "executable",
+      "module_type": "report_module",
+      "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/danivex/qc-build/bin/TextReport $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+    }
+  ]
+}
