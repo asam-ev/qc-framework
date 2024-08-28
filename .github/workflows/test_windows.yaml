@@ -58,3 +58,9 @@ jobs:
           Get-Content "output.txt"
 
         shell: pwsh
+
+      - name: Upload output
+        uses: actions/upload-artifact@v4
+        with:
+          name: output
+          path: D:\\a\qc-framework\\qc-framework\\.github\\workflows\\windows-pre-built\\bin\\output.txt
