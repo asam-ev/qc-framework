@@ -5,11 +5,11 @@
 
 python3 /app/demo_pipeline/configuration_generator.py
 
-python3 /app/framework/runtime/runtime/runtime.py \
-    --config "/tmp/generated_config/config.xml" \
-    --install_dir "/app/framework/bin"
+OUTPUT_DIR=/out/qc-result-$INPUT_FILENAME
 
-mkdir -p /out/qc-result-$INPUT_FILENAME
-cp /app/framework/bin/*.xqar /out/qc-result-$INPUT_FILENAME
-cp /app/framework/bin/*.txt /out/qc-result-$INPUT_FILENAME
-chown -R $USER_ID:$GROUP_ID /out/qc-result-$INPUT_FILENAME
+qc_runtime \
+    --config "/tmp/generated_config/config.xml" \
+    --manifest "/app/demo_pipeline/manifests/framework_manifest.json" \
+    --working_dir "$OUTPUT_DIR"
+
+chown -R $USER_ID:$GROUP_ID $OUTPUT_DIR

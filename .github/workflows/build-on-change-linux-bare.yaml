@@ -35,7 +35,7 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     env:
       TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
@@ -63,7 +63,7 @@ jobs:
             libqt5xmlpatterns5-dev \
             libxerces-c-dev \
             pkg-config
-          echo "Dependencies installed."
+            echo "Dependencies installed."
         shell: bash
 
       - name: Build framework
@@ -93,11 +93,10 @@ jobs:
       - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: qc-framework-executables-ubuntu
+          name: qc-framework-executables-linux_x64
           path: artifacts
 
       - name: Unit test execution
-        if: github.event_name == 'pull_request'
         run: |
           echo Starting tests...
 
@@ -107,25 +106,55 @@ jobs:
         shell: bash
 
       - name: Archive test results
-        if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-report-ubuntu
           path: ${{ github.workspace }}/build/Testing/Temporary/LastTest.log
 
       - name: Runtime test execution
-        if: github.event_name == 'pull_request'
         run: |
           mv build out_build
           cp -r /home/$(whoami)/qc-build/bin bin
           cp out_build/examples/checker_bundle_example/DemoCheckerBundle bin/
           cd runtime
-          python3 -m pip install -r requirements.txt
-          python3 -m pytest -rA > runtime_test.log
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install --with dev
+          poetry run pytest -rA > runtime_test.log
 
       - name: Archive runtime test results
-        if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
           name: runtime-test-report-ubuntu
           path: ${{ github.workspace }}/runtime/runtime_test.log
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Execute checker bundles runtime
+        run: |
+
+          pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+
+          mkdir "/home/$(whoami)/odr_out"
+          pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
+          qc_runtime --config="${{ github.workspace }}/.github/workflows/linux-files/odr_config.xml" --manifest="${{ github.workspace }}/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/odr_out"
+          if [ ! -f "/home/$(whoami)/odr_out/xodr_bundle_report.xqar" ]; then echo "Error: Odr output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/odr_out/Result.xqar" ]; then echo "Error: Odr output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/odr_out/Report.txt" ]; then echo "Error: Odr output does not exist."; exit 1; fi
+
+          mkdir "/home/$(whoami)/osc_out"
+          pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@develop
+          qc_runtime --config="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/osc_config.xml" --manifest="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/osc_out"
+          if [ ! -f "/home/$(whoami)/osc_out/xosc_bundle_report.xqar" ]; then echo "Error: Osc output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/osc_out/Result.xqar" ]; then echo "Error: Osc output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/osc_out/Report.txt" ]; then echo "Error: Osc output does not exist."; exit 1; fi
+
+          mkdir "/home/$(whoami)/otx_out"
+          pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@develop
+          qc_runtime --config="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-files/otx_config.xml" --manifest="/home/$(whoami)/work/qc-framework/qc-framework/.github/workflows/linux-manifest/framework.json" --working_dir="/home/$(whoami)/otx_out"
+          if [ ! -f "/home/$(whoami)/otx_out/otx_bundle_report.xqar" ]; then echo "Error: Otx output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/otx_out/Result.xqar" ]; then echo "Error: Otx output does not exist."; exit 1; fi
+          if [ ! -f "/home/$(whoami)/otx_out/Report.txt" ]; then echo "Error: Otx output does not exist."; exit 1; fi
+        shell: bash

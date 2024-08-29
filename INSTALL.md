@@ -1,6 +1,6 @@
 <!---
 Copyright 2023 CARIAD SE.
- 
+
 This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -26,6 +26,17 @@ The ASAM Quality Checker Framework runs on Linux and Windows. The framework cons
 Links to download the sources and the tested versions can be found in the
 [license information appendix](licenses/readme.md).
 
+## Build and install C++ modules
+
+For some operating systems, prebuilt binaries are available from the [release page](https://github.com/asam-ev/qc-framework/releases). If you cannot use the prebuilt binaries, follow the instructions below to build and install the C++ modules from source.
+
+- Use CMakeLists.txt within the main directory as source directory
+- Do not forget to set `CMAKE_INSTALL_PREFIX`
+- Do not forget to set `CMAKE_BUILD_TYPE` if using CMake generator `Unix
+  Makefiles`
+
+### Build on Linux
+
 On Linux, toolchain and 3rd party dependencies can be installed as follows (example for Ubuntu 22.04).
 
 ```bash
@@ -44,14 +55,7 @@ apt update && apt install -y \
     git
 ```
 
-## Build and install C++ modules
-
-- Use CMakeLists.txt within the main directory as source directory
-- Do not forget to set `CMAKE_INSTALL_PREFIX`
-- Do not forget to set `CMAKE_BUILD_TYPE` if using CMake generator `Unix
-  Makefiles`
-
-For Linux, an example CMake call to build the framework
+An example CMake call to build the framework
 looks like this (call from the repository root):
 
 ```bash
@@ -64,18 +68,45 @@ cmake --build ./build --target install --config Release -j4
 cmake --install ./build
 ```
 
+**Prebuilt binaries**
+
+Prebuilt binaries for Ubuntu OS are available on the [release page](https://github.com/asam-ev/qc-framework/releases) in the Assets section, with the name `qc-framework-executables-linux_x64.zip`. To use the prebuilt binaries, you need to install few libraries.
+
+```bash
+apt-get update && apt-get install -y libxerces-c-dev qtbase5-dev libqt5xmlpatterns5-dev
+```
+
+Binaries are tested on Ubuntu 20.04 and Ubuntu 22.04
+
+
+### Build on Windows
+
+On Windows, an example build for the the dependency XercesC looks like this:
+
+```bash
+$env:WORKING_PATH=C:\Users\user\test
+$xercesZip = "$env:WORKING_PATH\xerces-c-3.2.5.zip"
+Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
+Expand-Archive -Path $xercesZip -DestinationPath "$env:WORKING_PATH"
+cd "$env:WORKING_PATH\xerces-c-3.2.5"
+mkdir build
+cd build
+cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\Xerces-Out" ..
+cmake --build . --config Release
+cmake --build . --config Release --target install
+```
+
 For Windows Visual Studio 16 2019 an example CMake call to build the framework
 looks like this (call from the repository root):
 
 ```bash
 $ mkdir ../build
-$ cmake -G "Visual Studio 16 2019" -A "x64" -T "v142" -B../build -S. ^
+$ cmake -G "Visual Studio 16 2019" -A "x64" -B../build -S. ^
     -DCMAKE_INSTALL_PREFIX="<prefix>" ^
     -DENABLE_FUNCTIONAL_TESTS=ON ^
-    -DGTest_ROOT="<gtest_root>" ^ 
-    -DASAM_OPENDRIVE_XSD_DIR="<asam_opendrive_xsd_dir>" ^
-    -DASAM_OPENSCENARIO_XSD_DIR="<asam_openscenario_xsd_dir>" ^
-    -DQt5_ROOT="<qt5_root>"
+    -DGTest_ROOT="<gtest_root>" ^
+    -DQt5_ROOT="<qt5_root>" ^
+    -DXercesC_ROOT="<xerces_c_root>"
 $ cmake --build ../build --target ALL_BUILD --config Release
 $ ctest --test-dir ../build -C Release
 $ cmake --install ../build
@@ -85,14 +116,21 @@ With the following CMake values:
 
 - _\<prefix\>_: The prefix CMake installs the package to
 - _\<GTest_ROOT\>_: The root dir of the pre-built GoogleTest package
-- _\<asam_opendrive_xsd_dir\>_: The directory containing the schema (*.xsd)
-  files for OpenDRIVE downloaded from the ASAM website (multiple versions of
-  the schema files in this directory are supported).
-- _\<asam_openscenario_xsd_dir\>_: The directory containing the schema (*.xsd)
-  files for OpenSCENARIO downloaded from the ASAM website (multiple versions of
-  the schema files in this directory are supported).
 - _\<xerces_c_root\>_: The root dir of the pre-built Xerces-C++ package
 - _\<Qt5_ROOT\>_: The root dir of the pre-built qt5 package
+
+After builds complete, you may need to manually copy the xerces.dll library to the framework build bin folder:
+
+```
+Move-Item $env:WORKING_PATH\xerces-c-3.2.5\*.dll $env:INSTAL_PREFIX\bin\
+```
+
+**Prebuilt binaries**
+
+Prebuilt binaries for Windows OS are available on the [release page](https://github.com/asam-ev/qc-framework/releases) in the Assets section, with the name `qc-framework-executables-windows-2022.zip`.
+
+Prebuilt binaries are tested on windows 2022.
+
 
 ### Options
 
@@ -114,7 +152,7 @@ source runtime-venv/bin/activate
 Using Conda:
 
 ```bash
-conda create -y -n runtime-venv python=3.10 
+conda create -y -n runtime-venv python=3.10
 conda activate runtime-venv
 ```
 
@@ -123,7 +161,7 @@ conda activate runtime-venv
 Python modules can be installed using `pip`.
 
 ```bash
-pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework#subdirectory=runtime
+pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
 ```
 
 ## Install ASAM Checker Bundles
@@ -148,7 +186,7 @@ qc_opendrive --help
 pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml
 ```
 
-To test the installation: 
+To test the installation:
 
 ```bash
 qc_openscenario --help
@@ -160,7 +198,7 @@ qc_openscenario --help
 pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx
 ```
 
-To test the installation: 
+To test the installation:
 
 ```bash
 qc_otx --help

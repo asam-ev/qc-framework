@@ -10,9 +10,9 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 ## Create Configuration File
 
-Create a [configuration file](file_formats.md) to use the framework, following [the predefined configuration file schema](https://github.com/asam-ev/qc-framework/blob/develop/doc/schema/config_format.xsd).
+Create a [configuration file](file_formats.md) to use the framework, following [the predefined configuration file schema](../schema/config_format.xsd) and the explanation in [the configuration file documentation](file_formats.md).
 
-Example configuration files for running the official Checker Bundles for ASAM OpenDrive, OpenScenario XML and OTX can be found in [the templates folder](https://github.com/asam-ev/qc-framework/tree/develop/demo_pipeline/templates).
+Example configuration files for running the official Checker Bundles for ASAM OpenDrive, OpenScenario XML and OTX can be found in [the templates folder](../../demo_pipeline/templates).
 
 ## Run the Checker Bundles
 

@@ -1,6 +1,10 @@
 # Manifest File
 
-Manifest files represent the system used by Checker Bundles and Report Modules to register themselves with a framework installation. Manifest files depend on the operating system of the user. Manifest files are the way to tell the framework how to invoke Checker Bundles and Report Modules. 
+Manifest files represent the system used by Checker Bundles and Report Modules to register themselves with a framework installation. Manifest files depend on the operating system of the user. Manifest files are the way to tell the framework how to invoke Checker Bundles and Report Modules.
+
+Below are the complete sets of example manifest files for all modules provided by the Quality Checker Framework. Users of the framework can modify the file paths in the example manifest files to create their own manifest files for their environment.
+* [Example manifest files for Linux](../../manifest_examples/linux/)
+* [Example manifest files for Windows](../../manifest_examples/windows/)
 
 There are two types of manifest files in the framework: **Framework manifest files** and **Module manifest files**.
 
@@ -82,7 +86,7 @@ Note that, it is possible to specify the manifest of multiple modules in one fil
 }
 ```
 
-The manifest file is also used internally by the framework to specify the [Result Pooling](https://github.com/asam-ev/qc-framework/blob/main/doc/manual/architecture.md#workflow-asam-quality-checker-framework) module. The Result Pooling module is provided by the framework. Standard users are not expected to implement a result pooling module.
+The manifest file is also used internally by the framework to specify the [Result Pooling](architecture.md#workflow-asam-quality-checker-framework) module. The Result Pooling module is provided by the framework. Standard users are not expected to implement a result pooling module.
 
 ```json
 {
@@ -91,7 +95,7 @@ The manifest file is also used internally by the framework to specify the [Resul
       "name": "ResultPooling",
       "exec_type": "executable",
       "module_type": "result_pooling",
-      "exec_command": "/home/user/qc-framework/bin/ResultPooling $ASAM_QC_FRAMEWORK_WORKING_DIR $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+      "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && /home/user/qc-framework/bin/ResultPooling $ASAM_QC_FRAMEWORK_WORKING_DIR $ASAM_QC_FRAMEWORK_CONFIG_FILE"
     }
   ]
 }
@@ -120,7 +124,7 @@ The Quality Checker Framework provides the following environment variables to be
 
 To register a Checker Bundle or Report Module with the framework:
 * First, a module manifest file must be provided.
-* Second, the path to the module manifest file must be included in the framework manifest file. 
+* Second, the path to the module manifest file must be included in the framework manifest file.
 * Last, the framework manifest file can be provided to the [runtime module](runtime_module.md) when triggering a framework execution.
   ```bash
   qc_runtime --config=$PATH_TO_CONFIG_FILE --manifest=$PATH_TO_MANIFEST_FILE
