@@ -171,7 +171,7 @@ jobs:
         run: |
           git config --system core.longpaths true
 
-          pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+          pip install -e $env:WORKING_PATH\qc-framework\qc-framework\runtime
 
           mkdir "$env:WORKING_PATH\odr_out"
           pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
