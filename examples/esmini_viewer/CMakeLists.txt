@@ -18,8 +18,19 @@ include_directories(${ESMINI_VIEWER} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/report_modules/report_module_gui/src
 )
 
+# Fetch the nlohmann/json library
+include(FetchContent)
+FetchContent_Declare(
+  json
+  GIT_REPOSITORY https://github.com/nlohmann/json.git
+  GIT_TAG v3.11.3  # Use a stable release tag
+)
+FetchContent_MakeAvailable(json)
+
+
 add_library(${ESMINI_VIEWER} SHARED esmini_viewer.cpp helper.cpp)
 target_link_libraries(${ESMINI_VIEWER} PRIVATE qc4openx-common $<$<PLATFORM_ID:Linux>:stdc++fs>)
+target_link_libraries(${ESMINI_VIEWER} PRIVATE nlohmann_json::nlohmann_json)
 
 install(
     TARGETS ${ESMINI_VIEWER}

@@ -12,5 +12,6 @@
 
 bool IsExecutableAvailable(const std::string &executable);
 bool ExecuteCommand(std::string &strResultMessage, std::string strCommand, const std::string strArgument = "");
+bool ExecuteCommandAndDetach(std::string &strResultMessage, std::string strCommand, const std::string strArgument = "");
 
 #endif
