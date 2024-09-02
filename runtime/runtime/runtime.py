@@ -30,8 +30,7 @@ def run_module_command(
         config (Configuration): xml configuration containing information for execution.
     """
     try:
-        print(f"Executing command: {module.exec_command}")
-        print(f"Expanded command: {os.path.expandvars(module.exec_command)}")
+        print(f"Executing command: {os.path.expandvars(module.exec_command)}")
 
         cmd_env = os.environ.copy()
         cmd_env[FRAMEWORK_WORKING_DIR_VAR_NAME] = output_path
