@@ -8,11 +8,3 @@
 add_subdirectory(checker_bundle_example)
 add_subdirectory(viewer_example)
 add_subdirectory(esmini_viewer)
-
-install(
-    DIRECTORY
-        xodr_examples
-        xosc_examples
-    DESTINATION
-        examples
-)
