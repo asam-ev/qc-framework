@@ -8,17 +8,4 @@
 
 add_custom_target(INSTALL_STIMULI ALL)
 
-add_custom_command(
-        TARGET INSTALL_STIMULI POST_BUILD
-
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/xosc_examples
-                ${CMAKE_CURRENT_BINARY_DIR}/../stimuli/xosc_examples
-
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/xodr_examples
-                ${CMAKE_CURRENT_BINARY_DIR}/../stimuli/xodr_examples
-
-    COMMENT "Installing stimuli..." )
-
 set_target_properties(INSTALL_STIMULI PROPERTIES FOLDER test/stimuli)
