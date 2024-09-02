@@ -26,6 +26,9 @@
 #define SERVER_ADDRESS "127.0.0.1"
 #define PORT 8080
 
+const std::string FUNCTION = "move_object";
+constexpr int OBJECT_ID = 1;
+
 // Global variable for the socket
 int sock = -1;
 
@@ -186,10 +189,12 @@ bool ShowIssue(void *itemToShow, void *locationToShow)
         {
             auto ext_inertial_location = static_cast<cInertialLocation *>(extInfo);
 
-            std::cout << "Sending location " << ext_inertial_location->GetX() << " x" << ext_inertial_location->GetY()
+            std::cout << "Sending location : " << ext_inertial_location->GetX() << " x" << ext_inertial_location->GetY()
                       << " x " << ext_inertial_location->GetZ() << std::endl;
             // Send JSON data (can be done multiple times)
-            nlohmann::json inertial_location_json = {{"x", ext_inertial_location->GetX()},
+            nlohmann::json inertial_location_json = {{"function", FUNCTION},
+                                                     {"object_id", OBJECT_ID},
+                                                     {"x", ext_inertial_location->GetX()},
                                                      {"y", ext_inertial_location->GetY()},
                                                      {"z", ext_inertial_location->GetZ()}};
             send_json(inertial_location_json);
