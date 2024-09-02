@@ -169,6 +169,8 @@ jobs:
 
       - name: Execute checker bundles runtime
         run: |
+          $env:ASAM_QC_FRAMEWORK_MANIFEST_DIR="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest"
+
           git config --system core.longpaths true
 
           pip install -e $env:WORKING_PATH\qc-framework\qc-framework\runtime

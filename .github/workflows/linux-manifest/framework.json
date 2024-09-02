@@ -1,7 +1,7 @@
 {
     "manifest_file_path": [
-        "$ASAM_QC_FRAMEWORK_MANIFEST_DIR/.github/workflows/linux-manifest/osc.json",
-        "${ASAM_QC_FRAMEWORK_MANIFEST_DIR}/.github/workflows/linux-manifest/odr.json",
+        "$ASAM_QC_FRAMEWORK_MANIFEST_DIR/osc.json",
+        "${ASAM_QC_FRAMEWORK_MANIFEST_DIR}/odr.json",
         "/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-manifest/otx.json",
         "/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-manifest/result_pooling.json",
         "/home/runner/work/qc-framework/qc-framework/.github/workflows/linux-manifest/text_report.json"

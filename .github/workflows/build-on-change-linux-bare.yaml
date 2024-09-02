@@ -134,6 +134,7 @@ jobs:
 
       - name: Execute checker bundles runtime
         run: |
+          export ASAM_QC_FRAMEWORK_MANIFEST_DIR=${{ github.workspace }}/.github/workflows/linux-manifest
 
           pip install -e ${{ github.workspace }}/runtime
 

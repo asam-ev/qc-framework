@@ -106,7 +106,9 @@ def execute_modules(
         run_module_command(report_module, config_file_path, output_path)
 
 
-def execute_runtime(config_file_path: str, manifest_file_path: str, working_dir: str) -> None:
+def execute_runtime(
+    config_file_path: str, manifest_file_path: str, working_dir: str
+) -> None:
     """Execute all runtime operations defined in the input manifest over the
     defined configuration.
 
@@ -124,8 +126,10 @@ def execute_runtime(config_file_path: str, manifest_file_path: str, working_dir:
         json_data = framework_manifest_file.read().decode()
         framework_manifest = models.FrameworkManifest.model_validate_json(json_data)
 
-        for module_manifest_path in framework_manifest.manifest_file_path:
-            with open(module_manifest_path, "rb") as module_manifest_file:
+        for raw_module_manifest_path in framework_manifest.manifest_file_path:
+            resolved_module_manifest_path = os.path.expandvars(raw_module_manifest_path)
+
+            with open(resolved_module_manifest_path, "rb") as module_manifest_file:
                 json_data = module_manifest_file.read().decode()
                 module_manifest = models.ModuleManifest.model_validate_json(json_data)
 
