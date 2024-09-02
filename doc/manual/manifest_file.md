@@ -16,19 +16,35 @@ and execute Checker Bundles and Report Modules.
 
 The framework manifest file must follow the JSON format as in the example below.
 
-**manifest.json**
+**Linux example: framework_manifest.json**
 ```json
 {
-  "manifest_file_path": [
-    "/home/user/qc-opendrive/manifest.json",
-    "/home/user/qc-openscenarioxml/manifest.json",
-    "/home/user/qc-otx/manifest.json",
-    "/home/user/qc-osi/manifest.json"
-    "/home/user/text-report/manifest.json",
-    "/home/user/report-gui/manifest.json",
-  ]
+    "manifest_file_path": [
+        "$ASAM_QC_FRAMEWORK_MANIFEST_PATH/qc_openscenarioxml.json",
+        "${ASAM_QC_FRAMEWORK_MANIFEST_PATH}/qc_opendrive.json",
+        "/home/asam/qc_otx.json",
+        "/home/asam/result_pooling.json",
+        "/home/asam/text_report.json",
+        "/home/asam/report_gui.json"
+    ]
 }
 ```
+
+**Windows example: framework_manifest.json**
+```json
+{
+    "manifest_file_path": [
+        "%ASAM_QC_FRAMEWORK_MANIFEST_PATH%\\qc_openscenarioxml.json",
+        "C:\\Users\\asam\\qc_opendrive.json",
+        "C:\\Users\\asam\\qc_otx.json",
+        "C:\\Users\\asam\\result_pooling.json",
+        "C:\\Users\\asam\\text_report.json",
+        "C:\\Users\\asam\\report_gui.json"
+    ]
+}
+```
+
+As can be seen from the examples, environment variables are supported in the framework manifest file. See [Local Environment Variables](#local-environment-variables) for more details.
 
 ## Module Manifest File
 
@@ -109,7 +125,7 @@ The manifest of each module must contain the following information.
   * `checker_bundle`
   * `report_module`
   * `result_pooling`
-* `exec_command`: The command to be executed when the corresponding Checker Bundle or Report Module is invoked by the framework. The command has access to the environment variables defined by the framework (see the next section: Framework Environment Variables). The `exec_command` must accept the configuration file defined in `ASAM_QC_FRAMEWORK_CONFIG_FILE` and output any files to the directory defined in `ASAM_QC_FRAMEWORK_WORKING_DIR`.
+* `exec_command`: The command to be executed when the corresponding Checker Bundle or Report Module is invoked by the framework. The command has access to the environment variables defined by the framework (see [Framework Environment Variables](#framework-environment-variables)), as well as environment variables in your local environment (see [Local Environment Variables](#local-environment-variables)). The `exec_command` must accept the configuration file defined in `ASAM_QC_FRAMEWORK_CONFIG_FILE` and output any files to the directory defined in `ASAM_QC_FRAMEWORK_WORKING_DIR`.
 
 ## Framework Environment Variables
 
@@ -119,6 +135,29 @@ The Quality Checker Framework provides the following environment variables to be
 | --- | --- |
 | `ASAM_QC_FRAMEWORK_CONFIG_FILE` | Path to the configuration file |
 | `ASAM_QC_FRAMEWORK_WORKING_DIR` | Path to the working directory of the framework, where all the output files should be generated |
+
+**Note**: Framework Environment Variables are set by the framework. Users do not need to set Framework Environment Variables.
+
+## Local Environment Variables
+
+The framework resolves local environment variables in the file paths in **Framework manifest files** and in the `exec_command` in **Module manifest files**.
+
+For example, the following manifest file is valid, given that the `ASAM_QC_FRAMEWORK_INSTALLATION_DIR` environment variable is set in your local environment.
+
+```json
+{
+  "module": [
+    {
+      "name": "TextReport",
+      "exec_type": "executable",
+      "module_type": "report_module",
+      "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && $ASAM_QC_FRAMEWORK_INSTALLATION_DIR/TextReport $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+    }
+  ]
+}
+```
+
+On Linux, environment variables of the form `$name` and `${name}` are supported. On Windows, environment variables of the form `%name%` are supported.
 
 ## Register a Checker Bundle or Report Module to the Framework
 
