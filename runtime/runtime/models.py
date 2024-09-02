@@ -21,9 +21,10 @@ class FrameworkManifest(BaseModel):
     @field_validator("manifest_file_path")
     @classmethod
     def file_path_must_exist(cls, v: List[str]) -> str:
-        for file_path in v:
-            if not os.path.isfile(file_path):
-                raise ValueError(f"File path '{file_path}' must exist.")
+        for raw_file_path in v:
+            resolved_file_path = os.path.expandvars(raw_file_path)
+            if not os.path.isfile(resolved_file_path):
+                raise ValueError(f"File path '{resolved_file_path}' must exist.")
         return v
 
 
