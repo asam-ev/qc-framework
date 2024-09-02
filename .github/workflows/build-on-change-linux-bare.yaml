@@ -135,7 +135,7 @@ jobs:
       - name: Execute checker bundles runtime
         run: |
 
-          pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+          pip install -e ${{ github.workspace }}/runtime
 
           mkdir "/home/$(whoami)/odr_out"
           pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
