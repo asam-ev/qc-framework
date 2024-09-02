@@ -4,7 +4,7 @@
       "name": "ResultPooling",
       "exec_type": "executable",
       "module_type": "result_pooling",
-      "exec_command": "cd %ASAM_QC_FRAMEWORK_WORKING_DIR% && D:\\a\\QC-Framework-Out\\bin\\ResultPooling.exe %ASAM_QC_FRAMEWORK_WORKING_DIR% %ASAM_QC_FRAMEWORK_CONFIG_FILE%"
+      "exec_command": "cd %ASAM_QC_FRAMEWORK_WORKING_DIR% && %ASAM_QC_FRAMEWORK_INSTALLATION_DIR%\\ResultPooling.exe %ASAM_QC_FRAMEWORK_WORKING_DIR% %ASAM_QC_FRAMEWORK_CONFIG_FILE%"
     }
   ]
 }

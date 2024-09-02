@@ -170,6 +170,7 @@ jobs:
       - name: Execute checker bundles runtime
         run: |
           $env:ASAM_QC_FRAMEWORK_MANIFEST_DIR="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest"
+          $env:ASAM_QC_FRAMEWORK_INSTALLATION_DIR="$env:WORKING_PATH\QC-Framework-Out\bin"
 
           git config --system core.longpaths true
 
