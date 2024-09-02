@@ -31,6 +31,7 @@ def run_module_command(
     """
     try:
         print(f"Executing command: {module.exec_command}")
+        print(f"Expanded command: {os.path.expandvars(module.exec_command)}")
 
         cmd_env = os.environ.copy()
         cmd_env[FRAMEWORK_WORKING_DIR_VAR_NAME] = output_path
@@ -128,6 +129,7 @@ def execute_runtime(
 
         for raw_module_manifest_path in framework_manifest.manifest_file_path:
             resolved_module_manifest_path = os.path.expandvars(raw_module_manifest_path)
+            print(f"Registering manifest file at {resolved_module_manifest_path}")
 
             with open(resolved_module_manifest_path, "rb") as module_manifest_file:
                 json_data = module_manifest_file.read().decode()
