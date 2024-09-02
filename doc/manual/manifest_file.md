@@ -136,6 +136,8 @@ The Quality Checker Framework provides the following environment variables to be
 | `ASAM_QC_FRAMEWORK_CONFIG_FILE` | Path to the configuration file |
 | `ASAM_QC_FRAMEWORK_WORKING_DIR` | Path to the working directory of the framework, where all the output files should be generated |
 
+**Note**: Framework Environment Variables are set by the framework. Users do not need to set Framework Environment Variables.
+
 ## Local Environment Variables
 
 The framework resolves local environment variables in the file paths in **Framework manifest files** and in the `exec_command` in **Module manifest files**.
