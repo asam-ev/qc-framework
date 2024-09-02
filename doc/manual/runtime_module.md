@@ -16,7 +16,7 @@ The runtime module execute the following steps:
 The runtime module can be installed using pip.
 
 ```bash
-pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework/#subdirectory=runtime
+pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
 ```
 
 Then, it can be executed as follows.
