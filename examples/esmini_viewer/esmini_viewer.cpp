@@ -26,74 +26,78 @@
 #define SERVER_ADDRESS "127.0.0.1"
 #define PORT 8080
 
-const std::string FUNCTION = "move_object";
-constexpr int OBJECT_ID = 1;
+using json = nlohmann::json;
 
-// Global variable for the socket
-int sock = -1;
+int sockfd = -1;
 
-// Function to setup the connection to the server
-bool setup_connection(const std::string &server_address)
+bool send_all(int sockfd, const void *buffer, size_t length)
 {
-    struct sockaddr_in serv_addr;
+    size_t total_sent = 0;
+    const char *buf = static_cast<const char *>(buffer);
 
-    // Create socket
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    while (total_sent < length)
     {
-        std::cerr << "Socket creation error" << std::endl;
-        return false;
+        ssize_t sent = send(sockfd, buf + total_sent, length - total_sent, 0);
+        if (sent <= 0)
+        {
+            std::cerr << "Failed to send data. Error: " << strerror(errno) << std::endl;
+            return false;
+        }
+        total_sent += sent;
     }
-
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
-
-    // Convert address from text to binary
-    if (inet_pton(AF_INET, server_address.c_str(), &serv_addr.sin_addr) <= 0)
-    {
-        std::cerr << "Invalid address/ Address not supported" << std::endl;
-        close(sock);
-        return false;
-    }
-
-    // Connect to the server
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-        std::cerr << "Connection failed" << std::endl;
-        close(sock);
-        return false;
-    }
-
-    std::cout << "Connected to server at " << server_address << std::endl;
     return true;
 }
 
-// Function to send JSON data over an established connection
-bool send_json(const nlohmann::json &json_obj)
+bool send_json(const json &j)
 {
-    if (sock < 0)
+    std::string message = j.dump();
+    uint32_t message_length = htonl(message.size());
+
+    if (!send_all(sockfd, &message_length, sizeof(message_length)))
     {
-        std::cerr << "Socket is not connected" << std::endl;
+        std::cerr << "Failed to send message length." << std::endl;
         return false;
     }
 
-    std::string json_str = json_obj.dump();
-    int msg_length = json_str.size();
-
-    // Send the message length first
-    if (send(sock, &msg_length, sizeof(msg_length), 0) == -1)
+    if (!send_all(sockfd, message.c_str(), message.size()))
     {
-        std::cerr << "Failed to send message length" << std::endl;
+        std::cerr << "Failed to send JSON message." << std::endl;
         return false;
     }
 
-    // Send the actual JSON message
-    if (send(sock, json_str.c_str(), msg_length, 0) == -1)
+    std::cout << "Sent JSON message: " << message << std::endl;
+    return true;
+}
+
+bool setup_connection(const std::string &server_ip, int server_port)
+{
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd == -1)
     {
-        std::cerr << "Failed to send JSON data" << std::endl;
+        std::cerr << "Socket creation failed. Error: " << strerror(errno) << std::endl;
         return false;
     }
 
-    std::cout << "Sent JSON: " << json_str << std::endl;
+    sockaddr_in server_addr;
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(server_port);
+
+    if (inet_pton(AF_INET, server_ip.c_str(), &server_addr.sin_addr) <= 0)
+    {
+        std::cerr << "Invalid address or address not supported." << std::endl;
+        close(sockfd);
+        return false;
+    }
+
+    if (connect(sockfd, reinterpret_cast<sockaddr *>(&server_addr), sizeof(server_addr)) < 0)
+    {
+        std::cerr << "Connection failed. Error: " << strerror(errno) << std::endl;
+        close(sockfd);
+        return false;
+    }
+
+    std::cout << "Connected to server at " << server_ip << ":" << server_port << std::endl;
     return true;
 }
 
@@ -123,22 +127,14 @@ std::string getFileExtension(const std::string &filename)
 
 bool Initialize(const char *inputPath)
 {
-    if (!setup_connection(SERVER_ADDRESS))
+    if (!setup_connection(SERVER_ADDRESS, PORT))
     {
         return false; // Exit if the connection fails
     }
+
     if (std::strcmp(inputPath, "") == 0)
     {
         lasterrormsg = "ERROR: No valid xosc or xodr file found.";
-        return false;
-    }
-
-    bool viewerAvailable = IsExecutableAvailable("odrviewer");
-
-    if (!viewerAvailable)
-    {
-        lasterrormsg = "ERROR: Odrivewer executable not found in system path. Please follow "
-                       "qc-framework/examples/esmini_viewer/README.md for install instructions";
         return false;
     }
 
@@ -165,11 +161,15 @@ bool Initialize(const char *inputPath)
     {
         odrToShow = inputPath;
     }
-    std::cout << "odrToShow : " << odrToShow << std::endl;
-    bool result = ExecuteCommandAndDetach(strResultMessage, "odrviewer",
-                                          "--density 0 --window 100 100 800 800 --odr " + std::string(odrToShow));
-    std::cout << strResultMessage << std::endl;
-    return result;
+
+    // Create a JSON object
+    nlohmann::json init_esmini_json;
+    init_esmini_json["function"] = "SE_Init";
+    init_esmini_json["args"] = {
+        {"xosc_path", inputPath}, {"disable_ctrls", 1}, {"use_viewer", 1}, {"threads", 0}, {"record", 0}};
+    send_json(init_esmini_json);
+
+    return true;
 }
 
 bool AddIssue(void *issueToAdd)
@@ -192,12 +192,17 @@ bool ShowIssue(void *itemToShow, void *locationToShow)
             std::cout << "Sending location : " << ext_inertial_location->GetX() << " x" << ext_inertial_location->GetY()
                       << " x " << ext_inertial_location->GetZ() << std::endl;
             // Send JSON data (can be done multiple times)
-            nlohmann::json inertial_location_json = {{"function", FUNCTION},
-                                                     {"object_id", OBJECT_ID},
-                                                     {"x", ext_inertial_location->GetX()},
-                                                     {"y", ext_inertial_location->GetY()},
-                                                     {"z", ext_inertial_location->GetZ()}};
+            nlohmann::json inertial_location_json;
+            inertial_location_json["function"] = "SE_ReportObjectPosXYH";
+            inertial_location_json["args"] = {{"object_id", "marker"},
+                                              {"timestamp", 0.0},
+                                              {"x", ext_inertial_location->GetX()},
+                                              {"y", ext_inertial_location->GetY()},
+                                              {"h", 0.0}};
             send_json(inertial_location_json);
+            nlohmann::json step_json;
+            step_json["function"] = "SE_Step";
+            send_json(step_json);
             return true;
         }
     }
@@ -213,8 +218,11 @@ const char *GetName()
 bool CloseViewer()
 {
     std::cout << "Closing viewer and socket " << std::endl;
-    // Step 3: Close the connection
-    close(sock);
+    nlohmann::json close_json;
+    close_json["function"] = "SE_Close";
+    send_json(close_json);
+    // Close the connection
+    close(sockfd);
     return true;
 }
 
