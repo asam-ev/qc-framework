@@ -13,14 +13,22 @@ project(${ESMINI_VIEWER})
 set(CMAKE_INSTALL_RPATH $ORIGIN/../../lib)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS true)
+find_package(XercesC REQUIRED)
 
 include_directories(${ESMINI_VIEWER} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/report_modules/report_module_gui/src
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party
+    ${XercesC_INCLUDE_DIRS}
 )
 
 add_library(${ESMINI_VIEWER} SHARED esmini_viewer.cpp helper.cpp)
-target_link_libraries(${ESMINI_VIEWER} PRIVATE qc4openx-common $<$<PLATFORM_ID:Linux>:stdc++fs>)
+target_link_libraries(
+    ${ESMINI_VIEWER}
+    PRIVATE
+    qc4openx-common
+    $<$<PLATFORM_ID:Linux>:stdc++fs>
+    ${XercesC_LIBRARIES}
+)
 
 install(
     TARGETS ${ESMINI_VIEWER}
@@ -34,5 +42,11 @@ install(
         examples/esmini_viewer/src
 )
 
+install(
+    DIRECTORY
+        asam_files
+    DESTINATION
+    examples/esmini_viewer
+)
 
 set_target_properties(${ESMINI_VIEWER} PROPERTIES FOLDER examples/viewer)

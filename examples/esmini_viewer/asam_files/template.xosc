@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OpenSCENARIO xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="OpenScenario.xsd">
+    <FileHeader description="empty scenario" author="esmini-team" revMajor="1" revMinor="1"
+        date="2022-02-24T15:00:02.297791" />
+    <ParameterDeclarations />
+    <CatalogLocations/>
+    <RoadNetwork>
+        <LogicFile filepath="test.xodr" />
+    </RoadNetwork>
+    <Entities>
+        <ScenarioObject name="marker">
+            <MiscObject name="markerObject">
+                <ParameterDeclarations/>
+                <BoundingBox>
+                    <Center x="0.0" y="0.0" z="0.0"/>
+                    <Dimensions height="25.0" length="0.1" width="0.1"/>
+                </BoundingBox>
+                <Properties/>
+            </MiscObject>
+        </ScenarioObject>
+    </Entities>
+    <Storyboard>
+        <Init>
+            <Actions>
+                <Private entityRef="marker">
+                    <PrivateAction>
+                        <TeleportAction>
+                            <Position>
+                                <WorldPosition x="0.0" y="0.0." z="0.0" h="1.57" p="0" r="0" />
+                            </Position>
+                        </TeleportAction>
+                    </PrivateAction>
+                </Private>
+            </Actions>
+        </Init>
+        <Story name="my_story">
+            <ParameterDeclarations />
+            <Act name="my_act">
+                <ManeuverGroup name="my_manouver_group" maximumExecutionCount="1">
+                    <Actors selectTriggeringEntities="false" />
+                </ManeuverGroup>
+                <StartTrigger />
+            </Act>
+        </Story>
+        <StopTrigger />
+    </Storyboard>
+</OpenSCENARIO>
