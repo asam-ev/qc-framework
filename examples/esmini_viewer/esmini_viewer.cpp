@@ -88,11 +88,11 @@ class PluginLoader
         std::cout << "Library loaded successfully!" << std::endl;
 
         // Load all the functions
-        SE_Init = (SE_Init_func_type)dlsym(handle, "SE_Init");
-        SE_GetIdByName = (SE_GetIdByName_func_type)dlsym(handle, "SE_GetIdByName");
-        SE_ReportObjectPosXYH = (SE_ReportObjectPosXYH_func_type)dlsym(handle, "SE_ReportObjectPosXYH");
-        SE_Step = (SE_Step_func_type)dlsym(handle, "SE_Step");
-        SE_Close = (SE_Close_func_type)dlsym(handle, "SE_Close");
+        SE_Init = (SE_Init_func_type)GET_FUNCTION(handle, "SE_Init");
+        SE_GetIdByName = (SE_GetIdByName_func_type)GET_FUNCTION(handle, "SE_GetIdByName");
+        SE_ReportObjectPosXYH = (SE_ReportObjectPosXYH_func_type)GET_FUNCTION(handle, "SE_ReportObjectPosXYH");
+        SE_Step = (SE_Step_func_type)GET_FUNCTION(handle, "SE_Step");
+        SE_Close = (SE_Close_func_type)GET_FUNCTION(handle, "SE_Close");
 
         // Check if all functions were loaded successfully
         if (!SE_Init || !SE_GetIdByName || !SE_ReportObjectPosXYH || !SE_Step || !SE_Close)
