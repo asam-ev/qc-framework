@@ -6,20 +6,32 @@
  * with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+#ifdef _WIN32
+#include <windows.h> // For Windows dynamic loading
+typedef HMODULE LibHandle;
+#define LOAD_LIBRARY(lib) LoadLibrary(lib)
+#define GET_FUNCTION(handle, func) GetProcAddress(handle, func)
+#define CLOSE_LIBRARY(handle) FreeLibrary(handle)
+#else
+#include <cstring>
+#include <dlfcn.h> // For Linux dynamic loading
+#include <unistd.h>
+
+typedef void *LibHandle;
+#define LOAD_LIBRARY(lib) dlopen(lib, RTLD_LAZY)
+#define GET_FUNCTION(handle, func) dlsym(handle, func)
+#define CLOSE_LIBRARY(handle) dlclose(handle)
+#endif
+
 #include "common/qc4openx_filesystem.h"
 #include "common/result_format/c_extended_information.h"
 #include "common/result_format/c_inertial_location.h"
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_locations_container.h"
-#include "common/util.h"
 
-#include "helper.h"
 #include "viewer/i_connector.h"
 #include <cstdlib> // For std::getenv
-#include <cstring>
 #include <iostream>
-#include <stdio.h>
-#include <unistd.h>
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
@@ -29,22 +41,6 @@
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
-
-#ifdef _WIN32
-#include <windows.h> // For Windows dynamic loading
-typedef HMODULE LibHandle;
-#define LOAD_LIBRARY(lib) LoadLibrary(lib)
-#define GET_FUNCTION(handle, func) GetProcAddress(handle, func)
-#define CLOSE_LIBRARY(handle) FreeLibrary(handle)
-#else
-#include <dlfcn.h> // For Linux dynamic loading
-typedef void *LibHandle;
-#define LOAD_LIBRARY(lib) dlopen(lib, RTLD_LAZY)
-#define GET_FUNCTION(handle, func) dlsym(handle, func)
-#define CLOSE_LIBRARY(handle) dlclose(handle)
-#endif
-
-using namespace xercesc;
 
 class PluginLoader
 {
@@ -116,7 +112,7 @@ class PluginLoader
     {
         if (handle)
         {
-            dlclose(handle);
+            CLOSE_LIBRARY(handle);
         }
     }
 
@@ -145,19 +141,20 @@ void updateXML(const std::string &xmlFilePath, const std::string &outputFilePath
         XMLPlatformUtils::Initialize();
 
         // Create the DOM parser
-        XercesDOMParser *parser = new XercesDOMParser();
+        XERCES_CPP_NAMESPACE::XercesDOMParser *parser = new XERCES_CPP_NAMESPACE::XercesDOMParser();
         parser->parse(xmlFilePath.c_str());
-        DOMDocument *xmlDoc = parser->getDocument();
+        XERCES_CPP_NAMESPACE::DOMDocument *xmlDoc = parser->getDocument();
 
         // Get the root element
-        DOMElement *root = xmlDoc->getDocumentElement();
+        XERCES_CPP_NAMESPACE::DOMElement *root = xmlDoc->getDocumentElement();
 
         // Find the specified node
-        DOMNodeList *nodes = root->getElementsByTagName(XMLString::transcode(nodeName.c_str()));
+        XERCES_CPP_NAMESPACE::DOMNodeList *nodes = root->getElementsByTagName(XMLString::transcode(nodeName.c_str()));
         if (nodes->getLength() > 0)
         {
             // Modify the first node's attribute
-            DOMElement *element = dynamic_cast<DOMElement *>(nodes->item(0));
+            XERCES_CPP_NAMESPACE::DOMElement *element =
+                dynamic_cast<XERCES_CPP_NAMESPACE::DOMElement *>(nodes->item(0));
             if (element)
             {
                 element->setAttribute(XMLString::transcode(attributeName.c_str()),
@@ -166,9 +163,12 @@ void updateXML(const std::string &xmlFilePath, const std::string &outputFilePath
         }
 
         // Save the modified document to the output file
-        DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
-        DOMLSSerializer *serializer = ((DOMImplementationLS *)impl)->createLSSerializer();
-        DOMLSOutput *output = ((DOMImplementationLS *)impl)->createLSOutput();
+        XERCES_CPP_NAMESPACE::DOMImplementation *impl =
+            XERCES_CPP_NAMESPACE::DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
+        XERCES_CPP_NAMESPACE::DOMLSSerializer *serializer =
+            ((XERCES_CPP_NAMESPACE::DOMImplementationLS *)impl)->createLSSerializer();
+        XERCES_CPP_NAMESPACE::DOMLSOutput *output =
+            ((XERCES_CPP_NAMESPACE::DOMImplementationLS *)impl)->createLSOutput();
 
         // Set the output file
         LocalFileFormatTarget target(outputFilePath.c_str());
@@ -191,7 +191,7 @@ void updateXML(const std::string &xmlFilePath, const std::string &outputFilePath
         std::cerr << "[EsminiPlugin] Error during parsing: " << message << std::endl;
         XMLString::release(&message);
     }
-    catch (const DOMException &e)
+    catch (const XERCES_CPP_NAMESPACE::DOMException &e)
     {
         char *message = XMLString::transcode(e.msg);
         std::cerr << "[EsminiPlugin] DOM Error: " << message << std::endl;
@@ -208,10 +208,14 @@ const char *lasterrormsg = "";
 bool StartViewer()
 {
     std::cout << "[EsminiPlugin] START Esmini Viewer" << std::endl;
+    std::cout << "ASAM_QC_FRAMEWORK_INSTALLATION_DIR env variable : "
+              << std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR") << std::endl;
     // Use platform-specific shared library name
 #ifdef _WIN32
     std::string libPath = std::string(std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR")) +
-                          "/examples/esmini_viewer/third_party/esminiLib/libesminiLib.dll";
+                          "\\examples\\esmini_viewer\\third_party\\esminiLib\\esminiLib.dll";
+    std::cout << "libPath   : " << libPath << std::endl;
+
 #else
     std::string libPath = std::string(std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR")) +
                           "/examples/esmini_viewer/third_party/esminiLib/libesminiLib.so";
@@ -284,15 +288,17 @@ bool Initialize(const char *inputPath)
         }
         std::string installDir(installDirChar);
 
-        std::string asamFilesPath = installDir + "examples/esmini_viewer/asam_files/";
-        std::string outputRelativePath = asamFilesPath + "to_send.xosc";
+        std::string asamFilesPath = (fs::path(installDir) / "examples" / "esmini_viewer" / "asam_files").string();
+        std::string outputRelativePath = (fs::path(asamFilesPath) / "to_send.xosc").string();
         if (isXoscFile)
         {
-            updateXML(asamFilesPath + "template.xosc", outputRelativePath, "LogicFile", "filepath", odrFromXosc);
+            updateXML((fs::path(asamFilesPath) / "template.xosc").string(), outputRelativePath, "LogicFile", "filepath",
+                      odrFromXosc);
         }
         else
         {
-            updateXML(asamFilesPath + "template.xosc", outputRelativePath, "LogicFile", "filepath", inputPath);
+            updateXML((fs::path(asamFilesPath) / "template.xosc").string(), outputRelativePath, "LogicFile", "filepath",
+                      inputPath);
         }
         fs::path absPath = fs::absolute(outputRelativePath);
         std::cout << "[EsminiPlugin] Absolute path: " << absPath << std::endl;

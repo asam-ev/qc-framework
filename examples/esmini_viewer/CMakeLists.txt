@@ -20,7 +20,7 @@ include_directories(${ESMINI_VIEWER} PRIVATE
     ${XercesC_INCLUDE_DIRS}
 )
 
-add_library(${ESMINI_VIEWER} SHARED esmini_viewer.cpp helper.cpp)
+add_library(${ESMINI_VIEWER} SHARED esmini_viewer.cpp)
 
 # Check if the platform requires linking with CMAKE_DL_LIBS (typically on Linux)
 if(CMAKE_DL_LIBS)
