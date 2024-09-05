@@ -30,15 +30,26 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
 
-#include <dlfcn.h> // For dynamic loading on Linux
-// #include <windows.h> // For dynamic loading on Windows
+#ifdef _WIN32
+#include <windows.h> // For Windows dynamic loading
+typedef HMODULE LibHandle;
+#define LOAD_LIBRARY(lib) LoadLibrary(lib)
+#define GET_FUNCTION(handle, func) GetProcAddress(handle, func)
+#define CLOSE_LIBRARY(handle) FreeLibrary(handle)
+#else
+#include <dlfcn.h> // For Linux dynamic loading
+typedef void *LibHandle;
+#define LOAD_LIBRARY(lib) dlopen(lib, RTLD_LAZY)
+#define GET_FUNCTION(handle, func) dlsym(handle, func)
+#define CLOSE_LIBRARY(handle) dlclose(handle)
+#endif
 
 using namespace xercesc;
 
 class PluginLoader
 {
   private:
-    void *handle;
+    LibHandle handle;
     bool loaded;
 
   public:
@@ -54,40 +65,51 @@ class PluginLoader
     SE_Step_func_type SE_Step;
     SE_Close_func_type SE_Close;
 
-    PluginLoader(std::string lib_path)
-        : handle(nullptr), SE_Init(nullptr), SE_GetIdByName(nullptr), SE_ReportObjectPosXYH(nullptr), SE_Step(nullptr),
+    PluginLoader()
+        : SE_Init(nullptr), SE_GetIdByName(nullptr), SE_ReportObjectPosXYH(nullptr), SE_Step(nullptr),
           SE_Close(nullptr), loaded(false)
     {
+    }
+
+    bool Load(std::string lib_path)
+    {
         // Load the shared library
-        handle = dlopen(lib_path.c_str(), RTLD_LAZY);
+        handle = LOAD_LIBRARY(lib_path.c_str());
         if (!handle)
         {
+#ifdef _WIN32
+            std::cerr << "Failed to load library: " << GetLastError() << std::endl;
+#else
             std::cerr << "Failed to load library: " << dlerror() << std::endl;
+#endif
+            return false;
         }
-        else
+
+        std::cout << "Library loaded successfully!" << std::endl;
+
+        // Load all the functions
+        SE_Init = (SE_Init_func_type)dlsym(handle, "SE_Init");
+        SE_GetIdByName = (SE_GetIdByName_func_type)dlsym(handle, "SE_GetIdByName");
+        SE_ReportObjectPosXYH = (SE_ReportObjectPosXYH_func_type)dlsym(handle, "SE_ReportObjectPosXYH");
+        SE_Step = (SE_Step_func_type)dlsym(handle, "SE_Step");
+        SE_Close = (SE_Close_func_type)dlsym(handle, "SE_Close");
+
+        // Check if all functions were loaded successfully
+        if (!SE_Init || !SE_GetIdByName || !SE_ReportObjectPosXYH || !SE_Step || !SE_Close)
         {
-            std::cout << "Library loaded successfully!" << std::endl;
-
-            // Load all the functions
-            SE_Init = (SE_Init_func_type)dlsym(handle, "SE_Init");
-            SE_GetIdByName = (SE_GetIdByName_func_type)dlsym(handle, "SE_GetIdByName");
-            SE_ReportObjectPosXYH = (SE_ReportObjectPosXYH_func_type)dlsym(handle, "SE_ReportObjectPosXYH");
-            SE_Step = (SE_Step_func_type)dlsym(handle, "SE_Step");
-            SE_Close = (SE_Close_func_type)dlsym(handle, "SE_Close");
-
-            // Check if all functions were loaded successfully
-            if (!SE_Init || !SE_GetIdByName || !SE_ReportObjectPosXYH || !SE_Step || !SE_Close)
-            {
-                std::cerr << "Failed to load one or more functions: " << dlerror() << std::endl;
-                dlclose(handle);
-                handle = nullptr; // Invalidate the handle
-            }
-            else
-            {
-                std::cout << "All functions loaded successfully!" << std::endl;
-                loaded = true;
-            }
+#ifdef _WIN32
+            std::cerr << "Failed to load one or more functions: " << GetLastError() << std::endl;
+#else
+            std::cerr << "Failed to load one or more functions: " << dlerror() << std::endl;
+#endif
+            CLOSE_LIBRARY(handle);
+            handle = nullptr; // Invalidate the handle
+            return false;
         }
+
+        std::cout << "All functions loaded successfully!" << std::endl;
+        loaded = true;
+        return true;
     }
 
     ~PluginLoader()
@@ -106,10 +128,7 @@ class PluginLoader
 };
 
 // Load the plugin (shared library)
-PluginLoader esmini_plugin(std::string(std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR")) +
-                           "/examples/esmini_viewer/third_party/esminiLib/libesminiLib.so"); // Use
-                                                                                             // LoadLibrary()
-                                                                                             // on Windows
+PluginLoader esmini_plugin;
 
 void updateXML(const std::string &xmlFilePath, const std::string &outputFilePath, const std::string &nodeName,
                const std::string &attributeName, const std::string &newValue)
@@ -188,8 +207,16 @@ const char *lasterrormsg = "";
 
 bool StartViewer()
 {
-    std::cout << "[EsminiPlugin] START Odr Viewer" << std::endl;
-    return true;
+    std::cout << "[EsminiPlugin] START Esmini Viewer" << std::endl;
+    // Use platform-specific shared library name
+#ifdef _WIN32
+    std::string libPath = std::string(std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR")) +
+                          "/examples/esmini_viewer/third_party/esminiLib/libesminiLib.dll";
+#else
+    std::string libPath = std::string(std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR")) +
+                          "/examples/esmini_viewer/third_party/esminiLib/libesminiLib.so";
+#endif
+    return esmini_plugin.Load(libPath);
 }
 
 std::string getFileExtension(const std::string &filename)
@@ -211,6 +238,11 @@ std::string getFileExtension(const std::string &filename)
 bool Initialize(const char *inputPath)
 {
 
+    if (!esmini_plugin.isLoaded())
+    {
+        lasterrormsg = "ERROR: Esmini plugin not loaded. Cannot start viewer";
+        return false;
+    }
     if (std::strcmp(inputPath, "") == 0)
     {
         lasterrormsg = "ERROR: No valid xosc or xodr file found.";
