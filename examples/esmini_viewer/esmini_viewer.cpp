@@ -15,15 +15,10 @@
 
 #include "helper.h"
 #include "viewer/i_connector.h"
-#include <arpa/inet.h>
-#include <chrono>
 #include <cstdlib> // For std::getenv
 #include <cstring>
 #include <iostream>
-#include <nlohmann/json.hpp>
 #include <stdio.h>
-#include <sys/socket.h>
-#include <thread>
 #include <unistd.h>
 
 #include <xercesc/dom/DOM.hpp>
@@ -35,13 +30,86 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
 
-#define SERVER_ADDRESS "127.0.0.1"
-#define PORT 8080
+#include <dlfcn.h> // For dynamic loading on Linux
+// #include <windows.h> // For dynamic loading on Windows
 
-using json = nlohmann::json;
 using namespace xercesc;
 
-int sockfd = -1;
+class PluginLoader
+{
+  private:
+    void *handle;
+    bool loaded;
+
+  public:
+    typedef int (*SE_Init_func_type)(const char *, int, int, int, int);
+    typedef int (*SE_GetIdByName_func_type)(const char *);
+    typedef int (*SE_ReportObjectPosXYH_func_type)(int, float, float, float, float);
+    typedef int (*SE_Step_func_type)();
+    typedef void (*SE_Close_func_type)();
+
+    SE_Init_func_type SE_Init;
+    SE_GetIdByName_func_type SE_GetIdByName;
+    SE_ReportObjectPosXYH_func_type SE_ReportObjectPosXYH;
+    SE_Step_func_type SE_Step;
+    SE_Close_func_type SE_Close;
+
+    PluginLoader(std::string lib_path)
+        : handle(nullptr), SE_Init(nullptr), SE_GetIdByName(nullptr), SE_ReportObjectPosXYH(nullptr), SE_Step(nullptr),
+          SE_Close(nullptr), loaded(false)
+    {
+        // Load the shared library
+        handle = dlopen(lib_path.c_str(), RTLD_LAZY);
+        if (!handle)
+        {
+            std::cerr << "Failed to load library: " << dlerror() << std::endl;
+        }
+        else
+        {
+            std::cout << "Library loaded successfully!" << std::endl;
+
+            // Load all the functions
+            SE_Init = (SE_Init_func_type)dlsym(handle, "SE_Init");
+            SE_GetIdByName = (SE_GetIdByName_func_type)dlsym(handle, "SE_GetIdByName");
+            SE_ReportObjectPosXYH = (SE_ReportObjectPosXYH_func_type)dlsym(handle, "SE_ReportObjectPosXYH");
+            SE_Step = (SE_Step_func_type)dlsym(handle, "SE_Step");
+            SE_Close = (SE_Close_func_type)dlsym(handle, "SE_Close");
+
+            // Check if all functions were loaded successfully
+            if (!SE_Init || !SE_GetIdByName || !SE_ReportObjectPosXYH || !SE_Step || !SE_Close)
+            {
+                std::cerr << "Failed to load one or more functions: " << dlerror() << std::endl;
+                dlclose(handle);
+                handle = nullptr; // Invalidate the handle
+            }
+            else
+            {
+                std::cout << "All functions loaded successfully!" << std::endl;
+                loaded = true;
+            }
+        }
+    }
+
+    ~PluginLoader()
+    {
+        if (handle)
+        {
+            dlclose(handle);
+        }
+    }
+
+    // Function to check if library and functions are loaded successfully
+    bool isLoaded() const
+    {
+        return loaded;
+    }
+};
+
+// Load the plugin (shared library)
+PluginLoader esmini_plugin(std::string(std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR")) +
+                           "/examples/esmini_viewer/third_party/esminiLib/libesminiLib.so"); // Use
+                                                                                             // LoadLibrary()
+                                                                                             // on Windows
 
 void updateXML(const std::string &xmlFilePath, const std::string &outputFilePath, const std::string &nodeName,
                const std::string &attributeName, const std::string &newValue)
@@ -116,77 +184,6 @@ void updateXML(const std::string &xmlFilePath, const std::string &outputFilePath
     }
 }
 
-bool sendAll(int sockfd, const void *buffer, size_t length)
-{
-    size_t total_sent = 0;
-    const char *buf = static_cast<const char *>(buffer);
-
-    while (total_sent < length)
-    {
-        ssize_t sent = send(sockfd, buf + total_sent, length - total_sent, 0);
-        if (sent <= 0)
-        {
-            std::cerr << "[EsminiPlugin] Failed to send data. Error: " << strerror(errno) << std::endl;
-            return false;
-        }
-        total_sent += sent;
-    }
-    return true;
-}
-
-bool sendJson(const json &j)
-{
-    std::string message = j.dump();
-    uint32_t message_length = htonl(message.size());
-
-    if (!sendAll(sockfd, &message_length, sizeof(message_length)))
-    {
-        std::cerr << "[EsminiPlugin] Failed to send message length." << std::endl;
-        return false;
-    }
-
-    if (!sendAll(sockfd, message.c_str(), message.size()))
-    {
-        std::cerr << "[EsminiPlugin] Failed to send JSON message." << std::endl;
-        return false;
-    }
-
-    std::cout << "[EsminiPlugin] Sent JSON message: " << message << std::endl;
-    return true;
-}
-
-bool setupConnection(const std::string &server_ip, int server_port)
-{
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd == -1)
-    {
-        std::cerr << "[EsminiPlugin] Socket creation failed. Error: " << strerror(errno) << std::endl;
-        return false;
-    }
-
-    sockaddr_in server_addr;
-    memset(&server_addr, 0, sizeof(server_addr));
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(server_port);
-
-    if (inet_pton(AF_INET, server_ip.c_str(), &server_addr.sin_addr) <= 0)
-    {
-        std::cerr << "[EsminiPlugin] Invalid address or address not supported." << std::endl;
-        close(sockfd);
-        return false;
-    }
-
-    if (connect(sockfd, reinterpret_cast<sockaddr *>(&server_addr), sizeof(server_addr)) < 0)
-    {
-        std::cerr << "[EsminiPlugin] Connection failed. Error: " << strerror(errno) << std::endl;
-        close(sockfd);
-        return false;
-    }
-
-    std::cout << "[EsminiPlugin] Connected to server at " << server_ip << ":" << server_port << std::endl;
-    return true;
-}
-
 const char *lasterrormsg = "";
 
 bool StartViewer()
@@ -214,25 +211,6 @@ std::string getFileExtension(const std::string &filename)
 bool Initialize(const char *inputPath)
 {
 
-    bool esminiIPCServerAvailable = IsExecutableAvailable("EsminiIPCServer");
-
-    if (!esminiIPCServerAvailable)
-    {
-        lasterrormsg = "ERROR: EsminiIPCServer executable not found in system path. Please follow "
-                       "qc-framework/examples/esmini_viewer/README.md for install instructions";
-        return false;
-    }
-    std::string strResultMessage;
-
-    ExecuteCommandAndDetach(strResultMessage, "EsminiIPCServer");
-    std::cout << strResultMessage << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000)));
-
-    if (!setupConnection(SERVER_ADDRESS, PORT))
-    {
-        return false; // Exit if the connection fails
-    }
-
     if (std::strcmp(inputPath, "") == 0)
     {
         lasterrormsg = "ERROR: No valid xosc or xodr file found.";
@@ -242,7 +220,7 @@ bool Initialize(const char *inputPath)
     std::cout << "[EsminiPlugin] INITIALIZE VIEWER WITH INPUT FILE: " << inputPath << std::endl;
     std::string inputFileExtension = getFileExtension(inputPath);
 
-    std::string xoscToSend;
+    std::string templateXoscPath;
     bool isXoscFile = false;
     std::string odrFromXosc;
 
@@ -286,15 +264,11 @@ bool Initialize(const char *inputPath)
         }
         fs::path absPath = fs::absolute(outputRelativePath);
         std::cout << "[EsminiPlugin] Absolute path: " << absPath << std::endl;
-        xoscToSend = absPath.string();
+        templateXoscPath = absPath.string();
     }
 
-    // Create a JSON object
-    nlohmann::json initEsminiJSON;
-    initEsminiJSON["function"] = "SE_Init";
-    initEsminiJSON["args"] = {
-        {"xosc_path", xoscToSend}, {"disable_ctrls", 0}, {"use_viewer", 1}, {"threads", 2}, {"record", 0}};
-    sendJson(initEsminiJSON);
+    // Call the function with arguments
+    esmini_plugin.SE_Init(templateXoscPath.c_str(), 1, 1, 2, 0);
 
     return true;
 }
@@ -318,18 +292,11 @@ bool ShowIssue(void *itemToShow, void *locationToShow)
 
             std::cout << "[EsminiPlugin] Sending location : " << ext_inertial_location->GetX() << " x"
                       << ext_inertial_location->GetY() << " x " << ext_inertial_location->GetZ() << std::endl;
-            // Send JSON data (can be done multiple times)
-            nlohmann::json inertial_location_json;
-            inertial_location_json["function"] = "SE_ReportObjectPosXYH";
-            inertial_location_json["args"] = {{"object_id", "marker"},
-                                              {"timestamp", 0.0},
-                                              {"x", ext_inertial_location->GetX()},
-                                              {"y", ext_inertial_location->GetY()},
-                                              {"h", 0.0}};
-            sendJson(inertial_location_json);
-            nlohmann::json step_json;
-            step_json["function"] = "SE_Step";
-            sendJson(step_json);
+            int marker_id = esmini_plugin.SE_GetIdByName("marker");
+
+            esmini_plugin.SE_ReportObjectPosXYH(marker_id, 0.0f, ext_inertial_location->GetX(),
+                                                ext_inertial_location->GetY(), 0.0f);
+            esmini_plugin.SE_Step();
             return true;
         }
     }
@@ -344,12 +311,8 @@ const char *GetName()
 
 bool CloseViewer()
 {
-    std::cout << "[EsminiPlugin] Closing viewer and socket " << std::endl;
-    nlohmann::json close_json;
-    close_json["function"] = "SE_Close";
-    sendJson(close_json);
-    // Close the connection
-    close(sockfd);
+    std::cout << "[EsminiPlugin] Closing viewer .." << std::endl;
+    esmini_plugin.SE_Close();
     return true;
 }
 

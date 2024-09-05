@@ -17,11 +17,16 @@ find_package(XercesC REQUIRED)
 
 include_directories(${ESMINI_VIEWER} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/report_modules/report_module_gui/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party
     ${XercesC_INCLUDE_DIRS}
 )
 
 add_library(${ESMINI_VIEWER} SHARED esmini_viewer.cpp helper.cpp)
+
+# Check if the platform requires linking with CMAKE_DL_LIBS (typically on Linux)
+if(CMAKE_DL_LIBS)
+    target_link_libraries(${ESMINI_VIEWER} PRIVATE ${CMAKE_DL_LIBS})
+endif()
+
 target_link_libraries(
     ${ESMINI_VIEWER}
     PRIVATE
@@ -45,6 +50,7 @@ install(
 install(
     DIRECTORY
         asam_files
+        third_party
     DESTINATION
     examples/esmini_viewer
 )
