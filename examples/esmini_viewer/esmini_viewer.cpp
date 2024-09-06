@@ -210,8 +210,9 @@ bool StartViewer()
     bool esminiLibFound = searchEsminiLibrary(esminiLibPath);
     if (!esminiLibFound)
     {
-        lasterrormsg = "ERROR: Esmini library not found neither in ESMINI_LIB_PATH env variable nor in plugin folder. "
-                       "Cannot start viewer";
+        lasterrormsg =
+            "ERROR: Esmini library not found neither in ESMINI_LIB_PATH env variable nor in installation folder. "
+            "Cannot start viewer";
         return false;
     }
 
