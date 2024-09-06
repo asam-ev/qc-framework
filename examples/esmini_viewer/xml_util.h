@@ -173,14 +173,14 @@ void writeXMLFromTemplate(const std::string &outputFilePath, const std::string &
 {
     fs::path outputFileDir = fs::path(outputFilePath).parent_path();
 
-    std::string tempFilePath = (outputFileDir / "temp.xosc").string();
-    writeXMLToTempFile(templateXoscString, tempFilePath);
-    updateXML(tempFilePath, outputFilePath, nodeName, attributeName, newValue);
+    std::string templateFilePath = (outputFileDir / "template.xosc").string();
+    writeXMLToTempFile(templateXoscString, templateFilePath);
+    updateXML(templateFilePath, outputFilePath, nodeName, attributeName, newValue);
     // Terminate the Xerces-C++ library
     XMLPlatformUtils::Terminate();
-    if (fs::exists(tempFilePath))
+    if (fs::exists(templateFilePath))
     {
-        fs::remove(tempFilePath);
+        fs::remove(templateFilePath);
     }
 }
 
