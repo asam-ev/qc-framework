@@ -1,121 +1,63 @@
 # Esmini viewer plugin
 
 
-The plugin is based on two application, the esmini plugin from the current directory and the `EsminiIPCServer` application
+The esmini plugin is a plugin to open esmini simulator to visualize an input OpenDRIVE file
 
-`EsminiIPCServer` uses `esminiLib.hpp` library to interact with esmini player.
+The plugin depends on esminiLib API. More information about the API can be found on the [official documentation](https://esmini.github.io/#_esmini_lib_programming)
 
 ## Installation
 
 After building the framework, a new plugin will be shown in the `File` dropdown menu of the ReportGUI application
 
-The plugin starts a second application `EsminiIPCServer` that receives esmini command over the network and executes them.
+The plugin depends on a single file, the esminiLib library that is included in each [esmini release](https://github.com/esmini/esmini/releases).
 
-So in order to execute this you need to
+- If you are working on windows, the library you will need is `esminiLib.dll`
 
-1. Have `EsminiIPCServer` application on your computer. Current PR where it is developed can be found [here](https://github.com/IVEX-AI/esmini/pull/1)
-2. Add `EsminiIPCServer` to your system path
+- If you are working on Linux, the library is `libesminiLib.so`
 
-    - Linux install
-        Long term installation:
+The library file needs to be downloaded on user local computer.
 
-        ```
-        sudo mv YOUR_BIN_DIRECTORY/EsminiIPCServer /usr/local/bin/
-        ```
+Then, the application searches for the library file following this approach:
 
-        Short term installation:
+1. Check if library file is present in the folder pointed by the `ESMINI_LIB_PATH` environment variable
+2. Check if library file is present in the folder where the `ReportGUI` executable is present
 
-        ```
-        export PATH=$PATH:YOUR_BIN_DIRECTORY/
-        ```
-3. The `ReportGUI` application that uses this plugin needs to declare the environment variable `ASAM_QC_FRAMEWORK_INSTALLATION_DIR`, to point where the qc-framework is installed
+So in order to use the plugin you can either:
+
+- Define the ESMINI_LIB_PATH environment variable to where you downloaded the library file from esmini
 
     e.g.
     ```
-    export ASAM_QC_FRAMEWORK_INSTALLATION_DIR=/home/user/qc-build/
+    export ESMINI_LIB_PATH=/home/user/Downloads/esmini-demo/bin
     ```
 
-## Architecture
+- Copy the library file to the location where ReportGUI application is present
 
-The plugin is based on two application, the esmini plugin from the current directory and the `EsminiIPCServer` application
-
-The two application sends information to each other in the form of JSON messages exchanged over TCP socket
-
-Communication is by default set to happen at `127.0.0.1:8080`
-
-### Protocol
-
-#### Step 1 - Init scenario
-
-- From esmini-viewer plugin
-
-    1. Read `InputFile` param from currently shown result file.
-
-        - If it is an OTX file, ignore it
-        - If it is an XODR file, wrap it in a simple xosc file using [template file](./asam_files/template.xosc)
-        - If it is an XOSC file, extract its XODR file and wrap it in a simple xosc file using [template file](./asam_files/template.xosc)
+    e.g.
+    ```
+    cp /home/user/Downloads/esmini-demo/bin/libesminiLib.so ~/qc-build/bin/
+    ```
 
 
-    2. Send the init json following the format
 
-        ```
-        nlohmann::json init_esmini_json = {
-            {"function", "SE_Init"},
-            {"args": {
-                        "xosc_path": string
-                        "disable_ctrls": int
-                        "use_viewer": int
-                        "threads": int
-                        "record": int
-                    }
-            }
-        };
-        ```
+## Additional information
 
-- From `EsminiIPCServer` app
-    1. Execute `SE_Init`` with passed args and wait
+#### Which OpenDRIVE file to render
 
+In order to establish which openDRIVE file to render in esmini, the plugin reads the `InputFile`` param from currently shown result file:
 
-#### Step 2 - Update camera
+- If it is an OTX file, ignore it
+- If it is an XODR file, wrap it in a simple and empty xosc file
+- If it is an XOSC file, extract its XODR file and wrap it in a simple and empty xosc file
 
-- From esmini-viewer plugin
+The template empty scenario file is created starting from [the string defined here](./xml_util.h#30)
 
-    1. Send the inertial location in JSON following the format:
-        ```
-        nlohmann::json inertial_location_json = {{"function", SE_ReportObjectPosXYH},
-                                                    {"object_id", "Ego"},
-                                                    {"x", ext_inertial_location->GetX()},
-                                                    {"y", ext_inertial_location->GetY()},
-                                                    {"z", ext_inertial_location->GetZ()},
-                                                    {"h", ext_inertial_location->GetH()}};
-        ```
-- From `EsminiIPCServer` app
+#### esminiLib function
 
-    1. Execute `SE_ReportObjectPosXYH` with passed arguments
+The plugin uses the following function from esminiLib:
 
-#### Step 3 - Step
-
-This is needed in order to make the location to be updated and to control esmini player playback
-
-- From esmini-viewer plugin
-
-    1. Send the step JSON following the format:
-        ```
-        nlohmann::json step_json = {{"function", SE_Step}}
-        ```
-- From `EsminiIPCServer` app
-
-    1. Execute `SE_Step`
-
-#### Step 4 - Close player
-
-- From esmini-viewer plugin
-
-    1. Send the close message in JSON following the format:
-        ```
-        nlohmann::json step_json = {{"function", SE_Close}}
-
-        ```
-- From `EsminiIPCServer` app
-
-    1. Execute `SE_Close` with passed arguments
+- [`SE_Init`](https://github.com/esmini/esmini/blob/master/EnvironmentSimulator/Libraries/esminiLib/esminiLib.cpp#L645): used to initialize the player to visualize the right OpenDRIVE file
+- [`SE_GetIdByName`](https://github.com/esmini/esmini/blob/master/EnvironmentSimulator/Libraries/esminiLib/esminiLib.cpp#L1424): to retrieve the `marker` object used to move the camera in the scenario
+- [`SE_ReportObjectPosXYH`](https://github.com/esmini/esmini/blob/master/EnvironmentSimulator/Libraries/esminiLib/esminiLib.cpp#L1191): used to move the camera at specified location
+- [`SE_Step`](https://github.com/esmini/esmini/blob/master/EnvironmentSimulator/Libraries/esminiLib/esminiLib.cpp#L955): used to allow the esmini player to advance
+- [`SE_Close`](https://github.com/esmini/esmini/blob/master/EnvironmentSimulator/Libraries/esminiLib/esminiLib.cpp#L939): used to close the esmini player
