@@ -16,7 +16,6 @@ set_property(GLOBAL PROPERTY USE_FOLDERS true)
 find_package(XercesC REQUIRED)
 
 include_directories(${ESMINI_VIEWER} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/report_modules/report_module_gui/src
     ${XercesC_INCLUDE_DIRS}
 )
 
@@ -47,12 +46,5 @@ install(
         examples/esmini_viewer/src
 )
 
-install(
-    DIRECTORY
-        asam_files
-        third_party
-    DESTINATION
-    examples/esmini_viewer
-)
 
 set_target_properties(${ESMINI_VIEWER} PROPERTIES FOLDER examples/viewer)

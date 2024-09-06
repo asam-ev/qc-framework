@@ -1,5 +1,5 @@
-/*
- * Copyright 2023 CARIAD SE.
+/**
+ * Copyright 2024, ASAM e.V.
  *
  * This Source Code Form is subject to the terms of the Mozilla
  * Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -8,6 +8,7 @@
 
 #ifdef _WIN32
 #include <windows.h> // For Windows dynamic loading
+
 typedef HMODULE LibHandle;
 #define LOAD_LIBRARY(lib) LoadLibrary(lib)
 #define GET_FUNCTION(handle, func) GetProcAddress(handle, func)
@@ -15,6 +16,7 @@ typedef HMODULE LibHandle;
 #else
 #include <cstring>
 #include <dlfcn.h> // For Linux dynamic loading
+#include <limits.h>
 #include <unistd.h>
 
 typedef void *LibHandle;
@@ -30,17 +32,93 @@ typedef void *LibHandle;
 #include "common/result_format/c_locations_container.h"
 
 #include "viewer/i_connector.h"
+#include "xml_util.h"
 #include <cstdlib> // For std::getenv
 #include <iostream>
 
-#include <xercesc/dom/DOM.hpp>
-#include <xercesc/dom/DOMImplementation.hpp>
-#include <xercesc/dom/DOMImplementationLS.hpp>
-#include <xercesc/dom/DOMLSSerializer.hpp>
-#include <xercesc/framework/LocalFileFormatTarget.hpp>
-#include <xercesc/parsers/XercesDOMParser.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-#include <xercesc/util/XMLString.hpp>
+const char *lasterrormsg = "";
+std::string scenario_file_path = "";
+
+fs::path getTempPath()
+{
+#ifdef _WIN32
+    // Windows: Use GetTempPath to get the temporary directory
+    char tempPath[MAX_PATH];
+    if (GetTempPath(MAX_PATH, tempPath))
+    {
+        return fs::path(tempPath);
+    }
+    else
+    {
+        std::cerr << "Failed to get temp path." << std::endl;
+        return "";
+    }
+#else
+    // Linux: Use TMPDIR environment variable or default to /tmp
+    const char *tempPath = std::getenv("TMPDIR");
+    if (tempPath == nullptr)
+    {
+        tempPath = "/tmp";
+    }
+    return fs::path(tempPath);
+#endif
+}
+
+std::string getExecutablePath()
+{
+    char path[1024];
+#ifdef _WIN32
+    // Windows: Use GetModuleFileName to get the path of the current executable
+    if (GetModuleFileNameA(NULL, path, sizeof(path)) == 0)
+    {
+        return "Error retrieving executable path";
+    }
+#else
+    // Linux/Unix: Use readlink to get the path of the current executable
+    ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
+    if (len == -1)
+    {
+        return "Error retrieving executable path";
+    }
+    path[len] = '\0'; // Null-terminate the path
+#endif
+    return std::string(path);
+}
+
+// Function to search for the library
+bool searchEsminiLibrary(std::string &outPath)
+{
+    // Define the library file name with appropriate extension
+#if defined(_WIN32)
+    std::string libFile = "esminiLib.dll";
+#else
+    std::string libFile = "libesminiLib.so";
+#endif
+
+    // Step 1: Check if ENV_VAR is set
+    const char *envVar = std::getenv("ESMINI_LIB_PATH");
+    if (envVar)
+    {
+        fs::path envPath(envVar);
+        fs::path fullPath = envPath / libFile;
+        if (fs::exists(fullPath))
+        {
+            outPath = fullPath.string();
+            return true;
+        }
+    }
+
+    // Step 2: Get executable path and search in it
+    fs::path execPath = fs::path(getExecutablePath());
+    fs::path execParentPath = execPath.parent_path(); // Get the directory part of the executable path
+    fs::path pluginPath = execParentPath / libFile;
+    if (fs::exists(pluginPath))
+    {
+        outPath = pluginPath.string();
+        return true;
+    }
+    return false;
+}
 
 class PluginLoader
 {
@@ -126,101 +204,18 @@ class PluginLoader
 // Load the plugin (shared library)
 PluginLoader esmini_plugin;
 
-void updateXML(const std::string &xmlFilePath, const std::string &outputFilePath, const std::string &nodeName,
-               const std::string &attributeName, const std::string &newValue)
-{
-    // Check if the XML file exists
-    if (!fs::exists(xmlFilePath))
-    {
-        std::cerr << "[EsminiPlugin] Error: File " << xmlFilePath << " does not exist." << std::endl;
-        return;
-    }
-    try
-    {
-        // Initialize the Xerces-C++ library
-        XMLPlatformUtils::Initialize();
-
-        // Create the DOM parser
-        XERCES_CPP_NAMESPACE::XercesDOMParser *parser = new XERCES_CPP_NAMESPACE::XercesDOMParser();
-        parser->parse(xmlFilePath.c_str());
-        XERCES_CPP_NAMESPACE::DOMDocument *xmlDoc = parser->getDocument();
-
-        // Get the root element
-        XERCES_CPP_NAMESPACE::DOMElement *root = xmlDoc->getDocumentElement();
-
-        // Find the specified node
-        XERCES_CPP_NAMESPACE::DOMNodeList *nodes = root->getElementsByTagName(XMLString::transcode(nodeName.c_str()));
-        if (nodes->getLength() > 0)
-        {
-            // Modify the first node's attribute
-            XERCES_CPP_NAMESPACE::DOMElement *element =
-                dynamic_cast<XERCES_CPP_NAMESPACE::DOMElement *>(nodes->item(0));
-            if (element)
-            {
-                element->setAttribute(XMLString::transcode(attributeName.c_str()),
-                                      XMLString::transcode(newValue.c_str()));
-            }
-        }
-
-        // Save the modified document to the output file
-        XERCES_CPP_NAMESPACE::DOMImplementation *impl =
-            XERCES_CPP_NAMESPACE::DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("LS"));
-        XERCES_CPP_NAMESPACE::DOMLSSerializer *serializer =
-            ((XERCES_CPP_NAMESPACE::DOMImplementationLS *)impl)->createLSSerializer();
-        XERCES_CPP_NAMESPACE::DOMLSOutput *output =
-            ((XERCES_CPP_NAMESPACE::DOMImplementationLS *)impl)->createLSOutput();
-
-        // Set the output file
-        LocalFileFormatTarget target(outputFilePath.c_str());
-        output->setByteStream(&target);
-
-        // Write the content to the file
-        serializer->write(xmlDoc, output);
-
-        // Clean up
-        serializer->release();
-        output->release();
-        delete parser;
-
-        // Terminate the Xerces-C++ library
-        XMLPlatformUtils::Terminate();
-    }
-    catch (const XMLException &e)
-    {
-        char *message = XMLString::transcode(e.getMessage());
-        std::cerr << "[EsminiPlugin] Error during parsing: " << message << std::endl;
-        XMLString::release(&message);
-    }
-    catch (const XERCES_CPP_NAMESPACE::DOMException &e)
-    {
-        char *message = XMLString::transcode(e.msg);
-        std::cerr << "[EsminiPlugin] DOM Error: " << message << std::endl;
-        XMLString::release(&message);
-    }
-    catch (...)
-    {
-        std::cerr << "[EsminiPlugin] An unexpected error occurred during XML modification." << std::endl;
-    }
-}
-
-const char *lasterrormsg = "";
-
 bool StartViewer()
 {
-    std::cout << "[EsminiPlugin] START Esmini Viewer" << std::endl;
-    std::cout << "ASAM_QC_FRAMEWORK_INSTALLATION_DIR env variable : "
-              << std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR") << std::endl;
-    // Use platform-specific shared library name
-#ifdef _WIN32
-    std::string libPath = std::string(std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR")) +
-                          "\\examples\\esmini_viewer\\third_party\\esminiLib\\esminiLib.dll";
-    std::cout << "libPath   : " << libPath << std::endl;
+    std::string esminiLibPath;
+    bool esminiLibFound = searchEsminiLibrary(esminiLibPath);
+    if (!esminiLibFound)
+    {
+        lasterrormsg = "ERROR: Esmini library not found neither in ESMINI_LIB_PATH env variable nor in plugin folder. "
+                       "Cannot start viewer";
+        return false;
+    }
 
-#else
-    std::string libPath = std::string(std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR")) +
-                          "/examples/esmini_viewer/third_party/esminiLib/libesminiLib.so";
-#endif
-    return esmini_plugin.Load(libPath);
+    return esmini_plugin.Load(esminiLibPath);
 }
 
 std::string getFileExtension(const std::string &filename)
@@ -278,35 +273,20 @@ bool Initialize(const char *inputPath)
 
     if (inputFileExtension == "xodr" || isXoscFile)
     {
-        const char *installDirChar = std::getenv("ASAM_QC_FRAMEWORK_INSTALLATION_DIR");
-        if (!installDirChar)
-        {
-            std::cerr << "[EsminiPlugin] Environment variable ASAM_QC_FRAMEWORK_INSTALLATION_DIR is not set. ODR "
-                         "viewer cannot be set"
-                      << std::endl;
-            return false;
-        }
-        std::string installDir(installDirChar);
 
-        std::string asamFilesPath = (fs::path(installDir) / "examples" / "esmini_viewer" / "asam_files").string();
-        std::string outputRelativePath = (fs::path(asamFilesPath) / "to_send.xosc").string();
+        scenario_file_path = (getTempPath() / "esmini_file_to_load.xosc").string();
         if (isXoscFile)
         {
-            updateXML((fs::path(asamFilesPath) / "template.xosc").string(), outputRelativePath, "LogicFile", "filepath",
-                      odrFromXosc);
+            writeXMLFromTemplate(scenario_file_path, "LogicFile", "filepath", odrFromXosc);
         }
         else
         {
-            updateXML((fs::path(asamFilesPath) / "template.xosc").string(), outputRelativePath, "LogicFile", "filepath",
-                      inputPath);
+            writeXMLFromTemplate(scenario_file_path, "LogicFile", "filepath", inputPath);
         }
-        fs::path absPath = fs::absolute(outputRelativePath);
-        std::cout << "[EsminiPlugin] Absolute path: " << absPath << std::endl;
-        templateXoscPath = absPath.string();
-    }
 
-    // Call the function with arguments
-    esmini_plugin.SE_Init(templateXoscPath.c_str(), 1, 1, 2, 0);
+        // Call the function with arguments
+        esmini_plugin.SE_Init(scenario_file_path.c_str(), 1, 1, 2, 0);
+    }
 
     return true;
 }
@@ -349,6 +329,11 @@ const char *GetName()
 
 bool CloseViewer()
 {
+
+    if (fs::exists(scenario_file_path))
+    {
+        fs::remove(scenario_file_path);
+    }
     std::cout << "[EsminiPlugin] Closing viewer .." << std::endl;
     esmini_plugin.SE_Close();
     return true;
