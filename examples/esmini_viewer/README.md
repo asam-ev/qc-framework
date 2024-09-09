@@ -1,41 +1,63 @@
 # Esmini viewer plugin
 
-This folder contain the plugin to add an odr viewer based on esmini-odrviewer application
+
+The esmini plugin is a plugin to open esmini simulator to visualize an input OpenDRIVE file
+
+The plugin depends on esminiLib API. More information about the API can be found on the [official documentation](https://esmini.github.io/#_esmini_lib_programming)
 
 ## Installation
 
 After building the framework, a new plugin will be shown in the `File` dropdown menu of the ReportGUI application
 
-The plugin executes the command
+The plugin depends on a single file, the esminiLib library that is included in each [esmini release](https://github.com/esmini/esmini/releases).
 
-```
-odrviewer --density 0 --window 100 100 800 800 --odr YOUR_ODR
-```
+- If you are working on windows, the library you will need is `esminiLib.dll`
 
-So in order to execute this you need to
+- If you are working on Linux, the library is `libesminiLib.so`
 
-1. Download esmini-demo from [esmini release page](https://github.com/esmini/esmini/releases)
-2. Install `odrviewer` in your system path
+The library file needs to be downloaded on user local computer.
 
-    - Linux install
-        Long term installation:
+Then, the application searches for the library file following this approach:
 
-        ```
-        sudo mv esmini-demo/bin/odrviewer /usr/local/bin/
-        ```
+1. Check if library file is present in the folder pointed by the `ESMINI_LIB_PATH` environment variable
+2. Check if library file is present in the folder where the `ReportGUI` executable is present
 
-        Short term installation:
+So in order to use the plugin you can either:
 
-        ```
-        export PATH=$PATH:esmini-demo/bin/
-        ```
+- Define the ESMINI_LIB_PATH environment variable to where you downloaded the library file from esmini
 
-## Usage
+    e.g.
+    ```
+    export ESMINI_LIB_PATH=/home/user/Downloads/esmini-demo/bin
+    ```
 
-The plugin checks the input file pointed by the xqar file you are inspecting:
+- Copy the library file to the location where ReportGUI application is present
 
-- If it is an OTX file, the plugin does not show anything
-- If it is an ODR file, the plugin shows it
-- If it is an OSC file, the plugin get the correspoding openDRIVE file from the input openSCENARIO and shows that road network
+    e.g.
+    ```
+    cp /home/user/Downloads/esmini-demo/bin/libesminiLib.so ~/qc-build/bin/
+    ```
 
-Currently the plugin has only the functionality of showing the road network and it is presented for demonstration purposes.
+
+
+## Additional information
+
+#### Which OpenDRIVE file to render
+
+In order to establish which openDRIVE file to render in esmini, the plugin reads the `InputFile`` param from currently shown result file:
+
+- If it is an OTX file, ignore it
+- If it is an XODR file, wrap it in a simple and empty xosc file
+- If it is an XOSC file, extract its XODR file and wrap it in a simple and empty xosc file
+
+The template empty scenario file is created starting from [the string defined here](./xml_util.h#30)
+
+#### esminiLib function
+
+The plugin uses the following function from esminiLib:
+
+- [`SE_Init`](https://github.com/esmini/esmini/blob/master/EnvironmentSimulator/Libraries/esminiLib/esminiLib.cpp#L645): used to initialize the player to visualize the right OpenDRIVE file
+- [`SE_GetIdByName`](https://github.com/esmini/esmini/blob/master/EnvironmentSimulator/Libraries/esminiLib/esminiLib.cpp#L1424): to retrieve the `marker` object used to move the camera in the scenario
+- [`SE_ReportObjectPosXYH`](https://github.com/esmini/esmini/blob/master/EnvironmentSimulator/Libraries/esminiLib/esminiLib.cpp#L1191): used to move the camera at specified location
+- [`SE_Step`](https://github.com/esmini/esmini/blob/master/EnvironmentSimulator/Libraries/esminiLib/esminiLib.cpp#L955): used to allow the esmini player to advance
+- [`SE_Close`](https://github.com/esmini/esmini/blob/master/EnvironmentSimulator/Libraries/esminiLib/esminiLib.cpp#L939): used to close the esmini player
