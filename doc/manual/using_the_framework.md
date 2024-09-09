@@ -49,10 +49,13 @@ a valid FileLocation.
 
 Additionally it is possible to link issues that correspond to a 3D error with a
 viewer application. A 3D error is an error in the 3D model of the road network.
-It gets marked with a little icon in the left part of the ReportGUI window.
-This viewer is not part of the Open Source distributution of the ASAM Quality
-Checker Framework framework, but we provide a binding mechanism which let's you
-provide your own implementation. Please refer to [the
+
+A viewer application based on the [esmini simulator](https://esmini.github.io/) is 
+provided together with the ASAM Quality Checker Framework. Please refer to the 
+[esmini viewer plugin](esmini_viewer_plugin.md) installation guide for details.
+
+The ASAM Quality Checker Framework also provide a binding mechanism which lets you
+provide your own integration to third-party viewer application. Please refer to [the
 documentation](viewer_interface.md) for details.
 
 ## Add Self Implemented CheckerBundles and ReportModules
