@@ -57,8 +57,10 @@ rule._
 
 ### Check Characteristics
 
-- A check should addresses exactly one rule. In reality, a check can address  
-  several rules, or several checks might be necessary to check a certain rule.  
+- A check should address exactly one rule, 
+  unless there is a strong reason not to. In exceptional cases, 
+  a check may address multiple rules, or multiple checks may be 
+  required to check a particular rule.
 - Each check shall have a minimum of two example input files. The first
   demonstrating a rule violation and the second showcasing a successful rule
   validation.
