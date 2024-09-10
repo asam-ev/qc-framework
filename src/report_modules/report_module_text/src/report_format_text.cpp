@@ -260,7 +260,9 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
     std::list<cIssue *> issues;
     std::list<cRule *> rules;
     std::list<cMetadata *> metadata;
-    std::set<std::string> violated_rules;
+    std::set<std::string> info_violated_rules;
+    std::set<std::string> warning_violated_rules;
+    std::set<std::string> error_violated_rules;
     std::set<std::string> addressed_rules;
 
     if (outFile.is_open())
@@ -353,7 +355,19 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                         PrintExtendedInformationIntoStream((*it_Issue), &ss);
                         if ((*it_Issue)->GetRuleUID() != "")
                         {
-                            violated_rules.insert((*it_Issue)->GetRuleUID());
+                            eIssueLevel current_issue_level = (*it_Issue)->GetIssueLevel();
+                            if (current_issue_level == eIssueLevel::INFO_LVL)
+                            {
+                                info_violated_rules.insert((*it_Issue)->GetRuleUID());
+                            }
+                            if (current_issue_level == eIssueLevel::WARNING_LVL)
+                            {
+                                warning_violated_rules.insert((*it_Issue)->GetRuleUID());
+                            }
+                            if (current_issue_level == eIssueLevel::ERROR_LVL)
+                            {
+                                error_violated_rules.insert((*it_Issue)->GetRuleUID());
+                            }
                         }
                         if ((*it_Issue)->HasDomainSpecificInfo())
                         {
@@ -414,10 +428,24 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
             ss << "\n\t-> Addressed RuleUID: " << str << "\n";
         }
 
-        ss << "\nTotal number of violated rules:    " << violated_rules.size();
-        for (const auto &str : violated_rules)
+        int total_number_of_violated_rules =
+            info_violated_rules.size() + warning_violated_rules.size() + error_violated_rules.size();
+        ss << "\nTotal number of violated rules:    " << total_number_of_violated_rules << "\n";
+
+        ss << "\nInfo violated rules:               " << info_violated_rules.size();
+        for (const auto &str : info_violated_rules)
         {
-            ss << "\n\t-> Violated RuleUID: " << str << "\n";
+            ss << "\n\t-> Info violation RuleUID: " << str;
+        }
+        ss << "\nWarning violated rules:            " << warning_violated_rules.size();
+        for (const auto &str : warning_violated_rules)
+        {
+            ss << "\n\t-> Warning violation RuleUID: " << str;
+        }
+        ss << "\nError violated rules:              " << error_violated_rules.size();
+        for (const auto &str : error_violated_rules)
+        {
+            ss << "\n\t-> Error violation RuleUID: " << str;
         }
 
         ss << "\n" << BASIC_SEPARATOR_LINE << "\n";
