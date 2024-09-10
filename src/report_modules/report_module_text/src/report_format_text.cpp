@@ -344,6 +344,12 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                         ss << "\n        " << mapIssueLevelToString[(*it_Issue)->GetIssueLevel()]
                            << (*it_Issue)->GetDescription();
 
+                        if ((*it_Issue)->GetRuleUID() != "")
+                        {
+                            ss << "\n                       "
+                               << "Relative to ruleUID: " << (*it_Issue)->GetRuleUID();
+                        }
+
                         PrintExtendedInformationIntoStream((*it_Issue), &ss);
                         if ((*it_Issue)->GetRuleUID() != "")
                         {
