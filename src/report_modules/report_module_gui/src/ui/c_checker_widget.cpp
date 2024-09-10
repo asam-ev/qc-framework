@@ -729,7 +729,7 @@ void cCheckerWidget::ShowDetails(cIssue *const itemToShow) const
         ssDetails << itemToShow->GetIssueLevelStr().c_str() << " | " << itemToShow->GetDescription().c_str();
         if (itemToShow->GetRuleUID() != "")
         {
-            ssDetails << "\nRelative to ruleUID: ";
+            ssDetails << "\nruleUID: ";
             ssDetails << itemToShow->GetRuleUID().c_str();
         }
 

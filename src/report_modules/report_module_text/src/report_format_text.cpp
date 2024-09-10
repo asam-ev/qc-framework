@@ -349,7 +349,7 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                         if ((*it_Issue)->GetRuleUID() != "")
                         {
                             ss << "\n                       "
-                               << "Relative to ruleUID: " << (*it_Issue)->GetRuleUID();
+                               << "ruleUID: " << (*it_Issue)->GetRuleUID();
                         }
 
                         PrintExtendedInformationIntoStream((*it_Issue), &ss);
@@ -499,8 +499,10 @@ void PrintExtendedInformationIntoStream(cIssue *issue, std::stringstream *ssStre
 {
     for (const auto location : issue->GetLocationsContainer())
     {
-        *ssStream << "\n                    " << location->GetDescription();
-
+        if (location->GetDescription() != "")
+        {
+            *ssStream << "\n                    " << location->GetDescription();
+        }
         std::list<cExtendedInformation *> extendedInfos = location->GetExtendedInformations();
 
         for (std::list<cExtendedInformation *>::iterator extIt = extendedInfos.begin(); extIt != extendedInfos.end();
