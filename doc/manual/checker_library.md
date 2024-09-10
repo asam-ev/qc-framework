@@ -69,9 +69,6 @@ applies._
 **Check ID:** _The ID shall be unique within the Checker Library and
 self-explanatory as possible._
 
-**Version:** _The check itself has also a version number for identifying
-changes in the results, which are based on implementation changes._
-
 **Description:** _Clear textual description of the check._
 
 **Parameters:** _Description of the parameters of this check. For a
