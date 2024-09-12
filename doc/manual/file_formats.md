@@ -19,25 +19,37 @@ result. Furthermore, it can be configured which Report Modules are started after
 all Checker Bundles finish execution.
 
 ```xml
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <Config>
+    <Param name="InputFile" value="/home/runner/CutIn.xosc" />
 
-    <Param name="InputFile" value="test.xodr" />
-
-    <CheckerBundle application="xodrBundle">
-        <Param name="resultFile" value="xodr_bundle_report.xqar" />
-        <Checker checkerId="semantic_xodr" maxLevel="1" minLevel="3" />
-        <Checker checkerId="geometry_xodr" maxLevel="1" minLevel="3" />
-        <Checker checkerId="performance_xodr" maxLevel="1" minLevel="3" />
-        <Checker checkerId="smoothness_xodr" maxLevel="1" minLevel="3" />
+    <CheckerBundle application="xoscBundle">
+        <Param name="resultFile" value="xosc_bundle_report.xqar" />
+        <Checker checkerId="check_asam_xosc_xml_valid_xml_document" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_xml_root_tag_is_openscenario" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_xml_fileheader_is_present" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_xml_version_is_defined" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_xml_valid_schema" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_reference_control_uniquely_resolvable_entity_references" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_reference_control_resolvable_signal_id_in_traffic_signal_state_action" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_reference_control_resolvable_traffic_signal_controller_by_traffic_signal_controller_ref" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_reference_control_valid_actor_reference_in_private_actions" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_reference_control_resolvable_entity_references" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_reference_control_resolvable_variable_reference" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_reference_control_resolvable_storyboard_element_reference" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_reference_control_unique_element_names_on_same_level" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_parameters_valid_parameter_declaration_in_catalogs" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_data_type_allowed_operators" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_data_type_non_negative_transition_time_in_light_state_action" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_xosc_positive_duration_in_phase" maxLevel="1" minLevel="3" />
     </CheckerBundle>
 
     <ReportModule application="TextReport">
         <Param name="strInputFile" value="Result.xqar" />
         <Param name="strReportFile" value="Report.txt" />
     </ReportModule>
-
 </Config>
+
 ```
 
 The runtime parses this file, then executes the configured Checker Bundles, and
