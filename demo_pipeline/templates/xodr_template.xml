@@ -5,6 +5,8 @@
 
     <CheckerBundle application="xodrBundle">
         <Param name="resultFile" value="xodr_bundle_report.xqar" />
+        <Checker checkerId="basic_xodr" maxLevel="1" minLevel="3" />
+        <Checker checkerId="schema_xodr" maxLevel="1" minLevel="3" />
         <Checker checkerId="semantic_xodr" maxLevel="1" minLevel="3" />
         <Checker checkerId="geometry_xodr" maxLevel="1" minLevel="3" />
         <Checker checkerId="performance_xodr" maxLevel="1" minLevel="3" />
