@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!--
+Copyright 2023 CARIAD SE.
+
+This Source Code Form is subject to the terms of the Mozilla
+Public License, v. 2.0. If a copy of the MPL was not distributed
+with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
+-->
+<OpenDRIVE>
+  <header date="2018-12-21" name="Three simple roads" revMajor="1" revMinor="4"/>
+  <road id="1" junction="-1" length="20" name="road_1">
+    <link>
+      <successor elementType="road" elementId="2"/>
+    </link>
+    <planView>
+      <geometry hdg="0" length="20" s="0" x="-10" y="0">
+        <line/>
+      </geometry>
+    </planView>
+    <elevationProfile>
+      <elevation s="0" a="-0.8" b="0.080" c="-0.002" d="0" />
+    </elevationProfile>
+    <lateralProfile>
+      <superelevation s="0" a="0.11" b="0" c="0" d="0"/>
+      <!-- this step should be recognized - begin of road_2 superelevation is 0 -->
+    </lateralProfile>
+    <lanes>
+      <laneSection s="0">
+        <left>
+          <lane id="2" type="border">
+            <width a="5" b="0" c="0" d="0" sOffset="0"/>
+          </lane>
+          <lane id="1" type="driving">
+            <width a="3.5" b="0" c="0" d="0" sOffset="0"/>
+            <roadMark type="solid"/>
+          </lane>
+        </left>
+        <center>
+          <lane id="0" type="driving">
+            <roadMark type="broken"/>
+          </lane>
+        </center>
+        <right>
+          <lane id="-1" type="driving">
+            <width a="3.5" b="0" c="0" d="0" sOffset="0"/>
+            <roadMark type="solid"/>
+          </lane>
+          <lane id="-2" type="border">
+            <width a="5" b="0" c="0" d="0" sOffset="0"/>
+          </lane>
+        </right>
+      </laneSection>
+    </lanes>
+  </road>
+
+  <road id="2" junction="-1" length="20" name="road_2">
+    <link>
+      <predecessor elementType="road" elementId="1"/>
+      <successor elementType="road" elementId="3"/>
+    </link>
+    <planView>
+      <geometry hdg="0" length="20" s="0" x="10" y="0">
+        <line/>
+      </geometry>
+    </planView>
+    <elevationProfile>
+      <elevation s="0" a="0" b="0" c="0" d="0" />
+      <!-- this step should be recognized - begin of road_3 elevation is not 0! -->
+    </elevationProfile>
+    <lanes>
+      <laneSection s="0">
+        <left>
+          <lane id="2" type="border">
+            <width a="5" b="0" c="0" d="0" sOffset="0"/>
+          </lane>
+          <lane id="1" type="driving">
+            <width a="3.5" b="0" c="0" d="0" sOffset="0"/>
+            <roadMark type="solid"/>
+          </lane>
+        </left>
+        <right>
+          <lane id="-1" type="driving">
+            <width a="3.5" b="0" c="0" d="0" sOffset="0"/>
+            <roadMark type="solid"/>
+          </lane>
+          <lane id="-2" type="border">
+            <width a="5" b="0" c="0" d="0" sOffset="0"/>
+          </lane>
+        </right>
+      </laneSection>
+    </lanes>
+  </road>
+
+  <road id="3" junction="-1" length="20" name="road_3">
+    <link>
+      <predecessor elementType="road" elementId="2"/>
+    </link>
+    <planView>
+      <geometry hdg="0" length="20" s="0" x="30" y="0">
+        <arc curvature="0.02"/>
+      </geometry>
+    </planView>
+    <elevationProfile>
+      <elevation s="0" a="0.2" b="0" c="0" d="0" />
+      <!-- this step should be recognized - at end of road_2 elevation is 0 -->
+    </elevationProfile>
+    <lanes>
+      <laneSection s="0">
+        <left>
+          <lane id="2" type="border">
+            <width a="5" b="0" c="0" d="0" sOffset="0"/>
+          </lane>
+          <lane id="1" type="driving">
+            <width a="3.5" b="0" c="0" d="0" sOffset="0"/>
+            <roadMark type="solid"/>
+          </lane>
+        </left>
+        <center>
+          <lane id="0" type="driving">
+            <roadMark type="broken"/>
+          </lane>
+        </center>
+        <right>
+          <lane id="-1" type="driving">
+            <width a="3.5" b="0" c="0" d="0" sOffset="0"/>
+            <roadMark type="solid"/>
+          </lane>
+          <lane id="-2" type="border">
+            <width a="5" b="0" c="0" d="0" sOffset="0"/>
+          </lane>
+        </right>
+      </laneSection>
+    </lanes>
+  </road>
+</OpenDRIVE>

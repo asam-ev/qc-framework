@@ -169,9 +169,12 @@ jobs:
 
       - name: Execute checker bundles runtime
         run: |
+          $env:ASAM_QC_FRAMEWORK_MANIFEST_DIR="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest"
+          $env:ASAM_QC_FRAMEWORK_INSTALLATION_DIR="$env:WORKING_PATH\QC-Framework-Out\bin"
+
           git config --system core.longpaths true
 
-          pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+          pip install -e $env:WORKING_PATH\qc-framework\qc-framework\runtime
 
           mkdir "$env:WORKING_PATH\odr_out"
           pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop

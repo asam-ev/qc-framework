@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 Copyright 2023 CARIAD SE.
- 
+
 This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -9,7 +9,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 <OpenSCENARIO>
     <FileHeader author="ASTech OSCEditor" date="" description="" revMajor="0" revMinor="9"/>
     <!-- the empty date should be recognized -->
-    
+
     <Catalogs>
         <VehicleCatalog>
             <Directory path=""/>

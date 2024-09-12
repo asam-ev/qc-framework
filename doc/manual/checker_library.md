@@ -24,12 +24,17 @@ inspects the input document to verify if it is compliant to the standard.
 
 - Rules are atomic, easy understandable and independent of how many rules are
   necessary in the standard.
-- A Rule should be part of a standard, as it is today in many ASAM standards.
+- A rule should be part of a standard, as it is today in many ASAM standards.
 - Rules can come from ASAM, but also from other organizations or can be company
   internal rules.
 - Rules may be documented in the Checker Library if they are not explicitly
   written in the corresponding standard. The documentation can be used as a
   proposal to the standardization project to improve the standard itself.
+- A rule may have a Rule Version, a counter value representing the current version of the rule
+  content. If content of the rule changes without changing the underlying logic
+  for validation, this counter increases. If the change in the rule forces a
+  modification in the validation logic, the change shall be treated as a new
+  rule.
 
 ### Rule Documentation Template
 
@@ -47,18 +52,14 @@ standard (e.g., respecting the rule is mandatory or a recommendation)_
 **Version range:** _Information for which versions of the standard this rule
 applies._
 
-**Rule Version:** _a counter value representing the current version of the rule
-content. If content of the rule changes without changing the underlying logic
-for validation, this counter increases. If the change in the rule forces a
-modification in the validation logic, the change shall be treated as a new
-rule._
-
 ## Checks
 
 ### Check Characteristics
 
-- A check should addresses exactly one rule. In reality, a check can address  
-  several rules, or several checks might be necessary to check a certain rule.  
+- A check should address exactly one rule, 
+  unless there is a strong reason not to. In exceptional cases, 
+  a check may address multiple rules, or multiple checks may be 
+  required to check a particular rule.
 - Each check shall have a minimum of two example input files. The first
   demonstrating a rule violation and the second showcasing a successful rule
   validation.
@@ -67,9 +68,6 @@ rule._
 
 **Check ID:** _The ID shall be unique within the Checker Library and
 self-explanatory as possible._
-
-**Version:** _The check itself has also a version number for identifying
-changes in the results, which are based on implementation changes._
 
 **Description:** _Clear textual description of the check._
 

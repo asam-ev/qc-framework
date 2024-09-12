@@ -64,3 +64,7 @@ you open the GUI, it looks like in the image above and you can start the viewer
 from the File menu. Click on issues that represent a 3D error and find the
 function calls inside the console window. Your own viewer interface
 implementation can use this information to show the error in 3D.
+
+A fully functioned viewer based on the [esmini simulator](https://esmini.github.io/) 
+is also provided as part of the ASAM Quality Checker Framework. Please refer to 
+the [esmini viewer plugin](esmini_viewer_plugin.md) for details.

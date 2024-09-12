@@ -1,8 +1,8 @@
 {
     "manifest_file_path": [
-        "D:\\a\\qc-framework\\qc-framework\\.github\\workflows\\windows-manifest\\osc.json",
-        "D:\\a\\qc-framework\\qc-framework\\.github\\workflows\\windows-manifest\\odr.json",
-        "D:\\a\\qc-framework\\qc-framework\\.github\\workflows\\windows-manifest\\otx.json",
+        "$ASAM_QC_FRAMEWORK_MANIFEST_DIR\\osc.json",
+        "${ASAM_QC_FRAMEWORK_MANIFEST_DIR}\\odr.json",
+        "%ASAM_QC_FRAMEWORK_MANIFEST_DIR%\\otx.json",
         "D:\\a\\qc-framework\\qc-framework\\.github\\workflows\\windows-manifest\\result_pooling.json",
         "D:\\a\\qc-framework\\qc-framework\\.github\\workflows\\windows-manifest\\text_report.json"
     ]

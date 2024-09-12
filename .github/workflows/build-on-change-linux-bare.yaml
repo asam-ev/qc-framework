@@ -134,8 +134,10 @@ jobs:
 
       - name: Execute checker bundles runtime
         run: |
+          export ASAM_QC_FRAMEWORK_MANIFEST_DIR=${{ github.workspace }}/.github/workflows/linux-manifest
+          export ASAM_QC_FRAMEWORK_INSTALLATION_DIR=/home/$(whoami)/qc-build/bin
 
-          pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+          pip install -e ${{ github.workspace }}/runtime
 
           mkdir "/home/$(whoami)/odr_out"
           pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
