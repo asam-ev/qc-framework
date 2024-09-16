@@ -6,10 +6,26 @@
 
     <CheckerBundle application="otxBundle">
         <Param name="resultFile" value="otx_bundle_report.xqar" />
-        <Checker checkerId="core_otx" maxLevel="1" minLevel="3" />
-        <Checker checkerId="data_type_otx" maxLevel="1" minLevel="3" />
-        <Checker checkerId="zip_file_otx" maxLevel="1" minLevel="3" />
-        <Checker checkerId="state_machine_otx" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_core_chk_001_document_name_matches_filename" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_core_chk_002_document_name_package_uniqueness" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_core_chk_003_no_dead_import_links" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_core_chk_004_no_unused_imports" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_core_chk_005_no_use_of_undefined_import_prefixes" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_core_chk_006_match_of_imported_document_data_model_version" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_core_chk_007_have_specification_if_no_realisation_exists" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_core_chk_008_public_main_procedure" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_core_chk_009_mandatory_constant_initialization" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_core_chk_010_unique_node_names" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_data_type_chk_001_accessing_structure_elements" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_data_type_chk_008_correct_target_for_structure_element" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_zip_file_chk_002_type_safe_zip_file" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_zip_file_chk_001_type_safe_unzip_file" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_state_machine_chk_001_no_procedure_realization" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_state_machine_chk_002_mandatory_target_state" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_state_machine_chk_003_no_target_state_for_completed_state" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_state_machine_chk_005_mandatory_transition" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_state_machine_chk_004_mandatory_trigger" maxLevel="1" minLevel="3" />
+        <Checker checkerId="check_asam_otx_state_machine_chk_006_distinguished_initial_and_completed_state" maxLevel="1" minLevel="3" />
     </CheckerBundle>
 
     <ReportModule application="TextReport">
