@@ -650,15 +650,6 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
                 }
             }
         }
-        else
-        {
-            // This is the implementation of very simple reports. If a issue point to a
-            // xodr or xosc file, it should have a FileLocation
-
-            // If issue referes to an OpenDRIVE, show it!
-            if (hasInputPath)
-                ShowInputIssue(itemToShow, -1);
-        }
     }
 }
 
