@@ -260,7 +260,7 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
     std::list<cIssue *> issues;
     std::list<cRule *> rules;
     std::list<cMetadata *> metadata;
-    std::set<std::string> info_violated_rules;
+    std::set<std::string> info_rules;
     std::set<std::string> warning_violated_rules;
     std::set<std::string> error_violated_rules;
     std::set<std::string> addressed_rules;
@@ -358,7 +358,7 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
                             eIssueLevel current_issue_level = (*it_Issue)->GetIssueLevel();
                             if (current_issue_level == eIssueLevel::INFO_LVL)
                             {
-                                info_violated_rules.insert((*it_Issue)->GetRuleUID());
+                                info_rules.insert((*it_Issue)->GetRuleUID());
                             }
                             if (current_issue_level == eIssueLevel::WARNING_LVL)
                             {
@@ -420,7 +420,7 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
             ss << "\n" << BASIC_SEPARATOR_LINE << "\n";
         }
 
-        ss << "Addressed vs Violated rules report \n\n";
+        ss << "Rules report \n\n";
 
         ss << "\nTotal number of addressed rules:   " << addressed_rules.size();
         for (const auto &str : addressed_rules)
@@ -428,24 +428,24 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
             ss << "\n\t-> Addressed RuleUID: " << str << "\n";
         }
 
-        int total_number_of_violated_rules =
-            info_violated_rules.size() + warning_violated_rules.size() + error_violated_rules.size();
-        ss << "\nTotal number of violated rules:    " << total_number_of_violated_rules << "\n";
+        int total_number_of_rules_with_issues =
+            info_rules.size() + warning_violated_rules.size() + error_violated_rules.size();
+        ss << "\nTotal number of rules with found issues:    " << total_number_of_rules_with_issues << "\n";
 
-        ss << "\nInfo violated rules:               " << info_violated_rules.size();
-        for (const auto &str : info_violated_rules)
+        ss << "\nRules for information:               " << info_rules.size();
+        for (const auto &str : info_rules)
         {
-            ss << "\n\t-> Info violation RuleUID: " << str;
+            ss << "\n\t-> RuleUID with info: " << str;
         }
-        ss << "\nWarning violated rules:            " << warning_violated_rules.size();
+        ss << "\nRules with warning issues:            " << warning_violated_rules.size();
         for (const auto &str : warning_violated_rules)
         {
-            ss << "\n\t-> Warning violation RuleUID: " << str;
+            ss << "\n\t-> RuleUID with warning issue: " << str;
         }
-        ss << "\nError violated rules:              " << error_violated_rules.size();
+        ss << "\nRules with error issues:              " << error_violated_rules.size();
         for (const auto &str : error_violated_rules)
         {
-            ss << "\n\t-> Error violation RuleUID: " << str;
+            ss << "\n\t-> RuleUID with error issue: " << str;
         }
 
         ss << "\n" << BASIC_SEPARATOR_LINE << "\n";
