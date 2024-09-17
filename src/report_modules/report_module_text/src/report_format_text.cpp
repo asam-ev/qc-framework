@@ -437,12 +437,12 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
         {
             ss << "\n\t-> RuleUID with info: " << str;
         }
-        ss << "\nRule with warning issues:            " << warning_violated_rules.size();
+        ss << "\nRules with warning issues:            " << warning_violated_rules.size();
         for (const auto &str : warning_violated_rules)
         {
             ss << "\n\t-> RuleUID with warning issue: " << str;
         }
-        ss << "\nRule with error issues:              " << error_violated_rules.size();
+        ss << "\nRules with error issues:              " << error_violated_rules.size();
         for (const auto &str : error_violated_rules)
         {
             ss << "\n\t-> RuleUID with error issue: " << str;
