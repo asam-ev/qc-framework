@@ -432,20 +432,20 @@ void WriteResults(const char *file, cResultContainer *ptrResultContainer)
             info_rules.size() + warning_violated_rules.size() + error_violated_rules.size();
         ss << "\nTotal number of rules with found issues:    " << total_number_of_rules_with_issues << "\n";
 
-        ss << "\nRules for info:                    " << info_rules.size();
+        ss << "\nRules for information:               " << info_rules.size();
         for (const auto &str : info_rules)
         {
-            ss << "\n\t-> Info RuleUID: " << str;
+            ss << "\n\t-> RuleUID with info: " << str;
         }
-        ss << "\nWarning violated rules:            " << warning_violated_rules.size();
+        ss << "\nRule with warning issues:            " << warning_violated_rules.size();
         for (const auto &str : warning_violated_rules)
         {
-            ss << "\n\t-> Warning violation RuleUID: " << str;
+            ss << "\n\t-> RuleUID with warning issue: " << str;
         }
-        ss << "\nError violated rules:              " << error_violated_rules.size();
+        ss << "\nRule with error issues:              " << error_violated_rules.size();
         for (const auto &str : error_violated_rules)
         {
-            ss << "\n\t-> Error violation RuleUID: " << str;
+            ss << "\n\t-> RuleUID with error issue: " << str;
         }
 
         ss << "\n" << BASIC_SEPARATOR_LINE << "\n";
