@@ -801,7 +801,8 @@ void cCheckerWidget::PrintExtendedInformationIntoStream(cExtendedInformation *it
 
         ssStream->setf(std::ios::fixed, std::ios::floatfield);
         *ssStream << std::endl
-                  << "   Location: x=" << std::setprecision(2) << initialLoc->GetX() << " y=" << std::setprecision(2)
-                  << initialLoc->GetY() << " z=" << std::setprecision(2) << initialLoc->GetZ();
+                  << "   Inertial Location: x=" << std::setprecision(2) << initialLoc->GetX()
+                  << " y=" << std::setprecision(2) << initialLoc->GetY() << " z=" << std::setprecision(2)
+                  << initialLoc->GetZ();
     }
 }
