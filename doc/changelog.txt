@@ -3,6 +3,40 @@ QC4OpenX QChecker for OpenX - Change Log File
 
 This file tracks the changes made within the QC4OpenX project.
 
+v2.0.0-beta
+==========================================
+- The QC Framework is now standards agnostic
+- Remove unnecessary dependencies
+- Add Python Base Library
+- Update C++ Base Library
+- Add CI/CD
+- Add a demo pipeline
+- Simplify the architecture by splitting runtime module and configuration GUI
+- Add a new runtime module in Python
+- Support the manifest file mechanism to register checker bundles in any programming language with the framework.
+- Update configuration file format and result file format to include necessary information
+- Support the rule UID concept in the framework
+- Add new features to result pooling
+  - Order the results
+  - Support severity level
+  - Support result filtering
+  - Resolve naming conflict
+- Improve ReportGUI
+  - Support arbitrary ASCII-based input files
+  - Remove the 5MB file size limit
+  - Improve usability (drag and drop to open, refresh after loading a new result file)
+  - Support domain specific information
+  - Add Esmini Viewer plugin to visualize issues in OpenDrive files
+- Improve Text Report
+  - Add more information to Text Report
+  - Support domain-specific information
+- Add support for automatic documentation generation in the Python Base Library
+- Improve documentation
+- Add three checker bundles
+  - OpenDrive checker bundle: https://github.com/asam-ev/qc-opendrive
+  - OpenScenario XML checker bundle: https://github.com/asam-ev/qc-openscenarioxml
+  - OTX checker bundle: https://github.com/asam-ev/qc-otx
+
 v1.0.0 First open source compliant version
 ==========================================
 - ConfigGUI executable for checker configuration
