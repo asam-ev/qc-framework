@@ -42,6 +42,20 @@ So in order to use the plugin you can either:
     cp /home/user/Downloads/esmini-demo/bin/libesminiLib.so ~/qc-build/bin/
     ```
 
+
+## Remarks
+
+When the Esmini Viewer is started, it initially points to the inertial location at the coordinate `x=0, y=0, z=0`. Your view may be empty if your map is not at `x=0, y=0, z=0`.
+
+![example_esmini_viewer_map](images/esmini_at_00.png)
+
+The view will update when you click on an issue that contains `Inertial Location`, as in the screenshot below. The new view will point to the corresponding location in the issue.
+
+Note that not all issues contain a location. For example, issues related to XML Schema do not contain locations.
+
+![example_esmini_viewer_map](images/esmini_at_location.png)
+
+
 ## Additional information
 
 #### Which OpenDRIVE file to render
