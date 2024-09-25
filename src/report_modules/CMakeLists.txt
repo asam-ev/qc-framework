@@ -8,3 +8,6 @@
 add_subdirectory(report_module_text)
 add_subdirectory(report_module_gui)
 add_subdirectory(report_module_github_ci)
+if(ASAM_QC_JSON_REPORT_FORMAT_ENABLE)
+  add_subdirectory(report_module_json)
+endif()
