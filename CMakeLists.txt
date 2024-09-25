@@ -19,6 +19,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 
+option(ASAM_QC_JSON_REPORT_FORMAT_ENABLE 
+  "Compile Report Format JSON utility. Requires nlohmann-json as dependency" OFF)
+
 file(STRINGS version QC4OPENX_VERSION LIMIT_COUNT 1)
 project(qc4openx VERSION ${QC4OPENX_VERSION})
 
