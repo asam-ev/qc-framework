@@ -11,6 +11,7 @@
 #include <QtCore/QTextStream>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QTreeWidget>
@@ -260,6 +261,25 @@ void cCheckerWidget::LoadIssues(std::list<cIssue *> issues) const
         cIssue *firstIssue = issues.front();
         SelectIssue(firstIssue);
         ShowIssue(firstIssue, nullptr);
+    }
+
+    if (issues.size() == 0)
+    {
+        QTreeWidgetItem *newItem = new QTreeWidgetItem(_issueBox);
+
+        newItem->setToolTip(0, "Identifier");
+        newItem->setText(0, QString("-"));
+        newItem->setText(1, QString("-"));
+        newItem->setText(2, QString("-"));
+        newItem->setText(3, QString("No Issues Found"));
+        _issueBox->setItemSelected(newItem, true);
+        _issueDetailsTextWidget->setText(QString("No issues found in selected xqar file"));
+        _issueBox->addTopLevelItem(newItem);
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Result file info");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setText("No issues found in selected xqar file");
+        msgBox.exec();
     }
 
     _issueBox->expandAll();
@@ -650,15 +670,6 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
                 }
             }
         }
-        else
-        {
-            // This is the implementation of very simple reports. If a issue point to a
-            // xodr or xosc file, it should have a FileLocation
-
-            // If issue referes to an OpenDRIVE, show it!
-            if (hasInputPath)
-                ShowInputIssue(itemToShow, -1);
-        }
     }
 }
 
@@ -790,7 +801,8 @@ void cCheckerWidget::PrintExtendedInformationIntoStream(cExtendedInformation *it
 
         ssStream->setf(std::ios::fixed, std::ios::floatfield);
         *ssStream << std::endl
-                  << "   Location: x=" << std::setprecision(2) << initialLoc->GetX() << " y=" << std::setprecision(2)
-                  << initialLoc->GetY() << " z=" << std::setprecision(2) << initialLoc->GetZ();
+                  << "   Inertial Location: x=" << std::setprecision(2) << initialLoc->GetX()
+                  << " y=" << std::setprecision(2) << initialLoc->GetY() << " z=" << std::setprecision(2)
+                  << initialLoc->GetZ();
     }
 }

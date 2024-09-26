@@ -92,8 +92,8 @@ concepts defined by ASAM.
 Lets start with an example for a rule UID, and lets break down its concepts. The
 example references a rule listed in the subsection **Rules** of one of the ASAM
 Standards for OpenDRIVE. The Rules subsections were introduced for the first
-time in revision 1.6 of the standard. **Please notice that the full name of the
-rule may change in the future**.
+time in revision 1.6 of the standard. Note that a rule can start being applied 
+to earlier versions of the standard.
 
 > [ASAM OpenDRIVE Standard 1.6.0, Chapter 7.2 - Road Reference
 > Line](https://releases.asam.net/OpenDRIVE/1.6.0/ASAM_OpenDRIVE_BS_V1-6-0.html#_road_reference_line),
@@ -104,20 +104,19 @@ we can identify the following concepts:
 
 * **emanating entity**: ASAM `asam.net`
 * **standard**: OpenDRIVE `xodr`
-* **definition settings**: the rule firstly appeared in `1.6.0`, the first
-  revision to introduce the subsections rules
+* **definition settings**: the rule starts being applied to ASAM OpenDrive files from version `1.4.0`
 * **Full name**:
-  * **rule-set**: Road Planar Geometry definitions `road.planview.geometry`
-  * **name**: summarizes the content of the rule, e.g. `ref_line_exists`. It is
+  * **rule-set**: Road Geometry definitions `road.geometry`
+  * **name**: summarizes the content of the rule, e.g. `refline_exists`. It is
      always the last group in dot-notation strings.
 
 The complete UID would be something like:
 
 ```text
-asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists
--------- ---- ----- ---------------------- ---------------
- |        |    |     |                      |             
- entity   | version  |                    name
+asam.net:xodr:1.4.0:road.geometry.refline_exists
+-------- ---- ----- ------------- --------------
+ |        |    |     |                  |             
+ entity   | version  |                 name
        standard    rule-set
 ```
 
@@ -141,10 +140,10 @@ recommended to define all concepts, if this is reasonably possible.
 The proposed formalism allow to perform query on rules (or set of rules) using
 UNIX style wildcards notation (i.e., python `fnmatch` module).
 
-Example: Query all the OpenDRIVE geometrical rules that were created in version 1.6.0
-1.6.1, or 1.7.0 of the standard: `asam.net:xodr:1.[67].[01]:*geometry.*` matches
-`asam.net:xodr:1.6.0:road.planview.geometry.ref_line_exists` but does not
-match `asam.net:xodr:1.8.0:road.planview.geometry.ref_line_exists`.
+Example: Query all the OpenDRIVE geometrical rules that were created in version 1.4.0
+1.4.1, or 1.5.0 of the standard: `asam.net:xodr:1.[45].[01]:*geometry.*` matches
+`asam.net:xodr:1.4.0:road.geometry.refline_exists` but does not
+match `asam.net:xodr:1.8.0:road.geometry.refline_exists`.
 
 ## Remarks on Rule Full names
 

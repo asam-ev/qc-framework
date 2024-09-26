@@ -164,7 +164,11 @@ Python modules can be installed using `pip`.
 pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
 ```
 
-**Note:** The above command will install `asam-qc-runtime` from the `develop` branch. If you want to install `asam-qc-runtime` from another branch or tag, replace `@develop` with the desired branch or tag.
+**Note:** The above command will install `asam-qc-runtime` from the `develop` branch. If you want to install `asam-qc-runtime` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+
+```bash
+pip install /home/user/qc-framework/runtime
+```
 
 ## Install ASAM Checker Bundles
 
@@ -176,7 +180,11 @@ Standard ASAM Checker Bundles are implemented in Python and can be installed usi
 pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
 ```
 
-**Note:** The above command will install `asam-qc-opendrive` from the `develop` branch. If you want to install `asam-qc-opendrive` from another branch or tag, replace `@develop` with the desired branch or tag.
+**Note:** The above command will install `asam-qc-opendrive` from the `develop` branch. If you want to install `asam-qc-opendrive` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+
+```bash
+pip install /home/user/qc-opendrive
+```
 
 To test the installation:
 
@@ -190,7 +198,11 @@ qc_opendrive --help
 pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@develop
 ```
 
-**Note:** The above command will install `asam-qc-openscenarioxml` from the `develop` branch. If you want to install `asam-qc-openscenarioxml` from another branch or tag, replace `@develop` with the desired branch or tag.
+**Note:** The above command will install `asam-qc-openscenarioxml` from the `develop` branch. If you want to install `asam-qc-openscenarioxml` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+
+```bash
+pip install /home/user/qc-openscenarioxml
+```
 
 To test the installation:
 
@@ -204,7 +216,11 @@ qc_openscenario --help
 pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@develop
 ```
 
-**Note:** The above command will install `asam-qc-otx` from the `develop` branch. If you want to install `asam-qc-otx` from another branch or tag, replace `@develop` with the desired branch or tag.
+**Note:** The above command will install `asam-qc-otx` from the `develop` branch. If you want to install `asam-qc-otx` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+
+```bash
+pip install /home/user/qc-otx
+```
 
 To test the installation:
 
