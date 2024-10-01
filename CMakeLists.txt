@@ -19,6 +19,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 
+option(ASAM_QC_ENABLE_FETCH_CONTENT
+  "Allow usage of fetch content. If OFF, alla packages should be available via find_package", ON)
 option(ASAM_QC_JSON_REPORT_FORMAT_ENABLE 
   "Compile Report Format JSON utility. Requires nlohmann-json as dependency" OFF)
 

@@ -16,6 +16,10 @@ cmake [...] -DASAM_QC_JSON_REPORT_FORMAT_ENABLE=ON [...]
 
 Build and install the overall project as defined in the [`INSTALL` guide](/INSTALL.md)
 
+To avoid the `FetchContent`, you will need to make `nlohmann_json` available
+via `find_package`. This option is enabled via the option: 
+`ASAM_QC_DISABLE_FETCH_CONTENT`
+
 ## Configuration
 
 ### Parameters

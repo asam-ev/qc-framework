@@ -6,7 +6,11 @@
 
 project(JsonReport)
 
-add_subdirectory(dependencies/nlohman-json)
+if (ASAM_QC_ENABLE_FETCH_CONTENT)
+  add_subdirectory(dependencies/nlohmann-json)
+else()
+  find_package(nlohmann_json REQUIRED)
+endif()
 
 add_executable(${PROJECT_NAME}
     src/report_format_json.h
