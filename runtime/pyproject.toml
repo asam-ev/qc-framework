@@ -20,7 +20,8 @@ black = "^24.4.2"
 
 [tool.poetry.scripts]
 qc_runtime = 'runtime.runtime:main'
-qc-report-json = 'runtime.report.json.__main__:main'
+qc_report_json = 'runtime.report.json.__main__:main'
+qc_report_text = 'runtime.report.text.__main__:main'
 
 [build-system]
 requires = ["poetry-core"]

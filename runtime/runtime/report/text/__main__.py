@@ -6,13 +6,13 @@
 
 def main():
     from ..base import ReportApplication
-    from .json_formatter import JsonFormatter
+    from .text_formatter import TextFormatter
 
-    formatter = JsonFormatter()
+    formatter = TextFormatter()
     app = ReportApplication(
         formatter,
-        prog="qc_report_json",
-        description="Creates report for result file in JSON format")
+        prog="qc_report_text",
+        description="Creates report in human readable text format")
     return app.main()
 
 if __name__ == "__main__":

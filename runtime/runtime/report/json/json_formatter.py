@@ -4,71 +4,34 @@
 # Public License, v. 2.0. If a copy of the MPL was not distributed
 # with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, Union, IO, Dict, List, Any
+from typing import TYPE_CHECKING, Dict, List, Any
 
-
+import json
+from ..base import ReportFormatter
 from qc_baselib import IssueSeverity
 
 if TYPE_CHECKING:
+    from ..base.report_formatter import TStream
     from qc_baselib import Result
     from qc_baselib.models.common import ParamType
     from qc_baselib.models.result import CheckerType, MetadataType, RuleType, IssueType
 
-from .constants import Constants
 
-
-class JsonFormatter:
-    r"""
-    The class handles the dump of a ``Result`` obect as a valid json object.
+class JsonFormatter(ReportFormatter):
+    @property
+    def module_name(self):
+        return "report-json"
     
-    .. warning:: The class is not thread safe. Use a new object per 
-                 thread to make conversions.
-                 
-    .. info:: The class converts up to the information present in the 
-              ``Result`` class. This may lead to a schema of the output
-              which is slightly different with respect to the one 
-              supported by the c++ version of the JSON formatter.
+    @property
+    def default_custom_parameters(self):
+        return {"Indent": 2}
     
-    Example usage::
-    
-        json_formatter = JsonFormatter()
-        # Dump in a string
-        json_string = json_formatter.dump(result)
-        # Dump in a new file
-        json_string = json_formatter.dump(result, "report.json")
-        # Write to an existing stream
-        with open("report.json", "w") as fp:
-            json_string = json_formatter.dump(result, fp)
-    
-    :param indent: optional indentation level for the output.
-                   Set to 0 for a minified output
-    """
+    @property
+    def default_output_file_param_value(self) -> str:
+        return "Report.json"
 
-    def __init__(self, indent: Optional[int] = None):
-        self.indent = indent or Constants.DEFAULT_INDENT_LEVEL
-        self.indent = int(self.indent)  # Forcing to be an integer. May raise
-
-    def dump(
-        self, result: "Result", output: Optional[Union[IO, str]] = None
-    ) -> Optional[str]:
-        r"""
-        Dumps the content of a result file in a json format. Input arguments
-        controls the data emission strategy.
-        
-         * if ``output`` parameter is ``None``, a json string is returned by the 
-           method
-         * if ``ouptut`` parameter is a ``str``, the result is written in a new
-           file with ``output`` as filename
-         * if ``output`` is an ``IO`` compatible object (stream), the result is
-           written directly to the stream.
-           
-        :param result: the result object to dump
-        :param output: the 
-        """
-        import json
-        import io
-
-        # Setup
+    def _dump(self, result: "Result", output: "TStream"):
+        indent = int(self.get_param("Indent"))  # type: ignore
         self.result = result
 
         self._addressed_rule_uids = set()
@@ -78,27 +41,13 @@ class JsonFormatter:
             IssueSeverity.INFORMATION: set(),
         }
 
-        # Execute
-        dump_ = self._dump()
-
-        # Export to output
-        if output is None:
-            return json.dumps(dump_, indent=self.indent)
-
-        if isinstance(output, io.IOBase):
-            json.dump(dump_, output, indent=self.indent)
-            return
-
-        if isinstance(output, str):
-            with open(output, "w") as fp:
-                json.dump(dump_, fp, indent=self.indent)
-
-    def _dump(self) -> Dict[str, Any]:
-        return {
+        dump_ = {
             "version": self.result.get_result_version(),
             "bundles": self._dump_checker_bundle_results(),
             "rules": self._dump_addressed_and_violated_rules()
         }
+
+        json.dump(dump_, output, indent=indent)
         
     def _dump_addressed_and_violated_rules(self) -> Dict[str, Any]:
         return {
