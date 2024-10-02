@@ -63,7 +63,6 @@ class JsonFormatter(ReportFormatter):
                 "version": bundle.version,
                 "summary": bundle.summary,
                 "description": bundle.description,
-                "buildDate": bundle.build_date,
                 "parameters": self._dump_params(bundle.params),
                 "checkers": self._dump_checkers(bundle.checkers),
             }
