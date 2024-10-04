@@ -145,6 +145,14 @@ class ReportApplication:
         )
 
         # Automatically assigning parameters to command line argument
+        class ArgsDefaulter:
+            def __init__(self, default_type):
+                self.default_type = default_type
+            def __call__(self, arg):
+                if arg is None:
+                    return None
+                return self.default_type(arg)
+            
         param_group = self._args.add_argument_group("Parameters")
         for name in self._formatter.get_params_list():
             value = self._formatter.get_param(name)
@@ -152,8 +160,8 @@ class ReportApplication:
 
             param_group.add_argument(
                 f"--param-{name}",
-                default=value,
-                type=value_type,
+                default=None,
+                type=ArgsDefaulter(value_type),
                 dest=f"param_{name}",
                 help=f"formatter parameter {name} (default value: `{value}` [{value_type.__name__}])",
             )
@@ -170,7 +178,9 @@ class ReportApplication:
         for name in self._formatter.get_params_list():
             param_name = f"param_{name}"
             if param_name in args:
-                override_params[name] = getattr(args, param_name)
+                value = getattr(args, param_name)
+                if value:
+                    override_params[name] = getattr(args, param_name)
 
         return args, override_params
 
@@ -200,7 +210,6 @@ class ReportApplication:
                 )
             ],
         )
-        configuration = Configuration()
         # FIXME: Fix this approach when public interface for reports is available
         config_string = config.to_xml(
             pretty_print=True, xml_declaration=True, standalone=False, encoding="utf-8"
@@ -245,7 +254,7 @@ class ReportApplication:
             configuration.load_from_file(configuration_file)
 
         for name in self._formatter.get_params_list():
-            if name in override_params:
+            if override_params.get(name) is not None:
                 continue
             param_value = configuration.get_report_module_param(
                 self._formatter.module_name, name

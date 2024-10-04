@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 class JsonFormatter(ReportFormatter):
     @property
     def module_name(self):
-        return "report-json"
+        return "qc-report-json"
     
     @property
     def default_custom_parameters(self):

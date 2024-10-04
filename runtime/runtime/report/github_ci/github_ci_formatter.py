@@ -21,7 +21,7 @@ class GithubCIFormatter(ReportFormatter):
 
     @property
     def module_name(self):
-        return "report-github-ci"
+        return "qc-report-github-ci"
     
     @property
     def default_output_file_param_value(self) -> str:
