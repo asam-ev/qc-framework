@@ -1,6 +1,7 @@
-# Runtime module
+# Framework module
 
-The runtime module is responsible of executing the qc-framework modules specified in an input configuration file.
+The Framework module is responsible for the execution of checker bundles, result poolers and result reporters, based 
+upon a defined configuration file. The main executable is implemented in the `runtime` submodule.
 
 Input configuration file need to respect the [config xsd schema](../doc/schema/config_format.xsd)
 
@@ -13,16 +14,17 @@ The runtime module execute the following steps:
 
 ## Installation & Usage
 
-The runtime module can be installed using pip.
+The ASAM QC Framework can be installed using pip.
 
 ```bash
-pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+pip install asam-qc-framework@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=qc_framework
 ```
 
-**Note:** The above command will install `asam-qc-runtime` from the `develop` branch. If you want to install `asam-qc-runtime` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**Note:** The above command will install `asam-qc-framework` from the `develop` branch. If you want to install `asam-qc-framework` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
 
 ```bash
-pip install /home/user/qc-framework/runtime
+# From reporsitory root
+pip install ./qc_framework
 ```
 
 Then, it can be executed as follows.

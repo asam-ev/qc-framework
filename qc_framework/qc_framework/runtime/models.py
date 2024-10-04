@@ -1,3 +1,7 @@
+# Copyright 2024, ASAM e.V.
+# This Source Code Form is subject to the terms of the Mozilla
+# Public License, v. 2.0. If a copy of the MPL was not distributed
+# with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os
 import enum
 
@@ -20,7 +24,7 @@ class FrameworkManifest(BaseModel):
 
     @field_validator("manifest_file_path")
     @classmethod
-    def file_path_must_exist(cls, v: List[str]) -> str:
+    def file_path_must_exist(cls, v: List[str]) -> List[str]:
         for raw_file_path in v:
             resolved_file_path = os.path.expandvars(raw_file_path)
             if not os.path.isfile(resolved_file_path):

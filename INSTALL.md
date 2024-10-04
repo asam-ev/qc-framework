@@ -145,15 +145,15 @@ We recommend installing Python modules in a virtual environment. Virtual environ
 Using Virtualenv:
 
 ```bash
-python3 -m venv runtime-venv
-source runtime-venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 Using Conda:
 
 ```bash
-conda create -y -n runtime-venv python=3.10
-conda activate runtime-venv
+conda create -y -n .venv python=3.10
+conda activate .venv
 ```
 
 ## Install Python Modules
@@ -161,13 +161,13 @@ conda activate runtime-venv
 Python modules can be installed using `pip`.
 
 ```bash
-pip install asam-qc-runtime@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=runtime
+pip install asam-qc-framework@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=qc_framework
 ```
 
-**Note:** The above command will install `asam-qc-runtime` from the `develop` branch. If you want to install `asam-qc-runtime` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**Note:** The above command will install `asam-qc-framework` from the `develop` branch. If you want to install `asam-qc-framework` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
 
 ```bash
-pip install /home/user/qc-framework/runtime
+pip install /home/user/qc-framework/qc_framework
 ```
 
 ## Install ASAM Checker Bundles

@@ -16,13 +16,13 @@ Example configuration files for running the official Checker Bundles for ASAM Op
 
 ## Run the Checker Bundles
 
-The Checker Bundles can be run using the [runtime module](runtime_module.md).
+The Checker Bundles are run by the [quality checker framework](python_qc_framework.md).
 
 ```bash
 qc_runtime --config "PATH_TO_CONFIG_FILE" --manifest "PATH_TO_MANIFEST_FILE"
 ```
 
-The output of the runtime modules are the `.xqar` [result files](file_formats.md) and any other output files from the specified report modules in the configuration file, such as `.txt` files for the text report module. If the ReportGUI is specified, the Report GUI will open.
+The output of the framework are the `.xqar` [result files](file_formats.md) and any other output files from the specified report modules in the configuration file, such as `.txt` files for the text report module. If the ReportGUI is specified, the Report GUI will open.
 
 ## Reporting
 
