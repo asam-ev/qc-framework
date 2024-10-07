@@ -58,6 +58,12 @@ Note that not all issues contain a location. For example, issues related to XML 
 
 ## Additional information
 
+#### Camera control
+
+See [esmini documentation](https://esmini.github.io/#_replayer) for a complete list of camera models and how to switch between different camera models.
+
+For example, to navigate freely around the map, press 4 to switch to the Terrain camera model, and then hold down the middle mouse button to move around. Press 1 to return to the issue location.Press H for more help.
+
 #### Which OpenDRIVE file to render
 
 In order to establish which OpenDRIVE file to render in esmini, the plugin reads the `InputFile` param from the result file:
