@@ -145,7 +145,7 @@ Some OpenDrive and OpenScenario XML test files are available to try out.
 
 ### Update to the latest version
 
-The demo pipeline is built every day at 4am UTC. To update the demo pipeline on your local machine, use the following command.
+The demo pipeline is built every day at 2am UTC. To update the demo pipeline on your local machine, use the following command.
 
 ```
 docker pull ghcr.io/asam-ev/qc-framework:demo-pipeline-latest

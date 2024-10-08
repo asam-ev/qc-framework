@@ -16,11 +16,21 @@ The runtime module execute the following steps:
 
 The ASAM QC Framework can be installed using pip.
 
+**From PyPi**
+
 ```bash
-pip install asam-qc-framework@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=qc_framework
+pip install asam-qc-framework
 ```
 
-**Note:** The above command will install `asam-qc-framework` from the `develop` branch. If you want to install `asam-qc-framework` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**From GitHub Repository**
+
+```bash
+pip install asam-qc-framework@git+https://github.com/asam-ev/qc-framework@main#subdirectory=qc_framework
+```
+
+The above command will install `asam-qc-framework` from the `main` branch. If you want to install `asam-qc-framework` from another branch or tag, replace `@main` with the desired branch or tag.
+
+**From a local repository**
 
 ```bash
 # From reporsitory root
