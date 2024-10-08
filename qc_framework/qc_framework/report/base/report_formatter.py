@@ -3,7 +3,6 @@
 # This Source Code Form is subject to the terms of the Mozilla
 # Public License, v. 2.0. If a copy of the MPL was not distributed
 # with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
-
 from __future__ import annotations
 from typing import Optional, Union, Dict, List
 from io import IOBase, StringIO, TextIOBase
@@ -14,7 +13,7 @@ import sys
 TParamValue = Optional[Union[str, int, float, bool]]
 TParams = Dict[str, TParamValue]
 TResultArg = Union[str, IOBase, Result]
-TOuptuArg = Optional[Union[str, IOBase, StringIO, TextIOBase]]
+TOutputArg = Optional[Union[str, IOBase, StringIO, TextIOBase]]
 TStream = Union[IOBase, StringIO, TextIOBase]
 
 
@@ -32,7 +31,7 @@ class ReportFormatter:
        function is the following::
 
            def dump_function(
-               result: Reuslt, 
+               result: Result, 
                get_param: Callable[[str], Optional[TParamValue]], 
                output: TStream) -> None:
                pass
@@ -51,7 +50,7 @@ class ReportFormatter:
 
     the value can be modified by using injection or inheritance. To inject new values, simply
     provide new values via ``kwargs``. To change via inheritance, override the appropriate property.
-    A full list of avaialbale ``kwargs`` is provided below.
+    A full list of available ``kwargs`` is provided below.
 
     Additional parameters can be defined via injection (``kwargs``) or by an override of the property.
     The custom parameters can be used also to modify the default parameters.
@@ -127,7 +126,7 @@ class ReportFormatter:
     :param default_output_file_param_name: optional ``kwargs`` to change parameter output file value
                                          (default is ``"Report.txt"``). Should be a string.
     :param default_custom_parameters: optional ``kwargs`` for the definition of additional parameters.
-                                      (dafault is ``{}``). With the same ``kwargs`` it is possible
+                                      (default is ``{}``). With the same ``kwargs`` it is possible
                                       to override the default parameters value (but not keys)
     """
 
@@ -142,7 +141,7 @@ class ReportFormatter:
 
     def __init__(self, *args, **kwargs):
         r"""
-        Default constructor. Can be used for injection, or used in inhierited constructors.
+        Default constructor. Can be used for injection, or used in inherited constructors.
 
         Supported parameters defined in class documentation. 
         """
@@ -161,7 +160,7 @@ class ReportFormatter:
 
     def set_param(self, name: str, value: TParamValue) -> "ReportFormatter":
         r"""
-        Method to set pèarameters value for the current formatter. Only parameters
+        Method to set parameters value for the current formatter. Only parameters
         already defined can be changed. It currently silently fails if name is 
         not available. This behavior may change in the future.
 
@@ -177,9 +176,9 @@ class ReportFormatter:
     
     def get_params_list(self) -> List[str]:
         r"""
-        Returns a list of available paramters names
+        Returns a list of available parameters names
 
-        :return: List of paramters names
+        :return: List of parameters names
         """
         return list(self._parameters.keys())
 
@@ -194,11 +193,11 @@ class ReportFormatter:
         return self._parameters.get(key)
 
     def dump(
-        self, input: TResultArg, output: TOuptuArg = None
+        self, input: TResultArg, output: TOutputArg = None
     ) -> Optional[str]:
         r"""
         Dumps the content of a result file in a different format. Input arguments
-        controls noth the loading and the data emission strategy.
+        controls both the loading and the data emission strategy.
 
         Regarding result loading:
 
@@ -212,7 +211,7 @@ class ReportFormatter:
         Regarding the report output:
 
          * if ``output`` parameter is ``None``, the method returns a string
-         * if ``ouptut`` parameter is a ``str``, the result is written in a new
+         * if ``output`` parameter is a ``str``, the result is written in a new
            file with ``output`` as filename. If the value contains the stdout or 
            stderr placeholder names (by default ``__stdout__`` and ``__stderr__``),
            those file are used for emitting the report.
@@ -239,8 +238,8 @@ class ReportFormatter:
                 self._dump(result, sys.stdout)  # type: ignore
             if output == self.Constants.OUTPUT_FILE_IS_STDERR:
                 self._dump(result, sys.stderr)  # type: ignore
-            with open(output, "w") as filepointer:
-                self._dump(result, filepointer)
+            with open(output, "w") as file_pointer:
+                self._dump(result, file_pointer)
 
     def default_parameters(self) -> TParams:
         r"""
@@ -321,7 +320,7 @@ class ReportFormatter:
 
         :return: input parameter name
         """
-        return self._default_input_file_param_name  # type: ignore (dinamically defined)
+        return self._default_input_file_param_name  # type: ignore (dynamically defined)
     
     @property
     def default_input_file_param_value(self):
@@ -332,7 +331,7 @@ class ReportFormatter:
 
         :return: input parameter value
         """
-        return self._default_input_file_param_value  # type: ignore (dinamically defined)
+        return self._default_input_file_param_value  # type: ignore (dynamically defined)
     
     @property
     def default_output_file_param_name(self):
@@ -343,7 +342,7 @@ class ReportFormatter:
 
         :return: output parameter name
         """
-        return self._default_output_file_param_name  # type: ignore (dinamically defined)
+        return self._default_output_file_param_name  # type: ignore (dynamically defined)
     
     @property
     def default_output_file_param_value(self):
@@ -354,7 +353,7 @@ class ReportFormatter:
 
         :return: output parameter value
         """
-        return self._default_output_file_param_value  # type: ignore (dinamically defined)
+        return self._default_output_file_param_value  # type: ignore (dynamically defined)
     
     @property
     def default_custom_parameters(self) -> TParams:

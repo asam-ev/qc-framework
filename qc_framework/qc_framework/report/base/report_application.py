@@ -12,7 +12,7 @@ import sys
 class ReportApplication:
     r"""
     Class that wraps the common behavior for a ``ReportFormatter`` in order to create
-    a command line application wich is compatible with the desing specification of the
+    a command line application which is compatible with the design specification of the
     Quality Checker runtime.
 
     Application created with this utility class have the following command line
@@ -112,7 +112,7 @@ class ReportApplication:
     def _define_arguments(self):
         r"""
         Defines application arguments. Parameters specific for the formatter
-        are created as ``"param_{name of the parmaeter}"``
+        are created as ``"param_{name of the parameter}"``
         """
         group = self._args.add_mutually_exclusive_group(required=True)
         group.add_argument(
@@ -237,7 +237,7 @@ class ReportApplication:
         r"""
         Runs the formatter by loading a configuration file.
 
-        .. info:: command line parameters override configuration parmaeter values
+        .. info:: command line parameters override configuration parameter values
 
         :param configuration_file: path of the configuration file to load
         :param override_param: command line override params

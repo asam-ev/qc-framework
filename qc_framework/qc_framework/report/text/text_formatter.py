@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from ..base.report_formatter import TStream, TParams
     from qc_baselib import Result
 
+
 class TextFormatter(ReportFormatter):
     
     @property
@@ -69,7 +70,7 @@ class TextFormatter(ReportFormatter):
         
         bundles = result.get_checker_bundle_results()
         for bundle in bundles:
-            p(f" -> {bundle.name} @ v{bundle.version}")
+            p(f" -> {bundle.name} @ {bundle.version}")
             p(f"Description: {bundle.description}", 4)
             p(f"Summary: {bundle.summary}", 4)
             if len(bundle.params):
@@ -101,11 +102,11 @@ class TextFormatter(ReportFormatter):
                                 p("Locations:", 14)
                                 for location in issue.locations:
                                     for file_loc in location.file_location:
-                                        p(f" -> File @ {file_loc.column}:{file_loc.row}: {location.description}", 14)
+                                        p(f" -> File @ col: {file_loc.column}, row: {file_loc.row}: {location.description}", 14)
                                     for xml_loc in location.xml_location:
                                         p(f" -> XML @ `{xml_loc.xpath}`: {location.description}", 14)
                                     for inertial_loc in location.inertial_location:
-                                        p(f" -> Inertial @ [{inertial_loc.x:.4e}, {inertial_loc.y:.4e}, {inertial_loc.z:.4e}]: {location.description}", 14)    
+                                        p(f" -> Inertial @ [{inertial_loc.x:.4n}; {inertial_loc.y:.4n}; {inertial_loc.z:.4n}]: {location.description}", 14)    
                     if len(checker.metadata):
                         p("Metadata:", 8)
                         for metadata in checker.metadata:
@@ -116,9 +117,35 @@ class TextFormatter(ReportFormatter):
             n()
         S()
         n()
-        p("RULE ADDRESSED")
+        p("ADDRESSED RULES")
         s()
         n()
-        p(f"Rule addressed: {len(addressed_rules)}")
+        p(f"Addressed rules: {len(addressed_rules)}")
+        for r in addressed_rules:
+            p(" -> {r}")
+        n()
+
+        p(f"Flagged Rules: {sum((len(x) for x in violated_rules.values()))}")
         for t, rs in violated_rules.items():
             p(f"with {t.name}: {len(rs)}", 2)
+            for r in rs:
+                p(f" -> {r}", 2)
+
+        s()
+        n()
+        p("NOTES")
+        s()
+        n()
+        p("Rule UID format:")
+        p("  <emanating-entity>:<standard>:x.y.z:rule_set.for_rules.rule_name")
+        n()
+        p("where    ")
+        p("  * Emanating Entity: a domain name for the entity (organization or company) that declares the rule UID")
+        p("  * Standard: a short string that represents the standard or the domain to which the rule is applied")
+        p("  * Definition Setting: the version of the standard or the domain to which the rule appears or is applied for the first time")
+        p("  * Rule Full Name: the full name of the rule, as dot separated, snake lower case string. ")
+        p("    The full name of a rule is composed by the rule set, a categorization for the rule, ")
+        p("    and the rule name, a unique string inside the categorization. ")
+        p("    The rule set can be nested (meaning that can be defined as an ")
+        p("    arbitrary sequence of dot separated names, while the name is the snake ")
+        p("    case string after the last dot of the full name)")
