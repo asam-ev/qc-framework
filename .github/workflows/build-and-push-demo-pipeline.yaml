@@ -2,7 +2,7 @@ name: Build and push demo pipeline image
 
 on:
   schedule:
-    - cron: '0 4 * * *' # 04:00 AM UTC every day
+    - cron: '0 2 * * *' # 02:00 AM UTC every day
 
 jobs:
   build-and-push-demo:
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: develop # @TODO remove it later
+          ref: main
 
       - name: Get current date
         id: date

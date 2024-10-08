@@ -81,35 +81,145 @@ Binaries are tested on Ubuntu 20.04 and Ubuntu 22.04
 
 ### Build on Windows
 
-On Windows, an example build for the the dependency XercesC looks like this:
+#### Prerequisites
 
-```bash
-$env:WORKING_PATH=C:\Users\user\test
+##### Install latest CMake
+
+https://www.google.com/search?client=firefox-b-d&q=cmake
+
+##### Install visual studio build tools
+
+From https://visualstudio.microsoft.com/it/downloads/?q=build+tools
+
+Based on the version downloaded at this step, you can use your build tools version in the commands below
+
+E.g. from `-G "Visual Studio 17 2022"` to `-G "Visual Studio 16 2019"`
+
+#### Install dependancies
+
+
+##### Set environment variable
+
+```
+$env:WORKING_PATH="C:\Users\USER_WORKING_PATH"
+```
+
+##### Install gtest
+
+```
+Write-Output "Installing gtest..."
+
+git clone https://github.com/google/googletest.git -b release-1.10.0
+cd googletest
+mkdir build
+cd build
+cmake -G "Visual Studio 17 2022" `
+-Dgtest_force_shared_crt=ON `
+-DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\gtest-Out" ..
+cmake --build . --config Release
+cmake --build . --config Release --target install
+
+Write-Output "Gtest installed."
+```
+
+
+##### Install Xerces
+
+
+```
+Write-Output "Setting up Xerces-C++..."
+
 $xercesZip = "$env:WORKING_PATH\xerces-c-3.2.5.zip"
 Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
 Expand-Archive -Path $xercesZip -DestinationPath "$env:WORKING_PATH"
 cd "$env:WORKING_PATH\xerces-c-3.2.5"
 mkdir build
 cd build
-cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\Xerces-Out" ..
-cmake --build . --config Release
-cmake --build . --config Release --target install
+cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\Xerces-Out" ..
+cmake --build . --config Debug
+cmake --build . --config Debug --target install
 ```
 
-For Windows Visual Studio 16 2019 an example CMake call to build the framework
-looks like this (call from the repository root):
+#### Install qt
 
-```bash
-$ mkdir ../build
-$ cmake -G "Visual Studio 16 2019" -A "x64" -B../build -S. ^
-    -DCMAKE_INSTALL_PREFIX="<prefix>" ^
-    -DENABLE_FUNCTIONAL_TESTS=ON ^
-    -DGTest_ROOT="<gtest_root>" ^
-    -DQt5_ROOT="<qt5_root>" ^
-    -DXercesC_ROOT="<xerces_c_root>"
-$ cmake --build ../build --target ALL_BUILD --config Release
-$ ctest --test-dir ../build -C Release
-$ cmake --install ../build
+Download qt 15 source from
+
+https://www.qt.io/offline-installers
+
+And save its download location
+
+```
+$env:QT_DOWNLOAD_PATH=YOUR_DOWNLOAD_PATH
+```
+
+And extract it
+
+Then, following this - https://doc.qt.io/qt-5/windows-building.html
+
+
+Create the file `qtvars.cmd` and place it in the qt5 download directory
+
+```
+REM Set up Microsoft Visual Studio 2017, where <arch> is amd64, x86, etc.
+CALL "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x64
+SET _ROOT="$env:QT_DOWNLOAD_PATH"
+SET PATH=%_ROOT%\qtbase\bin;%_ROOT%\gnuwin32\bin;%PATH%
+REM Uncomment the below line when using a git checkout of the source repository
+REM SET PATH=%_ROOT%\qtrepotools\bin;%PATH%
+SET _ROOT=
+```
+
+Execute
+
+```
+cmd.exe /E:ON /V:ON /k "$env:QT_DOWNLOAD_PATH\qt5vars.cmd"
+```
+
+and
+
+```
+cd $env:QT_DOWNLOAD_PATH
+
+.\configure -prefix "$env:WORKING_PATH\Qt5-Out" -opensource -confirm-license -release -nomake tests -nomake examples -skip qt3d -skip qtcanvas3d -skip qtcharts -skip qtdatavis3d -skip qtdoc -skip qtgamepad -skip qtgraphicaleffects -skip qtimageformats -skip qtlocation -skip qtlottie -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing -skip qtquick3d -skip qtquickcontrols -skip qtquickcontrols2 -skip qtremoteobjects -skip qtscript -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtserialport -skip qtspeech -skip qtsvg -skip qtvirtualkeyboard -skip qtwayland -skip qtwebchannel -skip qtwebengine -skip qtwebglplugin -skip qtwebsockets -skip qtwebview -skip qtwinextras -skip qtx11extras   -opengl desktop -no-icu -no-openssl -no-glib -no-dbus -no-sql-odbc -no-qml-debug -no-warnings-are-errors -no-iconv -optimize-size -ltcg -nomake examples
+```
+
+Now that the build configuration is done, you can build qt. To speed up the build process you can use `jom` tool [available here](https://wiki.qt.io/Jom). The tool can be downloaded from [this link](http://download.qt.io/official_releases/jom/jom.zip)
+
+To build with `jom` just run the command from the `$env:QT_DOWNLOAD_PATH` folder:
+
+```
+$env:JOM_DOWNLOAD_PATH/jom.exe
+```
+
+#### Build and install framework
+
+To build the framework you first need to clone the repo in a desired location:
+
+```
+$env:GIT_LOCATION=YOUR_DESIRED_GIT_CLONE_PATH
+cd $env:GIT_LOCATION
+git clone https://github.com/asam-ev/qc-framework.git
+```
+
+```
+Write-Output "Setting up QC-Framework..."
+
+cd "$env:GIT_LOCATION\qc-framework"
+mkdir build
+
+cmake -H"$env:GIT_LOCATION\qc-framework" -S. -Bbuild `
+-G "Visual Studio 17 2022" -A x64 `
+-DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\QC-Framework-Out" `
+-DENABLE_FUNCTIONAL_TESTS="$env:TEST_ENABLED" `
+-DGTest_ROOT="$env:WORKING_PATH\gtest-Out" `
+-DQt5_ROOT="$env:WORKING_PATH\Qt5-Out" `
+-DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out"
+
+cmake --build build --target ALL_BUILD --config Release
+
+cmake --install build
+
+Write-Output "All installations and setups are complete!"
 ```
 
 With the following CMake values:
@@ -160,11 +270,21 @@ conda activate .venv
 
 Python modules can be installed using `pip`.
 
+**From PyPi**
+
 ```bash
-pip install asam-qc-framework@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=qc_framework
+pip install asam-qc-framework
 ```
 
-**Note:** The above command will install `asam-qc-framework` from the `develop` branch. If you want to install `asam-qc-framework` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**From GitHub repository**
+
+```bash
+pip install asam-qc-framework@git+https://github.com/asam-ev/qc-framework@main#subdirectory=qc_framework
+```
+
+The above command will install `asam-qc-framework` from the `main` branch. If you want to install `asam-qc-framework` from another branch or tag, replace `@main` with the desired branch or tag.
+
+**From a local repository**
 
 ```bash
 pip install /home/user/qc-framework/qc_framework
@@ -174,13 +294,23 @@ pip install /home/user/qc-framework/qc_framework
 
 Standard ASAM Checker Bundles are implemented in Python and can be installed using `pip`.
 
-#### ASAM OpenDrive Checker Bundle
+### ASAM OpenDrive Checker Bundle
+
+**From PyPi**
 
 ```bash
-pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
+pip install asam-qc-opendrive
 ```
 
-**Note:** The above command will install `asam-qc-opendrive` from the `develop` branch. If you want to install `asam-qc-opendrive` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**From GitHub repository**
+
+```bash
+pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@main
+```
+
+The above command will install `asam-qc-opendrive` from the `main` branch. If you want to install `asam-qc-opendrive` from another branch or tag, replace `@main` with the desired branch or tag.
+
+**From a local repository**
 
 ```bash
 pip install /home/user/qc-opendrive
@@ -192,13 +322,23 @@ To test the installation:
 qc_opendrive --help
 ```
 
-#### ASAM OpenScenario XML Checker Bundle
+### ASAM OpenScenario XML Checker Bundle
+
+**From PyPi**
 
 ```bash
-pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@develop
+pip install asam-qc-openscenarioxml
 ```
 
-**Note:** The above command will install `asam-qc-openscenarioxml` from the `develop` branch. If you want to install `asam-qc-openscenarioxml` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**From GitHub repository**
+
+```bash
+pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@main
+```
+
+The above command will install `asam-qc-openscenarioxml` from the `main` branch. If you want to install `asam-qc-openscenarioxml` from another branch or tag, replace `@main` with the desired branch or tag.
+
+**From a local repository**
 
 ```bash
 pip install /home/user/qc-openscenarioxml
@@ -210,13 +350,23 @@ To test the installation:
 qc_openscenario --help
 ```
 
-#### ASAM OTX Checker Bundle
+### ASAM OTX Checker Bundle
+
+**From PyPi**
 
 ```bash
-pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@develop
+pip install asam-qc-otx
 ```
 
-**Note:** The above command will install `asam-qc-otx` from the `develop` branch. If you want to install `asam-qc-otx` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**From GitHub repository**
+
+```bash
+pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@main
+```
+
+The above command will install `asam-qc-otx` from the `main` branch. If you want to install `asam-qc-otx` from another branch or tag, replace `@main` with the desired branch or tag.
+
+**From a local repository**
 
 ```bash
 pip install /home/user/qc-otx
