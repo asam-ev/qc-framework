@@ -11,8 +11,8 @@ There are two types of manifest files in the framework: **Framework manifest fil
 ## Framework Manifest File
 
 A framework manifest file is a JSON file containing a list of module manifest file paths.
-The [runtime module](runtime_module.md) uses the framework manifest file to discover
-and execute Checker Bundles and Report Modules.
+The [framework executable](python_framework_module.md) uses manifest files to discover
+and execute Checker Bundles, Result Poolers and Report Modules.
 
 The framework manifest file must follow the JSON format as in the example below.
 
@@ -164,7 +164,7 @@ On Linux, environment variables of the form `$name` and `${name}` are supported.
 To register a Checker Bundle or Report Module with the framework:
 * First, a module manifest file must be provided.
 * Second, the path to the module manifest file must be included in the framework manifest file.
-* Last, the framework manifest file can be provided to the [runtime module](runtime_module.md) when triggering a framework execution.
+* Last, the framework manifest file can be provided to the [framework executable](python_qc_framework.md):
   ```bash
   qc_runtime --config=$PATH_TO_CONFIG_FILE --manifest=$PATH_TO_MANIFEST_FILE
   ```

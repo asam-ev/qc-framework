@@ -125,7 +125,7 @@ docker run \
 The docker image will automatically:
 - Detect the type of file passed as input.
 - Create the specific config according to [config schema](../doc/schema/config_format.xsd).
-- Execute the runtime with specific checker, result pooling and text result application.
+- Execute the framework with specific checker, result pooling and text result application.
 
 Currently the demo_pipeline will install and execute:
 

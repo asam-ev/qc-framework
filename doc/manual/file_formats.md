@@ -10,7 +10,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 ## Configuration File (`*.xml`)
 
-The runtime configuration settings are stored in a configuration file. This
+The framework configuration settings are stored in a configuration file. This
 file defines which Checker Bundles and what checkers are used, how they are
 parameterized and whether the issues are warnings or errors. If a CheckerBundle
 outputs errors that are not configured in this file, the result pooling removes
@@ -63,7 +63,7 @@ The name `Result.xqar` is reserved for the output of the Result Pooling module. 
 * The name `Result.xqar` **MUST NOT** be used as the name of the result `.xqar` file for any Checker Bundle.
 * The file `Result.xqar` can be used as the input file for Report Modules.
 * The result file of each checker bundle must have the postfix `.xqar`. It must be a file name (e.g., `my-bundle-result.xqar`) and must not contain any path (both asolute path and relative path are not allowed).
-* All the result files and the automatically generated `Result.xqar` will be stored in the in the output folder `qc-output-YYYY-MM-DD-HH-MM-SS-*`. It is also possible to configure the output folder path. For more details see the [Runtime Module documentation](runtime_module.md).
+* All the result files and the automatically generated `Result.xqar` will be stored in the in the output folder `qc-output-YYYY-MM-DD-HH-MM-SS-*`. It is also possible to configure the output folder path. For more details see the [Framework Module documentation](python_qc_framework.md).
 
 ## Result File (`*.xqar`)
 

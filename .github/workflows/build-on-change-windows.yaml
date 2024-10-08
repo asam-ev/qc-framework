@@ -13,7 +13,7 @@ on:
       - test/**
       - .github/workflows/**
       - doc/**
-      - runtime/**
+      - qc_framework/**
       - docker/**
 
   # execute on every push made targeting the branches bellow
@@ -28,7 +28,7 @@ on:
       - test/**
       - .github/workflows/**
       - doc/**
-      - runtime/**
+      - qc_framework/**
       - docker/**
 
   workflow_dispatch: # Allows manual triggering of the workflow
@@ -147,19 +147,19 @@ jobs:
           name: test-report
           path: ${{ github.workspace }}\build\Testing\Temporary\LastTest.log
 
-      - name: Runtime test execution
+      - name: Framework test execution
         run: |
-          Write-Output "Starting runtime tests..."
+          Write-Output "Starting framework tests..."
 
           Rename-Item -path "$env:WORKING_PATH\qc-framework\qc-framework\build" -NewName "$env:WORKING_PATH\qc-framework\qc-framework\out_build"
           Copy-Item -Path "$env:WORKING_PATH\QC-Framework-Out\bin" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin" -Recurse
           Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin"
 
-          cd "$env:WORKING_PATH\qc-framework\qc-framework\runtime"
+          cd "$env:WORKING_PATH\qc-framework\qc-framework\qc_framework"
           python3 -m pip install poetry
           python3 -m poetry install
           python3 -m poetry run pytest
-          Write-Output "All runtime tests done."
+          Write-Output "All framework tests done."
         shell: pwsh
 
       - name: Set up Python 3.10
@@ -167,14 +167,14 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Execute checker bundles runtime
+      - name: Execute checker bundles
         run: |
           $env:ASAM_QC_FRAMEWORK_MANIFEST_DIR="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest"
           $env:ASAM_QC_FRAMEWORK_INSTALLATION_DIR="$env:WORKING_PATH\QC-Framework-Out\bin"
 
           git config --system core.longpaths true
 
-          pip install -e $env:WORKING_PATH\qc-framework\qc-framework\runtime
+          pip install -e $env:WORKING_PATH\qc-framework\qc-framework\qc_framework
 
           mkdir "$env:WORKING_PATH\odr_out"
           pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop

@@ -10,8 +10,8 @@ cd ..
 DOCKER_BUILDKIT=1 \
   docker build \
   -f docker/Dockerfile.linux \
-  --target runtime_test \
-  -t runtime_test .
+  --target framework_test \
+  -t framework_test .
 
 DOCKER_BUILDKIT=1 \
   docker build \
@@ -21,7 +21,7 @@ DOCKER_BUILDKIT=1 \
 
 docker run \
   -v "$OUTPUT_DIR":/out \
- --rm --name runtime_test runtime_test 
+ --rm --name framework_test framework_test 
 
 docker run --rm \
   -v "$OUTPUT_DIR":/out \
