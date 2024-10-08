@@ -8,6 +8,8 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 # ![Logo Image](doc/manual/images/qc_framework_logo.drawio.png)
 
+**Disclaimer**: The current version is a release candidate. The first official release is expected to be in November.
+
 The ASAM Quality Checker Framework is designed for quality assessment of the
 ASAM standards like
 [OpenDRIVE](https://www.asam.net/standards/detail/opendrive),
@@ -76,8 +78,8 @@ An architecture overview and documentation is provided in the
 ## Using Docker-based demo pipeline
 
 A [Docker-based demo pipeline](doc/manual/demo_pipeline.md) is provided to help users try out the latest development
-of the framework, as well as the [OpenDrive](https://github.com/asam-ev/qc-opendrive/tree/develop) 
-and [OpenScenario XML](https://github.com/asam-ev/qc-openscenarioxml/tree/develop) checker bundles.
+of the framework, as well as the [OpenDrive](https://github.com/asam-ev/qc-opendrive) 
+and [OpenScenario XML](https://github.com/asam-ev/qc-openscenarioxml) checker bundles.
 
 ## Build and run the framework locally
 

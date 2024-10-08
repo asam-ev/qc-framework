@@ -270,11 +270,21 @@ conda activate .venv
 
 Python modules can be installed using `pip`.
 
+**From PyPi**
+
 ```bash
-pip install asam-qc-framework@git+https://github.com/asam-ev/qc-framework@develop#subdirectory=qc_framework
+pip install asam-qc-framework
 ```
 
-**Note:** The above command will install `asam-qc-framework` from the `develop` branch. If you want to install `asam-qc-framework` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**From GitHub repository**
+
+```bash
+pip install asam-qc-framework@git+https://github.com/asam-ev/qc-framework@main#subdirectory=qc_framework
+```
+
+The above command will install `asam-qc-framework` from the `main` branch. If you want to install `asam-qc-framework` from another branch or tag, replace `@main` with the desired branch or tag.
+
+**From a local repository**
 
 ```bash
 pip install /home/user/qc-framework/qc_framework
@@ -284,13 +294,23 @@ pip install /home/user/qc-framework/qc_framework
 
 Standard ASAM Checker Bundles are implemented in Python and can be installed using `pip`.
 
-#### ASAM OpenDrive Checker Bundle
+### ASAM OpenDrive Checker Bundle
+
+**From PyPi**
 
 ```bash
-pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
+pip install asam-qc-opendrive
 ```
 
-**Note:** The above command will install `asam-qc-opendrive` from the `develop` branch. If you want to install `asam-qc-opendrive` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**From GitHub repository**
+
+```bash
+pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@main
+```
+
+The above command will install `asam-qc-opendrive` from the `main` branch. If you want to install `asam-qc-opendrive` from another branch or tag, replace `@main` with the desired branch or tag.
+
+**From a local repository**
 
 ```bash
 pip install /home/user/qc-opendrive
@@ -302,13 +322,23 @@ To test the installation:
 qc_opendrive --help
 ```
 
-#### ASAM OpenScenario XML Checker Bundle
+### ASAM OpenScenario XML Checker Bundle
+
+**From PyPi**
 
 ```bash
-pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@develop
+pip install asam-qc-openscenarioxml
 ```
 
-**Note:** The above command will install `asam-qc-openscenarioxml` from the `develop` branch. If you want to install `asam-qc-openscenarioxml` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**From GitHub repository**
+
+```bash
+pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@main
+```
+
+The above command will install `asam-qc-openscenarioxml` from the `main` branch. If you want to install `asam-qc-openscenarioxml` from another branch or tag, replace `@main` with the desired branch or tag.
+
+**From a local repository**
 
 ```bash
 pip install /home/user/qc-openscenarioxml
@@ -320,13 +350,23 @@ To test the installation:
 qc_openscenario --help
 ```
 
-#### ASAM OTX Checker Bundle
+### ASAM OTX Checker Bundle
+
+**From PyPi**
 
 ```bash
-pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@develop
+pip install asam-qc-otx
 ```
 
-**Note:** The above command will install `asam-qc-otx` from the `develop` branch. If you want to install `asam-qc-otx` from another branch or tag, replace `@develop` with the desired branch or tag. It is also possible to install from a local directory.
+**From GitHub repository**
+
+```bash
+pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@main
+```
+
+The above command will install `asam-qc-otx` from the `main` branch. If you want to install `asam-qc-otx` from another branch or tag, replace `@main` with the desired branch or tag.
+
+**From a local repository**
 
 ```bash
 pip install /home/user/qc-otx
