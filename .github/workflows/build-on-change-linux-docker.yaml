@@ -13,7 +13,7 @@ on:
       - test/**
       - .github/workflows/**
       - doc/**
-      - runtime/**
+      - qc_framework/**
       - docker/**
 
   # execute on every push made targeting the branches bellow
@@ -28,7 +28,7 @@ on:
       - test/**
       - .github/workflows/**
       - doc/**
-      - runtime/**
+      - qc_framework/**
       - docker/**
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
       - name: Docker Build
         run: |
           docker build -f docker/Dockerfile.linux --target unit_test -t unit_test .
-          docker build -f docker/Dockerfile.linux --target runtime_test -t runtime_test .
+          docker build -f docker/Dockerfile.linux --target framework_test -t framework_test .
 
       - name: Unit test execution
         if: github.event_name == 'pull_request'
@@ -55,14 +55,14 @@ jobs:
           name: unit-test-report
           path: ${{ github.workspace }}/LastTest.log
 
-      - name: Runtime test execution
+      - name: Framework test execution
         if: github.event_name == 'pull_request'
         run: |
-          docker run -v ${{ github.workspace }}:/out --rm --name runtime_test runtime_test
+          docker run -v ${{ github.workspace }}:/out --rm --name framework_test framework_test
 
-      - name: Archive runtime test results
+      - name: Archive framework test results
         if: github.event_name == 'pull_request' && (success() || failure())
         uses: actions/upload-artifact@v4
         with:
-          name: runtime-test-report
+          name: framework-test-report
           path: ${{ github.workspace }}/runtime_test.log

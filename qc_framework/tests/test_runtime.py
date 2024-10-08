@@ -8,7 +8,7 @@ import os
 import sys
 
 
-import runtime.runtime as runtime
+import qc_framework.runtime as runtime
 
 
 def on_windows() -> bool:
