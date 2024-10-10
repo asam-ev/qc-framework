@@ -36,15 +36,9 @@ cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, const std::s
     AddDomainSpecificInfo(domainSpecificInfo);
 }
 
-cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, std::list<cLocationsContainer *> listLoc)
-    : cIssue(description, infoLvl)
-{
-    AddLocationsContainer(listLoc);
-}
-
-cIssue::cIssue(const std::string &description, eIssueLevel infoLvl,
+cIssue::cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID,
                std::list<cDomainSpecificInfo *> listDomainSpecificInfo)
-    : cIssue(description, infoLvl)
+    : cIssue(description, infoLvl, ruleUID)
 {
     AddDomainSpecificInfo(listDomainSpecificInfo);
 }

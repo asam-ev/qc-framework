@@ -13,6 +13,12 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
   <CheckerBundle application="DemoCheckerBundle">
     <Param name="strResultFile" value="DemoCheckerBundle.xqar" />
     <Checker checkerId="exampleChecker" maxLevel="1" minLevel="3" />
+    <Checker checkerId="exampleChecker" maxLevel="1" minLevel="3" />
+    <Checker checkerId="exampleInertialChecker" maxLevel="1" minLevel="3" />
+    <Checker checkerId="exampleMetadataChecker" maxLevel="1" minLevel="3" />
+    <Checker checkerId="exampleIssueRuleChecker" maxLevel="1" minLevel="3" />
+    <Checker checkerId="exampleSkippedChecker" maxLevel="1" minLevel="3" />
+    <Checker checkerId="exampleDomainChecker" maxLevel="1" minLevel="3" />
   </CheckerBundle>
 
 </Config>

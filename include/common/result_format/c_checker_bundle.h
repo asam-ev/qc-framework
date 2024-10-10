@@ -60,12 +60,6 @@ class cCheckerBundle
                             const std::string &strSummary = "", const std::string &strStatus = "completed");
 
     /*
-     * Adds an amout of issues to the checker bundle
-     */
-    cChecker *CreateCheckerWithIssues(const std::string &strCheckerId, const std::string &strDescription,
-                                      eIssueLevel issueLevel, std::map<std::string, std::string> m_Issues);
-
-    /*
      * Returns a checker by its Id
      * \return Returns a checker instance or nullptr
      */
