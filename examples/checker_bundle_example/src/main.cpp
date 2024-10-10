@@ -52,12 +52,7 @@ int main(int argc, char *argv[])
     // Default parameters
     inputParams.SetParam("strResultFile", ssResultFile.str());
 
-    if (StringEndsWith(ToLower(strFilepath), ".xodr"))
-    {
-        // Implement here the processing of an XODR.
-        // This path is currently used for batch integration.
-    }
-    else if (StringEndsWith(ToLower(strFilepath), ".xml"))
+    if (StringEndsWith(ToLower(strFilepath), ".xml"))
     {
         // Implement here the processing of an configuration.
         // This path is currently used for config gui integration
@@ -82,11 +77,6 @@ int main(int argc, char *argv[])
             std::cerr << "No configuration for module '" << CHECKER_BUNDLE_NAME << "' found. Start with default params."
                       << std::endl;
     }
-    else if (StringEndsWith(ToLower(strFilepath), "--defaultconfig"))
-    {
-        WriteEmptyReport();
-        return 0;
-    }
     else if (strcmp(strFilepath.c_str(), "-h") == 0 || strcmp(strFilepath.c_str(), "--help") == 0)
     {
         ShowHelp(strToolpath);
@@ -110,10 +100,7 @@ void ShowHelp(const std::string &toolPath)
     GetFileName(&applicationNameWithoutExt, true);
 
     std::cout << "\n\nUsage of " << applicationNameWithoutExt << ":" << std::endl;
-    std::cout << "\nRun the application with xodr file: \n" << applicationName << " sample.xodr" << std::endl;
     std::cout << "\nRun the application with dbqa configuration: \n" << applicationName << " config.xml" << std::endl;
-    std::cout << "\nRun the application and write empty report as default configuration: \n"
-              << applicationName << " --defaultconfig" << std::endl;
     std::cout << "\n\n";
 }
 
@@ -170,34 +157,41 @@ void RunChecks(const cParameterContainer &inputParams)
     pResultContainer.AddCheckerBundle(pExampleCheckerBundle);
 
     // Create a checker with a factory in the checker bundle
-    cChecker *pExampeChecker = pExampleCheckerBundle->CreateChecker("exampleChecker", "This is a description");
+    cChecker *pExampleChecker = pExampleCheckerBundle->CreateChecker("exampleChecker", "This is a description");
+    const std::string first_rule_uid = "asam.net:xodr:1.0.0:first_rule_name";
+    pExampleChecker->AddRule(new cRule(first_rule_uid));
     // Lets add now an issue
-    pExampeChecker->AddIssue(new cIssue("This is an information from the demo usecase", INFO_LVL));
+    pExampleChecker->AddIssue(new cIssue("This is an information from the demo usecase", INFO_LVL, first_rule_uid));
 
     // Create a test checker with an inertial location
     cChecker *pExampleInertialChecker =
         pExampleCheckerBundle->CreateChecker("exampleInertialChecker", "This is a description of inertial checker");
+    const std::string second_rule_uid = "asam.net:xodr:1.0.0:second_rule_name";
+    pExampleInertialChecker->AddRule(new cRule(second_rule_uid));
     std::list<cLocationsContainer *> listLoc;
     listLoc.push_back(new cLocationsContainer("inertial position", new cInertialLocation(1.0, 2.0, 3.0)));
-    pExampleInertialChecker->AddIssue(new cIssue("This is an information from the demo usecase", INFO_LVL, listLoc));
+    pExampleInertialChecker->AddIssue(
+        new cIssue("This is an information from the demo usecase", INFO_LVL, second_rule_uid, listLoc));
 
-    // Create a test checker with RuleUID and metadata
-    cChecker *pExampleRuleUIDChecker =
-        pExampleCheckerBundle->CreateChecker("exampleRuleUIDChecker", "This is a description of ruleUID checker");
-    pExampleRuleUIDChecker->AddRule(new cRule("test.com::qwerty.qwerty"));
-    pExampleRuleUIDChecker->AddMetadata(
+    // Create a test checker with metadata
+    cChecker *pExampleMetadataChecker =
+        pExampleCheckerBundle->CreateChecker("exampleMetadataChecker", "This is a description of metadata checker");
+    const std::string third_rule_uid = "asam.net:xodr:1.0.0:third_rule_name";
+    pExampleMetadataChecker->AddRule(new cRule(third_rule_uid));
+    pExampleMetadataChecker->AddMetadata(
         new cMetadata("run date", "2024/06/06", "Date in which the checker was executed"));
-    pExampleRuleUIDChecker->AddMetadata(
+    pExampleMetadataChecker->AddMetadata(
         new cMetadata("reference project", "project01", "Name of the project that created the checker"));
 
     // Create a test checker with Issue and RuleUID
     cChecker *pExampleIssueRuleChecker = pExampleCheckerBundle->CreateChecker(
         "exampleIssueRuleChecker", "This is a description of checker with issue and the involved ruleUID");
-
+    const std::string fourth_rule_uid = "asam.net:xodr:1.0.0:fourth_rule_name";
+    pExampleIssueRuleChecker->AddRule(new cRule(fourth_rule_uid));
     pExampleIssueRuleChecker->AddIssue(
-        new cIssue("This is an information from the demo usecase", ERROR_LVL, "test.com::qwerty.qwerty"));
+        new cIssue("This is an information from the demo usecase", ERROR_LVL, fourth_rule_uid));
 
-    // Create a test checker with Issue and RuleUID
+    // Create a checker with skipped status
     cChecker *pSkippedChecker = pExampleCheckerBundle->CreateChecker(
         "exampleSkippedChecker", "This is a description of checker with skipped status", "Skipped execution",
         "skipped");
@@ -205,6 +199,8 @@ void RunChecks(const cParameterContainer &inputParams)
     // Create a test checker with an inertial location
     cChecker *pExampleDomainChecker = pExampleCheckerBundle->CreateChecker(
         "exampleDomainChecker", "This is a description of example domain info checker");
+    const std::string fifth_rule_uid = "asam.net:xodr:1.0.0:fifth_rule_name";
+    pExampleDomainChecker->AddRule(new cRule(fifth_rule_uid));
     std::list<cDomainSpecificInfo *> listDomainSpecificInfo;
 
     std::string xmlString =
@@ -212,7 +208,7 @@ void RunChecks(const cParameterContainer &inputParams)
 
     listDomainSpecificInfo.push_back(new cDomainSpecificInfo(getRootFromString(xmlString), "domain info test"));
     pExampleDomainChecker->AddIssue(
-        new cIssue("This is an information from the demo usecase", INFO_LVL, listDomainSpecificInfo));
+        new cIssue("This is an information from the demo usecase", INFO_LVL, fifth_rule_uid, listDomainSpecificInfo));
 
     // Lets add a summary for the checker bundle
     unsigned int issueCount = pExampleCheckerBundle->GetIssueCount();
@@ -227,27 +223,4 @@ void RunChecks(const cParameterContainer &inputParams)
 
     pResultContainer.Clear();
     XMLPlatformUtils::Terminate();
-}
-
-void WriteEmptyReport()
-{
-    cResultContainer emptyReport;
-    cCheckerBundle *pCheckerBundle = new cCheckerBundle(CHECKER_BUNDLE_NAME);
-
-    emptyReport.AddCheckerBundle(pCheckerBundle);
-
-    std::stringstream ssDefaultResultFile;
-    ssDefaultResultFile << CHECKER_BUNDLE_NAME << ".xqar";
-    pCheckerBundle->SetParam("strResultFile", ssDefaultResultFile.str());
-
-    pCheckerBundle->CreateChecker("exampleChecker");
-
-    std::stringstream ssReportFile;
-    ssReportFile << CHECKER_BUNDLE_NAME << ".xqar";
-
-    std::cout << std::endl;
-    std::cout << "Write empty report: '" << ssReportFile.str() << "'" << std::endl << std::endl;
-    emptyReport.WriteResults(ssReportFile.str());
-
-    std::cout << "Finished." << std::endl;
 }
