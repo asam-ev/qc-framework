@@ -51,16 +51,10 @@ class cIssue : public IResult
      * Creates a new Issue
      *
      */
-    cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID = "",
+    cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID,
            cLocationsContainer *locationsContainer = nullptr, cDomainSpecificInfo *domainSpecificInfo = nullptr);
 
-    /*
-     * Creates a new Issue
-     *
-     */
-    cIssue(const std::string &description, eIssueLevel infoLvl, std::list<cLocationsContainer *> listLoc);
-
-    cIssue(const std::string &description, eIssueLevel infoLvl,
+    cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID,
            std::list<cDomainSpecificInfo *> listDomainSpecificInfo);
 
     cIssue(const std::string &description, eIssueLevel infoLvl, const std::string &ruleUID,

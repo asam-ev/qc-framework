@@ -157,26 +157,6 @@ cChecker *cCheckerBundle::CreateChecker(const std::string &checkerId, const std:
     return CreateChecker(new cChecker(checkerId, strDescription, strSummary, strStatus));
 }
 
-cChecker *cCheckerBundle::CreateCheckerWithIssues(const std::string &strCheckerId, const std::string &strDescription,
-                                                  eIssueLevel issueLevel, std::map<std::string, std::string> m_Issues)
-{
-    cChecker *pChecker = new cChecker(strCheckerId, strDescription, "", "completed");
-    CreateChecker(pChecker);
-
-    for (std::map<std::string, std::string>::const_iterator it = m_Issues.cbegin(); it != m_Issues.cend(); it++)
-    {
-        std::stringstream ss_descriptionStream;
-
-        ss_descriptionStream << it->first << " = " << it->second;
-
-        pChecker->AddIssue(new cIssue(ss_descriptionStream.str(), issueLevel));
-    }
-
-    pChecker->UpdateSummary();
-
-    return pChecker;
-}
-
 // Deletes all checkers
 void cCheckerBundle::Clear()
 {

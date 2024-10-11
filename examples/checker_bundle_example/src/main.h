@@ -35,8 +35,3 @@ void ShowHelp(const std::string &applicationName);
  * Runs the checks
  */
 void RunChecks(const cParameterContainer &inputParams);
-
-/*
- * Writes an empty Report
- */
-void WriteEmptyReport();

@@ -27,19 +27,6 @@ TEST_F(cTesterExampleCheckerBundle, CmdBasic)
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 }
 
-TEST_F(cTesterExampleCheckerBundle, CmdDefaultConfig)
-{
-    std::string strResultMessage;
-
-    std::string strDefaultConfigFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
-
-    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, "--defaultconfig");
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-
-    nRes |= CheckFileExists(strResultMessage, strDefaultConfigFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-}
-
 TEST_F(cTesterExampleCheckerBundle, CmdConfig)
 {
     std::string strResultMessage;
@@ -72,26 +59,6 @@ TEST_F(cTesterExampleCheckerBundle, CmdConfigContainsIssue)
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     nRes |= XmlContainsNode(strResultFilePath, "Issue");
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-
-    fs::remove(strResultFilePath.c_str());
-}
-
-TEST_F(cTesterExampleCheckerBundle, CmdXodr)
-{
-    std::string strResultMessage;
-
-    std::string strXodrFilePath = "../stimuli/xodr_examples/three_connected_roads_with_steps.xodr";
-    std::string strResultFilePath = strWorkingDir + "/" + std::string(MODULE_NAME) + ".xqar";
-    std::string strXsdFilePath = strTestFilesDir + "/../../../doc/schema/xqar_result_format.xsd";
-
-    TestResult nRes = ExecuteCommand(strResultMessage, MODULE_NAME, strXodrFilePath);
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-
-    nRes |= CheckFileExists(strResultMessage, strResultFilePath, false);
-    ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
-
-    nRes |= ValidateXmlSchema(strResultFilePath, strXsdFilePath);
     ASSERT_TRUE_EXT(nRes == TestResult::ERR_NOERROR, strResultMessage.c_str());
 
     fs::remove(strResultFilePath.c_str());
