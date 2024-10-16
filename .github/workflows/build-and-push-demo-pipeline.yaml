@@ -2,7 +2,7 @@ name: Build and push demo pipeline image
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 02:00 AM UTC every day
+    - cron: '0 2 * * 0' # 02:00 AM UTC every Sunday
 
 jobs:
   build-and-push-demo:
