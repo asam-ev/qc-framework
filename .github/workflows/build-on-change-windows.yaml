@@ -75,7 +75,7 @@ jobs:
         run: |
           Write-Output "Setting up Xerces-C++..."
           $xercesZip = "$env:WORKING_PATH\xerces-c-3.2.5.zip"
-          Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
+          Invoke-WebRequest -Uri "https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
           Expand-Archive -Path $xercesZip -DestinationPath "$env:WORKING_PATH"
           cd "$env:WORKING_PATH\xerces-c-3.2.5"
           mkdir build
