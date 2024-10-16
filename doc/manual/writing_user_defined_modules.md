@@ -20,7 +20,7 @@ A Checker Bundle should accept a configuration file and output a result file (se
 It is recommended to use the Python Base Library if possible as it contains the most advanced development. The C++ Base Library is complete in terms of functionality, but it is not as easy to use as the Python Base Library.
 
 A minimal example of using the Python Base Library to implement a Checker Bundle:
-* https://github.com/asam-ev/qc-baselib-py/tree/develop/examples/json_validator
+* https://github.com/asam-ev/qc-baselib-py/tree/main/examples/json_validator
 
 A minimal example of using the C++ Base Library to implement a Checker Bundle:
 * https://github.com/asam-ev/qc-framework/tree/main/examples/checker_bundle_example
@@ -62,7 +62,7 @@ A Report Module should accept a configuration file which define the result xqar 
 Similar to Checker Bundle, it is recommended to use the [Python Base Library](https://github.com/asam-ev/qc-baselib-py) to implement a Report Module.
 
 A minimal example of using the Python Base Library to implement a Report Module:
-* https://github.com/asam-ev/qc-baselib-py/tree/develop/examples/report_module_text
+* https://github.com/asam-ev/qc-baselib-py/tree/main/examples/report_module_text
 
 Here are some other advanced example Report Modules using the C++ Base Library:
 * https://github.com/asam-ev/qc-framework/tree/main/src/report_modules/report_module_text
