@@ -5,7 +5,6 @@ on:
   pull_request:
     branches:
       - main
-      - develop # can be removed on main merge
     paths: # we only include paths critical for building to avoid unnecessary runs
       - src/**
       - include/**
@@ -20,7 +19,6 @@ on:
   push:
     branches:
       - main
-      - develop # can be removed on main merge
     paths: # we only include paths critical for building to avoid unnecessary runs
       - src/**
       - include/**
@@ -77,7 +75,7 @@ jobs:
         run: |
           Write-Output "Setting up Xerces-C++..."
           $xercesZip = "$env:WORKING_PATH\xerces-c-3.2.5.zip"
-          Invoke-WebRequest -Uri "https://dlcdn.apache.org/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
+          Invoke-WebRequest -Uri "https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
           Expand-Archive -Path $xercesZip -DestinationPath "$env:WORKING_PATH"
           cd "$env:WORKING_PATH\xerces-c-3.2.5"
           mkdir build
@@ -177,21 +175,21 @@ jobs:
           pip install -e $env:WORKING_PATH\qc-framework\qc-framework\qc_framework
 
           mkdir "$env:WORKING_PATH\odr_out"
-          pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@develop
+          pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@main
           qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\odr_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\odr_out"
           if (-not (Test-Path "$env:WORKING_PATH\odr_out\xodr_bundle_report.xqar")) { Throw "Error: Odr output does not exist." }
           if (-not (Test-Path "$env:WORKING_PATH\odr_out\Result.xqar")) { Throw "Error: Odr output does not exist." }
           if (-not (Test-Path "$env:WORKING_PATH\odr_out\Report.txt")) { Throw "Error: Odr output does not exist." }
 
           mkdir "$env:WORKING_PATH\osc_out"
-          pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@develop
+          pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@main
           qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\osc_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\osc_out"
           if (-not (Test-Path "$env:WORKING_PATH\osc_out\xosc_bundle_report.xqar")) { Throw "Error: Osc output does not exist." }
           if (-not (Test-Path "$env:WORKING_PATH\osc_out\Result.xqar")) { Throw "Error: Osc output does not exist." }
           if (-not (Test-Path "$env:WORKING_PATH\osc_out\Report.txt")) { Throw "Error: Odr output does not exist." }
 
           mkdir "$env:WORKING_PATH\otx_out"
-          pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@develop
+          pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@main
           qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\otx_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\otx_out"
           if (-not (Test-Path "$env:WORKING_PATH\otx_out\otx_bundle_report.xqar")) { Throw "Error: Otx output does not exist." }
           if (-not (Test-Path "$env:WORKING_PATH\otx_out\Result.xqar")) { Throw "Error: Otx output does not exist." }
