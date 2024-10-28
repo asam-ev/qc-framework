@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 /**
  * Copyright 2023 CARIAD SE.
+ * Copyright 2024 ASAM e.V.
  *
  * This Source Code Form is subject to the terms of the Mozilla
  * Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -33,8 +34,7 @@ class cInertialLocation : public cExtendedInformation
      * \param z: Z of the position in inertial coordinate system
      * \param description: Additional description
      */
-    cInertialLocation(double x, double y, double z)
-        : cExtendedInformation("InertialLocation"), m_X(x), m_Y(y), m_Z(z)
+    cInertialLocation(double x, double y, double z) : cExtendedInformation("InertialLocation"), m_X(x), m_Y(y), m_Z(z)
     {
     }
 
@@ -53,8 +53,6 @@ class cInertialLocation : public cExtendedInformation
 
     // Returns the Z
     double GetZ() const;
-
-  
 
   protected:
     double m_X, m_Y, m_Z;
