@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MPL-2.0
 /*
  * Copyright 2023 CARIAD SE.
  * Copyright 2024 BMW AG
