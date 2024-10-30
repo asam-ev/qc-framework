@@ -19,4 +19,9 @@
     <Param name="OutputFile" value="Report.txt" />
   </ReportModule>
 
+  <ReportModule application="qc-report-json">
+    <Param name="InputFile" value="Result.xqar" />
+    <Param name="OutputFile" value="Report.json" />
+  </ReportModule>
+
 </Config>

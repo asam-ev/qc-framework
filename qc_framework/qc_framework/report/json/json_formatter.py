@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Dict, List, Any
 import json
 from ..base import ReportFormatter
 from qc_baselib import IssueSeverity
+import xml.etree.ElementTree as ETree
 
 if TYPE_CHECKING:
     from ..base.report_formatter import TStream
@@ -153,4 +154,4 @@ class JsonFormatter(ReportFormatter):
         }
 
     def _dump_domain_specific_info(self, domain_specific_info):
-        return [dsi.name for dsi in domain_specific_info]
+        return [ETree.tostring(dsi, encoding="unicode") for dsi in domain_specific_info]

@@ -161,3 +161,6 @@ cython_debug/
 
 # VSCode
 .vscode
+
+# Runtime Test error stream
+runtime_test.err

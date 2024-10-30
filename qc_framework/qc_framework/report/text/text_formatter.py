@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from ..base import ReportFormatter
 from qc_baselib import IssueSeverity
+import xml.etree.ElementTree as ETree
 
 if TYPE_CHECKING:
     from ..base.report_formatter import TStream, TParams
@@ -70,7 +71,7 @@ class TextFormatter(ReportFormatter):
         
         bundles = result.get_checker_bundle_results()
         for bundle in bundles:
-            p(f" -> {bundle.name} @ {bundle.version}")
+            p(f" -> {bundle.name} @ {bundle.version or 'version-undefined'}")
             p(f"Description: {bundle.description}", 4)
             p(f"Summary: {bundle.summary}", 4)
             if len(bundle.params):
@@ -97,7 +98,10 @@ class TextFormatter(ReportFormatter):
                             if len(issue.domain_specific_info):
                                 p("Domain Specific Info:", 14)
                                 for dsi in issue.domain_specific_info:
-                                    p(f" -> {dsi.name}", 14)
+                                    dsi_lines = ETree.tostring(dsi, encoding="unicode").split("\n")
+                                    p(f" -> {dsi_lines[0].strip()}", 14)
+                                    for dsi_line in dsi_lines[1:]:
+                                        p(f"    {dsi_line.rstrip()}", 14)
                             if len(issue.locations):
                                 p("Locations:", 14)
                                 for location in issue.locations:
@@ -122,7 +126,7 @@ class TextFormatter(ReportFormatter):
         n()
         p(f"Addressed rules: {len(addressed_rules)}")
         for r in addressed_rules:
-            p(" -> {r}")
+            p(f" -> {r}")
         n()
 
         p(f"Flagged Rules: {sum((len(x) for x in violated_rules.values()))}")

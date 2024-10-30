@@ -29,6 +29,24 @@ def launch_main(monkeypatch, config_file_path: str, manifest_file_path: str):
     runtime.main()
 
 
+def print_file(filename, separators=True):
+    if os.environ.get("QC_FRAMEWORK_PRINT_FILES"):
+        if separators:
+            length = len(filename) + 2 + 6
+            print("=" * length)
+            print(f" BEGIN {filename} ")    
+            print("=" * length)
+        
+        with open(filename) as fp:
+            print(fp.read())
+
+        if separators:
+            length = len(filename) + 2 + 4
+            print("=" * length)
+            print(f" END {filename} ")    
+            print("=" * length)
+
+
 # The test expects the binaries configured in the `3step_config.xml` are present
 # in the `../bin` relative path as configured in the
 # `test_data/framework_manifest.json`
@@ -50,14 +68,20 @@ def test_3steps_manifest(monkeypatch):
     result_xqar_generated = False
     report_txt_generated = False
 
-    for _, _, files in os.walk("./"):
+    for dirpath, _, files in os.walk("./"):
         for file in files:
             if "DemoCheckerBundle.xqar" in file:
                 checker_bundle_output_generated = True
+                print_file(f"{dirpath}/DemoCheckerBundle.xqar")
             if "Result.xqar" in file:
                 result_xqar_generated = True
+                print_file(f"{dirpath}/Result.xqar")
             if "Report.txt" in file:
                 report_txt_generated = True
+                print_file(f"{dirpath}/Report.txt")
+
+            if "Report.json" in file:
+                print_file(f"{dirpath}/Report.json")
 
     # Check that checker bundle output file is correctly generated
     assert checker_bundle_output_generated == True
