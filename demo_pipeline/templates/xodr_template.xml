@@ -30,9 +30,8 @@
         <Checker checkerId="check_asam_xodr_lane_smoothness_contact_point_no_horizontal_gaps" maxLevel="1" minLevel="3" />
     </CheckerBundle>
 
-    <ReportModule application="TextReport">
-        <Param name="strInputFile" value="Result.xqar" />
-        <Param name="strReportFile" value="Report.txt" />
+    <ReportModule application="qc-report-text">
+        <Param name="InputFile" value="Result.xqar" />
+        <Param name="OutputFile" value="Report.txt" />
     </ReportModule>
-
 </Config>
