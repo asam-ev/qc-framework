@@ -4,6 +4,7 @@
         "/app/demo_pipeline/manifests/osc_manifest.json",
         "/app/demo_pipeline/manifests/odr_manifest.json",
         "/app/demo_pipeline/manifests/result_pooling.json",
-        "/app/demo_pipeline/manifests/text_report.json"
+        "/app/demo_pipeline/manifests/text_report.json",
+        "/app/demo_pipeline/manifests/framework_report_manifest.json"
     ]
 }
