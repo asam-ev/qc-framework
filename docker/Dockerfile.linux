@@ -52,9 +52,9 @@ RUN echo "Building framework..." && \
 
 RUN python3 -m pip install --no-cache-dir -r /app/demo_pipeline/requirements.txt && \
     python3 -m pip install --no-cache-dir /app/framework/qc_framework && \
-    python3 -m pip install asam-qc-opendrive@git+https://github.com/asam-ev/qc-opendrive@main && \
-    python3 -m pip install asam-qc-openscenarioxml@git+https://github.com/asam-ev/qc-openscenarioxml@main && \
-    python3 -m pip install asam-qc-otx@git+https://github.com/asam-ev/qc-otx@main
+    python3 -m pip install asam-qc-opendrive && \
+    python3 -m pip install asam-qc-openscenarioxml && \
+    python3 -m pip install asam-qc-otx
 
 
 # Framework test stage
