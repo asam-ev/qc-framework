@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "asam-qc-framework"
-version = "1.0.0rc1"
+version = "1.0.0"
 description = "Python ASAM Quality Checker Framework module. Executes bundles and creates result reports."
 authors = ["Danilo Romano <danilo@ivex.ai>","Patrick Abrahão <patrick@ivex.ai>","Tung Dinh <tung@ivex.ai>"]
 license = "MPL-2.0"

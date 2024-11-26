@@ -43,3 +43,15 @@ All of them are available under LGPL3.
 
 - [Xerces-C++_LICENSE](./3rd_party_terms_and_licenses/Xerces-C++_LICENSE)
 - Download: <https://github.com/apache/xerces-c/releases/tag/v3.1.2>
+
+## Pydantic
+
+- [Pydantic_LICENSE](./3rd_party_terms_and_licenses/Pydantic_LICENSE)
+
+## Pytest
+
+- [Pytest_LICENSE](./3rd_party_terms_and_licenses/Pytest_LICENSE)
+
+## Black
+
+- [Black_LICENSE](./3rd_party_terms_and_licenses/Black_LICENSE)

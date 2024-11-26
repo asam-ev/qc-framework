@@ -8,8 +8,6 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 # ![Logo Image](doc/manual/images/qc_framework_logo.drawio.png)
 
-**Disclaimer**: The current version is a release candidate. The first official release is expected to be in November.
-
 The ASAM Quality Checker Framework is designed for quality assessment of the
 ASAM standards like
 [OpenDRIVE](https://www.asam.net/standards/detail/opendrive),
