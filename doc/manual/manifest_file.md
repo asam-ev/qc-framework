@@ -11,7 +11,7 @@ There are two types of manifest files in the framework: **Framework manifest fil
 ## Framework Manifest File
 
 A framework manifest file is a JSON file containing a list of module manifest file paths.
-The [framework executable](python_framework_module.md) uses manifest files to discover
+The [framework executable](python_qc_framework.md) uses manifest files to discover
 and execute Checker Bundles, Result Poolers and Report Modules.
 
 The framework manifest file must follow the JSON format as in the example below.
