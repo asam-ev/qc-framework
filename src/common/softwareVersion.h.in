@@ -1,5 +1,6 @@
 /*
  * Copyright 2023 CARIAD SE.
+ * Copyright 2024 ASAM e.V.
  *
  * This Source Code Form is subject to the terms of the Mozilla
  * Public License, v. 2.0. If a copy of the MPL was not distributed
@@ -9,16 +10,16 @@
 #ifndef _SOFTWARE_VERSION_H__
 #define _SOFTWARE_VERSION_H__
 
-// Softwareversion. 
+// Softwareversion.
 // Diese Version wird aus dem Buildsystem (CMake) automatisch erzeugt.
-static const char* const BUILD_VERSION = "@QC4OPENX_VERSION@";
+static const char *const BUILD_VERSION = "@QC4OPENX_VERSION@";
 
-// Softwarerevision. 
+// Softwarerevision.
 // Diese Version wird aus dem Buildsystem (CMake) automatisch erzeugt.
-static const char* const BUILD_REVISION = "@SCM_REVISION@";
+static const char *const BUILD_REVISION = "@SCM_REVISION@";
 
-// Software build time. 
+// Software build time.
 // Diese Version wird aus dem Buildsystem (CMake) automatisch erzeugt.
-static const char* const BUILD_DATE = "@BUILD_DATE@";
+static const char *const BUILD_DATE = "@BUILD_DATE@";
 
 #endif

@@ -1,4 +1,6 @@
+# SPDX-License-Identifier: MPL-2.0
 # Copyright 2023 CARIAD SE.
+# Copyright 2024 ASAM e.V.
 # Copyright 2024 BMW AG
 #
 # This Source Code Form is subject to the terms of the Mozilla
