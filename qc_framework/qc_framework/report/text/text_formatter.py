@@ -1,5 +1,5 @@
+# SPDX-License-Identifier: MPL-2.0
 # Copyright 2024, ASAM e.V.
-#
 # This Source Code Form is subject to the terms of the Mozilla
 # Public License, v. 2.0. If a copy of the MPL was not distributed
 # with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -44,15 +44,30 @@ class TextFormatter(ReportFormatter):
         line_sep2 = ("-" * columns)
         
         def p(val, indent=0):
+            """
+            Print with indent on the dump stream
+            """
             if indent > 0:
                 print(" " * indent, file=output, flush=True, end="")
             print(val, file=output, flush=True)
         
-        def S(indent=0): p(line_sep1, indent)
+        def S(indent=0): 
+            r"""
+            Shortcut for chapter separator
+            """
+            p(line_sep1, indent)
         
-        def s(indent=0): p(line_sep2, indent)
+        def s(indent=0):
+            r"""
+            Shortcut for section separator
+            """
+            p(line_sep2, indent)
 
-        def n(indent=0): p("", indent)
+        def n(indent=0):
+            r"""
+            Shortcut for empty line inclusion
+            """
+            p("", indent)
         
         addressed_rules = set()
         violated_rules = {
