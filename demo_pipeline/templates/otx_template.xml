@@ -27,9 +27,8 @@
         <Checker checkerId="check_asam_otx_state_machine_chk_006_distinguished_initial_and_completed_state" maxLevel="1" minLevel="3" />
     </CheckerBundle>
 
-    <ReportModule application="TextReport">
-        <Param name="strInputFile" value="Result.xqar" />
-        <Param name="strReportFile" value="Report.txt" />
+    <ReportModule application="qc-report-text">
+        <Param name="InputFile" value="Result.xqar" />
+        <Param name="OutputFile" value="Report.txt" />
     </ReportModule>
-
 </Config>

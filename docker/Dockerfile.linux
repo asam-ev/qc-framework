@@ -89,7 +89,7 @@ COPY --from=framework_builder /usr/local/bin /usr/local/bin
 
 RUN python3 -m pip install poetry==1.8.3
 RUN poetry install --with dev
-CMD poetry run pytest -rA > runtime_test.log && cp /app/framework/qc_framework/runtime_test.log /out/runtime_test.log
+CMD poetry run pytest -rA > /out/runtime_test.log 2> /out/runtime_test.err
 
 # Unit Test stage
 FROM framework_builder as unit_test
