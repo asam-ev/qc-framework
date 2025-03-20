@@ -51,7 +51,7 @@ apt update && apt install -y \
     libqt5xmlpatterns5-dev \
     libxerces-c-dev \
     pkg-config \
-    python3.10-venv \
+    python3-venv \
     git
 ```
 
