@@ -24,9 +24,8 @@
         <Checker checkerId="check_asam_xosc_positive_duration_in_phase" maxLevel="1" minLevel="3" />
     </CheckerBundle>
 
-    <ReportModule application="TextReport">
-        <Param name="strInputFile" value="Result.xqar" />
-        <Param name="strReportFile" value="Report.txt" />
+    <ReportModule application="qc-report-text">
+        <Param name="InputFile" value="Result.xqar" />
+        <Param name="OutputFile" value="Report.txt" />
     </ReportModule>
-
 </Config>
