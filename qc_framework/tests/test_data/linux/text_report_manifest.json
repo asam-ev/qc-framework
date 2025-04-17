@@ -5,6 +5,18 @@
         "exec_type": "executable",
         "module_type": "report_module",
         "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && ../../bin/TextReport $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+      },
+      {
+        "name": "qc-report-text",
+        "exec_type": "executable",
+        "module_type": "report_module",
+        "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && qc_report_text -c $ASAM_QC_FRAMEWORK_CONFIG_FILE"
+      },
+      {
+        "name": "qc-report-json",
+        "exec_type": "executable",
+        "module_type": "report_module",
+        "exec_command": "cd $ASAM_QC_FRAMEWORK_WORKING_DIR && qc_report_json -c $ASAM_QC_FRAMEWORK_CONFIG_FILE"
       }
     ]
   }
