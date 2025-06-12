@@ -29,12 +29,14 @@ The concepts for the rule UID are:
   which the rule is applied
 * **Definition Setting**: the version of the standard or the domain to which
   the rule appears or is applied **for the first time**
-* **Rule Full Name**: the full name of the rule, as dot separated, snake lower
-  case string. The full name of a rule is composed by the **rule set**, a
-  categorization for the rule, and the rule **name**, a unique string inside
-  the categorization. The rule set can be nested (meaning that can be defined
-  as an arbitrary sequence of dot separated names, while the name is the snake
-  case string after the last dot of the full name)
+* **Rule Full Name**: the full name of the rule, as dot separated, string of
+  letters, digits and underscores, with the first character a letter. The
+  full name of a rule is composed by the **rule set**, a categorization for
+  the rule, and the rule **name**, a unique string inside the categorization.
+  The rule set can be nested (meaning that it can be defined as an arbitrary
+  sequence of dot separated names, while the name is the string after the last
+  dot of the full name). If there are no other requirements, it is recommended
+  to use snake lower case names for both rule set and rule name.
 
 To provide a visual description for a rule UID:
 
@@ -57,7 +59,7 @@ matching.
  (?P<ENTITY>(\w+(\.\w+)+)):
  (?P<STANDARD>([a-z]+))?:
  (?P<STD_VERSION>([0-9]+(\.[0-9]+)+))?:
- (?P<RULESET>(([a-z][\w_]*)\.)*)(?P<NAME>[a-z][\w_]*)
+ (?P<RULESET>((\p{L}[\w_]*)\.)*)(?P<NAME>\p{L}[\w_]*)
 $
 ```
 
@@ -155,7 +157,7 @@ The format of the full name uses a well defined notation, compatible with the
 following pattern:
 
 ```pcre
-(?P<RULESET>(([a-z][\w_]*)\.)*)(?P<NAME>[a-z][\w_]*)
+(?P<RULESET>((\p{L}[\w_]*)\.)*)(?P<NAME>\p{L}[\w_]*)
 ```
 
 Which can be explained as follows:
@@ -163,10 +165,10 @@ Which can be explained as follows:
 * the string for rule sets and names are separated by dot `.`, and it is the
   rightmost dot of the full string
 * splitting each element of the string by `.`, the first character for the
-  ruleset elements or the name must be an ascii character in the range `a-z`.
-  The subsequent character may be any character in the range `a-z`, `0-9` or
-  the character `_`. This is applied on both rulesets and names
+  ruleset elements or the name must be a letter character.
+  The subsequent character may be any letter, digit, or the character `_`.
+  This is applied on both rulesets and names
 * ruleset may be empty (not defined), but if defined the minimum length of an
-  element of the ruleset is 1 character in range `a-z`
+  element of the ruleset is 1 letter character
 * the name is always the last element of the dot separated string. The minimal
-  name is 1 character long, in range `a-z`
+  name is 1 letter character
