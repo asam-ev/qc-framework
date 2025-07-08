@@ -15,6 +15,8 @@
 #include "common/result_format/c_domain_specific_info.h"
 #include "common/result_format/c_file_location.h"
 #include "common/result_format/c_inertial_location.h"
+#include "common/result_format/c_time_location.h"
+#include "common/result_format/c_message_location.h"
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_metadata.h"
@@ -502,8 +504,12 @@ void PrintExtendedInformationIntoStream(cIssue *issue, std::stringstream *ssStre
             if ((*extIt)->IsType<cFileLocation *>())
             {
                 cFileLocation *fileLoc = (cFileLocation *)(*extIt);
-                *ssStream << "\n                    " << "   File: row=" << fileLoc->GetRow()
-                          << " column=" << fileLoc->GetColumn();
+                *ssStream << "\n                    " << "   File:";
+                if (fileLoc->HasRowColumn())
+                    *ssStream << " row=" << fileLoc->GetRow()
+                              << " column=" << fileLoc->GetColumn();
+                if (fileLoc->HasOffset())
+                    *ssStream << " offset=" << fileLoc->GetOffset();
             }
             else if ((*extIt)->IsType<cXMLLocation *>())
             {
@@ -515,6 +521,22 @@ void PrintExtendedInformationIntoStream(cIssue *issue, std::stringstream *ssStre
                 cInertialLocation *inertialLoc = (cInertialLocation *)(*extIt);
                 *ssStream << "\n                    " << "   Location: x=" << inertialLoc->GetX()
                           << " y=" << inertialLoc->GetY() << " z=" << inertialLoc->GetZ();
+            }
+            else if ((*extIt)->IsType<cTimeLocation *>())
+            {
+                cTimeLocation *timeLoc = (cTimeLocation *)(*extIt);
+                *ssStream << "\n                    " << "   Time Location: " << timeLoc->GetTime();
+            }
+            else if ((*extIt)->IsType<cMessageLocation *>())
+            {
+                cMessageLocation *messageLoc = (cMessageLocation *)(*extIt);
+                *ssStream << "\n                    " << "   Message Location: channel=" << messageLoc->GetChannel()
+                          << " index=" << messageLoc->GetIndex() << " field=" << messageLoc->GetField()
+                          << " time=" << messageLoc->GetTime();
+            }
+            else
+            {
+                *ssStream << "\n                    " << "   Unknown extended information type!";
             }
         }
     }

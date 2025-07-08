@@ -23,6 +23,8 @@
 #include "common/result_format/c_checker_bundle.h"
 #include "common/result_format/c_file_location.h"
 #include "common/result_format/c_inertial_location.h"
+#include "common/result_format/c_time_location.h"
+#include "common/result_format/c_message_location.h"
 #include "common/result_format/c_issue.h"
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_result_container.h"
@@ -790,7 +792,11 @@ void cCheckerWidget::PrintExtendedInformationIntoStream(cExtendedInformation *it
     if (item->IsType<cFileLocation *>())
     {
         cFileLocation *fileLoc = (cFileLocation *)item;
-        *ssStream << std::endl << "   File: row=" << fileLoc->GetRow() << " column=" << fileLoc->GetColumn();
+        *ssStream << std::endl << "   File:";
+        if (fileLoc->HasRowColumn())
+            *ssStream << " row=" << fileLoc->GetRow() << " column=" << fileLoc->GetColumn();
+        if (fileLoc->HasOffset())
+            *ssStream << " offset=" << fileLoc->GetOffset();
     }
     else if (item->IsType<cXMLLocation *>())
     {
@@ -806,5 +812,21 @@ void cCheckerWidget::PrintExtendedInformationIntoStream(cExtendedInformation *it
                   << "   Inertial Location: x=" << std::setprecision(2) << initialLoc->GetX()
                   << " y=" << std::setprecision(2) << initialLoc->GetY() << " z=" << std::setprecision(2)
                   << initialLoc->GetZ();
+    }
+    else if (item->IsType<cTimeLocation *>())
+    {
+        cTimeLocation *timeLoc = (cTimeLocation *)item;
+        *ssStream << std::endl << "   Time Location: " << timeLoc->GetTime();
+    }
+    else if (item->IsType<cMessageLocation *>())
+    {
+        cMessageLocation *messageLoc = (cMessageLocation *)item;
+        *ssStream << std::endl << "   Message Location: channel=" << messageLoc->GetChannel()
+                          << " index=" << messageLoc->GetIndex() << " field=" << messageLoc->GetField()
+                          << " time=" << messageLoc->GetTime();
+    }
+    else
+    {
+        *ssStream << std::endl << "   Unknown extended information type";
     }
 }

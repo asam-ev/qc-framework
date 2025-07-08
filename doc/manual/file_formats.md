@@ -80,7 +80,7 @@ or semantic flaws.
     grouped locations inside a **Locations** tag:
     - **FileLocation** _(typically generated automatically by the
       ResultPooling)_
-      - A reference to a file with row and column
+      - A reference to a file with offset (for binary file formats), and/or row and column (for text file formats)
       - Example: `<FileLocation column="0" row="223124"/>`
     - **XmlLocation**
       - Addressing in a XML file with help of a XPath expression
@@ -89,6 +89,12 @@ or semantic flaws.
       - Position in inertial coordinates
       - Example: `<InertialLocation x="120.998703"
         y="0.0" z="-0.29552"/>`
+    - **TimeLocation**
+      - Position in time
+      - Example: `<TimeLocation time="27.025"/>
+    - **MessageLocation**
+      - Addressing a message in a message trace file by channel, message index, field, and/or time
+      - Example: `<MessageLocation channel="SensorView1" index="42" time="0.420"/>`
   - Optional external files (e. g. Images of generated graphs such as speed
     over distance). Currently not supported.
 
