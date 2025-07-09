@@ -35,8 +35,10 @@ The concepts for the rule UID are:
   the rule, and the rule **name**, a unique string inside the categorization.
   The rule set can be nested (meaning that it can be defined as an arbitrary
   sequence of dot separated names, while the name is the string after the last
-  dot of the full name). If there are no other requirements, it is recommended
-  to use snake lower case names for both rule set and rule name.
+  dot of the full name). Unless there are strong other requirements, it is recommended
+  to use snake lower case names for both rule set and rule name. In any case the rule set
+  and rule names for a given standard should conform to one uniform format, and new
+  rule sets and names should use this format.
 
 To provide a visual description for a rule UID:
 
