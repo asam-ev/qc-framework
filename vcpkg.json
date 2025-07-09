@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+    "gtest",
+    "qt5",
+    "qt5-xmlpatterns",
+    "xerces-c"
+  ]
+}

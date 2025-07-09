@@ -41,9 +41,9 @@ macro(qc4openx_install_qt DEST EXE)
 
     if (WIN32)
         # find windeployqt
-        find_program(QT_WINDEPLOYQT_EXECUTABLE windeployqt PATHS ${Qt5_PATH}/bin NO_DEFAULT_PATH)
+        find_program(QT_WINDEPLOYQT_EXECUTABLE windeployqt PATHS ${Qt5_PATH}/bin ${Qt5_PATH}/tools/qt5/bin NO_DEFAULT_PATH)
         if (NOT QT_WINDEPLOYQT_EXECUTABLE)
-            message(FATAL_ERROR "Could not find windeployqt in the Qt bin directory: ${Qt5_PATH}/bin!")
+            message(FATAL_ERROR "Could not find windeployqt in the Qt bin directory: ${Qt5_PATH}/bin or ${Qt5_PATH}/tools/qt5/bin !")
         endif()
 
         # escape slashes since we'll be using it inside code
