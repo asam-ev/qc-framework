@@ -161,8 +161,8 @@ class JsonFormatter(ReportFormatter):
                 message_locations.append(
                     {
                         "description": location.description,
-                        "channel": message_location.channel,
                         "index": message_location.index,
+                        "channel": message_location.channel,
                         "field": message_location.field,
                         "time": message_location.time,
                     }

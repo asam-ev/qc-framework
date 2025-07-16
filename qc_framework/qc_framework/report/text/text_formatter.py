@@ -129,7 +129,7 @@ class TextFormatter(ReportFormatter):
                                     for time_loc in location.time_location:
                                         p(f" -> Time @ {time_loc.time}: {location.description}", 14)
                                     for message_loc in location.message_location:
-                                        p(f" -> Message @ channel: {message_loc.channel or '-'}, index: {message_loc.index}, field: {message_loc.field or '-'}, time: {message_loc.time or '-'}: {location.description}", 14)
+                                        p(f" -> Message @ index: {message_loc.index}, channel: {message_loc.channel or '-'}, field: {message_loc.field or '-'}, time: {message_loc.time or '-'}: {location.description}", 14)
                     if len(checker.metadata):
                         p("Metadata:", 8)
                         for metadata in checker.metadata:

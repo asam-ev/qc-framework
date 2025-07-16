@@ -15,7 +15,7 @@
     <Checker checkerId="exampleMessageChecker" description="This is a description of message checker" status="completed" summary="">
       <Issue description="This is an information from the demo usecase" issueId="1" level="3" ruleUID="">
         <Locations description="message position">
-          <MessageLocation channel="SensorView1" index="100" time="1.0"/>
+          <MessageLocation index="100" channel="SensorView1" time="1.0"/>
           <TimeLocation time="1.0"/>
         </Locations>
       </Issue>

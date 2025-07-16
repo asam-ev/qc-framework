@@ -821,9 +821,19 @@ void cCheckerWidget::PrintExtendedInformationIntoStream(cExtendedInformation *it
     else if (item->IsType<cMessageLocation *>())
     {
         cMessageLocation *messageLoc = (cMessageLocation *)item;
-        *ssStream << std::endl << "   Message Location: channel=" << messageLoc->GetChannel()
-                          << " index=" << messageLoc->GetIndex() << " field=" << messageLoc->GetField()
-                          << " time=" << messageLoc->GetTime();
+        *ssStream << std::endl << "   Message Location: index=" << messageLoc->GetIndex();
+        if (messageLoc->GetChannel())
+        {
+            *ssStream << " channel=" << *messageLoc->GetChannel();
+        }
+        if (messageLoc->GetField())
+        {
+            *ssStream << " field=" << *messageLoc->GetField();
+        }
+        if (messageLoc->GetTime())
+        {
+            *ssStream << " time=" << *messageLoc->GetTime();
+        }
     }
     else
     {
