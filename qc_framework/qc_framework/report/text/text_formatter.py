@@ -121,11 +121,15 @@ class TextFormatter(ReportFormatter):
                                 p("Locations:", 14)
                                 for location in issue.locations:
                                     for file_loc in location.file_location:
-                                        p(f" -> File @ col: {file_loc.column}, row: {file_loc.row}: {location.description}", 14)
+                                        p(f" -> File @ col: {file_loc.column or '-'}, row: {file_loc.row or '-'}, offset: {file_loc.offset or '-'}: {location.description}", 14)
                                     for xml_loc in location.xml_location:
                                         p(f" -> XML @ `{xml_loc.xpath}`: {location.description}", 14)
                                     for inertial_loc in location.inertial_location:
-                                        p(f" -> Inertial @ [{inertial_loc.x:.4n}; {inertial_loc.y:.4n}; {inertial_loc.z:.4n}]: {location.description}", 14)    
+                                        p(f" -> Inertial @ [{inertial_loc.x:.4n}; {inertial_loc.y:.4n}; {inertial_loc.z:.4n}]: {location.description}", 14)
+                                    for time_loc in location.time_location:
+                                        p(f" -> Time @ {time_loc.time}: {location.description}", 14)
+                                    for message_loc in location.message_location:
+                                        p(f" -> Message @ channel: {message_loc.channel or '-'}, index: {message_loc.index}, field: {message_loc.field or '-'}, time: {message_loc.time or '-'}: {location.description}", 14)
                     if len(checker.metadata):
                         p("Metadata:", 8)
                         for metadata in checker.metadata:
