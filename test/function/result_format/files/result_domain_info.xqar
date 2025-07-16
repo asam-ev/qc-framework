@@ -8,6 +8,10 @@
       summary="">
       <Issue description="This is an information from the demo usecase" issueId="3" level="3"
         ruleUID="">
+        <Locations description="message and time location">
+          <MessageLocation channel="SensorView1" index="100" field="host_vehicle_id" time="1.0"/>
+          <TimeLocation time="1.0"/>
+        </Locations>
         <DomainSpecificInfo name="test_domain">
           <RoadLocation b="5.4" c="0.0" id="aa" />
         </DomainSpecificInfo>
