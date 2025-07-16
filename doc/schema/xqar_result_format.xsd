@@ -79,9 +79,9 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
     </xs:complexType>
 
     <xs:complexType name="FileLocationType">
-        <xs:attribute name="column" type="xs:string" />
-        <xs:attribute name="row" type="xs:string" />
-        <xs:attribute name="offset" type="xs:string" />
+        <xs:attribute name="column" type="xs:int" />
+        <xs:attribute name="row" type="xs:int" />
+        <xs:attribute name="offset" type="xs:unsignedLong" />
     </xs:complexType>
 
     <xs:complexType name="XMLLocationType">
@@ -95,14 +95,14 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
     </xs:complexType>
 
     <xs:complexType name="TimeLocationType">
-        <xs:attribute name="time" type="xs:string" />
+        <xs:attribute name="time" type="xs:double" use="required" />
     </xs:complexType>
 
     <xs:complexType name="MessageLocationType">
-        <xs:attribute name="index" type="xs:string" />
+        <xs:attribute name="index" type="xs:unsignedLong" use="required" />
         <xs:attribute name="channel" type="xs:string" />
         <xs:attribute name="field" type="xs:string" />
-        <xs:attribute name="time" type="xs:string" />
+        <xs:attribute name="time" type="xs:double" />
     </xs:complexType>
 
     <xs:element name="CheckerResults">
