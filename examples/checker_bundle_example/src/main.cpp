@@ -173,8 +173,8 @@ void RunChecks(const cParameterContainer &inputParams)
     const std::string second_rule_uid = "asam.net:xodr:1.0.0:second_rule_name";
     pExampleInertialChecker->AddRule(new cRule(second_rule_uid));
     std::list<cLocationsContainer *> listLoc;
-    listLoc.push_back(new cLocationsContainer("inertial position", new cInertialLocation(1.0, 2.0, 3.0)));
-    listLoc.back()->AddExtendedInformation(new cMessageLocation("SensorView1", 100, "host_vehicle_id", 1.0));
+    listLoc.push_back(new cLocationsContainer("inertial position and message/time locations", new cInertialLocation(1.0, 2.0, 3.0)));
+    listLoc.back()->AddExtendedInformation(new cMessageLocation(100, "SensorView1", "host_vehicle_id", 1.0));
     listLoc.back()->AddExtendedInformation(new cTimeLocation(1.0));
     pExampleInertialChecker->AddIssue(
         new cIssue("This is an information from the demo usecase", INFO_LVL, second_rule_uid, listLoc));

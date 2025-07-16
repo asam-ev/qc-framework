@@ -11,6 +11,10 @@
 #ifndef cMessageLocation_h__
 #define cMessageLocation_h__
 
+#include <optional>
+#include <string>
+#include <cstdint>
+
 #include "../xml/util_xerces.h"
 #include "c_extended_information.h"
 
@@ -22,19 +26,19 @@ class cMessageLocation : public cExtendedInformation
 
   public:
     static const XMLCh *TAG_NAME;
-    static const XMLCh *ATTR_CHANNEL;
     static const XMLCh *ATTR_INDEX;
+    static const XMLCh *ATTR_CHANNEL;
     static const XMLCh *ATTR_FIELD;
     static const XMLCh *ATTR_TIME;
 
     /*
      * Creates a new instance of cMessageLocation
-     * \param channel: Channel of the message
      * \param index: Index of the message in the channel
+     * \param channel: Channel of the message
      * \param field: Field of the message
      * \param time: Time of the message
      */
-    cMessageLocation(const std::string &channel, uint64_t index, const std::string &field, double time) : cExtendedInformation("MessageLocation"), m_Channel(channel), m_Index(index), m_Field(field), m_Time(time)
+    cMessageLocation(uint64_t index, const std::optional<std::string> channel, const std::optional<std::string> field, const std::optional<double> time) : cExtendedInformation("MessageLocation"), m_Index(index), m_Channel(channel), m_Field(field), m_Time(time)
     {
     }
 
@@ -45,23 +49,23 @@ class cMessageLocation : public cExtendedInformation
     static cMessageLocation *ParseFromXML(XERCES_CPP_NAMESPACE::DOMNode *pXMLNode,
                                            XERCES_CPP_NAMESPACE::DOMElement *pXMLElement);
 
-    // Returns the Channel
-    std::string GetChannel() const;
-
     // Returns the Index
     uint64_t GetIndex() const;
 
+    // Returns the Channel
+    std::optional<std::string> GetChannel() const;
+
     // Returns the Field
-    std::string GetField() const;
+    std::optional<std::string> GetField() const;
 
     // Returns the Time
-    double GetTime() const;
+    std::optional<double> GetTime() const;
 
   protected:
-    std::string m_Channel;
     uint64_t m_Index;
-    std::string m_Field;
-    double m_Time;
+    std::optional<std::string> m_Channel;
+    std::optional<std::string> m_Field;
+    std::optional<double> m_Time;
 
   private:
     cMessageLocation();

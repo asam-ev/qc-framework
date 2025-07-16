@@ -99,8 +99,8 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
     </xs:complexType>
 
     <xs:complexType name="MessageLocationType">
-        <xs:attribute name="channel" type="xs:string" />
         <xs:attribute name="index" type="xs:string" />
+        <xs:attribute name="channel" type="xs:string" />
         <xs:attribute name="field" type="xs:string" />
         <xs:attribute name="time" type="xs:string" />
     </xs:complexType>

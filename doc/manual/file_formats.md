@@ -93,8 +93,8 @@ or semantic flaws.
       - Position in time
       - Example: `<TimeLocation time="27.025"/>
     - **MessageLocation**
-      - Addressing a message in a message trace file by channel, message index, field, and/or time
-      - Example: `<MessageLocation channel="SensorView1" index="42" time="0.420"/>`
+      - Addressing a message in a message trace file by message index, channel, field, and/or time
+      - Example: `<MessageLocation index="42" channel="SensorView1" time="0.420"/>`
   - Optional external files (e. g. Images of generated graphs such as speed
     over distance). Currently not supported.
 

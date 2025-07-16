@@ -12,8 +12,8 @@
 XERCES_CPP_NAMESPACE_USE
 
 const XMLCh *cMessageLocation::TAG_NAME = CONST_XMLCH("MessageLocation");
-const XMLCh *cMessageLocation::ATTR_CHANNEL = CONST_XMLCH("channel");
 const XMLCh *cMessageLocation::ATTR_INDEX = CONST_XMLCH("index");
+const XMLCh *cMessageLocation::ATTR_CHANNEL = CONST_XMLCH("channel");
 const XMLCh *cMessageLocation::ATTR_FIELD = CONST_XMLCH("field");
 const XMLCh *cMessageLocation::ATTR_TIME = CONST_XMLCH("time");
 
@@ -21,50 +21,72 @@ DOMElement *cMessageLocation::WriteXML(DOMDocument *p_resultDocument)
 {
     DOMElement *p_DataElement = CreateExtendedInformationXMLNode(p_resultDocument);
 
-    XMLCh *pChannel = XMLString::transcode(m_Channel.c_str());
     XMLCh *pIndex = XMLString::transcode(std::to_string(m_Index).c_str());
-    XMLCh *pField = XMLString::transcode(m_Field.c_str());
-    XMLCh *pTime = XMLString::transcode(std::to_string(m_Time).c_str());
-
-    p_DataElement->setAttribute(ATTR_CHANNEL, pChannel);
     p_DataElement->setAttribute(ATTR_INDEX, pIndex);
-    p_DataElement->setAttribute(ATTR_FIELD, pField);
-    p_DataElement->setAttribute(ATTR_TIME, pTime);
-
-    XMLString::release(&pChannel);
     XMLString::release(&pIndex);
-    XMLString::release(&pField);
-    XMLString::release(&pTime);
+
+    if (m_Channel)
+    {
+        XMLCh *pChannel = XMLString::transcode(m_Channel->c_str());
+        p_DataElement->setAttribute(ATTR_CHANNEL, pChannel);
+        XMLString::release(&pChannel);
+    }
+
+    if (m_Field)
+    {
+        XMLCh *pField = XMLString::transcode(m_Field->c_str());
+        p_DataElement->setAttribute(ATTR_FIELD, pField);
+        XMLString::release(&pField);
+    }
+
+    if (m_Time)
+    {
+        XMLCh *pTime = XMLString::transcode(std::to_string(*m_Time).c_str());
+        p_DataElement->setAttribute(ATTR_TIME, pTime);
+        XMLString::release(&pTime);
+    }
 
     return p_DataElement;
 }
 
 cMessageLocation *cMessageLocation::ParseFromXML(DOMNode *, DOMElement *pXMLElement)
 {
-    if (!pXMLElement->hasAttribute(ATTR_CHANNEL) || !pXMLElement->hasAttribute(ATTR_INDEX) ||
-        !pXMLElement->hasAttribute(ATTR_FIELD) || !pXMLElement->hasAttribute(ATTR_TIME))
+    uint64_t index;
+    std::optional<std::string> channel;
+    std::optional<std::string> field;
+    std::optional<double> time;
+
+    if (!pXMLElement->hasAttribute(ATTR_INDEX))
     {
         return nullptr; // Invalid XML element
     }
-    char *pChannel = XMLString::transcode(pXMLElement->getAttribute(ATTR_CHANNEL));
-    char *pIndex = XMLString::transcode(pXMLElement->getAttribute(ATTR_INDEX));
-    char *pField = XMLString::transcode(pXMLElement->getAttribute(ATTR_FIELD));
-    char *pTime = XMLString::transcode(pXMLElement->getAttribute(ATTR_TIME));
+    else
+    {
+        char *pIndex = XMLString::transcode(pXMLElement->getAttribute(ATTR_INDEX));
+        index = atoll(pIndex);
+        XMLString::release(&pIndex);
+    }
 
-    cMessageLocation *result = new cMessageLocation(pChannel,atoll(pIndex),pField,atof(pTime));
+    if (pXMLElement->hasAttribute(ATTR_CHANNEL))
+    {
+        char *pChannel = XMLString::transcode(pXMLElement->getAttribute(ATTR_CHANNEL));
+        channel = std::string(pChannel);
+        XMLString::release(&pChannel);
+    }
+    if (pXMLElement->hasAttribute(ATTR_FIELD))
+    {
+        char *pField = XMLString::transcode(pXMLElement->getAttribute(ATTR_FIELD));
+        field = std::string(pField);
+        XMLString::release(&pField);
+    }
+    if (pXMLElement->hasAttribute(ATTR_TIME))
+    {
+        char *pTime = XMLString::transcode(pXMLElement->getAttribute(ATTR_TIME));
+        time = atof(pTime);
+        XMLString::release(&pTime);
+    }
 
-    XMLString::release(&pChannel);
-    XMLString::release(&pIndex);
-    XMLString::release(&pField);
-    XMLString::release(&pTime);
-
-    return result;
-}
-
-// Returns the Channel
-std::string cMessageLocation::GetChannel() const
-{
-    return m_Channel;
+    return new cMessageLocation(index, channel, field, time);
 }
 
 // Returns the Index
@@ -73,14 +95,20 @@ uint64_t cMessageLocation::GetIndex() const
     return m_Index;
 }
 
+// Returns the Channel
+std::optional<std::string> cMessageLocation::GetChannel() const
+{
+    return m_Channel;
+}
+
 // Returns the Field
-std::string cMessageLocation::GetField() const
+std::optional<std::string> cMessageLocation::GetField() const
 {
     return m_Field;
 }
 
 // Returns the Time
-double cMessageLocation::GetTime() const
+std::optional<double> cMessageLocation::GetTime() const
 {
     return m_Time;
 }

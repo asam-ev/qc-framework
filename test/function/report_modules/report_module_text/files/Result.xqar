@@ -12,7 +12,7 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
     <Checker checkerId="exampleChecker" description="This is a description" summary="">
       <Issue description="This is an information from the demo usecase" issueId="0" level="3">
         <Locations description="message and time location">
-          <MessageLocation channel="SensorView1" index="100" field="host_vehicle_id" time="1.0"/>
+          <MessageLocation index="100" channel="SensorView1" field="host_vehicle_id" time="1.0"/>
           <TimeLocation time="1.0"/>
         </Locations>
         <DomainSpecificInfo name="test_domain">

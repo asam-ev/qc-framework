@@ -530,9 +530,19 @@ void PrintExtendedInformationIntoStream(cIssue *issue, std::stringstream *ssStre
             else if ((*extIt)->IsType<cMessageLocation *>())
             {
                 cMessageLocation *messageLoc = (cMessageLocation *)(*extIt);
-                *ssStream << "\n                    " << "   Message Location: channel=" << messageLoc->GetChannel()
-                          << " index=" << messageLoc->GetIndex() << " field=" << messageLoc->GetField()
-                          << " time=" << messageLoc->GetTime();
+                *ssStream << "\n                    " << "   Message Location: index=" << messageLoc->GetIndex();
+                if (messageLoc->GetChannel())
+                {
+                    *ssStream << " channel=" << messageLoc->GetChannel().value();
+                }
+                if (messageLoc->GetField())
+                {
+                    *ssStream << " field=" << messageLoc->GetField().value();
+                }
+                if (messageLoc->GetTime())
+                {
+                    *ssStream << " time=" << messageLoc->GetTime().value();
+                }
             }
             else
             {
