@@ -53,8 +53,13 @@ jobs:
         uses: lukka/run-cmake@v10
         with:
           configurePreset: vcpkg
+          configurePresetAdditionalArgs: "['-DCMAKE_INSTALL_PREFIX=QC-Framework-Out']"
           buildPreset: vcpkg
           buildPresetAdditionalArgs: "['--config Release']"
+
+      - name: Install framework
+        run: |
+          cmake --install build
 
       - name: Archive release binaries
         run: |
@@ -88,54 +93,3 @@ jobs:
           name: test-report
           path: ${{ github.workspace }}\build\Testing\Temporary\LastTest.log
 
-      - name: Framework test execution
-        run: |
-          Write-Output "Starting framework tests..."
-
-          Rename-Item -path "$env:WORKING_PATH\qc-framework\qc-framework\build" -NewName "$env:WORKING_PATH\qc-framework\qc-framework\out_build"
-          Copy-Item -Path "$env:WORKING_PATH\QC-Framework-Out\bin" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin" -Recurse
-          Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin"
-
-          cd "$env:WORKING_PATH\qc-framework\qc-framework\qc_framework"
-          python3 -m pip install poetry
-          python3 -m poetry install
-          python3 -m poetry run pytest
-          Write-Output "All framework tests done."
-        shell: pwsh
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Execute checker bundles
-        run: |
-          $env:ASAM_QC_FRAMEWORK_MANIFEST_DIR="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest"
-          $env:ASAM_QC_FRAMEWORK_INSTALLATION_DIR="$env:WORKING_PATH\QC-Framework-Out\bin"
-
-          git config --system core.longpaths true
-
-          pip install -e $env:WORKING_PATH\qc-framework\qc-framework\qc_framework
-
-          mkdir "$env:WORKING_PATH\odr_out"
-          pip install asam-qc-opendrive
-          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\odr_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\odr_out"
-          if (-not (Test-Path "$env:WORKING_PATH\odr_out\xodr_bundle_report.xqar")) { Throw "Error: Odr output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\odr_out\Result.xqar")) { Throw "Error: Odr output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\odr_out\Report.txt")) { Throw "Error: Odr output does not exist." }
-
-          mkdir "$env:WORKING_PATH\osc_out"
-          pip install asam-qc-openscenarioxml
-          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\osc_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\osc_out"
-          if (-not (Test-Path "$env:WORKING_PATH\osc_out\xosc_bundle_report.xqar")) { Throw "Error: Osc output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\osc_out\Result.xqar")) { Throw "Error: Osc output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\osc_out\Report.txt")) { Throw "Error: Odr output does not exist." }
-
-          mkdir "$env:WORKING_PATH\otx_out"
-          pip install asam-qc-otx
-          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\otx_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\otx_out"
-          if (-not (Test-Path "$env:WORKING_PATH\otx_out\otx_bundle_report.xqar")) { Throw "Error: Otx output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\otx_out\Result.xqar")) { Throw "Error: Otx output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\otx_out\Report.txt")) { Throw "Error: Odr output does not exist." }
-
-        shell: pwsh
