@@ -33,7 +33,7 @@ on:
 
 jobs:
   build-windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
       WORKING_PATH: "D:\\a"
@@ -41,77 +41,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
+      - name: Get CMake
+        uses: lukka/get-cmake@latest
 
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4.0.0
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
         with:
-          version: 5.15.2
-          host: windows
-          target: desktop
-          arch: win64_msvc2019_64
-
-      - name: Install gtest
-        env:
-          CXX: g++-10
-        run: |
-          Write-Output "Installing gtest..."
-
-          git clone https://github.com/google/googletest.git -b release-1.10.0
-          cd googletest
-          mkdir build
-          cd build
-          cmake -G "Visual Studio 16 2019" `
-            -Dgtest_force_shared_crt=ON `
-            -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\gtest-Out" ..
-          cmake --build . --config Release
-          cmake --build . --config Release --target install
-
-          Write-Output "Gtest installed."
-        shell: pwsh
-
-      - name: Install XercesC
-        run: |
-          Write-Output "Setting up Xerces-C++..."
-          $xercesZip = "$env:WORKING_PATH\xerces-c-3.2.5.zip"
-          Invoke-WebRequest -Uri "https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
-          Expand-Archive -Path $xercesZip -DestinationPath "$env:WORKING_PATH"
-          cd "$env:WORKING_PATH\xerces-c-3.2.5"
-          mkdir build
-          cd build
-          cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\Xerces-Out" ..
-          cmake --build . --config Release
-          cmake --build . --config Release --target install
-
-          Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\bin\xerces-c_3_2D.dll"
-          Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\Xerces-Out\include"
-          Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\Xerces-Out\bin"
-
-        shell: pwsh
+          vcpkgGitCommitId: "bffcbb75f71553824aa948a7e7b4f798662a6fa7"
 
       - name: Build framework
-        run: |
-          Write-Output "Setting up QC-Framework..."
-
-          cd "$env:WORKING_PATH\qc-framework\qc-framework"
-          mkdir build
-
-          cmake -H"$env:WORKING_PATH\qc-framework\qc-framework" -S. -Bbuild `
-            -G "Visual Studio 16 2019" -A x64 -T v142 `
-            -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\QC-Framework-Out" `
-            -DENABLE_FUNCTIONAL_TESTS="$env:TEST_ENABLED" `
-            -DGTest_ROOT="$env:WORKING_PATH\gtest-Out" `
-            -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
-            -DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out"
-
-          cmake --build build --target ALL_BUILD --config Release
-
-          cmake --install build
-
-          # Final output
-          Write-Output "All installations and setups are complete!"
-        shell: pwsh
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: vcpkg
+          buildPreset: vcpkg
+          buildPresetAdditionalArgs: "['--config Release']"
 
       - name: Archive release binaries
         run: |
