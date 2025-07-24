@@ -44,13 +44,19 @@ jobs:
       - name: Get CMake
         uses: lukka/get-cmake@latest
 
+      - name: Cache vcpkg
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg_cache
+          key: vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'CMakePresets.json') }}
+
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgGitCommitId: "bffcbb75f71553824aa948a7e7b4f798662a6fa7"
 
       - name: Build framework
         uses: lukka/run-cmake@v10
+        env:
+          VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg_cache,readwrite
         with:
           configurePreset: vcpkg
           configurePresetAdditionalArgs: "['-DCMAKE_INSTALL_PREFIX=QC-Framework-Out']"
