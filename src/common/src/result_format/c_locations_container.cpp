@@ -15,6 +15,8 @@
 #include "common/result_format/c_file_location.h"
 #include "common/result_format/c_inertial_location.h"
 #include "common/result_format/c_xml_location.h"
+#include "common/result_format/c_time_location.h"
+#include "common/result_format/c_message_location.h"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -113,6 +115,18 @@ cLocationsContainer *cLocationsContainer::ParseFromXML(DOMNode *pXMLNode, DOMEle
             {
                 subIssue->AddExtendedInformation(
                     (cExtendedInformation *)cInertialLocation::ParseFromXML(currentIssueNode, currentIssueElement));
+            }
+            // Parse cTimeLocation
+            else if (Equals(currentTagName, XMLString::transcode(cTimeLocation::TAG_NAME)))
+            {
+                subIssue->AddExtendedInformation(
+                    (cExtendedInformation *)cTimeLocation::ParseFromXML(currentIssueNode, currentIssueElement));
+            }
+            // Parse cMessageLocation
+            else if (Equals(currentTagName, XMLString::transcode(cMessageLocation::TAG_NAME)))
+            {
+                subIssue->AddExtendedInformation(
+                    (cExtendedInformation *)cMessageLocation::ParseFromXML(currentIssueNode, currentIssueElement));
             }
         }
     }

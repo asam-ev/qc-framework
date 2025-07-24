@@ -12,6 +12,9 @@
 #include "common/result_format/c_checker_bundle.h"
 #include "common/result_format/c_domain_specific_info.h"
 #include "common/result_format/c_issue.h"
+#include "common/result_format/c_locations_container.h"
+#include "common/result_format/c_message_location.h"
+#include "common/result_format/c_time_location.h"
 #include "common/result_format/c_result_container.h"
 #include "helper.h"
 #include <xercesc/util/PlatformUtils.hpp>
@@ -40,7 +43,9 @@ TEST_F(cTesterResultFormat, DomainSpecificInfoReadWrite)
     // Parse results from xml
     pResultContainer->AddResultsFromXML(strFilePath);
 
-    // Check domain specifc if is parsed
+    // Check message, time location and domain specific info is parsed
+    int message_location_count = 0;
+    int time_location_count = 0;
     int domain_specific_info_count = 0;
     std::list<cCheckerBundle *> checkerBundles = pResultContainer->GetCheckerBundles();
     for (std::list<cCheckerBundle *>::const_iterator itCheckerBundle = checkerBundles.cbegin();
@@ -49,10 +54,32 @@ TEST_F(cTesterResultFormat, DomainSpecificInfoReadWrite)
         std::list<cIssue *> issues = (*itCheckerBundle)->GetIssues();
         for (std::list<cIssue *>::const_iterator itIssue = issues.cbegin(); itIssue != issues.cend(); itIssue++)
         {
+            for (const auto location : (*itIssue)->GetLocationsContainer())
+            {
+                if (location->HasExtendedInformations())
+                {
+                    for (const auto item : location->GetExtendedInformations())
+                    {
+                        if (dynamic_cast<cMessageLocation *>(item))
+                        {
+                            message_location_count++;
+                        }
+                        else if (dynamic_cast<cTimeLocation *>(item))
+                        {
+                            time_location_count++;
+                        }
+                    }
+                }
+            }
+
             domain_specific_info_count += (*itIssue)->GetDomainSpecificCount();
         }
     }
 
+    std::cout << "Message location count : " << message_location_count << std::endl;
+    ASSERT_TRUE_EXT(message_location_count > 0, "No message location found");
+    std::cout << "Time location count : " << time_location_count << std::endl;
+    ASSERT_TRUE_EXT(time_location_count > 0, "No time location found");
     std::cout << "Domain specific info count : " << domain_specific_info_count << std::endl;
     ASSERT_TRUE_EXT(domain_specific_info_count > 0, "No domain specific info found");
 

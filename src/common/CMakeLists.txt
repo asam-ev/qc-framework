@@ -24,6 +24,8 @@ add_library(qc4openx-common STATIC
     src/result_format/c_file_location.cpp
     src/result_format/c_inertial_location.cpp
     src/result_format/c_xml_location.cpp
+    src/result_format/c_time_location.cpp
+    src/result_format/c_message_location.cpp
     src/result_format/c_parameter_container.cpp
     src/result_format/c_locations_container.cpp
     src/config_format/c_configuration.cpp

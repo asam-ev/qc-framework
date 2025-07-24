@@ -14,6 +14,8 @@
 #include "common/result_format/c_checker_bundle.h"
 #include "common/result_format/c_domain_specific_info.h"
 #include "common/result_format/c_inertial_location.h"
+#include "common/result_format/c_message_location.h"
+#include "common/result_format/c_time_location.h"
 #include "common/result_format/c_locations_container.h"
 #include "common/result_format/c_parameter_container.h"
 #include "common/result_format/c_result_container.h"
@@ -165,13 +167,15 @@ void RunChecks(const cParameterContainer &inputParams)
     // Lets add now an issue
     pExampleChecker->AddIssue(new cIssue("This is an information from the demo usecase", INFO_LVL, first_rule_uid));
 
-    // Create a test checker with an inertial location
+    // Create a test checker with inertial, message and time location
     cChecker *pExampleInertialChecker =
         pExampleCheckerBundle->CreateChecker("exampleInertialChecker", "This is a description of inertial checker");
     const std::string second_rule_uid = "asam.net:xodr:1.0.0:second_rule_name";
     pExampleInertialChecker->AddRule(new cRule(second_rule_uid));
     std::list<cLocationsContainer *> listLoc;
-    listLoc.push_back(new cLocationsContainer("inertial position", new cInertialLocation(1.0, 2.0, 3.0)));
+    listLoc.push_back(new cLocationsContainer("inertial position and message/time locations", new cInertialLocation(1.0, 2.0, 3.0)));
+    listLoc.back()->AddExtendedInformation(new cMessageLocation(100, "SensorView1", "host_vehicle_id", 1.0));
+    listLoc.back()->AddExtendedInformation(new cTimeLocation(1.0));
     pExampleInertialChecker->AddIssue(
         new cIssue("This is an information from the demo usecase", INFO_LVL, second_rule_uid, listLoc));
 
@@ -198,7 +202,7 @@ void RunChecks(const cParameterContainer &inputParams)
         "exampleSkippedChecker", "This is a description of checker with skipped status", "Skipped execution",
         "skipped");
 
-    // Create a test checker with an inertial location
+    // Create a test checker with an domain specific road location
     cChecker *pExampleDomainChecker = pExampleCheckerBundle->CreateChecker(
         "exampleDomainChecker", "This is a description of example domain info checker");
     const std::string fifth_rule_uid = "asam.net:xodr:1.0.0:fifth_rule_name";
