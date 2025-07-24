@@ -63,6 +63,44 @@ macro(qc4openx_install_qt DEST EXE)
                 --no-compiler-runtime
                 --no-system-d3d-compiler)
         ")
+
+        # Due to a bug in vcpkg-built windeployqt, we install missing DLLs manually for now
+        file(GLOB QC4OPENX_QTICUUC ${Qt5_PATH}/lib/libicuuc*.so*)
+        file(GLOB QC4OPENX_QTICUI18N ${Qt5_PATH}/lib/libicui18n*.so*)
+        file(GLOB QC4OPENX_QTICUDATA ${Qt5_PATH}/lib/libicudata*.so*)
+        file(GLOB QC4OPENX_QTCORE ${Qt5_PATH}/lib/libQt5Core*.so*)
+        file(GLOB QC4OPENX_QTDBUS ${Qt5_PATH}/lib/libQt5DBus*.so*)
+        file(GLOB QC4OPENX_QTGUI ${Qt5_PATH}/lib/libQt5Gui*.so*)
+        file(GLOB QC4OPENX_QTNETWORK ${Qt5_PATH}/lib/libQt5Network*.so*)
+        file(GLOB QC4OPENX_QTSVG ${Qt5_PATH}/lib/libQt5Svg*.so*)
+        file(GLOB QC4OPENX_QTWIDGETS ${Qt5_PATH}/lib/libQt5Widgets*.so*)
+        file(GLOB QC4OPENX_QTXCBQPA ${Qt5_PATH}/lib/libQt5XcbQpa*.so*)
+        file(GLOB QC4OPENX_QTXML ${Qt5_PATH}/lib/libQt5Xml*.so*)
+        file(GLOB QC4OPENX_QTXMLPATTERNS ${Qt5_PATH}/lib/libQt5XmlPatterns*.so*)
+
+        # install primary qt libs next to executable
+        set(QC4OPENX_QT_EXTRA_LIBS
+            ${Qt5_PATH}/bin/brotlicommon.dll
+            ${Qt5_PATH}/bin/brotlidec.dll
+            ${Qt5_PATH}/bin/bz2.dll
+            ${Qt5_PATH}/bin/freetype.dll
+            ${Qt5_PATH}/bin/libpng16.dll
+            ${Qt5_PATH}/bin/harfbuzz.dll
+            ${Qt5_PATH}/bin/pcre2-16.dll
+            ${Qt5_PATH}/bin/zstd.dll
+            ${Qt5_PATH}/bin/zlib1.dll
+            ${Qt5_PATH}/bin/double-conversion.dll
+            ${Qt5_PATH}/bin/xerces-c_3_3.dll
+        )
+
+        install(FILES ${QC4OPENX_QT_EXTRA_LIBS}
+                DESTINATION ${CMAKE_INSTALL_PREFIX}/${DEST})
+
+        file(GLOB QC4OPENX_QTPLATFORMS ${Qt5_PATH}/plugins/platforms/qwindows.dll)
+
+        install(FILES ${QC4OPENX_QTPLATFORMS}
+                DESTINATION ${CMAKE_INSTALL_PREFIX}/${DEST}/platforms)
+
     else(WIN32)
         # sadly there is no "linuxdeployqt"
         # -> well... there is.. but it doesn't work so well
