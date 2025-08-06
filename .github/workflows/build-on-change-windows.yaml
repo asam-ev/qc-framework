@@ -114,3 +114,35 @@ jobs:
           python3 -m poetry run pytest
           Write-Output "All framework tests done."
         shell: pwsh
+
+      - name: Execute checker bundles
+        run: |
+          $env:ASAM_QC_FRAMEWORK_MANIFEST_DIR="${{ github.workspace }}\.github\workflows\windows-manifest"
+          $env:ASAM_QC_FRAMEWORK_INSTALLATION_DIR="${{ github.workspace }}\QC-Framework-Out\bin"
+
+          git config --system core.longpaths true
+
+          pip install -e ${{ github.workspace }}\qc_framework
+
+          mkdir "${{ github.workspace }}\odr_out"
+          pip install asam-qc-opendrive
+          qc_runtime --config="${{ github.workspace }}\.github\workflows\windows-files\odr_config.xml" --manifest="${{ github.workspace }}\.github\workflows\windows-manifest\framework.json" --working_dir="${{ github.workspace }}\odr_out"
+          if (-not (Test-Path "${{ github.workspace }}\odr_out\xodr_bundle_report.xqar")) { Throw "Error: Odr output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\odr_out\Result.xqar")) { Throw "Error: Odr output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\odr_out\Report.txt")) { Throw "Error: Odr output does not exist." }
+
+          mkdir "${{ github.workspace }}\osc_out"
+          pip install asam-qc-openscenarioxml
+          qc_runtime --config="${{ github.workspace }}\.github\workflows\windows-files\osc_config.xml" --manifest="${{ github.workspace }}\.github\workflows\windows-manifest\framework.json" --working_dir="${{ github.workspace }}\osc_out"
+          if (-not (Test-Path "${{ github.workspace }}\osc_out\xosc_bundle_report.xqar")) { Throw "Error: Osc output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\osc_out\Result.xqar")) { Throw "Error: Osc output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\osc_out\Report.txt")) { Throw "Error: Odr output does not exist." }
+
+          mkdir "${{ github.workspace }}\otx_out"
+          pip install asam-qc-otx
+          qc_runtime --config="${{ github.workspace }}\.github\workflows\windows-files\otx_config.xml" --manifest="${{ github.workspace }}\.github\workflows\windows-manifest\framework.json" --working_dir="${{ github.workspace }}\otx_out"
+          if (-not (Test-Path "${{ github.workspace }}\otx_out\otx_bundle_report.xqar")) { Throw "Error: Otx output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\otx_out\Result.xqar")) { Throw "Error: Otx output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\otx_out\Report.txt")) { Throw "Error: Odr output does not exist." }
+
+        shell: pwsh
