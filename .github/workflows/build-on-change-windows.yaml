@@ -146,3 +146,12 @@ jobs:
           if (-not (Test-Path "${{ github.workspace }}\otx_out\Report.txt")) { Throw "Error: Odr output does not exist." }
 
         shell: pwsh
+
+      - name: Archive bundle results
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-results
+          path: |
+            ${{ github.workspace }}\odr_out
+            ${{ github.workspace }}\osc_out
+            ${{ github.workspace }}\otx_out
