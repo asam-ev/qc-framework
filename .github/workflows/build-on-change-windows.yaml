@@ -97,3 +97,20 @@ jobs:
           name: test-report
           path: ${{ github.workspace }}\build\Testing\Temporary\LastTest.log
 
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Framework test execution
+        run: |
+          Write-Output "Starting framework tests..."
+          Rename-Item -path "build" -NewName "out_build"
+          Copy-Item -Path "QC-Framework-Out\bin" -Destination "bin" -Recurse
+          Copy-Item -Path "out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "bin"
+          cd "qc_framework"
+          python3 -m pip install poetry
+          python3 -m poetry install
+          python3 -m poetry run pytest
+          Write-Output "All framework tests done."
+        shell: pwsh
