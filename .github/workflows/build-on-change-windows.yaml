@@ -59,7 +59,7 @@ jobs:
           VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg_cache,readwrite
         with:
           configurePreset: vcpkg
-          configurePresetAdditionalArgs: "['-DCMAKE_INSTALL_PREFIX=QC-Framework-Out']"
+          configurePresetAdditionalArgs: "['-DCMAKE_INSTALL_PREFIX=QC-Framework-Out', '-DENABLE_FUNCTIONAL_TESTS=${{ env.TEST_ENABLED }}']"
           buildPreset: vcpkg
           buildPresetAdditionalArgs: "['--config Release']"
 
@@ -85,8 +85,6 @@ jobs:
       - name: Unit test execution
         run: |
           Write-Output "Starting unit tests..."
-
-          cd "$env:WORKING_PATH\qc-framework\qc-framework"
 
           ctest --test-dir build -C Release
 
