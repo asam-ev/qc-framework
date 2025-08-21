@@ -31,6 +31,9 @@ on:
 
   workflow_dispatch: # Allows manual triggering of the workflow
 
+  schedule: # Perform scheduled runs of the workflow
+    - cron: '27 3 */6 * *' # Every sixth day at 3:27 AM UTC
+
 jobs:
   build-windows:
     runs-on: windows-2022
