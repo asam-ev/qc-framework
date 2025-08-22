@@ -11,7 +11,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-asam-qc-baselib = {git = "https://github.com/asam-ev/qc-baselib-py.git", rev = "feature/new-location-types"}
+asam-qc-baselib = {git = "https://github.com/asam-ev/qc-baselib-py.git", rev = "main"}
 pydantic = "^2.7.2"
 
 [tool.poetry.group.dev.dependencies]
