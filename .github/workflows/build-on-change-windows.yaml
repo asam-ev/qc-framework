@@ -31,9 +31,12 @@ on:
 
   workflow_dispatch: # Allows manual triggering of the workflow
 
+  schedule: # Perform scheduled runs of the workflow
+    - cron: '27 3 */6 * *' # Every sixth day at 3:27 AM UTC
+
 jobs:
   build-windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       TEST_ENABLED: ${{ github.event_name == 'pull_request' && 'ON' || 'OFF' }}
       WORKING_PATH: "D:\\a"
@@ -41,77 +44,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
+      - name: Get CMake
+        uses: lukka/get-cmake@latest
 
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4.0.0
+      - name: Cache vcpkg
+        uses: actions/cache@v4
         with:
-          version: 5.15.2
-          host: windows
-          target: desktop
-          arch: win64_msvc2019_64
+          path: ${{ github.workspace }}/vcpkg_cache
+          key: vcpkg-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'CMakePresets.json') }}
 
-      - name: Install gtest
-        env:
-          CXX: g++-10
-        run: |
-          Write-Output "Installing gtest..."
-
-          git clone https://github.com/google/googletest.git -b release-1.10.0
-          cd googletest
-          mkdir build
-          cd build
-          cmake -G "Visual Studio 16 2019" `
-            -Dgtest_force_shared_crt=ON `
-            -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\gtest-Out" ..
-          cmake --build . --config Release
-          cmake --build . --config Release --target install
-
-          Write-Output "Gtest installed."
-        shell: pwsh
-
-      - name: Install XercesC
-        run: |
-          Write-Output "Setting up Xerces-C++..."
-          $xercesZip = "$env:WORKING_PATH\xerces-c-3.2.5.zip"
-          Invoke-WebRequest -Uri "https://archive.apache.org/dist/xerces/c/3/sources/xerces-c-3.2.5.zip" -OutFile $xercesZip
-          Expand-Archive -Path $xercesZip -DestinationPath "$env:WORKING_PATH"
-          cd "$env:WORKING_PATH\xerces-c-3.2.5"
-          mkdir build
-          cd build
-          cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\Xerces-Out" ..
-          cmake --build . --config Release
-          cmake --build . --config Release --target install
-
-          Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\bin\xerces-c_3_2D.dll"
-          Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\Xerces-Out\include"
-          Add-Content $env:GITHUB_PATH "$env:WORKING_PATH\Xerces-Out\bin"
-
-        shell: pwsh
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
 
       - name: Build framework
+        uses: lukka/run-cmake@v10
+        env:
+          VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}/vcpkg_cache,readwrite
+        with:
+          configurePreset: vcpkg
+          configurePresetAdditionalArgs: "['-DCMAKE_INSTALL_PREFIX=QC-Framework-Out', '-DENABLE_FUNCTIONAL_TESTS=${{ env.TEST_ENABLED }}']"
+          buildPreset: vcpkg
+          buildPresetAdditionalArgs: "['--config Release']"
+
+      - name: Install framework
         run: |
-          Write-Output "Setting up QC-Framework..."
-
-          cd "$env:WORKING_PATH\qc-framework\qc-framework"
-          mkdir build
-
-          cmake -H"$env:WORKING_PATH\qc-framework\qc-framework" -S. -Bbuild `
-            -G "Visual Studio 16 2019" -A x64 -T v142 `
-            -DCMAKE_INSTALL_PREFIX="$env:WORKING_PATH\QC-Framework-Out" `
-            -DENABLE_FUNCTIONAL_TESTS="$env:TEST_ENABLED" `
-            -DGTest_ROOT="$env:WORKING_PATH\gtest-Out" `
-            -DQt5_ROOT="$env:Qt5_DIR\Qt5\" `
-            -DXercesC_ROOT="$env:WORKING_PATH\Xerces-Out"
-
-          cmake --build build --target ALL_BUILD --config Release
-
           cmake --install build
-
-          # Final output
-          Write-Output "All installations and setups are complete!"
-        shell: pwsh
 
       - name: Archive release binaries
         run: |
@@ -132,8 +89,6 @@ jobs:
         run: |
           Write-Output "Starting unit tests..."
 
-          cd "$env:WORKING_PATH\qc-framework\qc-framework"
-
           ctest --test-dir build -C Release
 
           Write-Output "All unit tests done."
@@ -145,54 +100,61 @@ jobs:
           name: test-report
           path: ${{ github.workspace }}\build\Testing\Temporary\LastTest.log
 
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
       - name: Framework test execution
         run: |
           Write-Output "Starting framework tests..."
-
-          Rename-Item -path "$env:WORKING_PATH\qc-framework\qc-framework\build" -NewName "$env:WORKING_PATH\qc-framework\qc-framework\out_build"
-          Copy-Item -Path "$env:WORKING_PATH\QC-Framework-Out\bin" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin" -Recurse
-          Copy-Item -Path "$env:WORKING_PATH\qc-framework\qc-framework\out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "$env:WORKING_PATH\qc-framework\qc-framework\bin"
-
-          cd "$env:WORKING_PATH\qc-framework\qc-framework\qc_framework"
+          Rename-Item -path "build" -NewName "out_build"
+          Copy-Item -Path "QC-Framework-Out\bin" -Destination "bin" -Recurse
+          Copy-Item -Path "out_build\examples\checker_bundle_example\Release\DemoCheckerBundle.exe" -Destination "bin"
+          cd "qc_framework"
           python3 -m pip install poetry
           python3 -m poetry install
           python3 -m poetry run pytest
           Write-Output "All framework tests done."
         shell: pwsh
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
       - name: Execute checker bundles
         run: |
-          $env:ASAM_QC_FRAMEWORK_MANIFEST_DIR="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest"
-          $env:ASAM_QC_FRAMEWORK_INSTALLATION_DIR="$env:WORKING_PATH\QC-Framework-Out\bin"
+          $env:ASAM_QC_FRAMEWORK_MANIFEST_DIR="${{ github.workspace }}\.github\workflows\windows-manifest"
+          $env:ASAM_QC_FRAMEWORK_INSTALLATION_DIR="${{ github.workspace }}\QC-Framework-Out\bin"
 
           git config --system core.longpaths true
 
-          pip install -e $env:WORKING_PATH\qc-framework\qc-framework\qc_framework
+          pip install -e ${{ github.workspace }}\qc_framework
 
-          mkdir "$env:WORKING_PATH\odr_out"
+          mkdir "${{ github.workspace }}\odr_out"
           pip install asam-qc-opendrive
-          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\odr_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\odr_out"
-          if (-not (Test-Path "$env:WORKING_PATH\odr_out\xodr_bundle_report.xqar")) { Throw "Error: Odr output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\odr_out\Result.xqar")) { Throw "Error: Odr output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\odr_out\Report.txt")) { Throw "Error: Odr output does not exist." }
+          qc_runtime --config="${{ github.workspace }}\.github\workflows\windows-files\odr_config.xml" --manifest="${{ github.workspace }}\.github\workflows\windows-manifest\framework.json" --working_dir="${{ github.workspace }}\odr_out"
+          if (-not (Test-Path "${{ github.workspace }}\odr_out\xodr_bundle_report.xqar")) { Throw "Error: Odr output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\odr_out\Result.xqar")) { Throw "Error: Odr output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\odr_out\Report.txt")) { Throw "Error: Odr output does not exist." }
 
-          mkdir "$env:WORKING_PATH\osc_out"
+          mkdir "${{ github.workspace }}\osc_out"
           pip install asam-qc-openscenarioxml
-          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\osc_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\osc_out"
-          if (-not (Test-Path "$env:WORKING_PATH\osc_out\xosc_bundle_report.xqar")) { Throw "Error: Osc output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\osc_out\Result.xqar")) { Throw "Error: Osc output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\osc_out\Report.txt")) { Throw "Error: Odr output does not exist." }
+          qc_runtime --config="${{ github.workspace }}\.github\workflows\windows-files\osc_config.xml" --manifest="${{ github.workspace }}\.github\workflows\windows-manifest\framework.json" --working_dir="${{ github.workspace }}\osc_out"
+          if (-not (Test-Path "${{ github.workspace }}\osc_out\xosc_bundle_report.xqar")) { Throw "Error: Osc output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\osc_out\Result.xqar")) { Throw "Error: Osc output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\osc_out\Report.txt")) { Throw "Error: Odr output does not exist." }
 
-          mkdir "$env:WORKING_PATH\otx_out"
+          mkdir "${{ github.workspace }}\otx_out"
           pip install asam-qc-otx
-          qc_runtime --config="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-files\otx_config.xml" --manifest="$env:WORKING_PATH\qc-framework\qc-framework\.github\workflows\windows-manifest\framework.json" --working_dir="$env:WORKING_PATH\otx_out"
-          if (-not (Test-Path "$env:WORKING_PATH\otx_out\otx_bundle_report.xqar")) { Throw "Error: Otx output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\otx_out\Result.xqar")) { Throw "Error: Otx output does not exist." }
-          if (-not (Test-Path "$env:WORKING_PATH\otx_out\Report.txt")) { Throw "Error: Odr output does not exist." }
+          qc_runtime --config="${{ github.workspace }}\.github\workflows\windows-files\otx_config.xml" --manifest="${{ github.workspace }}\.github\workflows\windows-manifest\framework.json" --working_dir="${{ github.workspace }}\otx_out"
+          if (-not (Test-Path "${{ github.workspace }}\otx_out\otx_bundle_report.xqar")) { Throw "Error: Otx output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\otx_out\Result.xqar")) { Throw "Error: Otx output does not exist." }
+          if (-not (Test-Path "${{ github.workspace }}\otx_out\Report.txt")) { Throw "Error: Odr output does not exist." }
 
         shell: pwsh
+
+      - name: Archive bundle results
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-results
+          path: |
+            ${{ github.workspace }}\odr_out
+            ${{ github.workspace }}\osc_out
+            ${{ github.workspace }}\otx_out
