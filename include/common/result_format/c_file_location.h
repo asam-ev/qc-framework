@@ -24,6 +24,7 @@ class cFileLocation : public cExtendedInformation
     static const XMLCh *TAG_NAME;
     static const XMLCh *ATTR_ROW;
     static const XMLCh *ATTR_COLUMN;
+    static const XMLCh *ATTR_OFFSET;
 
     /*
      * Creates a new FileLocationInfo
@@ -33,8 +34,29 @@ class cFileLocation : public cExtendedInformation
      */
     cFileLocation(int row, int column) : cExtendedInformation("FileLocation")
     {
+        m_RowColumnSet = true;
         m_Column = column;
         m_Row = row;
+        m_OffsetSet = false;
+        m_Offset = 0;
+    }
+
+    cFileLocation(int row, int column, uint64_t offset) : cExtendedInformation("FileLocation")
+    {
+        m_RowColumnSet = true;
+        m_Column = column;
+        m_Row = row;
+        m_OffsetSet = true;
+        m_Offset = offset;
+    }
+
+    cFileLocation(uint64_t offset) : cExtendedInformation("FileLocation")
+    {
+        m_RowColumnSet = false;
+        m_Column = 0;
+        m_Row = 0;
+        m_OffsetSet = true;
+        m_Offset = offset;
     }
 
     // Serialize this information
@@ -44,15 +66,27 @@ class cFileLocation : public cExtendedInformation
     static cFileLocation *ParseFromXML(XERCES_CPP_NAMESPACE::DOMNode *pXMLNode,
                                        XERCES_CPP_NAMESPACE::DOMElement *pXMLElement);
 
+    // Checks if the row and column are set
+    bool HasRowColumn() const;
+
     // Returns the row
     int GetRow() const;
 
     // Returns the column
     int GetColumn() const;
 
+    // Checks if the offset is set
+    bool HasOffset() const;
+
+    // Returns the offset
+    uint64_t GetOffset() const;
+
   protected:
+    bool m_RowColumnSet = false;
     int m_Column;
     int m_Row;
+    bool m_OffsetSet = false;
+    uint64_t m_Offset;
 
   private:
     cFileLocation();

@@ -123,7 +123,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: framework-test-report-ubuntu
-          path: ${{ github.workspace }}/qc_framework/runtime_test.log
+          path: |
+            ${{ github.workspace }}/qc_framework/runtime_test.log
+            ${{ github.workspace }}/qc_framework/qc-output-*/
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
@@ -158,3 +160,12 @@ jobs:
           if [ ! -f "/home/$(whoami)/otx_out/Result.xqar" ]; then echo "Error: Otx output does not exist."; exit 1; fi
           if [ ! -f "/home/$(whoami)/otx_out/Report.txt" ]; then echo "Error: Otx output does not exist."; exit 1; fi
         shell: bash
+
+      - name: Archive bundles test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-test-report-ubuntu
+          path: |
+            /home/runner/odr_out/
+            /home/runner/osc_out/
+            /home/runner/otx_out/

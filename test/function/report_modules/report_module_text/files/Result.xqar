@@ -10,7 +10,15 @@ with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
   <CheckerBundle build_date="2019-11-28 11:40:42" description="" name="DemoCheckerBundle" summary="Found 1 issue" version="16857">
     <Checker checkerId="exampleChecker" description="This is a description" summary="">
-      <Issue description="This is an information from the demo usecase" issueId="0" level="3"/>
+      <Issue description="This is an information from the demo usecase" issueId="0" level="3">
+        <Locations description="message and time location">
+          <MessageLocation index="100" channel="SensorView1" field="host_vehicle_id" time="1.0"/>
+          <TimeLocation time="1.0"/>
+        </Locations>
+        <DomainSpecificInfo name="test_domain">
+          <RoadLocation b="5.4" c="0.0" id="aa"/>
+        </DomainSpecificInfo>
+      </Issue>
     </Checker>
   </CheckerBundle>
 

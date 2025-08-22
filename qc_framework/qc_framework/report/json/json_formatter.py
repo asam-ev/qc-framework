@@ -121,6 +121,8 @@ class JsonFormatter(ReportFormatter):
         file_locations = []
         xml_locations = []
         inertial_locations = []
+        time_locations = []
+        message_locations = []
 
         for location in locations:
             for file_location in location.file_location:
@@ -129,6 +131,7 @@ class JsonFormatter(ReportFormatter):
                         "description": location.description,
                         "column": file_location.column,
                         "row": file_location.row,
+                        "offset": file_location.offset,
                     }
                 )
             for xml_location in location.xml_location:
@@ -147,10 +150,29 @@ class JsonFormatter(ReportFormatter):
                         "z": inertial_location.z,
                     }
                 )
+            for time_location in location.time_location:
+                time_locations.append(
+                    {
+                        "description": location.description,
+                        "time": time_location.time,
+                    }
+                )
+            for message_location in location.message_location:
+                message_locations.append(
+                    {
+                        "description": location.description,
+                        "index": message_location.index,
+                        "channel": message_location.channel,
+                        "field": message_location.field,
+                        "time": message_location.time,
+                    }
+                )
         return {
             "file": file_locations,
             "xml": xml_locations,
             "inertial": inertial_locations,
+            "time": time_locations,
+            "message": message_locations,
         }
 
     def _dump_domain_specific_info(self, domain_specific_info):
