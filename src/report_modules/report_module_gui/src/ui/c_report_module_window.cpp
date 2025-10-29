@@ -493,7 +493,7 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
     msgBox.setWindowTitle(this->_reportModuleName + " Error");
     msgBox.setStandardButtons(QMessageBox::Ok);
 
-    // Start viewer when we have an OpenDRIVE or an OpenSCENARIO
+    // Start viewer when we have an input file
     if (_results != nullptr && _results->HasInputFileName())
     {
         setCursor(Qt::WaitCursor);
@@ -544,7 +544,7 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
     }
     else
     {
-        msgBox.setText("Cannot start because no XODR in result. Abort.");
+        msgBox.setText("Cannot start because input file in result. Abort.");
         msgBox.exec();
     }
 }
