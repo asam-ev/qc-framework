@@ -537,9 +537,10 @@ void cReportModuleWindow::ShowIssueInViewer(const cIssue *const issue, const cLo
 
 void cReportModuleWindow::closeEvent(QCloseEvent *)
 {
-    for (uint32_t i = 0; i < viewerEntries.size(); i++)
+    if (_viewerActive != nullptr)
     {
-        viewerEntries[i]->CloseViewer_f();
+        _viewerActive->CloseViewer_f();
+        _viewerActive = nullptr;
     }
 }
 
