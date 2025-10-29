@@ -16,6 +16,17 @@
 
 const char *lasterrormsg = "";
 
+bool CanSupportFormat(const char *inputPath)
+{
+    if (std::strcmp(inputPath, "") == 0)
+    {
+        lasterrormsg = "ERROR: No valid input file found.";
+        return false;
+    }
+    std::cout << "CAN SUPPORT FORMAT WITH INPUT FILE: " << inputPath << std::endl;
+    return true;
+}
+
 bool StartViewer()
 {
     std::cout << "START VIEWER EXAMPLE" << std::endl;
@@ -29,7 +40,7 @@ bool Initialize(const char *inputPath)
         lasterrormsg = "ERROR: No valid input file found.";
         return false;
     }
-    std::cout << "INITILAIZE VIEWER WITH INPUPT FILE: " << inputPath << std::endl;
+    std::cout << "INITILAIZE VIEWER WITH INPUT FILE: " << inputPath << std::endl;
     return true;
 }
 

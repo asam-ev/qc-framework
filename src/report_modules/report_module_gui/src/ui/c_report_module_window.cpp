@@ -237,6 +237,22 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
                 break;
             }
 
+            // resolve function address CanSupportFormat here
+#ifdef WIN32
+            viewerEntries[i]->CanSupportFormat_f = (CanSupportFormat_ptr)GetProcAddress(viewer_dll, "CanSupportFormat");
+#else
+            viewerEntries[i]->CanSupportFormat_f = (CanSupportFormat_ptr)dlsym(viewer_dll, "CanSupportFormat");
+#endif
+
+            if (!viewerEntries[i]->CanSupportFormat_f)
+            {
+                QString text =
+                    QString("Could not locate the function CanSupportFormat (%1). Abort.").arg(viewer_list.at(i).baseName());
+                msgBox.setText(text);
+                msgBox.exec();
+                break;
+            }
+
             // resolve function address StartViewer here
 #ifdef WIN32
             viewerEntries[i]->StartViewer_f = (StartViewer_ptr)GetProcAddress(viewer_dll, "StartViewer");
@@ -493,8 +509,8 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
     msgBox.setWindowTitle(this->_reportModuleName + " Error");
     msgBox.setStandardButtons(QMessageBox::Ok);
 
-    // Start viewer when we have an input file
-    if (_results != nullptr && _results->HasInputFileName())
+    // Start viewer when we have an input file and it is supported
+    if (_results != nullptr && _results->HasInputFileName() && viewer->CanSupportFormat_f(_results->GetInputFilePath().c_str()))
     {
         setCursor(Qt::WaitCursor);
         QApplication::processEvents();
@@ -512,7 +528,7 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
             return;
         }
 
-        // Initilialize with xosc and xodr file
+        // Initilialize with input file
         result = viewer->Initialize_f(_results->GetInputFilePath().c_str());
 
         if (!result)
@@ -550,7 +566,12 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
     }
     else
     {
-        msgBox.setText("Cannot start because input file in result. Abort.");
+        if (_results == nullptr)
+            msgBox.setText("Cannot start because no result loaded. Abort.");
+        else if (!_results->HasInputFileName())
+            msgBox.setText("Cannot start because no input file in result. Abort.");
+        else
+            msgBox.setText("Cannot start because input file format in result is not supported by viewer. Abort.");
         msgBox.exec();
     }
 }

@@ -50,6 +50,7 @@ class cReportModuleWindow : public QMainWindow
     cCheckerWidget *_checkerWidget{nullptr};
 
     // Function pointers for functions of IConnector.h
+    typedef bool (*CanSupportFormat_ptr)(const char *);
     typedef bool (*StartViewer_ptr)();
     typedef bool (*Initialize_ptr)(const char *);
     typedef bool (*AddIssue_ptr)(const void *);
@@ -61,6 +62,7 @@ class cReportModuleWindow : public QMainWindow
 
     struct Viewer
     {
+        CanSupportFormat_ptr CanSupportFormat_f{nullptr};
         StartViewer_ptr StartViewer_f{nullptr};
         Initialize_ptr Initialize_f{nullptr};
         AddIssue_ptr AddIssue_f{nullptr};

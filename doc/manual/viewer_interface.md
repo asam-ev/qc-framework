@@ -24,6 +24,7 @@ The C-interface declares the following functions, which are called by the
 ReportGUI:
 
 ```c
+bool CanSupportFormat(const char* inputPath);
 bool StartViewer();
 bool Initialize(const char* inputPath);
 bool AddIssue(void * issueToAdd);
@@ -45,9 +46,10 @@ the context menu **File -> Start Viewer**.
 
 If you start a viewer the following functions are called in this order:
 
-1. StartViewer
-2. Initialize
-3. AddIssue (will be called for each issue found)
+1. CanSupportFormat (further calls only if this function returns true)
+2. StartViewer
+3. Initialize
+4. AddIssue (will be called for each issue found)
 
 If an error occurs during the startup process, the ReportGUI will call
 GetLastErrorMessage to print out the error in the ReportGUI itself.
@@ -60,7 +62,7 @@ ShowIssue is triggered if you click on an issue in the ReportGUI for which
 CanShowIssue returned true. It will send the clicked issue and its location
 to the viewer.
 
-If the ReportGUI is closed a currently active Viewer receives the closeViewer
+If the ReportGUI is closed a currently active Viewer receives the CloseViewer
 call.
 
 ## Viewer Example

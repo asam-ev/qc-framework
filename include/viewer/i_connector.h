@@ -25,13 +25,19 @@ extern "C"
 #endif
 
     /**
+     * Checks if the viewer can support the format of the given input file
+     * \param inputPath Path to the input file
+     **/
+    VIEWER bool CanSupportFormat(const char *inputPath);
+
+    /**
      * Is called if the viewer application should be startet from main menu
      **/
     VIEWER bool StartViewer();
 
     /**
-     * Does the initialization with xosc file of an viewer
-     * \param xoscPath Path to an xosc file
+     * Does the initialization with input file of an viewer
+     * \param inputPath Path to the input file
      **/
     VIEWER bool Initialize(const char *inputPath);
 
