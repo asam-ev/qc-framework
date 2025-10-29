@@ -506,6 +506,8 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
         {
             QString errormsg = QString("StartViewer failed, abort. Error msg: ") + viewer->GetLastErrorMessage_f();
             msgBox.setText(errormsg);
+            setCursor(Qt::ArrowCursor);
+            QApplication::processEvents();
             msgBox.exec();
             return;
         }
@@ -518,6 +520,8 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
             std::cout << "errormsg this side: " << viewer->GetLastErrorMessage_f() << std::endl;
             QString errormsg = QString("Initialize failed, abort. Error msg: ") + viewer->GetLastErrorMessage_f();
             msgBox.setText(errormsg);
+            setCursor(Qt::ArrowCursor);
+            QApplication::processEvents();
             msgBox.exec();
             return;
         }
@@ -532,6 +536,8 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
             {
                 QString errormsg = QString("Adding error failed, abort. Error msg: ") + viewer->GetLastErrorMessage_f();
                 msgBox.setText(errormsg);
+                setCursor(Qt::ArrowCursor);
+                QApplication::processEvents();
                 msgBox.exec();
                 return;
             }
