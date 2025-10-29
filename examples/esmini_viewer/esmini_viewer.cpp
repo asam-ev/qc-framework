@@ -298,6 +298,21 @@ bool AddIssue(void *issueToAdd)
     return true;
 }
 
+bool CanShowIssue(void *itemToShow, void *locationToShow)
+{
+    auto issue = static_cast<cIssue *>(itemToShow);
+    auto location = static_cast<cLocationsContainer *>(locationToShow);
+    std::list<cExtendedInformation *> extendedInfo = location->GetExtendedInformations();
+    for (cExtendedInformation *extInfo : extendedInfo)
+    {
+        // Show InertialLocations in Viewer
+        if (extInfo->IsType<cInertialLocation *>())
+            return true;
+    }
+
+    return false;
+}
+
 bool ShowIssue(void *itemToShow, void *locationToShow)
 {
     auto issue = static_cast<cIssue *>(itemToShow);

@@ -40,6 +40,14 @@ bool AddIssue(void *issueToAdd)
     return true;
 }
 
+bool CanShowIssue(void *itemToShow, void *locationToShow)
+{
+    if (locationToShow == nullptr)
+        return false;
+
+    return true;
+}
+
 bool ShowIssue(void *itemToShow, void *locationToShow)
 {
     auto issue = static_cast<cIssue *>(itemToShow);

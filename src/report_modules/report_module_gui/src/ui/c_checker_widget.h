@@ -130,6 +130,11 @@ class cCheckerWidget : public QWidget
     /*
      * Invoked if an issue should be showed in 3DViewer.
      */
+    bool CanShowIssueIn3DViewer(const cIssue *const issue, const cLocationsContainer *locationToShow) const;
+
+    /*
+     * Invoked if an issue should be showed in 3DViewer.
+     */
     void ShowIssueIn3DViewer(const cIssue *const issue, const cLocationsContainer *locationToShow) const;
 };
 

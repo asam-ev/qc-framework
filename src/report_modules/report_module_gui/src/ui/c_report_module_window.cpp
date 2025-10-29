@@ -165,6 +165,7 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
     connect(_checkerWidget, &cCheckerWidget::Load, this, &cReportModuleWindow::loadFileContent);
     connect(_checkerWidget, &cCheckerWidget::ShowInputIssue, this, &cReportModuleWindow::highlightRow);
+    connect(_checkerWidget, &cCheckerWidget::CanShowIssueIn3DViewer, this, &cReportModuleWindow::CheckIssueShowableInViewer);
     connect(_checkerWidget, &cCheckerWidget::ShowIssueIn3DViewer, this, &cReportModuleWindow::ShowIssueInViewer);
 
     // Create Menu entries for all viewers in plugin
@@ -263,6 +264,22 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
             {
                 QString text =
                     QString("Could not locate the function AddIssue (%1). Abort.").arg(viewer_list.at(i).baseName());
+                msgBox.setText(text);
+                msgBox.exec();
+                break;
+            }
+
+            // resolve function address CanShowIssue here
+#ifdef WIN32
+            viewerEntries[i]->CanShowIssue_f = (ShowIssue_ptr)GetProcAddress(viewer_dll, "CanShowIssue");
+#else
+            viewerEntries[i]->CanShowIssue_f = (ShowIssue_ptr)dlsym(viewer_dll, "CanShowIssue");
+#endif
+
+            if (!viewerEntries[i]->CanShowIssue_f)
+            {
+                QString text =
+                    QString("Could not locate the function CanShowIssue (%1). Abort.").arg(viewer_list.at(i).baseName());
                 msgBox.setText(text);
                 msgBox.exec();
                 break;
@@ -514,6 +531,11 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
         msgBox.setText("Cannot start because no XODR in result. Abort.");
         msgBox.exec();
     }
+}
+
+bool cReportModuleWindow::CheckIssueShowableInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow)
+{
+    return (_viewerActive != nullptr) && _viewerActive->CanShowIssue_f(issue, locationToShow);
 }
 
 void cReportModuleWindow::ShowIssueInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow)

@@ -42,6 +42,13 @@ extern "C"
     VIEWER bool AddIssue(void *issueToAdd);
 
     /**
+     * Is called to determine if an issues can be shown.
+     * \param itemToShow The item which should be shown. Pointer to a cIssue class.
+     * \param locationToShow The location where to show the issue. Pointer to a cLocationsContainer class
+     **/
+    VIEWER bool CanShowIssue(void *itemToShow, void *locationToShow);
+    
+    /**
      * Is called if an issues has to be showed.
      * \param itemToShow The item which should be showed. Pointer to a cIssue class.
      * \param locationToShow The location where to show the issue. Pointer to a cLocationsContainer class

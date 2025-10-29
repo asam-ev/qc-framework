@@ -53,6 +53,7 @@ class cReportModuleWindow : public QMainWindow
     typedef bool (*StartViewer_ptr)();
     typedef bool (*Initialize_ptr)(const char *);
     typedef bool (*AddIssue_ptr)(const void *);
+    typedef bool (*CanShowIssue_ptr)(const void *, const void *);
     typedef bool (*ShowIssue_ptr)(const void *, const void *);
     typedef const char *(*GetName_ptr)();
     typedef bool (*CloseViewer_ptr)();
@@ -63,6 +64,7 @@ class cReportModuleWindow : public QMainWindow
         StartViewer_ptr StartViewer_f{nullptr};
         Initialize_ptr Initialize_f{nullptr};
         AddIssue_ptr AddIssue_f{nullptr};
+        CanShowIssue_ptr CanShowIssue_f{nullptr};
         ShowIssue_ptr ShowIssue_f{nullptr};
         GetName_ptr GetName_f{nullptr};
         CloseViewer_ptr CloseViewer_f{nullptr};
@@ -98,10 +100,11 @@ class cReportModuleWindow : public QMainWindow
     void OpenResultFile();
     void SaveResultFile();
 
-    // starts the Viewer
+    // Starts a Viewer
     void StartViewer(Viewer *viewer);
-
-    // shows a XODR Issue in a viewer if available
+    // Checks if an issue can be shown in a viewer
+    bool CheckIssueShowableInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow);
+    // Shows an issue in a viewer if available
     void ShowIssueInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow);
 
     void onIssueToggled(bool checked);

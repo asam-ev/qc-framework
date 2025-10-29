@@ -366,7 +366,7 @@ void cCheckerWidget::FillIssueTreeItem(QTreeWidgetItem *treeItem, cIssue *const 
 
         for (const auto subIssue : issue->GetLocationsContainer())
         {
-            if (subIssue->HasExtendedInformation<cInertialLocation *>())
+            if (CanShowIssueIn3DViewer(issue, subIssue))
             {
                 isVisibleInViewer = true;
             }
@@ -666,13 +666,11 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
                     if (hasInputPath)
                         ShowInputIssue(itemToShow, row);
                 }
-
-                // Show InertialLocations in Viewer
-                if (extInfo->IsType<cInertialLocation *>())
-                {
-                    ShowIssueIn3DViewer(itemToShow, locationToShow);
-                }
             }
+
+            // Potentially show in external viewer
+            if (CanShowIssueIn3DViewer(itemToShow, locationToShow))
+                    ShowIssueIn3DViewer(itemToShow, locationToShow);
         }
     }
 }

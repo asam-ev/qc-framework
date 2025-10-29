@@ -27,6 +27,7 @@ ReportGUI:
 bool StartViewer();
 bool Initialize(const char* inputPath);
 bool AddIssue(void * issueToAdd);
+bool CanShowIssue(void * itemToShow, void* locationToShow);
 bool ShowIssue(void * itemToShow, void* locationToShow);
 const char* GetName();
 bool CloseViewer();
@@ -51,8 +52,13 @@ If you start a viewer the following functions are called in this order:
 If an error occurs during the startup process, the ReportGUI will call
 GetLastErrorMessage to print out the error in the ReportGUI itself.
 
-ShowIssue is triggered if you click on a InertialLocation issue in the ReportGUI.
-It will send the clicked issue and its location to the viewer.
+CanShowIssue is called to check whether an Issue is viewable in the viewer.
+If it returns true, then the viewer claims that it can show information for
+the given issue (and location).
+
+ShowIssue is triggered if you click on an issue in the ReportGUI for which
+CanShowIssue returned true. It will send the clicked issue and its location
+to the viewer.
 
 If the ReportGUI is closed a currently active Viewer receives the closeViewer
 call.
