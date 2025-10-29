@@ -14,15 +14,17 @@
 class LineHighlighter : public QSyntaxHighlighter
 {
   public:
-    LineHighlighter(QTextDocument *document) : QSyntaxHighlighter(document), lineNumber(-1)
+    LineHighlighter(QTextDocument *document) : QSyntaxHighlighter(document), lineNumber(-1), position(-1)
     {
     }
 
     void setLineToHighlight(int line);
+    void setOffsetToHighlight(int offset);
 
   protected:
     void highlightBlock(const QString &text) override;
 
   private:
     int lineNumber;
+    int position;
 };

@@ -50,6 +50,21 @@ void cReportModuleWindow::highlightRow(const cIssue *const issue, const int row)
     }
 }
 
+void cReportModuleWindow::highlightOffset(const cIssue *const issue, const int offset)
+{
+
+    if (highlighter)
+    {
+        highlighter->setOffsetToHighlight(offset);
+        textEditArea->update();
+        // Move cursor to the highlighted row and center it
+        QTextCursor cursor = textEditArea->textCursor();
+        cursor.setPosition(offset,QTextCursor::MoveAnchor);
+        textEditArea->setTextCursor(cursor);
+        textEditArea->centerCursor();
+    }
+}
+
 void cReportModuleWindow::loadFileContent(cResultContainer *const container)
 {
     QString fileToOpen;
@@ -165,6 +180,7 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 
     connect(_checkerWidget, &cCheckerWidget::Load, this, &cReportModuleWindow::loadFileContent);
     connect(_checkerWidget, &cCheckerWidget::ShowInputIssue, this, &cReportModuleWindow::highlightRow);
+    connect(_checkerWidget, &cCheckerWidget::ShowInputIssueOffset, this, &cReportModuleWindow::highlightOffset);
     connect(_checkerWidget, &cCheckerWidget::CanShowIssueIn3DViewer, this, &cReportModuleWindow::CheckIssueShowableInViewer);
     connect(_checkerWidget, &cCheckerWidget::ShowIssueIn3DViewer, this, &cReportModuleWindow::ShowIssueInViewer);
 

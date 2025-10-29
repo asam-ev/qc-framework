@@ -12,12 +12,21 @@
 void LineHighlighter::setLineToHighlight(int line)
 {
     lineNumber = line;
+    position = -1;
+    rehighlight();
+}
+
+void LineHighlighter::setOffsetToHighlight(int offset)
+{
+    lineNumber = -1;
+    position = offset;
     rehighlight();
 }
 
 void LineHighlighter::highlightBlock(const QString &text)
 {
-    if (lineNumber != -1 && currentBlock().blockNumber() == lineNumber)
+    if ((lineNumber != -1 && currentBlock().blockNumber() == lineNumber) ||
+        (position != -1 && currentBlock().contains(position)))
     {
         QTextCharFormat fmt;
         fmt.setBackground(Qt::yellow);

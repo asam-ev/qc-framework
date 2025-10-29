@@ -127,4 +127,5 @@ class cReportModuleWindow : public QMainWindow
   public slots:
     void loadFileContent(cResultContainer *const container);
     void highlightRow(const cIssue *const issue, const int row);
+    void highlightOffset(const cIssue *const issue, const int offset);
 };

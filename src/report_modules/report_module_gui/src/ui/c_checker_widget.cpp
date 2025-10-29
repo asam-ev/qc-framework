@@ -659,18 +659,19 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
                 if (extInfo->IsType<cFileLocation *>())
                 {
                     cFileLocation *fileLocation = ((cFileLocation *)extInfo);
-
-                    int row = fileLocation->GetRow();
-
-                    // If issue referes to a file, show it!
-                    if (hasInputPath)
-                        ShowInputIssue(itemToShow, row);
+                    // If issue refers to a file, show it!
+                    if (hasInputPath) {
+                        if (fileLocation->HasRowColumn())
+                            ShowInputIssue(itemToShow, fileLocation->GetRow());
+                        else if (fileLocation->HasOffset())
+                            ShowInputIssueOffset(itemToShow, fileLocation->GetOffset());
+                    }
                 }
             }
 
             // Potentially show in external viewer
             if (CanShowIssueIn3DViewer(itemToShow, locationToShow))
-                    ShowIssueIn3DViewer(itemToShow, locationToShow);
+                ShowIssueIn3DViewer(itemToShow, locationToShow);
         }
     }
 }
