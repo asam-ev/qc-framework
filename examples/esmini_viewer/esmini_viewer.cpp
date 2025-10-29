@@ -257,12 +257,7 @@ bool Initialize(const char *inputPath)
     bool isXoscFile = false;
     std::string odrFromXosc;
 
-    if (inputFileExtension == "otx")
-    {
-        lasterrormsg = "ERROR: Cannot load otx file in odr viewer";
-        return false;
-    }
-    else if (inputFileExtension == "xosc")
+    if (inputFileExtension == "xosc")
     {
         bool result = GetXodrFilePathFromXosc(inputPath, odrFromXosc);
         if (!result)
@@ -288,6 +283,11 @@ bool Initialize(const char *inputPath)
 
         // Call the function with arguments
         esmini_plugin.SE_Init(scenario_file_path.c_str(), 1, 1, 2, 0);
+    }
+    else
+    {
+        lasterrormsg = "ERROR: Cannot load unsupported file in odr viewer";
+        return false;
     }
 
     return true;
