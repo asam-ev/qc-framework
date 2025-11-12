@@ -404,7 +404,7 @@ cReportModuleWindow::cReportModuleWindow(cResultContainer *resultContainer, cons
 }
 
 // Loads the result container
-void cReportModuleWindow::LoadResultContainer(cResultContainer *const container) const
+void cReportModuleWindow::LoadResultContainer(cResultContainer *const container)
 {
     QMap<QString, QString> fileReplacementMap;
     std::list<cCheckerBundle *> bundles = container->GetCheckerBundles();
@@ -413,6 +413,12 @@ void cReportModuleWindow::LoadResultContainer(cResultContainer *const container)
          itBundle++)
     {
         ValidateInputFile(*itBundle, &fileReplacementMap, "InputFile", "Input file");
+    }
+
+    // Auto (re-)start viewers for which we have supporting input file
+    for (const auto &viewer : viewerEntries)
+    {
+        StartViewer(viewer.get(), true);
     }
 
     if (_checkerWidget != nullptr)
@@ -490,24 +496,19 @@ void cReportModuleWindow::SaveResultFile()
     msgBox.exec();
 }
 
-void cReportModuleWindow::StartViewer(Viewer *viewer)
+void cReportModuleWindow::StartViewer(Viewer *viewer, bool suppressMessages)
 {
-    if (_viewerActive != nullptr)
+    if (viewer->isActive)
     {
-        std::cout << "We have already an active viewer, closing it first... " << std::endl;
-        if (!_viewerActive->CloseViewer_f())
+        std::cout << "Viewer is already active, closing it first... " << std::endl;
+        if (!viewer->CloseViewer_f())
         {
-            std::string error(_viewerActive->GetLastErrorMessage_f());
-            std::cout << "Closing the viewer " << _viewerActive->GetName_f() << " failed, error: " << error
+            std::string error(viewer->GetLastErrorMessage_f());
+            std::cout << "Closing the viewer " << viewer->GetName_f() << " failed, error: " << error
                       << std::endl;
         }
-
-        _viewerActive = nullptr;
+        viewer->isActive = false;
     }
-
-    QMessageBox msgBox;
-    msgBox.setWindowTitle(this->_reportModuleName + " Error");
-    msgBox.setStandardButtons(QMessageBox::Ok);
 
     // Start viewer when we have an input file and it is supported
     if (_results != nullptr && _results->HasInputFileName() && viewer->CanSupportFormat_f(_results->GetInputFilePath().c_str()))
@@ -520,11 +521,18 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
 
         if (!result)
         {
-            QString errormsg = QString("StartViewer failed, abort. Error msg: ") + viewer->GetLastErrorMessage_f();
-            msgBox.setText(errormsg);
             setCursor(Qt::ArrowCursor);
             QApplication::processEvents();
-            msgBox.exec();
+            if (!suppressMessages)
+            {
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(this->_reportModuleName + " Error");
+                msgBox.setStandardButtons(QMessageBox::Ok);
+
+                QString errormsg = QString("StartViewer failed, abort. Error msg: ") + viewer->GetLastErrorMessage_f();
+                msgBox.setText(errormsg);
+                msgBox.exec();
+            }
             return;
         }
 
@@ -533,12 +541,20 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
 
         if (!result)
         {
-            std::cout << "errormsg this side: " << viewer->GetLastErrorMessage_f() << std::endl;
-            QString errormsg = QString("Initialize failed, abort. Error msg: ") + viewer->GetLastErrorMessage_f();
-            msgBox.setText(errormsg);
             setCursor(Qt::ArrowCursor);
             QApplication::processEvents();
-            msgBox.exec();
+            if (!suppressMessages)
+            {
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(this->_reportModuleName + " Error");
+                msgBox.setStandardButtons(QMessageBox::Ok);
+
+                std::cout << "errormsg this side: " << viewer->GetLastErrorMessage_f() << std::endl;
+                QString errormsg = QString("Initialize failed, abort. Error msg: ") + viewer->GetLastErrorMessage_f();
+                msgBox.setText(errormsg);
+                msgBox.exec();
+            }
+            viewer->CloseViewer_f();
             return;
         }
 
@@ -550,11 +566,19 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
 
             if (!result)
             {
-                QString errormsg = QString("Adding error failed, abort. Error msg: ") + viewer->GetLastErrorMessage_f();
-                msgBox.setText(errormsg);
                 setCursor(Qt::ArrowCursor);
                 QApplication::processEvents();
-                msgBox.exec();
+                if (!suppressMessages)
+                {
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle(this->_reportModuleName + " Error");
+                    msgBox.setStandardButtons(QMessageBox::Ok);
+
+                    QString errormsg = QString("Adding error failed, abort. Error msg: ") + viewer->GetLastErrorMessage_f();
+                    msgBox.setText(errormsg);
+                    msgBox.exec();
+                }
+                viewer->CloseViewer_f();
                 return;
             }
         }
@@ -562,10 +586,13 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
         setCursor(Qt::ArrowCursor);
         QApplication::processEvents();
 
-        _viewerActive = viewer;
+        viewer->isActive = true;
     }
-    else
+    else if (!suppressMessages)
     {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(this->_reportModuleName + " Error");
+        msgBox.setStandardButtons(QMessageBox::Ok);
         if (_results == nullptr)
             msgBox.setText("Cannot start because no result loaded. Abort.");
         else if (!_results->HasInputFileName())
@@ -578,34 +605,43 @@ void cReportModuleWindow::StartViewer(Viewer *viewer)
 
 bool cReportModuleWindow::CheckIssueShowableInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow)
 {
-    return (_viewerActive != nullptr) && _viewerActive->CanShowIssue_f(issue, locationToShow);
+    for (const auto &viewer : viewerEntries)
+    {
+        if (viewer->isActive && viewer->CanShowIssue_f(issue, locationToShow))
+            return true;
+    }
+    return false;
 }
 
 void cReportModuleWindow::ShowIssueInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow)
 {
-    QMessageBox msgBox;
-    msgBox.setWindowTitle(this->_reportModuleName + " Error");
-    msgBox.setStandardButtons(QMessageBox::Ok);
-
-    if (_viewerActive != nullptr)
+    for (const auto &viewer : viewerEntries)
     {
-        bool result = _viewerActive->ShowIssue_f(issue, locationToShow);
-        if (!result)
+        if (viewer->isActive && viewer->CanShowIssue_f(issue, locationToShow))
         {
-            QString errormsg =
-                QString("Show issue failed, abort. Error msg: ") + _viewerActive->GetLastErrorMessage_f();
-            msgBox.setText(errormsg);
-            msgBox.exec();
+            bool result = viewer->ShowIssue_f(issue, locationToShow);
+            if (!result)
+            {
+                QMessageBox msgBox;
+                msgBox.setWindowTitle(this->_reportModuleName + " Error");
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                QString errormsg =
+                    QString("Show issue failed, abort. Error msg: ") + viewer->GetLastErrorMessage_f();
+                msgBox.setText(errormsg);
+                msgBox.exec();
+            }
         }
     }
 }
 
 void cReportModuleWindow::closeEvent(QCloseEvent *)
 {
-    if (_viewerActive != nullptr)
+    for (const auto &viewer : viewerEntries)
     {
-        _viewerActive->CloseViewer_f();
-        _viewerActive = nullptr;
+        if (viewer->isActive)
+        {
+            viewer->CloseViewer_f();
+        }
     }
 }
 

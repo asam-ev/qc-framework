@@ -71,11 +71,11 @@ class cReportModuleWindow : public QMainWindow
         GetName_ptr GetName_f{nullptr};
         CloseViewer_ptr CloseViewer_f{nullptr};
         GetLastErrorMessage_ptr GetLastErrorMessage_f{nullptr};
+        bool isActive{false};
         QAction *associatedAction{nullptr};
     };
 
     std::vector<std::unique_ptr<Viewer>> viewerEntries;
-    Viewer *_viewerActive{nullptr};
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
     LineHighlighter *highlighter;
@@ -95,7 +95,7 @@ class cReportModuleWindow : public QMainWindow
     virtual ~cReportModuleWindow() = default;
 
     // Loads the result container
-    void LoadResultContainer(cResultContainer *const container) const;
+    void LoadResultContainer(cResultContainer *const container);
 
   private slots:
     // Open result file
@@ -103,7 +103,7 @@ class cReportModuleWindow : public QMainWindow
     void SaveResultFile();
 
     // Starts a Viewer
-    void StartViewer(Viewer *viewer);
+    void StartViewer(Viewer *viewer, bool suppressMessages = false);
     // Checks if an issue can be shown in a viewer
     bool CheckIssueShowableInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow);
     // Shows an issue in a viewer if available
