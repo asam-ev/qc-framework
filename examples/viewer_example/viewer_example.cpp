@@ -40,7 +40,7 @@ bool Initialize(const char *inputPath)
         lasterrormsg = "ERROR: No valid input file found.";
         return false;
     }
-    std::cout << "INITILAIZE VIEWER WITH INPUT FILE: " << inputPath << std::endl;
+    std::cout << "INITIALIZE VIEWER WITH INPUT FILE: " << inputPath << std::endl;
     return true;
 }
 
