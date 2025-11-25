@@ -18,6 +18,8 @@
 #include <QtCore/QList>
 #include <QtCore/QSettings>
 #include <QtCore/QProcess>
+#include <QtCore/QStandardPaths>
+#include <QtCore/QFileInfo>
 #include <QtXml/QDomDocument>
 #include <QtXmlPatterns/QXmlQuery>
 
@@ -64,29 +66,33 @@ void MaybeInitializeDefaultSettings()
     // Maybe initialize default settings
     if (!settings.contains("formats/size"))
     {
+        int counter = 0;
         settings.beginWriteArray("formats");
-        settings.setArrayIndex(0);
-        settings.setValue("format", ".xodr");
-        settings.setValue("name", "OpenDRIVE");
-        settings.setValue("start_executable", "opendrive_viewer");
-        settings.setValue("start_template", "%1 %2");
-        settings.setValue("show_executable", "opendrive_viewer");
-        settings.setValue("show_template", "%1 --at %3:%4 %2");
-        settings.setValue("show_location_xpath", "//FileLocation/(@row/string(),@column/string())");
-        settings.setValue("stop_executable", "opendrive_viewer");
-        settings.setValue("stop_template", "%1 --close %2");
-        settings.setArrayIndex(1);
-        settings.setValue("format", ".osi");
-        settings.setValue("name", "OSI Single Trace File");
-        settings.setValue("show_executable", "osiviewer");
-        settings.setValue("show_location_xpath", "//MessageLocation/(@time/string(),@index/string())");
-        settings.setValue("show_template", "%1 --file %2 --time %3 --index %4");
-        settings.setArrayIndex(2);
-        settings.setValue("format", ".mcap");
-        settings.setValue("name", "OSI Multi Trace File");
-        settings.setValue("show_executable", "c:\\Users\\pmai\\AppData\\Local\\Programs\\lichtblick\\Lichtblick.exe");
-        settings.setValue("show_location_xpath", "//MessageLocation/(@time/string(),@channel/string())");
-        settings.setValue("show_template", "%1 --time=%3 \"%2\"");
+        {
+            // Auto-detect Lichtblick installation path
+#ifdef Q_OS_WIN
+            QString lichtblickPath = QStandardPaths::locate(QStandardPaths::GenericConfigLocation,"Programs/lichtblick/Lichtblick.exe");
+            if (lichtblickPath.isEmpty())
+            {
+                lichtblickPath = QStandardPaths::locate(QStandardPaths::HomeLocation,"AppData/Local/Programs/lichtblick/Lichtblick.exe");
+            }
+#else
+            QString lichtblickPath = QStandardPaths::locate(QStandardPaths::ApplicationsLocation,"lichtblick");
+            if (lichtblickPath.isEmpty())
+            {
+                lichtblickPath = "/opt/Lichtblick/lichtblick";
+            }
+#endif
+            if (QFileInfo::exists(lichtblickPath))
+            {
+                settings.setArrayIndex(counter++);
+                settings.setValue("format", ".mcap");
+                settings.setValue("name", "OSI Multi Trace File");
+                settings.setValue("show_executable", lichtblickPath);
+                settings.setValue("show_location_xpath", "//MessageLocation/(@time/string(),@channel/string())");
+                settings.setValue("show_template", "%1 --time=%3 \"%2\"");
+            }
+        }
         settings.endArray();
     }
 }

@@ -62,6 +62,6 @@ As an example of the use of To support the visualization using Lichtblick of iss
 This means that for `.mcap` input files the command viewer will make all issues that have a `MessageLocation` location with `time` and `channel` attributes accessible.
 It will execute the `Lichtblick` executable with the message time as its `--time` argument and the input file (`%2`) as a non-option argument.
 
-If no current configuration for the command viewer plugin is detected on startup, a default configuration for Lichtblick is added.
+If no current configuration for the command viewer plugin is detected on startup, a default configuration for Lichtblick is added, if Lichtblick can be found in its standards locations for Windows, Linux or mac OS.
 
 ![command_viewer_lichtblick](images/command_viewer_lichtblick.png)
