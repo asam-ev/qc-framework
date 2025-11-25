@@ -68,7 +68,7 @@ to the viewer.
 If the ReportGUI is closed all currently active viewers receive the `CloseViewer`
 call.
 
-## Viewer Example
+## Viewer Examples
 
 A demo viewer is provided as source code under `examples/viewer_example`. When
 you open the GUI, it looks like in the image above and you can start the viewer
@@ -79,3 +79,8 @@ implementation can use this information to show the error in 3D.
 A fully functional viewer based on the [esmini simulator](https://esmini.github.io/) 
 is also provided as part of the ASAM Quality Checker Framework. Please refer to 
 the [esmini viewer plugin](esmini_viewer_plugin.md) for details.
+
+A user-configurable viewer that is based on executing external commands
+to show issues in external viewers is provided as part of the ASAM
+Quality Checker Framework. Please refer to the
+[command viewer plugin](command_viewer_plugin.md) for details.

@@ -9,4 +9,5 @@
 
 add_subdirectory(checker_bundle_example)
 add_subdirectory(viewer_example)
+add_subdirectory(command_viewer)
 add_subdirectory(esmini_viewer)
