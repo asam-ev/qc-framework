@@ -12,6 +12,8 @@ cmake_policy(SET CMP0095 NEW) # RPATH entries are properly escaped in the interm
 set(COMMAND_VIEWER CommandViewer)
 project(${COMMAND_VIEWER})
 
+set(DEBUG_OUTPUT OFF CACHE BOOL "Enable debug output for the Command Viewer plugin")
+
 set(CMAKE_INSTALL_RPATH $ORIGIN/../../lib)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS true)
@@ -35,6 +37,9 @@ target_link_libraries(
     $<$<PLATFORM_ID:Linux>:stdc++fs>
     ${XercesC_LIBRARIES}
 )
+
+target_compile_definitions(${COMMAND_VIEWER} PRIVATE
+        $<$<BOOL:${DEBUG_OUTPUT}>:DEBUG_OUTPUT>)
 
 install(
     TARGETS ${COMMAND_VIEWER}
