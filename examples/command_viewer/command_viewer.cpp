@@ -14,6 +14,8 @@
 #include <cstring>
 #include <stdio.h>
 #include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QList>
 #include <QtCore/QSettings>
 #include <QtCore/QProcess>
 #include <QtXml/QDomDocument>
@@ -41,6 +43,10 @@ QString current_show_executable = "";
 QString current_show_template = "";
 QString current_stop_executable = "";
 QString current_stop_template = "";
+
+QList<QProcess *> current_processes;
+
+// Internal Helpers
 
 QSettings GetSettings()
 {
@@ -83,102 +89,6 @@ void MaybeInitializeDefaultSettings()
         settings.setValue("show_template", "%1 --time=%3 \"%2\"");
         settings.endArray();
     }
-}
-
-bool CanSupportFormat(const char *inputPath)
-{
-    if (inputPath == nullptr || std::strcmp(inputPath, "") == 0)
-    {
-        lasterrormsg = "ERROR: No valid input file found.";
-        return false;
-    }
-
-    MaybeInitializeDefaultSettings();
-
-    std::cout << "CAN COMMAND VIEWER SUPPORT FORMAT WITH INPUT FILE: " << inputPath << "? ";
-    QString inputPathStr = QString(inputPath);
-    QSettings settings = GetSettings();
-    int size = settings.beginReadArray("formats");
-    for (int i = 0; i < size; ++i)
-    {
-        settings.setArrayIndex(i);
-        QString format = settings.value("format").toString();
-        QString name = settings.value("name").toString();
-        if (inputPathStr.endsWith(format))
-        {
-            settings.endArray();
-            std::cout << "YES - " << name.toStdString() << " (" << format.toStdString() << ")" << std::endl;
-            return true;
-        }
-    }
-    settings.endArray();
-    std::cout << "NO" << std::endl;
-
-    return false;
-}
-
-bool StartViewer()
-{
-    std::cout << "START COMMAND VIEWER" << std::endl;
-    return true;
-}
-
-bool Initialize(const char *inputPath)
-{
-    if (inputPath == nullptr || std::strcmp(inputPath, "") == 0)
-    {
-        lasterrormsg = "ERROR: No valid input file found.";
-        return false;
-    }
-    std::cout << "INITILAIZE COMMAND VIEWER WITH INPUT FILE: " << inputPath << std::endl;
-
-    current_input_path = QString(inputPath);
-
-    QSettings settings = GetSettings();
-    int size = settings.beginReadArray("formats");
-    for (int i = 0; i < size; ++i)
-    {
-        settings.setArrayIndex(i);
-        QString format = settings.value("format").toString();
-        if (current_input_path.endsWith(format))
-        {
-            current_format = format;
-            current_format_name = settings.value("name").toString();
-            current_start_executable = settings.value("start_executable").toString();
-            current_start_template = settings.value("start_template").toString();
-            current_show_location_xpath = settings.value("show_location_xpath").toString();
-            current_show_executable = settings.value("show_executable").toString();
-            current_show_template = settings.value("show_template").toString();
-            current_stop_executable = settings.value("stop_executable").toString();
-            current_stop_template = settings.value("stop_template").toString();
-            settings.endArray();
-            std::cout << "Format " << current_format_name.toStdString() << " (" << current_format.toStdString() << ") - Start Executable " << current_start_executable.toStdString() << std::endl;
-
-            if (!current_start_template.isEmpty())
-            {
-                QString command = current_start_template.arg(current_stop_executable, current_input_path);
-                std::cout << "EXECUTING: " << command.toStdString() << std::endl;
-
-                QProcess process;
-                QStringList args = QProcess::splitCommand(command);
-                process.startDetached(args.takeFirst(), args);
-                process.waitForStarted(-1); // will wait forever until started
-            }
-
-            return true;
-        }
-    }
-    settings.endArray();
-
-    lasterrormsg = "ERROR: No valid format found for input file.";
-    return false;
-}
-
-bool AddIssue(void *issueToAdd)
-{
-    auto issue = static_cast<cIssue *>(issueToAdd);
-    std::cout << "COMMAND VIEWER ADD ISSUE: " << issue->GetDescription() << std::endl;
-    return true;
 }
 
 bool MatchXML(cLocationsContainer *location, const QString &expression, QStringList &results)
@@ -240,11 +150,13 @@ bool MatchXML(cLocationsContainer *location, const QString &expression, QStringL
     query.setFocus(xmlString);
     query.setQuery(expression);
     if (!query.evaluateTo(&results)) {
+#ifdef DEBUG_OUTPUT
         std::cout << "Failed to evaluate XPath expression: " << expression.toStdString() << (query.isValid()?"":" is invalid") << std::endl;
+#endif
         lasterrormsg = "ERROR: Failed to evaluate XPath expression.";
         return false;
     }
-#if 0
+#ifdef DEBUG_OUTPUT
     std::cout << "XPath Results:" << std::endl;
     for (const QString &res : results)
     {
@@ -252,6 +164,202 @@ bool MatchXML(cLocationsContainer *location, const QString &expression, QStringL
     }
 #endif
     return results.size() > 0;
+}
+
+void MaybeCleanupProcesses()
+{
+    QMutableListIterator<QProcess*> i(current_processes);
+    while (i.hasNext()) {
+        QProcess* process = i.next();
+#ifdef DEBUG_OUTPUT
+        std::cout << "Checking process (PID " << process->processId() << ") state " << process->state() << std::endl;
+#endif
+        if (process->state() == QProcess::NotRunning)
+        {
+#ifdef DEBUG_OUTPUT
+            std::cout << "Cleaning up process (PID " << process->processId() << ") now." << std::endl;
+#endif
+            i.remove();
+            delete process;
+        }
+    }
+}
+
+void ShutdownProcesses()
+{
+    QMutableListIterator<QProcess*> i(current_processes);
+    while (i.hasNext()) {
+        QProcess* process = i.next();
+#ifdef DEBUG_OUTPUT
+        std::cout << "Shutting down process (PID " << process->processId() << ") state " << process->state() << std::endl;
+#endif
+        if (process->state() == QProcess::NotRunning)
+        {
+#ifdef DEBUG_OUTPUT
+            std::cout << "Cleaning up process (PID " << process->processId() << ") now." << std::endl;
+#endif
+            i.remove();
+            delete process;
+        }
+        else
+        {
+#ifdef DEBUG_OUTPUT
+            std::cout << "Terminating process (PID " << process->processId() << ") now." << std::endl;
+#endif
+            process->terminate();
+            process->waitForFinished(3000); // wait up to 3 seconds
+            if (process->state() != QProcess::NotRunning)
+            {
+#ifdef DEBUG_OUTPUT
+                std::cout << "Killing process (PID " << process->processId() << ") now." << std::endl;
+#endif
+                process->kill();
+                process->waitForFinished(1000); // wait up to 1 second
+            }
+            i.remove();
+            delete process;
+        }
+    }
+}
+
+bool MaybeStartCommand(const QString &cmd_template, const QString &executable, const QStringList &arguments = QStringList())
+{
+    MaybeCleanupProcesses();
+    if (!cmd_template.isEmpty())
+    {
+        QString command = cmd_template.arg(executable, current_input_path);
+        for (const QString &arg : arguments)
+        {
+            command = command.arg(arg);
+        }
+#ifdef DEBUG_OUTPUT
+        std::cout << "EXECUTING: " << command.toStdString() << std::endl;
+#endif
+
+        QProcess* process = new QProcess();
+        QStringList args = QProcess::splitCommand(command);
+        process->start(args.takeFirst(), args);
+        process->waitForStarted(5000);
+        if (process->state() != QProcess::Running)
+        {
+#ifdef DEBUG_OUTPUT
+            std::cout << "Failed to start process (PID " << process->processId() << "): " << process->error() << std::endl;
+#endif
+            lasterrormsg = "ERROR: Failed to start process.";
+            delete process;
+            return false;
+        }
+
+#ifdef DEBUG_OUTPUT
+        std::cout << "Started process (PID " << process->processId() << ")." << std::endl;
+#endif
+        current_processes.append(process);
+    }
+    return true;
+}
+
+
+// Plugin Interface
+
+bool CanSupportFormat(const char *inputPath)
+{
+    if (inputPath == nullptr || std::strcmp(inputPath, "") == 0)
+    {
+        lasterrormsg = "ERROR: No valid input file found.";
+        return false;
+    }
+
+    // Maybe initialize default settings on startup
+    MaybeInitializeDefaultSettings();
+
+#ifdef DEBUG_OUTPUT
+    std::cout << "CAN COMMAND VIEWER SUPPORT FORMAT WITH INPUT FILE: " << inputPath << "? ";
+#endif
+    QString inputPathStr = QString(inputPath);
+    QSettings settings = GetSettings();
+    int size = settings.beginReadArray("formats");
+    for (int i = 0; i < size; ++i)
+    {
+        settings.setArrayIndex(i);
+        QString format = settings.value("format").toString();
+        QString name = settings.value("name").toString();
+        if (inputPathStr.endsWith(format))
+        {
+            settings.endArray();
+#ifdef DEBUG_OUTPUT
+            std::cout << "YES - " << name.toStdString() << " (" << format.toStdString() << ")" << std::endl;
+#endif
+            return true;
+        }
+    }
+    settings.endArray();
+#ifdef DEBUG_OUTPUT
+    std::cout << "NO" << std::endl;
+#endif
+
+    return false;
+}
+
+bool StartViewer()
+{
+#ifdef DEBUG_OUTPUT
+    std::cout << "START COMMAND VIEWER" << std::endl;
+#endif
+    return true;
+}
+
+bool Initialize(const char *inputPath)
+{
+    if (inputPath == nullptr || std::strcmp(inputPath, "") == 0)
+    {
+        lasterrormsg = "ERROR: No valid input file found.";
+        return false;
+    }
+
+#ifdef DEBUG_OUTPUT
+    std::cout << "INITIALIZE COMMAND VIEWER WITH INPUT FILE: " << inputPath << std::endl;
+#endif
+
+    current_input_path = QString(inputPath);
+
+    QSettings settings = GetSettings();
+    int size = settings.beginReadArray("formats");
+    for (int i = 0; i < size; ++i)
+    {
+        settings.setArrayIndex(i);
+        QString format = settings.value("format").toString();
+        if (current_input_path.endsWith(format))
+        {
+            current_format = format;
+            current_format_name = settings.value("name").toString();
+            current_start_executable = settings.value("start_executable").toString();
+            current_start_template = settings.value("start_template").toString();
+            current_show_location_xpath = settings.value("show_location_xpath").toString();
+            current_show_executable = settings.value("show_executable").toString();
+            current_show_template = settings.value("show_template").toString();
+            current_stop_executable = settings.value("stop_executable").toString();
+            current_stop_template = settings.value("stop_template").toString();
+            settings.endArray();
+#ifdef DEBUG_OUTPUT
+            std::cout << "Format " << current_format_name.toStdString() << " (" << current_format.toStdString() << ") - Start Executable " << current_start_executable.toStdString() << std::endl;
+#endif
+
+            return MaybeStartCommand(current_start_template, current_start_executable);
+        }
+    }
+    settings.endArray();
+
+    lasterrormsg = "ERROR: No valid format found for input file.";
+    return false;
+}
+
+bool AddIssue(void *issueToAdd)
+{
+#ifdef DEBUG_OUTPUT
+    auto issue = static_cast<cIssue *>(issueToAdd);
+    std::cout << "COMMAND VIEWER ADD ISSUE: " << issue->GetDescription() << std::endl;
+#endif
+    return true;
 }
 
 bool CanShowIssue(void *itemToShow, void *locationToShow)
@@ -266,10 +374,12 @@ bool CanShowIssue(void *itemToShow, void *locationToShow)
 
 bool ShowIssue(void *itemToShow, void *locationToShow)
 {
+   auto location = static_cast<cLocationsContainer *>(locationToShow);
+#ifdef DEBUG_OUTPUT
     auto issue = static_cast<cIssue *>(itemToShow);
-    auto location = static_cast<cLocationsContainer *>(locationToShow);
     std::cout << "COMMAND VIEWER SHOW ISSUE: " << issue->GetDescription() << std::endl;
     std::cout << "CV LOCATION: " << location->GetDescription() << std::endl;
+#endif
 
     QStringList results;
     if (!MatchXML(location, current_show_location_xpath, results))
@@ -278,21 +388,7 @@ bool ShowIssue(void *itemToShow, void *locationToShow)
         return false;
     }
 
-    if (!current_show_template.isEmpty())
-    {
-        QString command = current_show_template.arg(current_show_executable, current_input_path);
-        for (const QString &res : results)
-        {
-            command = command.arg(res);
-        }
-        std::cout << "EXECUTING: " << command.toStdString() << std::endl;
-
-        QProcess process;
-        QStringList args = QProcess::splitCommand(command);
-        process.startDetached(args.takeFirst(), args);
-        process.waitForStarted(-1); // will wait forever until started
-    }
-    return true;
+    return MaybeStartCommand(current_show_template, current_show_executable, results);
 }
 
 const char *GetName()
@@ -302,17 +398,11 @@ const char *GetName()
 
 bool CloseViewer()
 {
+#ifdef DEBUG_OUTPUT
     std::cout << "CLOSE COMMAND VIEWER" << std::endl;
-    if (!current_stop_template.isEmpty())
-    {
-        QString command = current_stop_template.arg(current_stop_executable, current_input_path);
-        std::cout << "EXECUTING: " << command.toStdString() << std::endl;
-
-        QProcess process;
-        QStringList args = QProcess::splitCommand(command);
-        process.startDetached(args.takeFirst(), args);
-        process.waitForStarted(-1); // will wait forever until started
-    }
+#endif
+    MaybeStartCommand(current_stop_template, current_stop_executable);
+    ShutdownProcesses();
 
     return true;
 }
