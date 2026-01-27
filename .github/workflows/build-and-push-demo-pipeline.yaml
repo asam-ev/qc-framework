@@ -1,6 +1,8 @@
 name: Build and push demo pipeline image
 
 on:
+  workflow_dispatch: # Allows manual triggering of the workflow
+
   schedule:
     - cron: '0 2 * * 0' # 02:00 AM UTC every Sunday
 
