@@ -19,7 +19,7 @@ def update_param_value(xml_file, name, new_value, output_file):
     root = tree.getroot()
 
     # Find the Param element with the name attribute and update its value attribute
-    for param in root.findall(f".//Param[@name='{name}']"):
+    for param in root.findall(f"./Param[@name='{name}']"):
         param.set("value", new_value)
 
     # Write the updated XML to the output file
