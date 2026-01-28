@@ -29,6 +29,8 @@ on:
       - qc_framework/**
       - docker/**
 
+  workflow_dispatch: # Allows manual triggering of the workflow
+
 jobs:
   build-linux:
     runs-on: ubuntu-22.04
