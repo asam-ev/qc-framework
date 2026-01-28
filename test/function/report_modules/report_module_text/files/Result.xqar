@@ -6,7 +6,7 @@ This Source Code Form is subject to the terms of the Mozilla
 Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 -->
-<CheckerResults  version="1.0.0">
+<CheckerResults  version="1.1.0">
 
   <CheckerBundle build_date="2019-11-28 11:40:42" description="" name="DemoCheckerBundle" summary="Found 1 issue" version="16857">
     <Checker checkerId="exampleChecker" description="This is a description" summary="">
