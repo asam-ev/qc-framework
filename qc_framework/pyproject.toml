@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "asam-qc-framework"
-version = "1.0.0"
+version = "1.1.0"
 description = "Python ASAM Quality Checker Framework module. Executes bundles and creates result reports."
 authors = ["Danilo Romano <danilo@ivex.ai>","Patrick Abrahão <patrick@ivex.ai>","Tung Dinh <tung@ivex.ai>"]
 license = "MPL-2.0"
@@ -11,7 +11,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-asam-qc-baselib = {git = "https://github.com/asam-ev/qc-baselib-py.git", rev = "v1.1.0-rc.1"}
+asam-qc-baselib = {git = "https://github.com/asam-ev/qc-baselib-py.git", rev = "v1.1.0"}
 pydantic = "^2.7.2"
 
 [tool.poetry.group.dev.dependencies]

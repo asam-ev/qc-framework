@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<CheckerResults version="1.0.0">
+<CheckerResults version="1.1.0">
 
   <CheckerBundle build_date="" description="" name="DemoCheckerBundle" summary="Found 4 issues" version="">
     <Checker checkerId="exampleChecker" description="This is a description" status="completed" summary="">

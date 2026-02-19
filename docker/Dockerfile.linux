@@ -58,7 +58,7 @@ RUN python3 -m pip install --no-cache-dir -r /app/demo_pipeline/requirements.txt
 
 
 # Framework test stage
-FROM ubuntu:22.04 as framework_test
+FROM ubuntu:22.04 AS framework_test
 
 # Dependancies installation currently required by ResultPooling and TextReport modules
 RUN echo "Installing Qt..." && \
@@ -92,11 +92,11 @@ RUN poetry install --with dev
 CMD poetry run pytest -rA > /out/runtime_test.log 2> /out/runtime_test.err
 
 # Unit Test stage
-FROM framework_builder as unit_test
+FROM framework_builder AS unit_test
 CMD ctest --test-dir /app/framework/build -C Release && cp /app/framework/build/Testing/Temporary/LastTest.log /out/
 
 
-FROM ubuntu:22.04 as demo_pipeline
+FROM ubuntu:22.04 AS demo_pipeline
 
 LABEL org.opencontainers.image.source="https://github.com/asam-ev/qc-framework"
 LABEL org.opencontainers.image.description="QC Framework demo pipeline"

@@ -18,7 +18,7 @@
 XERCES_CPP_NAMESPACE_USE
 
 const XMLCh *cResultContainer::ATTR_VERSION = CONST_XMLCH("version");
-const XMLCh *cResultContainer::XAQR_VERSION = CONST_XMLCH("1.0.0");
+const XMLCh *cResultContainer::XAQR_VERSION = CONST_XMLCH("1.1.0");
 
 cResultContainer::cResultContainer()
 {
