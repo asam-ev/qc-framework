@@ -50,9 +50,11 @@ class cReportModuleWindow : public QMainWindow
     cCheckerWidget *_checkerWidget{nullptr};
 
     // Function pointers for functions of IConnector.h
+    typedef bool (*CanSupportFormat_ptr)(const char *);
     typedef bool (*StartViewer_ptr)();
     typedef bool (*Initialize_ptr)(const char *);
     typedef bool (*AddIssue_ptr)(const void *);
+    typedef bool (*CanShowIssue_ptr)(const void *, const void *);
     typedef bool (*ShowIssue_ptr)(const void *, const void *);
     typedef const char *(*GetName_ptr)();
     typedef bool (*CloseViewer_ptr)();
@@ -60,18 +62,20 @@ class cReportModuleWindow : public QMainWindow
 
     struct Viewer
     {
+        CanSupportFormat_ptr CanSupportFormat_f{nullptr};
         StartViewer_ptr StartViewer_f{nullptr};
         Initialize_ptr Initialize_f{nullptr};
         AddIssue_ptr AddIssue_f{nullptr};
+        CanShowIssue_ptr CanShowIssue_f{nullptr};
         ShowIssue_ptr ShowIssue_f{nullptr};
         GetName_ptr GetName_f{nullptr};
         CloseViewer_ptr CloseViewer_f{nullptr};
         GetLastErrorMessage_ptr GetLastErrorMessage_f{nullptr};
+        bool isActive{false};
         QAction *associatedAction{nullptr};
     };
 
     std::vector<std::unique_ptr<Viewer>> viewerEntries;
-    Viewer *_viewerActive{nullptr};
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
     LineHighlighter *highlighter;
@@ -91,17 +95,18 @@ class cReportModuleWindow : public QMainWindow
     virtual ~cReportModuleWindow() = default;
 
     // Loads the result container
-    void LoadResultContainer(cResultContainer *const container) const;
+    void LoadResultContainer(cResultContainer *const container);
 
   private slots:
     // Open result file
     void OpenResultFile();
     void SaveResultFile();
 
-    // starts the Viewer
-    void StartViewer(Viewer *viewer);
-
-    // shows a XODR Issue in a viewer if available
+    // Starts a Viewer
+    void StartViewer(Viewer *viewer, bool suppressMessages = false);
+    // Checks if an issue can be shown in a viewer
+    bool CheckIssueShowableInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow);
+    // Shows an issue in a viewer if available
     void ShowIssueInViewer(const cIssue *const issue, const cLocationsContainer *locationToShow);
 
     void onIssueToggled(bool checked);
@@ -124,4 +129,5 @@ class cReportModuleWindow : public QMainWindow
   public slots:
     void loadFileContent(cResultContainer *const container);
     void highlightRow(const cIssue *const issue, const int row);
+    void highlightOffset(const cIssue *const issue, const int offset);
 };

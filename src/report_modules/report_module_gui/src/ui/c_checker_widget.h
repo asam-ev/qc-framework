@@ -128,6 +128,17 @@ class cCheckerWidget : public QWidget
     void ShowInputIssue(const cIssue *const issue, const int row) const;
 
     /*
+     * Invoked if an issue will be showed.
+     * \param offset: Offset which should be displayed. -1 for no specific offset.
+     */
+    void ShowInputIssueOffset(const cIssue *const issue, const int offset) const;
+
+    /*
+     * Invoked if an issue should be showed in 3DViewer.
+     */
+    bool CanShowIssueIn3DViewer(const cIssue *const issue, const cLocationsContainer *locationToShow) const;
+
+    /*
      * Invoked if an issue should be showed in 3DViewer.
      */
     void ShowIssueIn3DViewer(const cIssue *const issue, const cLocationsContainer *locationToShow) const;

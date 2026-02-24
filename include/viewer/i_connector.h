@@ -25,13 +25,19 @@ extern "C"
 #endif
 
     /**
+     * Checks if the viewer can support the format of the given input file
+     * \param inputPath Path to the input file
+     **/
+    VIEWER bool CanSupportFormat(const char *inputPath);
+
+    /**
      * Is called if the viewer application should be startet from main menu
      **/
     VIEWER bool StartViewer();
 
     /**
-     * Does the initialization with xosc file of an viewer
-     * \param xoscPath Path to an xosc file
+     * Does the initialization with input file of an viewer
+     * \param inputPath Path to the input file
      **/
     VIEWER bool Initialize(const char *inputPath);
 
@@ -41,6 +47,13 @@ extern "C"
      **/
     VIEWER bool AddIssue(void *issueToAdd);
 
+    /**
+     * Is called to determine if an issues can be shown.
+     * \param itemToShow The item which should be shown. Pointer to a cIssue class.
+     * \param locationToShow The location where to show the issue. Pointer to a cLocationsContainer class
+     **/
+    VIEWER bool CanShowIssue(void *itemToShow, void *locationToShow);
+    
     /**
      * Is called if an issues has to be showed.
      * \param itemToShow The item which should be showed. Pointer to a cIssue class.

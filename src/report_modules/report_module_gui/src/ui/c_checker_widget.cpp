@@ -366,7 +366,7 @@ void cCheckerWidget::FillIssueTreeItem(QTreeWidgetItem *treeItem, cIssue *const 
 
         for (const auto subIssue : issue->GetLocationsContainer())
         {
-            if (subIssue->HasExtendedInformation<cInertialLocation *>())
+            if (CanShowIssueIn3DViewer(issue, subIssue))
             {
                 isVisibleInViewer = true;
             }
@@ -383,13 +383,13 @@ void cCheckerWidget::FillIssueTreeItem(QTreeWidgetItem *treeItem, cIssue *const 
             {
                 treeItem->setSizeHint(1, QSize(35, 30));
                 treeItem->setIcon(1, QIcon(":/icons/marked_visible.png"));
-                treeItem->setToolTip(1, "Issue is marked in XML view and visible in XODR viewer");
+                treeItem->setToolTip(1, "Issue is marked in file view and visible in external viewer(s)");
             }
             else
             {
                 treeItem->setSizeHint(1, QSize(35, 30));
                 treeItem->setIcon(1, QIcon(":/icons/marked.png"));
-                treeItem->setToolTip(1, "Issue is marked in XML view");
+                treeItem->setToolTip(1, "Issue is marked in file view");
             }
         }
         else
@@ -398,7 +398,7 @@ void cCheckerWidget::FillIssueTreeItem(QTreeWidgetItem *treeItem, cIssue *const 
             {
                 treeItem->setSizeHint(1, QSize(35, 30));
                 treeItem->setIcon(1, QIcon(":/icons/visible.png"));
-                treeItem->setToolTip(1, "Issue is visible in XODR viewer");
+                treeItem->setToolTip(1, "Issue is visible in external viewer(s)");
             }
         }
     }
@@ -406,7 +406,7 @@ void cCheckerWidget::FillIssueTreeItem(QTreeWidgetItem *treeItem, cIssue *const 
     {
         treeItem->setSizeHint(1, QSize(35, 30));
         treeItem->setIcon(1, QIcon(":/icons/issue.png"));
-        treeItem->setToolTip(1, "Issue is not marked in XML view and not visible in XODR viewer");
+        treeItem->setToolTip(1, "Issue is not marked in file view and not visible in external viewer(s)");
     }
 
     treeItem->setSizeHint(2, QSize(35, 30));
@@ -659,20 +659,19 @@ void cCheckerWidget::ShowIssue(cIssue *const itemToShow, const cLocationsContain
                 if (extInfo->IsType<cFileLocation *>())
                 {
                     cFileLocation *fileLocation = ((cFileLocation *)extInfo);
-
-                    int row = fileLocation->GetRow();
-
-                    // If issue referes to a file, show it!
-                    if (hasInputPath)
-                        ShowInputIssue(itemToShow, row);
-                }
-
-                // Show InertialLocations in Viewer
-                if (extInfo->IsType<cInertialLocation *>())
-                {
-                    ShowIssueIn3DViewer(itemToShow, locationToShow);
+                    // If issue refers to a file, show it!
+                    if (hasInputPath) {
+                        if (fileLocation->HasRowColumn())
+                            ShowInputIssue(itemToShow, fileLocation->GetRow());
+                        else if (fileLocation->HasOffset())
+                            ShowInputIssueOffset(itemToShow, fileLocation->GetOffset());
+                    }
                 }
             }
+
+            // Potentially show in external viewer
+            if (CanShowIssueIn3DViewer(itemToShow, locationToShow))
+                ShowIssueIn3DViewer(itemToShow, locationToShow);
         }
     }
 }

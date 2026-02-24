@@ -205,21 +205,6 @@ class PluginLoader
 // Load the plugin (shared library)
 PluginLoader esmini_plugin;
 
-bool StartViewer()
-{
-    std::string esminiLibPath;
-    bool esminiLibFound = searchEsminiLibrary(esminiLibPath);
-    if (!esminiLibFound)
-    {
-        lasterrormsg =
-            "ERROR: Esmini library not found neither in ESMINI_LIB_PATH env variable nor in installation folder. "
-            "Cannot start viewer";
-        return false;
-    }
-
-    return esmini_plugin.Load(esminiLibPath);
-}
-
 std::string getFileExtension(const std::string &filename)
 {
     // Find the last occurrence of the dot character in the filename
@@ -234,6 +219,42 @@ std::string getFileExtension(const std::string &filename)
     {
         return ""; // No valid extension found
     }
+}
+
+bool CanSupportFormat(const char *inputPath)
+{
+    if (std::strcmp(inputPath, "") == 0)
+    {
+        lasterrormsg = "ERROR: No valid xosc or xodr file found.";
+        return false;
+    }
+
+    std::string inputFileExtension = getFileExtension(inputPath);
+
+    if (inputFileExtension == "xosc" || inputFileExtension == "xodr")
+    {
+        return true;
+    }
+    else
+    {
+        lasterrormsg = "ERROR: Cannot load unsupported file in odr viewer";
+        return false;
+    }
+}
+
+bool StartViewer()
+{
+    std::string esminiLibPath;
+    bool esminiLibFound = searchEsminiLibrary(esminiLibPath);
+    if (!esminiLibFound)
+    {
+        lasterrormsg =
+            "ERROR: Esmini library not found neither in ESMINI_LIB_PATH env variable nor in installation folder. "
+            "Cannot start viewer";
+        return false;
+    }
+
+    return esmini_plugin.Load(esminiLibPath);
 }
 
 bool Initialize(const char *inputPath)
@@ -257,12 +278,7 @@ bool Initialize(const char *inputPath)
     bool isXoscFile = false;
     std::string odrFromXosc;
 
-    if (inputFileExtension == "otx")
-    {
-        lasterrormsg = "ERROR: Cannot load otx file in odr viewer";
-        return false;
-    }
-    else if (inputFileExtension == "xosc")
+    if (inputFileExtension == "xosc")
     {
         bool result = GetXodrFilePathFromXosc(inputPath, odrFromXosc);
         if (!result)
@@ -289,6 +305,11 @@ bool Initialize(const char *inputPath)
         // Call the function with arguments
         esmini_plugin.SE_Init(scenario_file_path.c_str(), 1, 1, 2, 0);
     }
+    else
+    {
+        lasterrormsg = "ERROR: Cannot load unsupported file in odr viewer";
+        return false;
+    }
 
     return true;
 }
@@ -296,6 +317,21 @@ bool Initialize(const char *inputPath)
 bool AddIssue(void *issueToAdd)
 {
     return true;
+}
+
+bool CanShowIssue(void *itemToShow, void *locationToShow)
+{
+    auto issue = static_cast<cIssue *>(itemToShow);
+    auto location = static_cast<cLocationsContainer *>(locationToShow);
+    std::list<cExtendedInformation *> extendedInfo = location->GetExtendedInformations();
+    for (cExtendedInformation *extInfo : extendedInfo)
+    {
+        // Show InertialLocations in Viewer
+        if (extInfo->IsType<cInertialLocation *>())
+            return true;
+    }
+
+    return false;
 }
 
 bool ShowIssue(void *itemToShow, void *locationToShow)
